@@ -1,6 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using ZiTy.Data;
 using DotNetEnv;
+using ZiTy.Repositories.Interfaces;
+using ZiTy.Repositories.Implementations;
+using ZiTy.Services.Interfaces;
+using ZiTy.Services.Implementations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +37,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 // Add logging service
 builder.Services.AddLogging();
+
+// Register repositories
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+// Register services
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
