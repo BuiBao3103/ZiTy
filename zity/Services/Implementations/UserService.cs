@@ -7,6 +7,7 @@ using ZiTy.Repositories.Interfaces;
 using ZiTy.Mappers;
 using Microsoft.EntityFrameworkCore;
 using ZiTy.Services.Interfaces;
+using zity.DTOs.Users;
 
 namespace ZiTy.Services.Implementations
 {
@@ -19,7 +20,7 @@ namespace ZiTy.Services.Implementations
             _userRepository = userRepository;
         }
 
-        public async Task<List<UserDto>> GetAllAsync()
+        public async Task<List<UserDto>> GetAllAsync(UserQueryDto query)
         {
             var users = await _userRepository.GetAllAsync();
             var usersDto = users.Select(user => user.ToUserDto()).ToList();
