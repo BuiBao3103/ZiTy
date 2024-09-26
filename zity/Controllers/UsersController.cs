@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using zity.DTOs.Users;
+using ZiTy.DTOs.Users;
+using ZiTy.Models;
 using ZiTy.Services.Interfaces;
 namespace ZiTy.Controllers
 {
@@ -17,8 +19,7 @@ namespace ZiTy.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] UserQueryDto query)
         {
-            var users = await userService.GetAllAsync(query);
-            return Ok(users);
+            return Ok(await userService.GetAllAsync(query));
         }
 
     }

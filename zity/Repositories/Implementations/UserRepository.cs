@@ -1,7 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using zity.DTOs.Users;
+using zity.Utilities;
 using ZiTy.Data;
 using ZiTy.Models;
 using ZiTy.Repositories.Interfaces;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace ZiTy.Repositories.Implementations
 {
@@ -13,10 +16,16 @@ namespace ZiTy.Repositories.Implementations
         {
             _dbContext = dbContext;
         }
-        public async Task<List<User>> GetAllAsync()
+        public async Task<PaginatedResult<User>> GetAllAsync(UserQueryDto query)
         {
-            var users = _dbContext.Users.Where(u => u.DeletedAt == null);
-            return await users.ToListAsync();
+            var usersQuery = _dbContext.Users.Where(u => u.DeletedAt == null);
+            var totalItems = await usersQuery.CountAsync();
+            var users = await usersQuery
+                .Skip((query.Page - 1) * query.PageSize)
+                .Take(query.PageSize)
+                .ToListAsync();
+            return new PaginatedResult<User>(users, totalItems, query.Page, query.PageSize);
         }
+
     }
 }

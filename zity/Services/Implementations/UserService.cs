@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ZiTy.DTOs.Users;
-using ZiTy.Models;
 using ZiTy.Repositories.Interfaces;
 using ZiTy.Mappers;
 using Microsoft.EntityFrameworkCore;
 using ZiTy.Services.Interfaces;
 using zity.DTOs.Users;
+using zity.Utilities;
 
 namespace ZiTy.Services.Implementations
 {
@@ -20,12 +20,11 @@ namespace ZiTy.Services.Implementations
             _userRepository = userRepository;
         }
 
-        public async Task<List<UserDto>> GetAllAsync(UserQueryDto query)
+        public async Task<PaginatedResult<UserDto>> GetAllAsync(UserQueryDto query)
         {
-            var users = await _userRepository.GetAllAsync();
-            var usersDto = users.Select(user => user.ToUserDto()).ToList();
-            return usersDto;
+            var pageUsers = await _userRepository.GetAllAsync(query);
+            var userDtos = pageUsers.Contents.Select(UserMapper.ToUserDto).ToList();
+            return new PaginatedResult<UserDto>(userDtos, pageUsers.TotalItems, pageUsers.Page, pageUsers.PageSize);
         }
-
     }
 }
