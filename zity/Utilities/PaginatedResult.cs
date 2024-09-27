@@ -1,6 +1,5 @@
-﻿using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-
-namespace zity.Utilities
+﻿
+namespace ZiTy.Utilities
 {
     public class PaginatedResult<T>
     {

@@ -1,4 +1,4 @@
-﻿using zity.Utilities;
+﻿using ZiTy.Utilities;
 using ZiTy.DTOs.Users;
 
 namespace ZiTy.Services.Interfaces

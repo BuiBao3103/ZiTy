@@ -2,7 +2,7 @@
 using ZiTy.Repositories.Interfaces;
 using ZiTy.Mappers;
 using ZiTy.Services.Interfaces;
-using zity.Utilities;
+using ZiTy.Utilities;
 
 namespace ZiTy.Services.Implementations
 {

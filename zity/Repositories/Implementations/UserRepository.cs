@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using zity.ExceptionHandling;
-using zity.Utilities;
+﻿using ZiTy.Utilities;
 using ZiTy.Data;
 using ZiTy.DTOs.Users;
 using ZiTy.Models;
@@ -11,57 +9,36 @@ namespace ZiTy.Repositories.Implementations
     public class UserRepository : IUserRepository
     {
         private readonly ApplicationDbContext _dbContext;
+        private readonly FilterHandler<User> _filterHandler;
+        private readonly SortHandler<User> _sortHandler;
+        private readonly PaginationHandler<User> _paginationHandler;
 
         public UserRepository(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
+            _filterHandler = new FilterHandler<User>();
+            _sortHandler = new SortHandler<User>();
+            _paginationHandler = new PaginationHandler<User>();
         }
 
 
-        // Apply sorting
         public async Task<PaginatedResult<User>> GetAllAsync(UserQueryDto query)
         {
             var usersQuery = _dbContext.Users.Where(u => u.DeletedAt == null);
 
-            // Get the list of valid property names for the User entity
-            var validProperties = typeof(User).GetProperties().Select(p => p.Name).ToHashSet(StringComparer.OrdinalIgnoreCase);
-
-            // Apply sorting
-            if (!string.IsNullOrEmpty(query.Sort))
+            var filters = new Dictionary<string, string>
             {
-                var sortExpressions = query.Sort.Split(',');
-                foreach (var sortExpression in sortExpressions)
-                {
-                    var trimmedExpression = sortExpression.Trim();
-                    if (string.IsNullOrEmpty(trimmedExpression)) continue;
+                { "Id", query.Id },
+                { "Username", query.Username }
+            };
 
-                    var isDescending = trimmedExpression.StartsWith("-");
-                    var propertyName = isDescending ? trimmedExpression.Substring(1) : trimmedExpression;
+            usersQuery = _filterHandler.ApplyFilters(usersQuery, filters);
+            usersQuery = _sortHandler.ApplySorting(usersQuery, query.Sort);
 
-                    // Ensure property name matches the case of the entity properties
-                    propertyName = char.ToUpper(propertyName[0]) + propertyName.Substring(1);
-
-                    // Check if the property name is valid
-                    if (!validProperties.Contains(propertyName))
-                    {
-                        // Handle invalid property name (e.g., log an error, throw an exception, etc.)
-                        throw new AppError($"Invalid sort property: {propertyName}");
-                    }
-
-
-                    usersQuery = isDescending
-                        ? usersQuery.OrderByDescending(e => EF.Property<object>(e, propertyName))
-                        : usersQuery.OrderBy(e => EF.Property<object>(e, propertyName));
-                }
-            }
-
-            var totalItems = await usersQuery.CountAsync();
-            var users = await usersQuery
-                .Skip((query.Page - 1) * query.PageSize)
-                .Take(query.PageSize)
-                .ToListAsync();
-
-            return new PaginatedResult<User>(users, totalItems, query.Page, query.PageSize);
+            return await _paginationHandler.ApplyPaginationAsync(usersQuery, query.Page, query.PageSize);
         }
+
+
+
     }
 }

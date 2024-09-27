@@ -1,4 +1,4 @@
-﻿using zity.Utilities;
+﻿using ZiTy.Utilities;
 using ZiTy.Models;
 using ZiTy.DTOs.Users;
 
