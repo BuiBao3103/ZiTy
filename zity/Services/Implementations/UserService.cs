@@ -6,20 +6,15 @@ using zity.Utilities;
 
 namespace zity.Services.Implementations
 {
-    public class UserService : IUserService
+    public class UserService(IUserRepository userRepository) : IUserService
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IUserRepository _userRepository = userRepository;
 
-        public UserService(IUserRepository userRepository)
-        {
-            _userRepository = userRepository;
-        }
-
-        public async Task<PaginatedResult<UserDto>> GetAllAsync(UserQueryDto query)
+        public async Task<PaginatedResult<UserDTO>> GetAllAsync(UserQueryDTO query)
         {
             var pageUsers = await _userRepository.GetAllAsync(query);
-            var userDtos = pageUsers.Contents.Select(UserMapper.ToUserDto).ToList();
-            return new PaginatedResult<UserDto>(userDtos, pageUsers.TotalItems, pageUsers.Page, pageUsers.PageSize);
+            var userDTOs = pageUsers.Contents.Select(UserMapper.ToUserDTO).ToList();
+            return new PaginatedResult<UserDTO>(userDTOs, pageUsers.TotalItems, pageUsers.Page, pageUsers.PageSize);
         }
     }
 }

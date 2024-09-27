@@ -6,23 +6,14 @@ using zity.Repositories.Interfaces;
 
 namespace zity.Repositories.Implementations
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository(ApplicationDbContext dbContext) : IUserRepository
     {
-        private readonly ApplicationDbContext _dbContext;
-        private readonly FilterHandler<User> _filterHandler;
-        private readonly SortHandler<User> _sortHandler;
-        private readonly PaginationHandler<User> _paginationHandler;
+        private readonly ApplicationDbContext _dbContext = dbContext;
+        private readonly FilterHandler<User> _filterHandler = new();
+        private readonly SortHandler<User> _sortHandler = new();
+        private readonly PaginationHandler<User> _paginationHandler = new();
 
-        public UserRepository(ApplicationDbContext dbContext)
-        {
-            _dbContext = dbContext;
-            _filterHandler = new FilterHandler<User>();
-            _sortHandler = new SortHandler<User>();
-            _paginationHandler = new PaginationHandler<User>();
-        }
-
-
-        public async Task<PaginatedResult<User>> GetAllAsync(UserQueryDto query)
+        public async Task<PaginatedResult<User>> GetAllAsync(UserQueryDTO query)
         {
             var usersQuery = _dbContext.Users.Where(u => u.DeletedAt == null);
 

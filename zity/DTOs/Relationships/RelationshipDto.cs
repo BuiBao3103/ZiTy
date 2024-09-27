@@ -1,6 +1,15 @@
 ﻿namespace zity.DTOs.Relationships
 {
-    public class RelationshipDto
+    public class RelationshipDTO
     {
+        public int Id { get; set; }
+
+        public string Role { get; set; } = null!;
+
+        public DateTime CreatedAt { get; set; }
+
+        public int UserId { get; set; }
+
+        public string ApartmentId { get; set; } = null!;
     }
 }

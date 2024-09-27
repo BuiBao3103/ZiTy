@@ -3,7 +3,7 @@ namespace zity.Utilities
 {
     public class PaginatedResult<T>
     {
-        public List<T> Contents { get; set; } = new List<T>();
+        public List<T> Contents { get; set; } = [];
         public int TotalItems { get; set; }
         public int Page { get; set; }
         public int PageSize { get; set; }

@@ -7,17 +7,17 @@ namespace zity.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly IUserService userService;
+        private readonly IUserService _userService;
 
         public UsersController(IUserService userService)
         {
-            this.userService = userService;
+            _userService = userService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] UserQueryDto query)
+        public async Task<IActionResult> GetAll([FromQuery] UserQueryDTO query)
         {
-            return Ok(await userService.GetAllAsync(query));
+            return Ok(await _userService.GetAllAsync(query));
         }
 
     }

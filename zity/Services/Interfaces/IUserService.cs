@@ -5,6 +5,6 @@ namespace zity.Services.Interfaces
 {
     public interface IUserService
     {
-        Task<PaginatedResult<UserDto>> GetAllAsync(UserQueryDto query);
+        Task<PaginatedResult<UserDTO>> GetAllAsync(UserQueryDTO query);
     }
 }

@@ -2,7 +2,7 @@
 using zity.Constraints;
 namespace zity.DTOs
 {
-    public class BaseQueryDto
+    public class BaseQueryDTO
     {
 
         [Range(1, int.MaxValue, ErrorMessage = "Page must be greater than 0")]

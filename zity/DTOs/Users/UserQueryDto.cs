@@ -2,7 +2,7 @@
 
 namespace zity.DTOs.Users
 {
-    public class UserQueryDto : BaseQueryDto
+    public class UserQueryDTO : BaseQueryDTO
     {
         [RegularExpression(@"^(eq|neq|gt|gte|lt|lte|like|in):[\w\s,]*$", ErrorMessage = "Invalid filter format")]
         public string Id { get; set; } = "";

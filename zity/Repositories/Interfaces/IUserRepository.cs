@@ -6,6 +6,6 @@ namespace zity.Repositories.Interfaces
 {
     public interface IUserRepository
     {
-        Task<PaginatedResult<User>> GetAllAsync(UserQueryDto query);
+        Task<PaginatedResult<User>> GetAllAsync(UserQueryDTO query);
     }
 }

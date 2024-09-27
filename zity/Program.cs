@@ -1,9 +1,5 @@
 using DotNetEnv;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using zity.Data;
 using zity.ExceptionHandling;
 using zity.Repositories.Implementations;
@@ -41,9 +37,13 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
-// Register repositories and services
+// Register repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRelationshipRepository, RelationshipRepository>();
+
+// Register services
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IRelationshipService, RelationshipService>();
 
 // Register exception handling
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
