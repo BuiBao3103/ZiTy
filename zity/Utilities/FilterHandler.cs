@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using zity.ExceptionHandling;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace zity.Utilities
 {
@@ -31,10 +34,10 @@ namespace zity.Utilities
             switch (operatorType)
             {
                 case "eq":
-                    query = query.Where(e => EF.Property<object>(e, property).ToString() == value);
+                    query = query.Where(e => EF.Property<string>(e, property) == value);
                     break;
                 case "neq":
-                    query = query.Where(e => EF.Property<object>(e, property).ToString() != value);
+                    query = query.Where(e => EF.Property<string>(e, property) != value);
                     break;
                 case "gt":
                     query = query.Where(e => Convert.ToDouble(EF.Property<object>(e, property)) > Convert.ToDouble(value));
