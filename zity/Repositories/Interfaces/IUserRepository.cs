@@ -1,6 +1,6 @@
-﻿using zity.DTOs.Users;
-using zity.Utilities;
+﻿using zity.Utilities;
 using ZiTy.Models;
+using ZiTy.DTOs.Users;
 
 namespace ZiTy.Repositories.Interfaces
 {

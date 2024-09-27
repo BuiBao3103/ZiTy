@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace zity.DTOs.Users
+namespace ZiTy.DTOs.Users
 {
     public class UserQueryDto : BaseQueryDto
     {

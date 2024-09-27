@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using zity.DTOs.Users;
 using ZiTy.DTOs.Users;
-using ZiTy.Models;
 using ZiTy.Services.Interfaces;
 namespace ZiTy.Controllers
 {

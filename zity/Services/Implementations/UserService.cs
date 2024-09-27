@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using ZiTy.DTOs.Users;
+﻿using ZiTy.DTOs.Users;
 using ZiTy.Repositories.Interfaces;
 using ZiTy.Mappers;
-using Microsoft.EntityFrameworkCore;
 using ZiTy.Services.Interfaces;
-using zity.DTOs.Users;
 using zity.Utilities;
 
 namespace ZiTy.Services.Implementations

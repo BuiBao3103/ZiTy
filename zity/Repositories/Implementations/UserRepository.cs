@@ -1,10 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using zity.DTOs.Users;
 using zity.Utilities;
 using ZiTy.Data;
+using ZiTy.DTOs.Users;
 using ZiTy.Models;
 using ZiTy.Repositories.Interfaces;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace ZiTy.Repositories.Implementations
 {

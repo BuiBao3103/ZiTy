@@ -21,5 +21,6 @@ namespace ZiTy.Mappers
                 DateOfBirth = userModel.DateOfBirth
             };
         }
+
     }
 }
