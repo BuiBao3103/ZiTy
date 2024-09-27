@@ -15,9 +15,15 @@ namespace ZiTy.Repositories.Implementations
         {
             _dbContext = dbContext;
         }
+
+
+        // Apply sorting
         public async Task<PaginatedResult<User>> GetAllAsync(UserQueryDto query)
         {
             var usersQuery = _dbContext.Users.Where(u => u.DeletedAt == null);
+
+            // Get the list of valid property names for the User entity
+            var validProperties = typeof(User).GetProperties().Select(p => p.Name).ToHashSet(StringComparer.OrdinalIgnoreCase);
 
             // Apply sorting
             if (!string.IsNullOrEmpty(query.Sort))
@@ -30,6 +36,15 @@ namespace ZiTy.Repositories.Implementations
 
                     var isDescending = trimmedExpression.StartsWith("-");
                     var propertyName = isDescending ? trimmedExpression.Substring(1) : trimmedExpression;
+
+                    // Ensure property name matches the case of the entity properties
+                    propertyName = char.ToUpper(propertyName[0]) + propertyName.Substring(1);
+
+                    // Check if the property name is valid
+                    if (!validProperties.Contains(propertyName))
+                    {
+                        throw new InvalidOperationException($"Invalid property name '{propertyName}' for sorting.");
+                    }
 
                     usersQuery = isDescending
                         ? usersQuery.OrderByDescending(e => EF.Property<object>(e, propertyName))
@@ -45,7 +60,5 @@ namespace ZiTy.Repositories.Implementations
 
             return new PaginatedResult<User>(users, totalItems, query.Page, query.PageSize);
         }
-
-
     }
 }

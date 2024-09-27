@@ -5,6 +5,7 @@ using ZiTy.Repositories.Interfaces;
 using ZiTy.Repositories.Implementations;
 using ZiTy.Services.Interfaces;
 using ZiTy.Services.Implementations;
+using ZiTy.Middleware; // Add this line to include the middleware namespace
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -77,6 +78,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<GlobalExceptionHandlerMiddleware>(); // Add this line to use the middleware
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
