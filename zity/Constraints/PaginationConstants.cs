@@ -1,4 +1,4 @@
-﻿namespace ZiTy.Constraints
+﻿namespace zity.Constraints
 {
     public static class PaginationConstants
     {

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ZiTy.DTOs.Users
+namespace zity.DTOs.Users
 {
     public class UserQueryDto : BaseQueryDto
     {
@@ -9,8 +9,5 @@ namespace ZiTy.DTOs.Users
 
         [RegularExpression(@"^(eq|neq|like|in):[\w\s,]*$", ErrorMessage = "Invalid filter format")]
         public string Username { get; set; } = "";
-
-        [MaxLength(100, ErrorMessage = "Search term cannot exceed 100 characters")]
-        public string Search { get; set; } = "";
     }
 }

@@ -1,8 +1,8 @@
-﻿using ZiTy.Utilities;
-using ZiTy.Models;
-using ZiTy.DTOs.Users;
+﻿using zity.Utilities;
+using zity.Models;
+using zity.DTOs.Users;
 
-namespace ZiTy.Repositories.Interfaces
+namespace zity.Repositories.Interfaces
 {
     public interface IUserRepository
     {

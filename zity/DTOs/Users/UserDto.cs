@@ -1,4 +1,4 @@
-﻿namespace ZiTy.DTOs.Users
+﻿namespace zity.DTOs.Users
 {
     public class UserDto
     {

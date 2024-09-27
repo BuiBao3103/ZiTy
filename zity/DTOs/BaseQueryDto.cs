@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using ZiTy.Constraints;
-namespace ZiTy.DTOs
+using zity.Constraints;
+namespace zity.DTOs
 {
     public class BaseQueryDto
     {

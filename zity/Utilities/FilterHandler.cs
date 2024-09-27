@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using zity.ExceptionHandling;
 
-namespace ZiTy.Utilities
+namespace zity.Utilities
 {
     public class FilterHandler<T>
     {

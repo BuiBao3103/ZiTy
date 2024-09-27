@@ -1,10 +1,10 @@
-﻿using ZiTy.Utilities;
-using ZiTy.Data;
-using ZiTy.DTOs.Users;
-using ZiTy.Models;
-using ZiTy.Repositories.Interfaces;
+﻿using zity.Utilities;
+using zity.Data;
+using zity.DTOs.Users;
+using zity.Models;
+using zity.Repositories.Interfaces;
 
-namespace ZiTy.Repositories.Implementations
+namespace zity.Repositories.Implementations
 {
     public class UserRepository : IUserRepository
     {

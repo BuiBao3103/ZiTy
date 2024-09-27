@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace ZiTy.Utilities
+namespace zity.Utilities
 {
     public class SortHandler<T>
     {

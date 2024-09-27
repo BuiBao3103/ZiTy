@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ZiTy.DTOs.Users;
-using ZiTy.Services.Interfaces;
-namespace ZiTy.Controllers
+using zity.DTOs.Users;
+using zity.Services.Interfaces;
+namespace zity.Controllers
 {
     [Route("api/users")]
     [ApiController]

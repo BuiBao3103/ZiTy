@@ -4,12 +4,12 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ZiTy.Data;
-using ZiTy.ExceptionHandling;
-using ZiTy.Repositories.Implementations;
-using ZiTy.Repositories.Interfaces;
-using ZiTy.Services.Implementations;
-using ZiTy.Services.Interfaces;
+using zity.Data;
+using zity.ExceptionHandling;
+using zity.Repositories.Implementations;
+using zity.Repositories.Interfaces;
+using zity.Services.Implementations;
+using zity.Services.Interfaces;
 
 
 var builder = WebApplication.CreateBuilder(args);

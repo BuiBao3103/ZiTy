@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Pomelo.EntityFrameworkCore.MySql.Scaffolding.Internal;
-using ZiTy.Models;
+using zity.Models;
 
-namespace ZiTy.Data;
+namespace zity.Data;
 
 public partial class ApplicationDbContext : DbContext
 {

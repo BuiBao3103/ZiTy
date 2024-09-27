@@ -1,8 +1,8 @@
 ﻿using System.Linq;
-using ZiTy.DTOs.Users;
-using ZiTy.Models;
+using zity.DTOs.Users;
+using zity.Models;
 
-namespace ZiTy.Mappers
+namespace zity.Mappers
 {
     public static class UserMapper
     {

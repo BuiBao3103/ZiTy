@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using zity.ExceptionHandling;
 
-namespace ZiTy.ExceptionHandling
+namespace zity.ExceptionHandling
 {
     public class GlobalExceptionHandler : IExceptionHandler
     {

@@ -1,7 +1,7 @@
-﻿using ZiTy.Utilities;
-using ZiTy.DTOs.Users;
+﻿using zity.Utilities;
+using zity.DTOs.Users;
 
-namespace ZiTy.Services.Interfaces
+namespace zity.Services.Interfaces
 {
     public interface IUserService
     {

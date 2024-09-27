@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ZiTy.Models;
+namespace zity.Models;
 
 public partial class Item
 {

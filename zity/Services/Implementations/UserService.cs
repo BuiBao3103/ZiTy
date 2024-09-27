@@ -1,10 +1,10 @@
-﻿using ZiTy.DTOs.Users;
-using ZiTy.Repositories.Interfaces;
-using ZiTy.Mappers;
-using ZiTy.Services.Interfaces;
-using ZiTy.Utilities;
+﻿using zity.DTOs.Users;
+using zity.Repositories.Interfaces;
+using zity.Mappers;
+using zity.Services.Interfaces;
+using zity.Utilities;
 
-namespace ZiTy.Services.Implementations
+namespace zity.Services.Implementations
 {
     public class UserService : IUserService
     {
