@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using zity.ExceptionHandling;
 using zity.Utilities;
 using ZiTy.Data;
 using ZiTy.DTOs.Users;
@@ -43,8 +44,10 @@ namespace ZiTy.Repositories.Implementations
                     // Check if the property name is valid
                     if (!validProperties.Contains(propertyName))
                     {
-                        throw new InvalidOperationException($"Invalid property name '{propertyName}' for sorting.");
+                        // Handle invalid property name (e.g., log an error, throw an exception, etc.)
+                        throw new AppError($"Invalid sort property: {propertyName}");
                     }
+
 
                     usersQuery = isDescending
                         ? usersQuery.OrderByDescending(e => EF.Property<object>(e, propertyName))

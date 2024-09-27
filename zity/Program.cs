@@ -1,11 +1,16 @@
-using Microsoft.EntityFrameworkCore;
-using ZiTy.Data;
 using DotNetEnv;
-using ZiTy.Repositories.Interfaces;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using ZiTy.Data;
+using ZiTy.ExceptionHandling;
 using ZiTy.Repositories.Implementations;
-using ZiTy.Services.Interfaces;
+using ZiTy.Repositories.Interfaces;
 using ZiTy.Services.Implementations;
-using ZiTy.Middleware; // Add this line to include the middleware namespace
+using ZiTy.Services.Interfaces;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,9 +20,9 @@ Env.Load();
 // Retrieve environment variables
 var MySQLServer = Environment.GetEnvironmentVariable("MYSQL_SERVER") ?? throw new ArgumentException("MYSQL_SERVER is missing.");
 var MySQLPort = Environment.GetEnvironmentVariable("MYSQL_PORT") ?? throw new ArgumentException("MYSQL_PORT is missing.");
-var MySQLlDatabase = Environment.GetEnvironmentVariable("MYSQL_DATABASE") ?? throw new ArgumentException("MYSQL_DATABASE is missing.");
+var MySQLDatabase = Environment.GetEnvironmentVariable("MYSQL_DATABASE") ?? throw new ArgumentException("MYSQL_DATABASE is missing.");
 var MySQLUser = Environment.GetEnvironmentVariable("MYSQL_USER") ?? throw new ArgumentException("MYSQL_USER is missing.");
-var MySQLlPassword = Environment.GetEnvironmentVariable("MYSQL_PASSWORD") ?? throw new ArgumentException("MYSQL_PASSWORD is missing.");
+var MySQLPassword = Environment.GetEnvironmentVariable("MYSQL_PASSWORD") ?? throw new ArgumentException("MYSQL_PASSWORD is missing.");
 
 // Convert mysqlPort to integer
 if (!int.TryParse(MySQLPort, out int port))
@@ -25,7 +30,7 @@ if (!int.TryParse(MySQLPort, out int port))
     throw new ArgumentException($"Invalid value '{MySQLPort}' for 'MYSQL_PORT'.");
 }
 
-var connectionString = $"Server={MySQLServer};Port={port};Database={MySQLlDatabase};User={MySQLUser};Password={MySQLlPassword}";
+var connectionString = $"Server={MySQLServer};Port={port};Database={MySQLDatabase};User={MySQLUser};Password={MySQLPassword}";
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -36,14 +41,13 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
-// Add logging service
-builder.Services.AddLogging();
-
-// Register repositories
+// Register repositories and services
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-
-// Register services
 builder.Services.AddScoped<IUserService, UserService>();
+
+// Register exception handling
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails(); // enables tracking/returning ProblemDetails to a user
 
 var app = builder.Build();
 
@@ -61,7 +65,6 @@ using (var scope = app.Services.CreateScope())
         else
         {
             logger.LogError("Database connection failed.");
-            // Exit the application with a non-zero status code
             Environment.Exit(1);
         }
     }
@@ -78,11 +81,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseMiddleware<GlobalExceptionHandlerMiddleware>(); // Add this line to use the middleware
-
+app.UseExceptionHandler();
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+
 
 app.Run();

@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <Folder Include="Constraints\Enum\" />
+    <Folder Include="Middleware\" />
   </ItemGroup>
 
 </Project>
