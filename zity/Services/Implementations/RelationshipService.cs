@@ -1,7 +1,5 @@
 ﻿using zity.DTOs.Relationships;
-using zity.DTOs.Users;
 using zity.Mappers;
-using zity.Repositories.Implementations;
 using zity.Repositories.Interfaces;
 using zity.Services.Interfaces;
 using zity.Utilities;

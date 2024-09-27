@@ -13,5 +13,6 @@ namespace zity.DTOs
 
         [RegularExpression(@"^[-+]?[a-zA-Z]+(,[-+]?[a-zA-Z]+)*$", ErrorMessage = "Invalid sort format")]
         public string Sort { get; set; } = "";
+        public string Includes { get; set; } = "";
     }
 }
