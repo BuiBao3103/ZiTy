@@ -13,7 +13,8 @@ namespace zity.Mappers
                 Role = relationship.Role,
                 CreatedAt = relationship.CreatedAt,
                 UserId = relationship.UserId,
-                ApartmentId = relationship.ApartmentId
+                ApartmentId = relationship.ApartmentId,
+                User = relationship.User != null ? UserMapper.ToUserDTO(relationship.User) : null,
             };
         }
     }
