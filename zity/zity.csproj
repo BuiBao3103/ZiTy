@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <Folder Include="Constraints\Enum\" />
+    <Folder Include="DTOs\UserAnswers\" />
     <Folder Include="Middleware\" />
   </ItemGroup>
 
