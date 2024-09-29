@@ -18,6 +18,7 @@ import User from '@admin/user'
 //User Page
 import Package from '@user/package'
 import Report from '@user/report'
+import Bill from '@user/bill'
 
 //Error page
 import NotFound from '@pages/404'
@@ -72,10 +73,14 @@ export const route = createBrowserRouter([
               {
                 path: '/user',
                 element: <User />,
+              },
+              {
+                path: '/bill',
+                element: <Bill />,
                 children: [
                   {
                     path: ':id',
-                    element: <User />,
+                    element: <Bill />,
                   },
                 ],
               },
