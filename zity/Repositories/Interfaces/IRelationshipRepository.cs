@@ -8,10 +8,9 @@ namespace zity.Repositories.Interfaces
     public interface IRelationshipRepository
     {
         Task<PaginatedResult<Relationship>> GetAllAsync(RelationshipQueryDTO query);
-        Task<Relationship?> GetByIdAsync(int id, string includes);
+        Task<Relationship?> GetByIdAsync(int id, string? includes);
         Task<Relationship> CreateAsync(Relationship relationship);
-        Task<Relationship?> UpdateAsync(int id, Relationship relationship);
-        Task<Relationship?> PatchAsync(int id, Relationship relationship);
+        Task<Relationship?> UpdateAsync(Relationship relationship);
         Task<bool> DeleteAsync(int id);
     }
 }

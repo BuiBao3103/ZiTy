@@ -35,15 +35,11 @@ namespace zity.Repositories.Implementations
             return await relationshipsQuery;
         }
 
-        public async Task<Relationship> GetByIdAsync(int id, string includes)
+        public async Task<Relationship?> GetByIdAsync(int id, string? includes)
         {
-            var relationshipsQuery = _dbContext.Relationships.Where(u => u.DeletedAt == null).ApplyIncludes(includes);
-            var relationship = await relationshipsQuery.FirstOrDefaultAsync(u => u.Id == id);
-            if (relationship == null)
-            {
-                throw new EntityNotFoundException($"Relationship with ID {id} not found.");
-            }
-            return relationship;
+            var relationshipsQuery = _dbContext.Relationships.Where(u => u.DeletedAt == null)
+                .ApplyIncludes(includes);
+            return await relationshipsQuery.FirstOrDefaultAsync(u => u.Id == id);
         }
 
         public async Task<Relationship> CreateAsync(Relationship relationship)
@@ -53,32 +49,27 @@ namespace zity.Repositories.Implementations
             return relationship;
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task<Relationship?> UpdateAsync(Relationship relationship)
         {
-            var relationship = await _dbContext.Relationships.FirstOrDefaultAsync(u => u.Id == id);
+            _dbContext.Relationships.Update(relationship);
+            await _dbContext.SaveChangesAsync();
+            return relationship;
+        }
+
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var relationship = await _dbContext.Relationships.FindAsync(id);
             if (relationship == null)
             {
-                throw new EntityNotFoundException($"Relationship with ID {id} not found.");
+                return false;
             }
-
             relationship.DeletedAt = DateTime.Now;
             _dbContext.Relationships.Update(relationship);
             await _dbContext.SaveChangesAsync();
+            return true;
         }
 
-        public Task<Relationship?> UpdateAsync(int id, Relationship relationship)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Relationship?> PatchAsync(int id, Relationship relationship)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<bool> IRelationshipRepository.DeleteAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }
