@@ -30,5 +30,10 @@ namespace zity.Services.Implementations
             var relationship = RelationshipMapper.ToModelFromCreate(relationshipCreateDTO);
             return RelationshipMapper.ToDTO(await _relationshipRepository.CreateAsync(relationship));
         }
+
+        public async Task DeleteAsync(int id)
+        {
+            await _relationshipRepository.DeleteAsync(id);
+        }
     }
 }

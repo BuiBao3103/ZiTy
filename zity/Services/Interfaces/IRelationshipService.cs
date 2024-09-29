@@ -9,6 +9,7 @@ namespace zity.Services.Interfaces
         Task<PaginatedResult<RelationshipDTO>> GetAllAsync(RelationshipQueryDTO query);
         Task<RelationshipDTO> GetByIdAsync(int id, string includes);
         Task<RelationshipDTO> CreateAsync(RelationshipCreateDTO relationshipCreateDTO);
+        Task DeleteAsync(int id);
 
     }
 }

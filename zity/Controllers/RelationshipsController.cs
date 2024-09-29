@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using zity.DTOs.Relationships;
 using zity.Services.Interfaces;
 
@@ -31,6 +32,13 @@ namespace zity.Controllers
         public async Task<IActionResult> Create([FromBody] RelationshipCreateDTO relationshipCreateDTO)
         {
             return Ok(await _relationshipService.CreateAsync(relationshipCreateDTO));
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            await _relationshipService.DeleteAsync(id);
+            return NoContent();
         }
     }
 }
