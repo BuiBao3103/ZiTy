@@ -18,19 +18,20 @@ namespace zity.Repositories.Implementations
             _dbContext = dbContext;
         }
 
-        public async Task<PaginatedResult<Relationship>> GetAllAsync(RelationshipQueryDTO query)
+        public async Task<PaginatedResult<Relationship>> GetAllAsync(RelationshipQueryDTO queryParam)
         {
             var filters = new Dictionary<string, string?>
                 {
-                    { "Id", query.Id },
-                    { "UserId", query.UserId },
-                    { "ApartmentId", query.ApartmentId }
+                    { "Id", queryParam.Id },
+                    { "UserId", queryParam.UserId },
+                    { "ApartmentId", queryParam.ApartmentId }
                 };
-            var relationshipsQuery = _dbContext.Relationships.Where(u => u.DeletedAt == null)
-                .ApplyIncludes(query.Includes)
+            var relationshipsQuery = _dbContext.Relationships
+                .Where(u => u.DeletedAt == null)
+                .ApplyIncludes(queryParam.Includes)
                 .ApplyFilters(filters)
-                .ApplySorting(query.Sort)
-                .ApplyPaginationAsync(query.Page, query.PageSize);
+                .ApplySorting(queryParam.Sort)
+                .ApplyPaginationAsync(queryParam.Page, queryParam.PageSize);
 
             return await relationshipsQuery;
         }

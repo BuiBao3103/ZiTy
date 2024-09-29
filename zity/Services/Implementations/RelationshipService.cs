@@ -12,28 +12,28 @@ namespace zity.Services.Implementations
     {
         private readonly IRelationshipRepository _relationshipRepository = relationshipRepository;
 
-        public async Task<PaginatedResult<RelationshipDTO>> GetAllAsync(RelationshipQueryDTO query)
+        public async Task<PaginatedResult<RelationshipDTO>> GetAllAsync(RelationshipQueryDTO queryDTO)
         {
-            var pageRelationships = await _relationshipRepository.GetAllAsync(query);
+            var pageRelationships = await _relationshipRepository.GetAllAsync(queryDTO);
             var RelationshipDTOs = pageRelationships.Contents.Select(RelationshipMapper.ToDTO).ToList();
             return new PaginatedResult<RelationshipDTO>(RelationshipDTOs, pageRelationships.TotalItems, pageRelationships.Page, pageRelationships.PageSize);
         }
 
-        public async Task<RelationshipDTO> GetByIdAsync(int id, string includes)
+        public async Task<RelationshipDTO?> GetByIdAsync(int id, string? includes)
         {
             var relationship = await _relationshipRepository.GetByIdAsync(id, includes);
-            return RelationshipMapper.ToDTO(relationship);
+            return relationship != null ? RelationshipMapper.ToDTO(relationship) : null;
         }
 
-        public async Task<RelationshipDTO> CreateAsync(RelationshipCreateDTO relationshipCreateDTO)
+        public async Task<RelationshipDTO> CreateAsync(RelationshipCreateDTO createDTO)
         {
-            var relationship = RelationshipMapper.ToModelFromCreate(relationshipCreateDTO);
+            var relationship = RelationshipMapper.ToModelFromCreate(createDTO);
             return RelationshipMapper.ToDTO(await _relationshipRepository.CreateAsync(relationship));
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            await _relationshipRepository.DeleteAsync(id);
+            return  await _relationshipRepository.DeleteAsync(id);
         }
     }
 }

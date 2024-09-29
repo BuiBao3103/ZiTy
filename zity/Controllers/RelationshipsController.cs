@@ -7,14 +7,9 @@ namespace zity.Controllers
 {
     [Route("api/relationships")]
     [ApiController]
-    public class RelationshipsController : ControllerBase
+    public class RelationshipsController(IRelationshipService relationshipService) : ControllerBase
     {
-        private readonly IRelationshipService _relationshipService;
-
-        public RelationshipsController(IRelationshipService relationshipService)
-        {
-            _relationshipService = relationshipService;
-        }
+        private readonly IRelationshipService _relationshipService = relationshipService;
 
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] RelationshipQueryDTO query)
@@ -23,9 +18,10 @@ namespace zity.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get([FromRoute] int id, [FromQuery] string? includes = null)
+        public async Task<IActionResult> Get([FromRoute] int id, [FromQuery] string? includes)
         {
-            return Ok(await _relationshipService.GetByIdAsync(id, includes));
+            var relationship = await _relationshipService.GetByIdAsync(id, includes);
+            return relationship == null ? NotFound() : Ok(relationship);
         }
 
         [HttpPost]
@@ -39,8 +35,8 @@ namespace zity.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            await _relationshipService.DeleteAsync(id);
-            return NoContent();
+            var result = await _relationshipService.DeleteAsync(id);
+            return !result ? NotFound() : NoContent();
         }
     }
 }

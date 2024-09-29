@@ -1,36 +1,28 @@
-﻿using zity.Utilities;
-using zity.Data;
+﻿using zity.Data;
 using zity.DTOs.Users;
 using zity.Models;
 using zity.Repositories.Interfaces;
+using zity.Utilities;
 
-namespace zity.Repositories.Implementations
+public class UserRepository(ApplicationDbContext dbContext) : IUserRepository
 {
-    public class UserRepository(ApplicationDbContext dbContext) : IUserRepository
+    private readonly ApplicationDbContext _dbContext = dbContext;
+
+    public async Task<PaginatedResult<User>> GetAllAsync(UserQueryDTO queryParam)
     {
-        private readonly ApplicationDbContext _dbContext = dbContext;
-        private readonly IncludeHandler<User> _includeHandler = new();
-        private readonly FilterHandler<User> _filterHandler = new();
-        private readonly SortHandler<User> _sortHandler = new();
-        private readonly PaginationHandler<User> _paginationHandler = new();
-
-        public async Task<PaginatedResult<User>> GetAllAsync(UserQueryDTO query)
+        var filterParams = new Dictionary<string, string?>
         {
-            var usersQuery = _dbContext.Users.Where(u => u.DeletedAt == null);
-            var userQuery = _includeHandler.ApplyIncludes(usersQuery, query.Includes);
-            var filters = new Dictionary<string, string>
-            {
-                { "Id", query.Id },
-                { "Username", query.Username }
-            };
+            { "Id", queryParam.Id },
+            { "Username", queryParam.Username }
+        };
 
-            usersQuery = _filterHandler.ApplyFilters(usersQuery, filters);
-            usersQuery = _sortHandler.ApplySorting(usersQuery, query.Sort);
+        var userQuery = _dbContext.Users
+            .Where(u => u.DeletedAt == null)
+            .ApplyIncludes(queryParam.Includes)
+            .ApplyFilters(filterParams)
+            .ApplySorting(queryParam.Sort)
+            .ApplyPaginationAsync(queryParam.Page, queryParam.PageSize);
 
-            return await _paginationHandler.ApplyPaginationAsync(usersQuery, query.Page, query.PageSize);
-        }
-
-
-
+        return await userQuery;
     }
 }
