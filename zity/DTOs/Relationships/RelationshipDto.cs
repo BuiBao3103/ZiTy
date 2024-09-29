@@ -11,7 +11,7 @@ namespace zity.DTOs.Relationships
     {
         public int Id { get; set; }
 
-        public string Role { get; set; } = string.Empty;
+        public string Role { get; set; } = null!;
 
         public DateTime CreatedAt { get; set; }
 
@@ -19,7 +19,7 @@ namespace zity.DTOs.Relationships
 
         public int UserId { get; set; }
 
-        public string ApartmentId { get; set; } = string.Empty;
+        public string ApartmentId { get; set; } = null!;
 
         public UserDTO? User { get; set; } = null;
 
