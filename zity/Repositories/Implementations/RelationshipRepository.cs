@@ -60,7 +60,9 @@ namespace zity.Repositories.Implementations
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var relationship = await _dbContext.Relationships.FindAsync(id);
+            //find relationship by id where deletedAt is null
+            var relationship = await _dbContext.Relationships
+                .FirstOrDefaultAsync(u => u.Id == id && u.DeletedAt == null);
             if (relationship == null)
             {
                 return false;
