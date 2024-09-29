@@ -5,9 +5,9 @@ namespace zity.Mappers
 {
     public class RelationshipMapper
     {
-        public static RelationshipDto ToDTO(Relationship relationship)
+        public static RelationshipDTO ToDTO(Relationship relationship)
         {
-            return new RelationshipDto
+            return new RelationshipDTO
             {
                 Id = relationship.Id,
                 Role = relationship.Role,
@@ -18,13 +18,13 @@ namespace zity.Mappers
             };
         }
 
-        public static Relationship ToModelFromCreate(RelationshipDto RelationshipDto)
+        public static Relationship ToModelFromCreate(RelationshipDTO RelationshipDTO)
         {
             return new Relationship
             {
-                Role = RelationshipDto.Role,
-                UserId = RelationshipDto.UserId,
-                ApartmentId = RelationshipDto.ApartmentId,
+                Role = RelationshipDTO.Role,
+                UserId = RelationshipDTO.UserId,
+                ApartmentId = RelationshipDTO.ApartmentId,
             };
         }
     }

@@ -1,6 +1,6 @@
 ﻿namespace zity.DTOs.RejectionReasons
 {
-    public class RejectionReasonCreateDto
+    public class RejectionReasonCreateDTO
     {
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace zity.DTOs.Apartments
 {
-    public class ApartmentUpdateDto
+    public class ApartmentUpdateDTO
     {
     }
 }

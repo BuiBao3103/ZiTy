@@ -1,6 +1,6 @@
 ﻿namespace zity.DTOs.Surveys
 {
-    public class SurveyCreateDto
+    public class SurveyCreateDTO
     {
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace zity.DTOs.BillDetails
 {
-    public class BillDetailUpdateDto
+    public class BillDetailUpdateDTO
     {
     }
 }

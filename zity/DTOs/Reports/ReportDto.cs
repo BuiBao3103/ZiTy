@@ -1,6 +1,6 @@
 ﻿namespace zity.DTOs.Reports
 {
-    public class ReportDto
+    public class ReportDTO
     {
     }
 }

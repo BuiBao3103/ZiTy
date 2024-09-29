@@ -1,6 +1,6 @@
 ﻿namespace zity.DTOs.Reports
 {
-    public class ReportPatchDto
+    public class ReportPatchDTO
     {
     }
 }

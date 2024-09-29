@@ -1,6 +1,6 @@
 ﻿namespace zity.DTOs.OtherAnswers
 {
-    public class OtherAnswerUpdateDto
+    public class OtherAnswerUpdateDTO
     {
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace zity.DTOs.UserAnswers
 {
-    public class UserAnswerQueryDto
+    public class UserAnswerQueryDTO
     {
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace zity.DTOs.Users
 {
-    public class UserUpdateDto
+    public class UserUpdateDTO
     {
     }
 }

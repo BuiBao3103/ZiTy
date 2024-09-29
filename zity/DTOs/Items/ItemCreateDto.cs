@@ -1,6 +1,6 @@
 ﻿namespace zity.DTOs.Items
 {
-    public class ItemCreateDto
+    public class ItemCreateDTO
     {
     }
 }

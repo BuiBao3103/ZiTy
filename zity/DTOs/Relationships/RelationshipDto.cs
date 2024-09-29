@@ -4,7 +4,7 @@ using zity.DTOs.Users;
 
 namespace zity.DTOs.Relationships
 {
-    public class RelationshipDto
+    public class RelationshipDTO
     {
         public int Id { get; set; }
         public string Role { get; set; } = string.Empty; 

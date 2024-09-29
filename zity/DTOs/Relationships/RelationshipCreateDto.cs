@@ -1,6 +1,6 @@
 ﻿namespace zity.DTOs.Relationships
 {
-    public class RelationshipCreateDto
+    public class RelationshipCreateDTO
     {
     }
 }

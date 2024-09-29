@@ -1,6 +1,6 @@
 ﻿namespace zity.DTOs.Settings
 {
-    public class SettingDto
+    public class SettingDTO
     {
     }
 }

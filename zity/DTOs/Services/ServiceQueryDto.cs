@@ -1,6 +1,6 @@
 ﻿namespace zity.DTOs.Services
 {
-    public class ServiceQueryDto
+    public class ServiceQueryDTO
     {
     }
 }
