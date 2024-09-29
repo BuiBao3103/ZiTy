@@ -7,12 +7,11 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
-import { Button } from '@/components/ui/button'
 import ApartmentList from './components/apartment-list'
 import ApartmentForm from './components/apartment-form'
-import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import ApartmentDetail from './components/apartment-detail'
+import { Input } from '@/components/ui/input'
 const Index = () => {
   const params = useParams()
   useDocumentTitle('Apartment')
@@ -54,15 +53,7 @@ const Index = () => {
           {!params.id && (
             <>
               <section className="w-full flex flex-col sm:flex-row sm:gap-0 gap-4	 justify-between items-center">
-                <div className="w-full sm:w-fit rounded-md flex bg-zinc-200 overflow-hidden">
-                  {Array.from({ length: 3 }).map((_, index) => (
-                    <div
-                      key={index}
-                      className="w-full text-nowrap sm:w-[120px] font-medium px-4 py-2 bg-transparent hover:bg-primary transition-all cursor-pointer">
-                      Block {String.fromCharCode(65 + index)}
-                    </div>
-                  ))}
-                </div>
+                <Input type='search' className='h-10 md:w-1/3' placeholder='Type something...' />
                 <ApartmentForm textTrigger="New Apartment" />
               </section>
               <ApartmentList />

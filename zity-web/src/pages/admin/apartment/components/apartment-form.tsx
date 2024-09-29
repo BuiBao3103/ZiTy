@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -33,7 +34,7 @@ const ApartmentForm = ({ textTrigger }: ApartmentFormProps) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className='w-full sm:w-fit' variant={'default'} size={'lg'}>
+        <Button className="w-full sm:w-fit" variant={'default'} size={'lg'}>
           {textTrigger}
         </Button>
       </DialogTrigger>
@@ -77,12 +78,16 @@ const ApartmentForm = ({ textTrigger }: ApartmentFormProps) => {
               )}
             />
             <div className="w-full flex justify-end gap-4">
-              <Button size={'lg'} variant={'ghost'}>
-                Cancel
-              </Button>
-              <Button size={'lg'} variant={'default'}>
-                Save
-              </Button>
+              <DialogClose asChild>
+                <Button size={'lg'} variant={'ghost'}>
+                  Cancel
+                </Button>
+              </DialogClose>
+              <DialogClose asChild>
+                <Button size={'lg'} variant={'default'}>
+                  Save
+                </Button>
+              </DialogClose>
             </div>
           </form>
         </Form>
