@@ -16,27 +16,26 @@ import {
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { UserPartial } from '@/types'
+import { UserPartialSchema } from '@/types'
 import { Filter, Search } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import UserList from './components/user-list'
 import { useDocumentTitle } from 'usehooks-ts'
-import { UserRole } from '@/enums'
 import UserForm from './components/user-form'
+import { z } from 'zod'
 
 const Index = () => {
   useDocumentTitle('User')
-  const users: UserPartial[] = [
+  const users: z.infer<typeof UserPartialSchema>[] = [
     {
       id: 1,
       full_name: 'John Doe',
       phone: '0123456789',
-      user_type: UserRole.ADMIN,
+      user_type: 'RESIDENT',
       is_staying: true,
       avatar: 'https://picsum.photos/id/2/200/300',
     },
   ]
-
   return (
     <>
       <div className="w-full sm:h-screen flex flex-col bg-zinc-100">

@@ -7,17 +7,19 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { UserPartial } from '@/types'
 import UserDetail from './user-detail'
 import { useState } from 'react'
-import { UserRole } from '@/enums'
+import { z } from 'zod'
+import { UserPartialSchema } from '@/types'
 
 interface UserListProps {
-  users: UserPartial[]
+  users: z.infer<typeof UserPartialSchema>[]
 }
 
 const UserList = ({ users }: UserListProps) => {
-  const [showDetail, setShowDetail] = useState<UserPartial | null>(null)
+  const [showDetail, setShowDetail] = useState<z.infer<
+    typeof UserPartialSchema
+  > | null>(null)
 
   return (
     <>
@@ -28,7 +30,7 @@ const UserList = ({ users }: UserListProps) => {
             <TableHead className="sm:w-1/2">Username - Apartment</TableHead>
             <TableHead>Phone</TableHead>
             <TableHead>Account Type</TableHead>
-            <TableHead>Status</TableHead>
+            <TableHead>Is Staying</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -50,18 +52,18 @@ const UserList = ({ users }: UserListProps) => {
                   </div>
                 </div>
               </TableCell>
-              <TableCell>{user.phone ?? "".slice(0, -4) + '****'}</TableCell>
+              <TableCell>{user.phone ?? ''.slice(0, -4) + '****'}</TableCell>
               <TableCell>
                 <Badge
                   variant={`${
-                    user.user_type === UserRole.ADMIN ? 'warning' : 'info'
+                    user.user_type === 'ADMIN' ? 'warning' : 'info'
                   }`}>
                   {user.user_type}
                 </Badge>
               </TableCell>
               <TableCell className="uppercase">
                 <Badge
-                  variant={`${user.is_staying === true ? 'success' : 'info'}`}>
+                  variant={`${user.is_staying === true ? 'success' : 'error'}`}>
                   {user.is_staying ? 'True' : 'False'}
                 </Badge>
               </TableCell>

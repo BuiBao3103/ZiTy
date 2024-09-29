@@ -1,42 +1,29 @@
-//cannot export enum from .d.ts file
+import { z } from 'zod';
 
-export enum UserRole {
-  ADMIN = 'ADMIN',
-  RESIDENT = 'RESIDENT',
-}
+// Convert UserRole enum to Zod schema
+export const UserRoleSchema = z.enum(['ADMIN', 'RESIDENT']);
+export type UserRole = z.infer<typeof UserRoleSchema>;
 
-export enum Gender {
-  MALE = 'MALE',
-  FEMALE = 'FEMALE',
-}
+// Convert Gender enum to Zod schema
+export const GenderSchema = z.enum(['MALE', 'FEMALE']);
+export type Gender = z.infer<typeof GenderSchema>;
 
-export enum ApartmentUserRole {
-  OWNER = 'OWNER',
-  USER = 'USER',
-}
+// Convert ApartmentUserRole enum to Zod schema
+export const ApartmentUserRoleSchema = z.enum(['OWNER', 'USER']);
+export type ApartmentUserRole = z.infer<typeof ApartmentUserRoleSchema>;
 
-export enum ReportStatus {
-  PENDING = 'PENDING',
-  IN_PROGRESS = 'IN_PROGRESS',
-  RESOLVED = 'RESOLVED',
-  REJECTED = 'REJECTED',
-}
+// Convert ReportStatus enum to Zod schema
+export const ReportStatusSchema = z.enum(['PENDING', 'IN_PROGRESS', 'RESOLVED', 'REJECTED']);
+export type ReportStatus = z.infer<typeof ReportStatusSchema>;
 
-export enum ApartmentStatus {
-  IN_USE = 'IN_USE',
-  EMPTY = 'EMPTY',
-  DISRUPTION = 'DISRUPTION',
-}
+// Convert ApartmentStatus enum to Zod schema
+export const ApartmentStatusSchema = z.enum(['IN_USE', 'EMPTY', 'DISRUPTION']);
+export type ApartmentStatus = z.infer<typeof ApartmentStatusSchema>;
 
-export enum BillStatus {
-  UNPAID = 'UNPAID',
-  PAID = 'PAID',
-  OVERDUE = 'OVERDUE',
-}
+// Convert BillStatus enum to Zod schema
+export const BillStatusSchema = z.enum(['UNPAID', 'PAID', 'OVERDUE']);
+export type BillStatus = z.infer<typeof BillStatusSchema>;
 
-export enum SystemStatus {
-  PREPAYMENT = 'PREPAYMENT',
-  PAYMENT = 'PAYMENT',
-  OVERDUE = 'OVERDUE',
-  DELINQUENT = 'DELINQUENT',
-}
+// Convert SystemStatus enum to Zod schema
+export const SystemStatusSchema = z.enum(['PREPAYMENT', 'PAYMENT', 'OVERDUE', 'DELINQUENT']);
+export type SystemStatus = z.infer<typeof SystemStatusSchema>;

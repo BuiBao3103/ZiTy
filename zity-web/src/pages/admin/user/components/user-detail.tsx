@@ -1,15 +1,15 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
-import { User, UserPartial } from '@/types'
 import { X } from 'lucide-react'
 import GridWallpaper from '@/assets/grid-wallpaper.jpg'
 import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
-import { UserRole } from '@/enums'
+import { z } from 'zod'
+import { UserPartialSchema } from '@/schema/user.validate'
 
 interface UserDetailProps {
-  user: UserPartial | null
-  setShowDetail: (user: User | null) => void
+  user: z.infer<typeof UserPartialSchema> | null
+  setShowDetail: (user: z.infer<typeof UserPartialSchema> | null) => void
 }
 
 const UserDetail = ({ user, setShowDetail }: UserDetailProps) => {
@@ -56,10 +56,7 @@ const UserDetail = ({ user, setShowDetail }: UserDetailProps) => {
             <span>Date of birth</span>
           </div>
           <div className="flex gap-2 uppercase">
-            <Badge
-              variant={`${
-                user?.user_type === UserRole.ADMIN ? 'success' : 'info'
-              }`}>
+            <Badge variant={`${Array.isArray(user?.user_type) ? 'info' : user?.user_type === 'ADMIN' ? 'success' : 'info'}`}>
               {user?.user_type}
             </Badge>
           </div>

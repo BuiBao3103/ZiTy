@@ -13,14 +13,14 @@ import {
 } from '@/components/ui/form'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { LoginSchema } from '@/schema/auth.validate'
 import { zodResolver } from '@hookform/resolvers/zod'
-// import { useToast } from '@/hooks/use-toast'
 import { toast } from 'sonner'
 import { useLoginMutation } from '@/features/auth/authSlice'
 import { useDocumentTitle } from 'usehooks-ts'
 import Logo from '@/assets/logo.svg'
 import Overlay from '@components/overlay/Overlay'
+import { UserLoginSchema } from '@/schema/user.validate'
+
 export default function Index() {
   useDocumentTitle('Login')
 
@@ -30,15 +30,16 @@ export default function Index() {
     setIsShowing(!isShowing)
   }
 
-  const form = useForm<z.infer<typeof LoginSchema>>({
-    resolver: zodResolver(LoginSchema),
+  const form = useForm<z.infer<typeof UserLoginSchema>>({
+    resolver: zodResolver(UserLoginSchema),
     defaultValues: {
-      email: '',
+      username: '',
       password: '',
     },
   })
 
-  const onSubmit = async (data: z.infer<typeof LoginSchema>) => {
+  const onSubmit = async (data: z.infer<typeof UserLoginSchema>) => {
+    console.log(data)
     // await Login(data)
     //   .unwrap()
     //   .then((res) => {
@@ -74,12 +75,12 @@ export default function Index() {
             className="space-y-4">
             <FormField
               control={form.control}
-              name="email"
+              name="username"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="m@example.com" {...field} />
+                    <Input placeholder="Enter username..." {...field} />
                   </FormControl>
                 </FormItem>
               )}
