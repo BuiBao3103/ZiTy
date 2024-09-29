@@ -16,9 +16,13 @@ namespace zity.ExceptionHandling
 
         public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
         {
-            if (exception is AppError)
+            if (exception is AppError appError)
             {
-                httpContext.Response.StatusCode = (exception as AppError).StatusCode;
+                httpContext.Response.StatusCode = appError.StatusCode;
+            }
+            else if (exception is EntityNotFoundException)
+            {
+                httpContext.Response.StatusCode = StatusCodes.Status404NotFound;
             }
             // Set the HTTP status code to 500 (Internal Server Error) by default
             else

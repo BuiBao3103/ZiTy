@@ -10,6 +10,7 @@ namespace zity.Utilities
     {
         public IQueryable<T> ApplyIncludes(IQueryable<T> query, string includes)
         {
+            if (string.IsNullOrEmpty(includes)) return query;
             string[] includesArray = includes.Split(',');
 
             foreach (var include in includesArray)
