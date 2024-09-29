@@ -15,11 +15,13 @@ interface UserDetailProps {
 const UserDetail = ({ user, setShowDetail }: UserDetailProps) => {
   return (
     <div
-      onClick={() => setShowDetail(null)}
       className={`fixed top-0 ${
         user ? 'right-0 animate-in fade-in-0 duration-300' : 'right-full'
-      } w-full h-screen bg-black/10 z-50 shadow-lg border-l flex justify-end`}>
-      <div className="w-3/4 md:w-1/3 h-full animate-in slide-in-from-right-10 duration-500 relative bg-white border-l border-gray-300 px-6 pb-6 pt-10 md:pb-10 md:pt-24">
+      } w-full h-screen z-50 flex justify-end`}>
+      <div
+        onClick={() => setShowDetail(null)}
+        className="w-full h-screen absolute inset-0 bg-black/10"></div>
+      <div className="z-[99] w-3/4 md:w-1/3 h-full animate-in slide-in-from-right-10 duration-500 relative bg-white border-l border-gray-300 px-6 pb-6 pt-10 md:pb-10 md:pt-24">
         <img
           src={GridWallpaper}
           alt="grid wallpaper"
@@ -36,10 +38,11 @@ const UserDetail = ({ user, setShowDetail }: UserDetailProps) => {
           <Avatar className="size-32 border-4 border-white shadow-lg">
             <AvatarImage src={user?.avatar} alt="User avatar" />
             <AvatarFallback className="text-lg">
-              {user?.full_name ?? ""
-                .split(' ')
-                .map((item) => item.charAt(0))
-                .join('')}
+              {user?.full_name ??
+                ''
+                  .split(' ')
+                  .map((item) => item.charAt(0))
+                  .join('')}
             </AvatarFallback>
           </Avatar>
           <p className="text-lg font-medium">{user?.full_name}</p>
@@ -54,7 +57,9 @@ const UserDetail = ({ user, setShowDetail }: UserDetailProps) => {
           </div>
           <div className="flex gap-2 uppercase">
             <Badge
-              variant={`${user?.user_type === UserRole.ADMIN ? 'success' : 'info'}`}>
+              variant={`${
+                user?.user_type === UserRole.ADMIN ? 'success' : 'info'
+              }`}>
               {user?.user_type}
             </Badge>
           </div>
