@@ -7,16 +7,17 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { User } from '@/types'
+import { UserPartial } from '@/types'
 import UserDetail from './user-detail'
 import { useState } from 'react'
+import { UserRole } from '@/enums'
 
 interface UserListProps {
-  users: User[]
+  users: UserPartial[]
 }
 
 const UserList = ({ users }: UserListProps) => {
-  const [showDetail, setShowDetail] = useState<User | null>(null)
+  const [showDetail, setShowDetail] = useState<UserPartial | null>(null)
 
   return (
     <>
@@ -38,41 +39,30 @@ const UserList = ({ users }: UserListProps) => {
               onClick={() => setShowDetail(user)}>
               <TableCell>{user.id}</TableCell>
               <TableCell className="">
-                <div className="w-full flex gap-3">
+                <div className="w-full flex items-center gap-3">
                   <img
                     src={user.avatar}
                     alt="user avatar"
                     className="size-12 rounded-full object-cover hidden sm:inline-block"
                   />
                   <div className="flex flex-col">
-                    <p className="">{user.name}</p>
-                    <p className="text-xs">{user.room}</p>
+                    <p className="">{user.full_name}</p>
                   </div>
                 </div>
               </TableCell>
-              <TableCell>{user.phoneNumber.slice(0, -4) + '****'}</TableCell>
+              <TableCell>{user.phone ?? "".slice(0, -4) + '****'}</TableCell>
               <TableCell>
                 <Badge
                   variant={`${
-                    user.type === 'OWNER'
-                      ? 'success'
-                      : user.type === 'RESIDENT'
-                      ? 'info'
-                      : 'destructive'
+                    user.user_type === UserRole.ADMIN ? 'warning' : 'info'
                   }`}>
-                  {user.type}
+                  {user.user_type}
                 </Badge>
               </TableCell>
               <TableCell className="uppercase">
                 <Badge
-                  variant={`${
-                    user.status === 'active'
-                      ? 'success'
-                      : user.status === 'pending'
-                      ? 'warning'
-                      : 'error'
-                  }`}>
-                  {user.status}
+                  variant={`${user.is_staying === true ? 'success' : 'info'}`}>
+                  {user.is_staying ? 'True' : 'False'}
                 </Badge>
               </TableCell>
             </TableRow>

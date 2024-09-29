@@ -3,13 +3,11 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
-  BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -18,106 +16,24 @@ import {
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { User } from '@/types'
+import { UserPartial } from '@/types'
 import { Filter, Search } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import UserList from './components/user-list'
 import { useDocumentTitle } from 'usehooks-ts'
+import { UserRole } from '@/enums'
+import UserForm from './components/user-form'
 
 const Index = () => {
   useDocumentTitle('User')
-
-
-  const users: User[] = [
+  const users: UserPartial[] = [
     {
       id: 1,
-      avatar: 'https://picsum.photos/id/1/200/300',
-      name: 'Alice Johnson',
-      room: 'Room B',
-      phoneNumber: '+1234567891',
-      type: 'OWNER',
-      status: 'active',
-    },
-    {
-      id: 2,
+      full_name: 'John Doe',
+      phone: '0123456789',
+      user_type: UserRole.ADMIN,
+      is_staying: true,
       avatar: 'https://picsum.photos/id/2/200/300',
-      name: 'Bob Smith',
-      room: 'Room C',
-      phoneNumber: '+1234567892',
-      type: 'RESIDENT',
-      status: 'inactive',
-    },
-    {
-      id: 3,
-      avatar: 'https://picsum.photos/id/3/200/300',
-      name: 'Charlie Davis',
-      room: 'Room A',
-      phoneNumber: '+1234567893',
-      type: 'RESIDENT',
-      status: 'pending',
-    },
-    {
-      id: 4,
-      avatar: 'https://picsum.photos/id/4/200/300',
-      name: 'Diana Evans',
-      room: 'Room D',
-      phoneNumber: '+1234567894',
-      type: 'RESIDENT',
-      status: 'active',
-    },
-    {
-      id: 5,
-      avatar: 'https://picsum.photos/id/5/200/300',
-      name: 'Ethan Ford',
-      room: 'Room E',
-      phoneNumber: '+1234567895',
-      type: 'OWNER',
-      status: 'inactive',
-    },
-    {
-      id: 6,
-      avatar: 'https://picsum.photos/id/6/200/300',
-      name: 'Fiona Green',
-      room: 'Room F',
-      phoneNumber: '+1234567896',
-      type: 'OWNER',
-      status: 'active',
-    },
-    {
-      id: 7,
-      avatar: 'https://picsum.photos/id/7/200/300',
-      name: 'George Hall',
-      room: 'Room G',
-      phoneNumber: '+1234567897',
-      type: 'RESIDENT',
-      status: 'inactive',
-    },
-    {
-      id: 8,
-      avatar: 'https://picsum.photos/id/8/200/300',
-      name: 'Hannah White',
-      room: 'Room H',
-      phoneNumber: '+1234567898',
-      type: 'RESIDENT',
-      status: 'pending',
-    },
-    {
-      id: 9,
-      avatar: 'https://picsum.photos/id/9/200/300',
-      name: 'Isaac King',
-      room: 'Room I',
-      phoneNumber: '+1234567899',
-      type: 'RESIDENT',
-      status: 'active',
-    },
-    {
-      id: 10,
-      avatar: 'https://picsum.photos/id/10/200/300',
-      name: 'Jack Lee',
-      room: 'Room J',
-      phoneNumber: '+1234567800',
-      type: 'RESIDENT',
-      status: 'inactive',
     },
   ]
 
@@ -152,12 +68,10 @@ const Index = () => {
                   Filter
                 </Button>
               </div>
-              <Button variant={'default'} size={'lg'}>
-                New User
-              </Button>
+              <UserForm />
             </div>
             <UserList users={users} />
-            <Pagination>
+            <Pagination className="mt-2">
               <PaginationContent>
                 <PaginationItem>
                   <PaginationPrevious to="#" />
