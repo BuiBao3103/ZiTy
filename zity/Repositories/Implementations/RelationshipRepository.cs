@@ -43,5 +43,12 @@ namespace zity.Repositories.Implementations
             relationshipsQuery = _includeHandler.ApplyIncludes(relationshipsQuery, includes);
             return await relationshipsQuery.FirstOrDefaultAsync(u => u.Id == id);
         }
+
+        public async Task<Relationship> CreateAsync(Relationship relationship)
+        {
+            await _dbContext.Relationships.AddAsync(relationship);
+            await _dbContext.SaveChangesAsync();
+            return relationship;
+        }
     }
 }

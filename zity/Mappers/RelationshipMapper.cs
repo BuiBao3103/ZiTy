@@ -17,14 +17,14 @@ namespace zity.Mappers
                 User = relationship.User != null ? UserMapper.ToUserDTO(relationship.User) : null,
             };
         }
-
-        public static Relationship ToModelFromCreate(RelationshipDTO RelationshipDTO)
+        public static Relationship ToModelFromCreate(RelationshipCreateDTO relationshipCreateDTO)
         {
             return new Relationship
             {
-                Role = RelationshipDTO.Role,
-                UserId = RelationshipDTO.UserId,
-                ApartmentId = RelationshipDTO.ApartmentId,
+                Role = relationshipCreateDTO.Role,
+                UserId = relationshipCreateDTO.UserId,
+                ApartmentId = relationshipCreateDTO.ApartmentId,
+                CreatedAt = DateTime.Now,
             };
         }
     }

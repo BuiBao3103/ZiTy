@@ -1,5 +1,6 @@
 ﻿using zity.DTOs.Relationships;
 using zity.Mappers;
+using zity.Models;
 using zity.Repositories.Interfaces;
 using zity.Services.Interfaces;
 using zity.Utilities;
@@ -22,6 +23,12 @@ namespace zity.Services.Implementations
         {
             var relationship = await _relationshipRepository.GetByIdAsync(id, includes);
             return RelationshipMapper.ToDTO(relationship);
+        }
+
+        public async Task<RelationshipDTO> CreateAsync(RelationshipCreateDTO relationshipCreateDTO)
+        {
+            var relationship = RelationshipMapper.ToModelFromCreate(relationshipCreateDTO);
+            return RelationshipMapper.ToDTO(await _relationshipRepository.CreateAsync(relationship));
         }
     }
 }

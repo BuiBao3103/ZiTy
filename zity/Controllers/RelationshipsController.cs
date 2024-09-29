@@ -26,5 +26,11 @@ namespace zity.Controllers
         {
             return Ok(await _relationshipService.GetByIdAsync(id, includes));
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] RelationshipCreateDTO relationshipCreateDTO)
+        {
+            return Ok(await _relationshipService.CreateAsync(relationshipCreateDTO));
+        }
     }
 }
