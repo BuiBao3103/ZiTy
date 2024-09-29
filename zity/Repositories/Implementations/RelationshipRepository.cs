@@ -5,16 +5,13 @@ using zity.ExceptionHandling;
 using zity.Models;
 using zity.Repositories.Interfaces;
 using zity.Utilities;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace zity.Repositories.Implementations
 {
     public class RelationshipRepository : IRelationshipRepository
     {
         private readonly ApplicationDbContext _dbContext;
-        private readonly IncludeHandler<Relationship> _includeHandler = new();
-        private readonly FilterHandler<Relationship> _filterHandler = new();
-        private readonly SortHandler<Relationship> _sortHandler = new();
-        private readonly PaginationHandler<Relationship> _paginationHandler = new();
 
         public RelationshipRepository(ApplicationDbContext dbContext)
         {
@@ -23,25 +20,24 @@ namespace zity.Repositories.Implementations
 
         public async Task<PaginatedResult<Relationship>> GetAllAsync(RelationshipQueryDTO query)
         {
-            var relationshipsQuery = _dbContext.Relationships.Where(u => u.DeletedAt == null);
-            relationshipsQuery = _includeHandler.ApplyIncludes(relationshipsQuery, query.Includes);
-            var filters = new Dictionary<string, string>
+            var filters = new Dictionary<string, string?>
                 {
                     { "Id", query.Id },
                     { "UserId", query.UserId },
                     { "ApartmentId", query.ApartmentId }
                 };
+            var relationshipsQuery = _dbContext.Relationships.Where(u => u.DeletedAt == null)
+                .ApplyIncludes(query.Includes)
+                .ApplyFilters(filters)
+                .ApplySorting(query.Sort)
+                .ApplyPaginationAsync(query.Page, query.PageSize);
 
-            relationshipsQuery = _filterHandler.ApplyFilters(relationshipsQuery, filters);
-            relationshipsQuery = _sortHandler.ApplySorting(relationshipsQuery, query.Sort);
-
-            return await _paginationHandler.ApplyPaginationAsync(relationshipsQuery, query.Page, query.PageSize);
+            return await relationshipsQuery;
         }
 
         public async Task<Relationship> GetByIdAsync(int id, string includes)
         {
-            var relationshipsQuery = _dbContext.Relationships.Where(u => u.DeletedAt == null);
-            relationshipsQuery = _includeHandler.ApplyIncludes(relationshipsQuery, includes);
+            var relationshipsQuery = _dbContext.Relationships.Where(u => u.DeletedAt == null).ApplyIncludes(includes);
             var relationship = await relationshipsQuery.FirstOrDefaultAsync(u => u.Id == id);
             if (relationship == null)
             {
@@ -70,5 +66,19 @@ namespace zity.Repositories.Implementations
             await _dbContext.SaveChangesAsync();
         }
 
+        public Task<Relationship?> UpdateAsync(int id, Relationship relationship)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Relationship?> PatchAsync(int id, Relationship relationship)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<bool> IRelationshipRepository.DeleteAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
