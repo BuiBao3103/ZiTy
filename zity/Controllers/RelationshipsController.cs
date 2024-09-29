@@ -31,8 +31,10 @@ namespace zity.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] RelationshipCreateDTO relationshipCreateDTO)
         {
-            return Ok(await _relationshipService.CreateAsync(relationshipCreateDTO));
+            var createdRelationship = await _relationshipService.CreateAsync(relationshipCreateDTO);
+            return CreatedAtAction(nameof(Get), new { id = createdRelationship.Id }, createdRelationship);
         }
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
