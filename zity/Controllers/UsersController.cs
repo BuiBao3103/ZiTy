@@ -20,5 +20,6 @@ namespace zity.Controllers
             return Ok(await _userService.GetAllAsync(query));
         }
 
+
     }
 }

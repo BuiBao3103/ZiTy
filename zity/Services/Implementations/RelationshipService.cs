@@ -11,11 +11,17 @@ namespace zity.Services.Implementations
     {
         private readonly IRelationshipRepository _relationshipRepository = relationshipRepository;
 
-        public async Task<PaginatedResult<RelationshipDTO>> GetAllAsync(RelationshipQueryDTO query)
+        public async Task<PaginatedResult<RelationshipDto>> GetAllAsync(RelationshipQueryDTO query)
         {
             var pageRelationships = await _relationshipRepository.GetAllAsync(query);
-            var relationshipDTOs = pageRelationships.Contents.Select(RelationshipMapper.ToRelationshipDTO).ToList();
-            return new PaginatedResult<RelationshipDTO>(relationshipDTOs, pageRelationships.TotalItems, pageRelationships.Page, pageRelationships.PageSize);
+            var RelationshipDtos = pageRelationships.Contents.Select(RelationshipMapper.ToDTO).ToList();
+            return new PaginatedResult<RelationshipDto>(RelationshipDtos, pageRelationships.TotalItems, pageRelationships.Page, pageRelationships.PageSize);
+        }
+
+        public async Task<RelationshipDto> GetByIdAsync(int id, string includes)
+        {
+            var relationship = await _relationshipRepository.GetByIdAsync(id, includes);
+            return RelationshipMapper.ToDTO(relationship);
         }
     }
 }

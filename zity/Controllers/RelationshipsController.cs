@@ -20,5 +20,11 @@ namespace zity.Controllers
         {
             return Ok(await _relationshipService.GetAllAsync(query));
         }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get([FromRoute] int id, [FromQuery] string? includes = null)
+        {
+            return Ok(await _relationshipService.GetByIdAsync(id, includes));
+        }
     }
 }
