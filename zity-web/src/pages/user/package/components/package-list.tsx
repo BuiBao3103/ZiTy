@@ -56,7 +56,7 @@ const PackageList = ({ id }: PackageListProps) => {
               <span className="">Bui Hong Bao</span>
             </div>
           </div>
-          <Separator />
+          <Separator className={`h-0.5 ${parseInt(id ?? '-1') === index ? "bg-primary" : "bg-border"}`} />
           <div className="w-full flex justify-end py-2 px-4">
             <span className="text-lg text-red-600 font-medium">
               Not Collected
