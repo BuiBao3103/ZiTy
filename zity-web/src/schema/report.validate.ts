@@ -6,6 +6,7 @@ export const ReportSchema = z.object({
   content: z.string(),
   title: z.string(),
   status: ReportStatusSchema,
+	created_at: z.date(),
   relationship_id: z.number().nullable(),
 })
 

@@ -12,6 +12,7 @@ import { BadgePlus, Search } from 'lucide-react'
 import { Link, useParams } from 'react-router-dom'
 import { useDocumentTitle } from 'usehooks-ts'
 import ReportForm from './components/report-form'
+import { Badge } from '@/components/ui/badge'
 const Index = () => {
   useDocumentTitle('Report')
   const params = useParams()
@@ -66,7 +67,7 @@ const Index = () => {
           <div
             className={`w-full h-full grid grid-cols-1 lg:grid-cols-3 gap-4 overflow-y-auto`}>
             <ReportForm>
-              <div className="p-4 w-full h-[300px] bg-white hover:bg-zinc-100 transition-all cursor-pointer rounded-md flex flex-col justify-center items-center gap-2 border">
+              <div className="p-4 w-full h-auto bg-white hover:bg-zinc-100 transition-all cursor-pointer rounded-md flex flex-col justify-center items-center gap-2 border">
                 <p className="text-xl font-medium">New Report</p>
                 <BadgePlus size={50} />
               </div>
@@ -74,25 +75,27 @@ const Index = () => {
             {Array.from({ length: 10 }).map((_, index) => (
               <div
                 key={index}
-                className="p-4 w-full h-[300px] bg-white rounded-md flex flex-col gap-4 border">
+                className="p-4 w-full h-[310px] bg-white rounded-md flex flex-col gap-4 border">
                 <div className="w-full flex justify-between items-center">
                   <span className="font-medium">{formattedDate}</span>
                   <Button variant={'default'} size={'sm'}>
                     Details
                   </Button>
                 </div>
-                <div className="w-full h-full rounded-md bg-zinc-100 font-medium p-4">
-                  <p>
-                    Reason: <span>Other</span>
-                  </p>
-                  <p className="line-clamp-4">
-                    Description: Occaecat aliquip aliqua eu labore exercitation
-                    ex qui proident magna eiusmod excepteur. Qui enim tempor
-                    Lorem amet.Fugiat voluptate anim aute nostrud elit do
-                    voluptate cupidatat ullamco et eiusmod elit enim
+                <div className="w-full h-full rounded-md bg-zinc-100 p-4">
+                  <p className="line-clamp-4 font-medium">
+                    <span className='font-normal'>Description:</span> Occaecat aliquip aliqua eu labore
+                    exercitation ex qui proident magna eiusmod excepteur. Qui
+                    enim tempor Lorem amet.Fugiat voluptate anim aute nostrud
+                    elit do voluptate cupidatat ullamco et eiusmod elit enim
                     ullamco.Mollit amet anim enim duis pariatur irure aliqua
                     enim excepteur labore nulla laborum.
                   </p>
+                </div>
+                <div className="flex gap-2 uppercase">
+                  <Badge variant={'info'}>Other</Badge>
+                  <Badge variant={'error'}>Environment</Badge>
+                  <Badge variant={'warning'}>Noise</Badge>
                 </div>
                 <div className="flex gap-2">
                   <img

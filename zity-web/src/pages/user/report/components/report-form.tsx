@@ -23,6 +23,7 @@ import { Separator } from '@/components/ui/separator'
 import { Input } from '@/components/ui/input'
 import React from 'react'
 import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 
 interface ReportFormProps {
   children: React.ReactNode
@@ -38,7 +39,7 @@ const ReportForm = ({ children }: ReportFormProps) => {
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className='lg:max-w-2xl' aria-describedby={undefined}>
+      <DialogContent className="max-w-sm md:max-w-lg lg:max-w-2xl" aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle className="text-2xl">New Report</DialogTitle>
         </DialogHeader>
@@ -50,11 +51,11 @@ const ReportForm = ({ children }: ReportFormProps) => {
               name="reasons"
               render={({ field }) => (
                 <FormItem className="w-full space-y-4">
-                  <FormLabel className='text-base'>
+                  <FormLabel className="text-base text-balance">
                     Why do you make this report? (Select as least one)
                   </FormLabel>
                   <FormControl>
-                    <div className="grid grid-cols-3 gap-4 items-center">
+                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 items-center">
                       {[
                         'Environment',
                         'Noise',
@@ -83,6 +84,21 @@ const ReportForm = ({ children }: ReportFormProps) => {
                         </Label>
                       ))}
                     </div>
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <Separator />
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem className="w-full space-y-4">
+                  <FormLabel className="text-base">
+                    What do you think about that problem? (Write something)
+                  </FormLabel>
+                  <FormControl>
+                    <Textarea rows={5} placeholder='Write something...'></Textarea>
                   </FormControl>
                 </FormItem>
               )}
