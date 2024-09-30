@@ -14,6 +14,7 @@ import Home from '@pages/home'
 //Admin Page
 import Apartment from '@admin/apartment'
 import User from '@admin/user'
+import Service from '@admin/service'
 
 //User Page
 import Package from '@user/package'
@@ -84,6 +85,10 @@ export const route = createBrowserRouter([
                   },
                 ],
               },
+							{
+								path: '/service',
+								element: <Service />,
+							}
             ],
           },
         ],

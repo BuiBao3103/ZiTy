@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/tooltip'
 import {
   Flag,
+  HandPlatter,
   House,
   LogOut,
   NotebookText,
@@ -76,9 +77,13 @@ const Header = () => {
       to: '/user',
       role: ['ADMIN'],
     },
+		{
+      label: 'Service',
+      icon: <HandPlatter />,
+      to: '/service',
+      role: ['ADMIN'],
+    },
   ]
-
-	type Test<T> = T extends SideBarProps[] ? T : never
 
   return (
     <header className="w-full h-20 sm:h-screen sm:w-[300px] sticky top-0 z-40 flex sm:flex-row flex-col bg-white">
