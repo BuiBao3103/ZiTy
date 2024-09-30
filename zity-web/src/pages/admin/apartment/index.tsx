@@ -12,6 +12,7 @@ import ApartmentForm from './components/apartment-form'
 import { Link, useParams } from 'react-router-dom'
 import ApartmentDetail from './components/apartment-detail'
 import { Input } from '@/components/ui/input'
+import { Search } from 'lucide-react'
 const Index = () => {
   const params = useParams()
   useDocumentTitle('Apartment')
@@ -53,7 +54,13 @@ const Index = () => {
           {!params.id && (
             <>
               <section className="w-full flex flex-col sm:flex-row sm:gap-0 gap-4	 justify-between items-center">
-                <Input type='search' className='h-10 md:w-1/3' placeholder='Type something...' />
+                <div className="w-full lg:w-1/3 flex items-center border px-3 py-0.5 relative rounded-md focus-within:border-primary transition-all">
+                  <Search size={20} />
+                  <Input
+                    placeholder="Search something"
+                    className="border-none shadow-none focus-visible:ring-0"
+                  />
+                </div>
                 <ApartmentForm textTrigger="New Apartment" />
               </section>
               <ApartmentList />

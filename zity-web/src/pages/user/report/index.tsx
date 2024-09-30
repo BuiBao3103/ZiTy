@@ -41,7 +41,7 @@ const Index = () => {
               <>
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
-                    <Link to={'/package'}>Report</Link>
+                    <Link to={'/report'}>Report</Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
@@ -55,7 +55,7 @@ const Index = () => {
       </div>
       <div className="w-full h-full p-4 overflow-hidden">
         <div className="w-full h-full p-4 bg-white rounded-md flex flex-col gap-4">
-          <div className="w-full flex items-center border px-4 py-1 relative rounded-md">
+          <div className="w-full flex items-center border px-4 py-1 relative rounded-md focus-within:border-primary transition-all">
             <Search size={18} />
             <Input
               placeholder="Search something"

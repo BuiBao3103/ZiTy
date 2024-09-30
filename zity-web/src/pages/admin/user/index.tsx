@@ -16,7 +16,7 @@ import {
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { UserPartialSchema } from '@/types'
+import { UserPartialSchema } from '@/schema/user.validate'
 import { Filter, Search } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import UserList from './components/user-list'
@@ -31,7 +31,7 @@ const Index = () => {
       id: 1,
       full_name: 'John Doe',
       phone: '0123456789',
-      user_type: 'RESIDENT',
+      user_type: ['RESIDENT'],
       is_staying: true,
       avatar: 'https://picsum.photos/id/2/200/300',
     },
@@ -55,7 +55,7 @@ const Index = () => {
           <div className="size-full p-4 bg-white rounded-md">
             <div className="w-full h-auto flex justify-between items-center">
               <div className="w-full flex gap-4 items-center">
-                <div className="lg:w-1/4 flex items-center border px-3 py-0.5 relative rounded-md">
+                <div className="lg:w-1/4 flex items-center border px-3 py-0.5 relative rounded-md focus-within:border-primary transition-all">
                   <Search size={20} />
                   <Input
                     placeholder="Search something"

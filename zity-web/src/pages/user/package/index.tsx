@@ -18,6 +18,8 @@ import { Separator } from '@/components/ui/separator'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useWindowSize } from 'usehooks-ts'
 import PackageList from './components/package-list'
+import { Search } from 'lucide-react'
+import { Input } from '@/components/ui/input'
 
 const Index = () => {
   const filterBar: string[] = ['All', 'Not Collected', 'Collected']
@@ -66,6 +68,13 @@ const Index = () => {
             ) : (
               <>
                 <div className="w-full h-fit flex flex-col sm:flex-row justify-between items-center sm:gap-0 gap-4">
+                  <div className="w-full lg:w-1/2 flex items-center border px-3 py-0.5 relative rounded-md focus-within:border-primary transition-all">
+                    <Search size={20} />
+                    <Input
+                      placeholder="Search something"
+                      className="border-none shadow-none focus-visible:ring-0"
+                    />
+                  </div>
                   <div className="w-full sm:w-fit rounded-md flex bg-zinc-200 overflow-hidden">
                     {filterBar.map((item, index) => (
                       <span
@@ -75,7 +84,7 @@ const Index = () => {
                       </span>
                     ))}
                   </div>
-                  <Select defaultValue={'apple'}>
+                  {/* <Select defaultValue={'apple'}>
                     <SelectTrigger className="w-full sm:w-[140px] xl:w-[180px] h-full">
                       <SelectValue placeholder="Select a fruit" />
                     </SelectTrigger>
@@ -88,7 +97,7 @@ const Index = () => {
                         <SelectItem value="pineapple">Pineapple</SelectItem>
                       </SelectGroup>
                     </SelectContent>
-                  </Select>
+                  </Select> */}
                 </div>
                 <PackageList id={params.id} />
               </>

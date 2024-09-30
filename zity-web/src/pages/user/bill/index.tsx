@@ -57,7 +57,7 @@ const Index = () => {
               </div>
             ) : (
               <>
-                <div className="flex items-center border px-3 py-0.5 relative rounded-md">
+                <div className="flex items-center border px-3 py-0.5 relative rounded-md focus-within:border-primary transition-all">
                   <Search size={20} />
                   <Input
                     placeholder="Search something"
