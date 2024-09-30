@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input'
 import { BadgePlus, Search } from 'lucide-react'
 import { Link, useParams } from 'react-router-dom'
 import { useDocumentTitle } from 'usehooks-ts'
+import ReportForm from './components/report-form'
 const Index = () => {
   useDocumentTitle('Report')
   const params = useParams()
@@ -64,10 +65,12 @@ const Index = () => {
           </div>
           <div
             className={`w-full h-full grid grid-cols-1 lg:grid-cols-3 gap-4 overflow-y-auto`}>
-            <div className="p-4 w-full h-[300px] bg-white hover:bg-zinc-100 transition-all cursor-pointer rounded-md flex flex-col justify-center items-center gap-2 border">
-              <p className="text-xl font-medium">New Report</p>
-              <BadgePlus size={50} />
-            </div>
+            <ReportForm>
+              <div className="p-4 w-full h-[300px] bg-white hover:bg-zinc-100 transition-all cursor-pointer rounded-md flex flex-col justify-center items-center gap-2 border">
+                <p className="text-xl font-medium">New Report</p>
+                <BadgePlus size={50} />
+              </div>
+            </ReportForm>
             {Array.from({ length: 10 }).map((_, index) => (
               <div
                 key={index}
@@ -79,9 +82,18 @@ const Index = () => {
                   </Button>
                 </div>
                 <div className="w-full h-full rounded-md bg-zinc-100 font-medium p-4">
-									<p>Reason: <span>Other</span></p>
-									<p className='line-clamp-4'>Description: Occaecat aliquip aliqua eu labore exercitation ex qui proident magna eiusmod excepteur. Qui enim tempor Lorem amet.Fugiat voluptate anim aute nostrud elit do voluptate cupidatat ullamco et eiusmod elit enim ullamco.Mollit amet anim enim duis pariatur irure aliqua enim excepteur labore nulla laborum.</p>
-								</div>
+                  <p>
+                    Reason: <span>Other</span>
+                  </p>
+                  <p className="line-clamp-4">
+                    Description: Occaecat aliquip aliqua eu labore exercitation
+                    ex qui proident magna eiusmod excepteur. Qui enim tempor
+                    Lorem amet.Fugiat voluptate anim aute nostrud elit do
+                    voluptate cupidatat ullamco et eiusmod elit enim
+                    ullamco.Mollit amet anim enim duis pariatur irure aliqua
+                    enim excepteur labore nulla laborum.
+                  </p>
+                </div>
                 <div className="flex gap-2">
                   <img
                     src="https://picsum.photos/200/300"
