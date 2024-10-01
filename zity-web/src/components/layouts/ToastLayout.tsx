@@ -13,6 +13,7 @@ const ToastLayout = () => {
         theme="light"
         toastOptions={{}}
         closeButton
+				position='top-center'
         visibleToasts={4}
       />
     </>
