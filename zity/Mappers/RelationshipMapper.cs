@@ -12,11 +12,13 @@ namespace zity.Mappers
                 Id = relationship.Id,
                 Role = relationship.Role,
                 CreatedAt = relationship.CreatedAt,
+                UpdatedAt = relationship.UpdatedAt,
                 UserId = relationship.UserId,
                 ApartmentId = relationship.ApartmentId,
                 User = relationship.User != null ? UserMapper.ToUserDTO(relationship.User) : null,
             };
         }
+
         public static Relationship ToModelFromCreate(RelationshipCreateDTO relationshipCreateDTO)
         {
             return new Relationship
@@ -26,6 +28,28 @@ namespace zity.Mappers
                 ApartmentId = relationshipCreateDTO.ApartmentId,
                 CreatedAt = DateTime.Now,
             };
+        }
+
+        public static Relationship UpdateModelFromUpdate(Relationship relationship, RelationshipUpdateDTO updateDTO)
+        {
+            relationship.Role = updateDTO.Role;
+            relationship.UserId = updateDTO.UserId;
+            relationship.ApartmentId = updateDTO.ApartmentId;
+            relationship.UpdatedAt = DateTime.Now;
+            return relationship;
+        }
+
+        public static Relationship PatchModelFromPatch(Relationship relationship, RelationshipPatchDTO patchDTO)
+        {
+            if (patchDTO.Role != null)
+                relationship.Role = patchDTO.Role;
+            if (patchDTO.UserId.HasValue)
+                relationship.UserId = patchDTO.UserId.Value;
+            if (patchDTO.ApartmentId != null)
+                relationship.ApartmentId = patchDTO.ApartmentId;
+            relationship.UpdatedAt = DateTime.Now;
+            return relationship;
+
         }
     }
 }

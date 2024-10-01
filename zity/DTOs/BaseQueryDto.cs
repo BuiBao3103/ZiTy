@@ -12,7 +12,7 @@ namespace zity.DTOs
         public int PageSize { get; set; } = PaginationConstants.DEFAULT_PAGE_SIZE;
 
         [RegularExpression(@"^[-+]?[a-zA-Z]+(,[-+]?[a-zA-Z]+)*$", ErrorMessage = "Invalid sort format")]
-        public string Sort { get; set; } = "";
-        public string Includes { get; set; } = "";
+        public string? Sort { get; set; }
+        public string? Includes { get; set; }
     }
 }

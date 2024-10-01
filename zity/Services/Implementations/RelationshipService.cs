@@ -12,28 +12,58 @@ namespace zity.Services.Implementations
     {
         private readonly IRelationshipRepository _relationshipRepository = relationshipRepository;
 
-        public async Task<PaginatedResult<RelationshipDTO>> GetAllAsync(RelationshipQueryDTO query)
+        public async Task<PaginatedResult<RelationshipDTO>> GetAllAsync(RelationshipQueryDTO queryParam)
         {
-            var pageRelationships = await _relationshipRepository.GetAllAsync(query);
-            var RelationshipDTOs = pageRelationships.Contents.Select(RelationshipMapper.ToDTO).ToList();
-            return new PaginatedResult<RelationshipDTO>(RelationshipDTOs, pageRelationships.TotalItems, pageRelationships.Page, pageRelationships.PageSize);
+            var pageRelationships = await _relationshipRepository.GetAllAsync(queryParam);
+            return new PaginatedResult<RelationshipDTO>(
+                pageRelationships.Contents.Select(RelationshipMapper.ToDTO).ToList(),
+                pageRelationships.TotalItems,
+                pageRelationships.Page,
+                pageRelationships.PageSize);
         }
 
-        public async Task<RelationshipDTO> GetByIdAsync(int id, string includes)
+
+        public async Task<RelationshipDTO?> GetByIdAsync(int id, string? includes)
         {
             var relationship = await _relationshipRepository.GetByIdAsync(id, includes);
-            return RelationshipMapper.ToDTO(relationship);
+            return relationship != null ? RelationshipMapper.ToDTO(relationship) : null;
         }
-
-        public async Task<RelationshipDTO> CreateAsync(RelationshipCreateDTO relationshipCreateDTO)
+        public async Task<RelationshipDTO> CreateAsync(RelationshipCreateDTO createDTO)
         {
-            var relationship = RelationshipMapper.ToModelFromCreate(relationshipCreateDTO);
+            var relationship = RelationshipMapper.ToModelFromCreate(createDTO);
             return RelationshipMapper.ToDTO(await _relationshipRepository.CreateAsync(relationship));
         }
-
-        public async Task DeleteAsync(int id)
+        public async Task<RelationshipDTO?> UpdateAsync(int id, RelationshipUpdateDTO updateDTO)
         {
-            await _relationshipRepository.DeleteAsync(id);
+            var existingRelationship = await _relationshipRepository.GetByIdAsync(id, null);
+            if (existingRelationship == null)
+            {
+                return null;
+            }
+
+            RelationshipMapper.UpdateModelFromUpdate(existingRelationship, updateDTO);
+            var updatedRelationship = await _relationshipRepository.UpdateAsync(existingRelationship);
+            return RelationshipMapper.ToDTO(updatedRelationship);
         }
+
+        public async Task<RelationshipDTO?> PatchAsync(int id, RelationshipPatchDTO patchDTO)
+        {
+            var existingRelationship = await _relationshipRepository.GetByIdAsync(id, null);
+            if (existingRelationship == null)
+            {
+                return null;
+            }
+
+            RelationshipMapper.PatchModelFromPatch(existingRelationship, patchDTO);
+            var patchedRelationship = await _relationshipRepository.UpdateAsync(existingRelationship);
+            return RelationshipMapper.ToDTO(patchedRelationship);
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            return  await _relationshipRepository.DeleteAsync(id);
+        }
+
+       
     }
 }

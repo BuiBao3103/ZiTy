@@ -5,49 +5,42 @@ using zity.ExceptionHandling;
 using zity.Models;
 using zity.Repositories.Interfaces;
 using zity.Utilities;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace zity.Repositories.Implementations
 {
     public class RelationshipRepository : IRelationshipRepository
     {
         private readonly ApplicationDbContext _dbContext;
-        private readonly IncludeHandler<Relationship> _includeHandler = new();
-        private readonly FilterHandler<Relationship> _filterHandler = new();
-        private readonly SortHandler<Relationship> _sortHandler = new();
-        private readonly PaginationHandler<Relationship> _paginationHandler = new();
 
         public RelationshipRepository(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
         }
 
-        public async Task<PaginatedResult<Relationship>> GetAllAsync(RelationshipQueryDTO query)
+        public async Task<PaginatedResult<Relationship>> GetAllAsync(RelationshipQueryDTO queryParam)
         {
-            var relationshipsQuery = _dbContext.Relationships.Where(u => u.DeletedAt == null);
-            relationshipsQuery = _includeHandler.ApplyIncludes(relationshipsQuery, query.Includes);
-            var filters = new Dictionary<string, string>
+            var filterParams = new Dictionary<string, string?>
                 {
-                    { "Id", query.Id },
-                    { "UserId", query.UserId },
-                    { "ApartmentId", query.ApartmentId }
+                    { "Id", queryParam.Id },
+                    { "UserId", queryParam.UserId },
+                    { "ApartmentId", queryParam.ApartmentId }
                 };
+            var relationshipsQuery = _dbContext.Relationships
+                .Where(u => u.DeletedAt == null)
+                .ApplyIncludes(queryParam.Includes)
+                .ApplyFilters(filterParams)
+                .ApplySorting(queryParam.Sort)
+                .ApplyPaginationAsync(queryParam.Page, queryParam.PageSize);
 
-            relationshipsQuery = _filterHandler.ApplyFilters(relationshipsQuery, filters);
-            relationshipsQuery = _sortHandler.ApplySorting(relationshipsQuery, query.Sort);
-
-            return await _paginationHandler.ApplyPaginationAsync(relationshipsQuery, query.Page, query.PageSize);
+            return await relationshipsQuery;
         }
 
-        public async Task<Relationship> GetByIdAsync(int id, string includes)
+        public async Task<Relationship?> GetByIdAsync(int id, string? includes)
         {
-            var relationshipsQuery = _dbContext.Relationships.Where(u => u.DeletedAt == null);
-            relationshipsQuery = _includeHandler.ApplyIncludes(relationshipsQuery, includes);
-            var relationship = await relationshipsQuery.FirstOrDefaultAsync(u => u.Id == id);
-            if (relationship == null)
-            {
-                throw new EntityNotFoundException($"Relationship with ID {id} not found.");
-            }
-            return relationship;
+            var relationshipsQuery = _dbContext.Relationships.Where(u => u.DeletedAt == null)
+                .ApplyIncludes(includes);
+            return await relationshipsQuery.FirstOrDefaultAsync(u => u.Id == id);
         }
 
         public async Task<Relationship> CreateAsync(Relationship relationship)
@@ -57,18 +50,28 @@ namespace zity.Repositories.Implementations
             return relationship;
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task<Relationship> UpdateAsync(Relationship relationship)
         {
-            var relationship = await _dbContext.Relationships.FirstOrDefaultAsync(u => u.Id == id);
+            _dbContext.Relationships.Update(relationship);
+            await _dbContext.SaveChangesAsync();
+            return relationship;
+        }
+
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var relationship = await _dbContext.Relationships
+                .FirstOrDefaultAsync(u => u.Id == id && u.DeletedAt == null);
             if (relationship == null)
             {
-                throw new EntityNotFoundException($"Relationship with ID {id} not found.");
+                return false;
             }
-
             relationship.DeletedAt = DateTime.Now;
             _dbContext.Relationships.Update(relationship);
             await _dbContext.SaveChangesAsync();
+            return true;
         }
 
+        
     }
 }
