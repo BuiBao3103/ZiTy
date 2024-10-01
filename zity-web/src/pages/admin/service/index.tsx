@@ -20,8 +20,11 @@ import { Link } from 'react-router-dom'
 import ServiceForm from './components/service-form'
 import ServiceList from './components/service-list'
 import { Service } from '@/schema/service.validate'
+import { RootState, useAppSelector } from '@/store'
 
 const Index = () => {
+
+	const user = useAppSelector((state : RootState)	=> state.authReducer)
 
 	const services : Service[] = [
 		{
