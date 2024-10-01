@@ -31,6 +31,19 @@ namespace zity.Controllers
             return CreatedAtAction(nameof(Get), new { id = createdRelationship.Id }, createdRelationship);
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] RelationshipUpdateDTO relationshipUpdateDTO)
+        {
+            var updatedRelationship = await _relationshipService.UpdateAsync(id, relationshipUpdateDTO);
+            return updatedRelationship == null ? NotFound() : Ok(updatedRelationship);
+        }
+
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> Patch([FromRoute] int id, [FromBody] RelationshipPatchDTO relationshipPatchDTO)
+        {
+            var patchedRelationship = await _relationshipService.PatchAsync(id, relationshipPatchDTO);
+            return patchedRelationship == null ? NotFound() : Ok(patchedRelationship);
+        }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)

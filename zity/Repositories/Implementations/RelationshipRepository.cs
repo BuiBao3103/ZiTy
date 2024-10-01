@@ -20,7 +20,7 @@ namespace zity.Repositories.Implementations
 
         public async Task<PaginatedResult<Relationship>> GetAllAsync(RelationshipQueryDTO queryParam)
         {
-            var filters = new Dictionary<string, string?>
+            var filterParams = new Dictionary<string, string?>
                 {
                     { "Id", queryParam.Id },
                     { "UserId", queryParam.UserId },
@@ -29,7 +29,7 @@ namespace zity.Repositories.Implementations
             var relationshipsQuery = _dbContext.Relationships
                 .Where(u => u.DeletedAt == null)
                 .ApplyIncludes(queryParam.Includes)
-                .ApplyFilters(filters)
+                .ApplyFilters(filterParams)
                 .ApplySorting(queryParam.Sort)
                 .ApplyPaginationAsync(queryParam.Page, queryParam.PageSize);
 
@@ -50,7 +50,7 @@ namespace zity.Repositories.Implementations
             return relationship;
         }
 
-        public async Task<Relationship?> UpdateAsync(Relationship relationship)
+        public async Task<Relationship> UpdateAsync(Relationship relationship)
         {
             _dbContext.Relationships.Update(relationship);
             await _dbContext.SaveChangesAsync();
@@ -60,7 +60,6 @@ namespace zity.Repositories.Implementations
 
         public async Task<bool> DeleteAsync(int id)
         {
-            //find relationship by id where deletedAt is null
             var relationship = await _dbContext.Relationships
                 .FirstOrDefaultAsync(u => u.Id == id && u.DeletedAt == null);
             if (relationship == null)
