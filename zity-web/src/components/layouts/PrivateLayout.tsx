@@ -1,8 +1,23 @@
 import { Outlet, redirect } from 'react-router-dom'
 import Cookies from 'universal-cookie'
 import { toast } from 'sonner'
+import { Toaster } from '@components/ui/toaster'
+import { Toaster as Sonner } from '@components/ui/sonner'
 const PrivateRoute = () => {
-  return <Outlet />
+  return (
+    <>
+      <Outlet />
+      <Toaster />
+      <Sonner
+        richColors
+        theme="light"
+        toastOptions={{}}
+        closeButton
+        position="top-center"
+        visibleToasts={4}
+      />
+    </>
+  )
 }
 
 export default PrivateRoute
