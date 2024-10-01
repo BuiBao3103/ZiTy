@@ -83,6 +83,12 @@ const Header = () => {
       to: '/service',
       role: ['ADMIN'],
     },
+		{
+			label: 'Package Admin',
+			icon: <Package />,
+			to: '/admin/package',
+			role: ['ADMIN'],
+		}
   ]
 
   return (

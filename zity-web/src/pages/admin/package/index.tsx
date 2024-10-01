@@ -17,53 +17,46 @@ import {
 import { Filter, Search } from 'lucide-react'
 import { Button } from '@components/ui/button'
 import { Link } from 'react-router-dom'
-import ServiceForm from './components/service-form'
-import ServiceList from './components/service-list'
-import { Service } from '@/schema/service.validate'
+import { Package } from '@/schema/package.validate'
+import PackageForm from './components/package-form'
+import PackageList from './components/package-list'
 
 const Index = () => {
-  const services: Service[] = [
+  const packages: Package[] = [
     {
       id: 1,
-      name: 'Service 1',
-      price: 100,
-      created_at: new Date(),
+      image: 'Image 1',
       description: 'Description 1',
+      is_received: true,
+      user_id: 1,
     },
     {
       id: 2,
-      name: 'Service 2',
-      price: 200,
-      created_at: new Date(),
+      image: 'Image 2',
       description: 'Description 2',
+      is_received: true,
+      user_id: 2,
     },
     {
       id: 3,
-      name: 'Service 3',
-      price: 300,
-      created_at: new Date(),
+      image: 'Image 3',
       description: 'Description 3',
+      is_received: true,
+      user_id: 3,
     },
     {
       id: 4,
-      name: 'Service 4',
-      price: 400,
-      created_at: new Date(),
+      image: 'Image 4',
       description: 'Description 4',
+      is_received: true,
+      user_id: 4,
     },
     {
       id: 5,
-      name: 'Service 5',
-      price: 500,
-      created_at: new Date(),
+      image: 'Image 5',
       description: 'Description 5',
-    },
-    {
-      id: 6,
-      name: 'Service 6',
-      price: 600,
-      created_at: new Date(),
-      description: 'Description 6',
+      is_received: false,
+      user_id: 5,
     },
   ]
 
@@ -98,9 +91,9 @@ const Index = () => {
                   Filter
                 </Button>
               </div>
-              <ServiceForm />
+              <PackageForm />
             </div>
-            <ServiceList services={services} />
+            <PackageList packages={packages} />
             <Pagination className="mt-2">
               <PaginationContent>
                 <PaginationItem>
