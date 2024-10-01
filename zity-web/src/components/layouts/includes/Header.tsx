@@ -6,26 +6,27 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { RoleEnum } from '@/types'
 import {
   Flag,
+  HandPlatter,
   House,
   LogOut,
   NotebookText,
   Package,
   Receipt,
   TableCellsMerge,
-	UsersRound,
+  UsersRound,
 } from 'lucide-react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useWindowSize } from 'usehooks-ts'
 import MobileMenu from './components/MobileMenu'
 import Logo from '@/assets/logo.svg'
+import { UserRole } from '@/enums'
 export interface SideBarProps {
   label: string
   icon: React.ReactNode
   to: string
-  role?: RoleEnum[] | RoleEnum
+  role?: UserRole[] | UserRole
 }
 
 const Header = () => {
@@ -38,44 +39,50 @@ const Header = () => {
       label: 'Home',
       icon: <House />,
       to: '/',
-      role: 'OWNER',
+      role: 'RESIDENT',
     },
     {
       label: 'Package',
       icon: <Package />,
       to: '/package',
-      role: 'OWNER',
+      role: 'RESIDENT',
     },
     {
       label: 'Survey',
       icon: <NotebookText />,
       to: '/survey',
-      role: 'OWNER',
+      role: 'RESIDENT',
     },
     {
       label: 'Apartments',
       icon: <TableCellsMerge />,
       to: '/apartment',
-      role: 'OWNER',
+      role: 'RESIDENT',
     },
     {
       label: 'Report',
       icon: <Flag />,
       to: '/report',
-      role: 'OWNER',
+      role: 'RESIDENT',
     },
     {
       label: 'Bill',
       icon: <Receipt />,
       to: '/bill',
-      role: ['OWNER', 'RESIDENT'],
+      role: ['ADMIN', 'RESIDENT'],
+    },
+    {
+      label: 'User',
+      icon: <UsersRound />,
+      to: '/user',
+      role: ['ADMIN'],
     },
 		{
-			label: 'User',
-			icon: <UsersRound />,
-			to: '/user',
-			role: ['ADMIN'],
-		}
+      label: 'Service',
+      icon: <HandPlatter />,
+      to: '/service',
+      role: ['ADMIN'],
+    },
   ]
 
   return (

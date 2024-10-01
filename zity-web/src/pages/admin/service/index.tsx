@@ -5,6 +5,7 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
+import { Input } from '@/components/ui/input'
 import {
   Pagination,
   PaginationContent,
@@ -13,29 +14,60 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination'
-
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { UserPartialSchema } from '@/schema/user.validate'
 import { Filter, Search } from 'lucide-react'
+import { Button } from '@components/ui/button'
 import { Link } from 'react-router-dom'
-import UserList from './components/user-list'
-import { useDocumentTitle } from 'usehooks-ts'
-import UserForm from './components/user-form'
-import { z } from 'zod'
+import ServiceForm from './components/service-form'
+import ServiceList from './components/service-list'
+import { Service } from '@/schema/service.validate'
 
 const Index = () => {
-  useDocumentTitle('User')
-  const users: z.infer<typeof UserPartialSchema>[] = [
-    {
-      id: 1,
-      full_name: 'John Doe',
-      phone: '0123456789',
-      user_type: ['RESIDENT'],
-      is_staying: true,
-      avatar: 'https://picsum.photos/id/2/200/300',
-    },
-  ]
+
+	const services : Service[] = [
+		{
+			id: 1,
+			name: 'Service 1',
+			price: 100,
+			created_at: new Date(),
+			description: 'Description 1'
+		},
+		{
+			id: 2,
+			name: 'Service 2',
+			price: 200,
+			created_at: new Date(),
+			description: 'Description 2'
+		},
+		{
+			id: 3,
+			name: 'Service 3',
+			price: 300,
+			created_at: new Date(),
+			description: 'Description 3'
+		},
+		{
+			id: 4,
+			name: 'Service 4',
+			price: 400,
+			created_at:new Date(),
+			description: 'Description 4'
+		},
+		{
+			id: 5,
+			name: 'Service 5',
+			price: 500,
+			created_at: new Date(),
+			description: 'Description 5'
+		},
+		{
+			id: 6,
+			name: 'Service 6',
+			price: 600,
+			created_at: new Date(),
+			description: 'Description 6'
+		},
+	]
+
   return (
     <>
       <div className="w-full sm:h-screen flex flex-col bg-zinc-100">
@@ -67,9 +99,9 @@ const Index = () => {
                   Filter
                 </Button>
               </div>
-              <UserForm />
+							<ServiceForm />
             </div>
-            <UserList users={users} />
+						<ServiceList services={services} />
             <Pagination className="mt-2">
               <PaginationContent>
                 <PaginationItem>

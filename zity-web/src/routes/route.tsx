@@ -14,10 +14,12 @@ import Home from '@pages/home'
 //Admin Page
 import Apartment from '@admin/apartment'
 import User from '@admin/user'
+import Service from '@admin/service'
 
 //User Page
 import Package from '@user/package'
 import Report from '@user/report'
+import Bill from '@user/bill'
 
 //Error page
 import NotFound from '@pages/404'
@@ -72,13 +74,21 @@ export const route = createBrowserRouter([
               {
                 path: '/user',
                 element: <User />,
+              },
+              {
+                path: '/bill',
+                element: <Bill />,
                 children: [
                   {
                     path: ':id',
-                    element: <User />,
+                    element: <Bill />,
                   },
                 ],
               },
+							{
+								path: '/service',
+								element: <Service />,
+							}
             ],
           },
         ],

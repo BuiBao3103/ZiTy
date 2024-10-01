@@ -10,7 +10,11 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { BadgePlus, Search } from 'lucide-react'
 import { Link, useParams } from 'react-router-dom'
+import { useDocumentTitle } from 'usehooks-ts'
+import ReportForm from './components/report-form'
+import { Badge } from '@/components/ui/badge'
 const Index = () => {
+  useDocumentTitle('Report')
   const params = useParams()
   const date = new Date()
   const formattedDate =
@@ -39,7 +43,7 @@ const Index = () => {
               <>
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
-                    <Link to={'/package'}>Report</Link>
+                    <Link to={'/report'}>Report</Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
@@ -53,7 +57,7 @@ const Index = () => {
       </div>
       <div className="w-full h-full p-4 overflow-hidden">
         <div className="w-full h-full p-4 bg-white rounded-md flex flex-col gap-4">
-          <div className="w-full flex items-center border px-4 py-1 relative rounded-md">
+          <div className="w-full flex items-center border px-4 py-1 relative rounded-md focus-within:border-primary transition-all">
             <Search size={18} />
             <Input
               placeholder="Search something"
@@ -61,20 +65,50 @@ const Index = () => {
             />
           </div>
           <div
-            className={`w-full h-full grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-5 gap-4 overflow-y-auto`}>
-            <div className="p-4 w-full h-[300px] bg-white rounded-md flex flex-col justify-center items-center gap-2 border">
-              <p className="text-xl font-medium">New Report</p>
-              <BadgePlus size={50} />
-            </div>
+            className={`w-full h-full grid grid-cols-1 lg:grid-cols-3 gap-4 overflow-y-auto`}>
+            <ReportForm>
+              <div className="p-4 w-full h-auto bg-white hover:bg-zinc-100 transition-all cursor-pointer rounded-md flex flex-col justify-center items-center gap-2 border">
+                <p className="text-xl font-medium">New Report</p>
+                <BadgePlus size={50} />
+              </div>
+            </ReportForm>
             {Array.from({ length: 10 }).map((_, index) => (
               <div
                 key={index}
-                className="p-4 w-full h-[300px] bg-white rounded-md flex flex-col gap-2 border">
+                className="p-4 w-full h-[310px] bg-white rounded-md flex flex-col gap-4 border">
                 <div className="w-full flex justify-between items-center">
-                  <span>{formattedDate}</span>
+                  <span className="font-medium">{formattedDate}</span>
                   <Button variant={'default'} size={'sm'}>
                     Details
                   </Button>
+                </div>
+                <div className="w-full h-full rounded-md bg-zinc-100 p-4">
+                  <p className="line-clamp-4 font-medium">
+                    <span className='font-normal'>Description:</span> Occaecat aliquip aliqua eu labore
+                    exercitation ex qui proident magna eiusmod excepteur. Qui
+                    enim tempor Lorem amet.Fugiat voluptate anim aute nostrud
+                    elit do voluptate cupidatat ullamco et eiusmod elit enim
+                    ullamco.Mollit amet anim enim duis pariatur irure aliqua
+                    enim excepteur labore nulla laborum.
+                  </p>
+                </div>
+                <div className="flex gap-2 uppercase">
+                  <Badge variant={'info'}>Other</Badge>
+                  <Badge variant={'error'}>Environment</Badge>
+                  <Badge variant={'warning'}>Noise</Badge>
+                </div>
+                <div className="flex gap-2">
+                  <img
+                    src="https://picsum.photos/200/300"
+                    alt="user avatar"
+                    className="size-12 rounded-full"
+                  />
+                  <div className="flex flex-col">
+                    <p className="font-medium">
+                      <span>Bui Ngoc Thuc</span>
+                    </p>
+                    <span className="text-sm font-medium ">A.101</span>
+                  </div>
                 </div>
               </div>
             ))}
