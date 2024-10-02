@@ -29,7 +29,7 @@ const AlertDelete = ({ setAction, description }: AlertDeleteProps) => {
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
             This action cannot be undone. This will permanently delete the{' '}
-            {description}
+            {description}{' '}
             and remove the data from the server.
           </AlertDialogDescription>
         </AlertDialogHeader>
