@@ -1,10 +1,4 @@
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
+
 import { Input } from '@/components/ui/input'
 import {
   Pagination,
@@ -16,11 +10,10 @@ import {
 } from '@/components/ui/pagination'
 import { Filter, Search } from 'lucide-react'
 import { Button } from '@components/ui/button'
-import { Link } from 'react-router-dom'
 import { Package } from '@/schema/package.validate'
 import PackageForm from './components/package-form'
 import PackageList from './components/package-list'
-
+import BreadCrumb from '@/components/breadcrumb'
 const Index = () => {
   const packages: Package[] = [
     {
@@ -63,18 +56,7 @@ const Index = () => {
   return (
     <>
       <div className="w-full sm:h-screen flex flex-col bg-zinc-100">
-        <div className="w-full px-4 pt-4">
-          <Breadcrumb className="p-4 font-medium bg-white rounded-md">
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link to={'/'}>Home</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-            </BreadcrumbList>
-          </Breadcrumb>
-        </div>
+      <BreadCrumb paths={[{label: 'package',to: '/package'}]} />
         <div className="size-full p-4">
           <div className="size-full p-4 bg-white rounded-md">
             <div className="w-full h-auto flex justify-between items-center">

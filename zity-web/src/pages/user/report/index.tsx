@@ -1,18 +1,11 @@
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { BadgePlus, Search } from 'lucide-react'
-import { Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { useDocumentTitle } from 'usehooks-ts'
 import ReportForm from './components/report-form'
 import { Badge } from '@/components/ui/badge'
+import BreadCrumb from '@/components/breadcrumb'
 const Index = () => {
   useDocumentTitle('Report')
   const params = useParams()
@@ -25,36 +18,12 @@ const Index = () => {
     date.getFullYear()
   return (
     <div className="w-full sm:h-screen flex flex-col bg-zinc-100">
-      <div className="w-full px-4 pt-4">
-        <Breadcrumb className="p-4 font-medium bg-white rounded-md">
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link to={'/'}>Home</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            {!params.id && (
-              <BreadcrumbItem>
-                <BreadcrumbPage>Report</BreadcrumbPage>
-              </BreadcrumbItem>
-            )}
-            {params.id && (
-              <>
-                <BreadcrumbItem>
-                  <BreadcrumbLink asChild>
-                    <Link to={'/report'}>Report</Link>
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>{params.id}</BreadcrumbPage>
-                </BreadcrumbItem>
-              </>
-            )}
-          </BreadcrumbList>
-        </Breadcrumb>
-      </div>
+      <BreadCrumb
+        paths={[
+          { label: 'report', to: '/report' },
+          ...(params.id ? [{ label: params.id }] : []),
+        ]}
+      />
       <div className="w-full h-full p-4 overflow-hidden">
         <div className="w-full h-full p-4 bg-white rounded-md flex flex-col gap-4">
           <div className="w-full flex items-center border px-4 py-1 relative rounded-md focus-within:border-primary transition-all">
@@ -84,12 +53,13 @@ const Index = () => {
                 </div>
                 <div className="w-full h-full rounded-md bg-zinc-100 p-4">
                   <p className="line-clamp-4 font-medium">
-                    <span className='font-normal'>Description:</span> Occaecat aliquip aliqua eu labore
-                    exercitation ex qui proident magna eiusmod excepteur. Qui
-                    enim tempor Lorem amet.Fugiat voluptate anim aute nostrud
-                    elit do voluptate cupidatat ullamco et eiusmod elit enim
-                    ullamco.Mollit amet anim enim duis pariatur irure aliqua
-                    enim excepteur labore nulla laborum.
+                    <span className="font-normal">Description:</span> Occaecat
+                    aliquip aliqua eu labore exercitation ex qui proident magna
+                    eiusmod excepteur. Qui enim tempor Lorem amet.Fugiat
+                    voluptate anim aute nostrud elit do voluptate cupidatat
+                    ullamco et eiusmod elit enim ullamco.Mollit amet anim enim
+                    duis pariatur irure aliqua enim excepteur labore nulla
+                    laborum.
                   </p>
                 </div>
                 <div className="flex gap-2 uppercase">
