@@ -1,4 +1,5 @@
 import { Badge } from '@/components/ui/badge'
+
 import {
   Table,
   TableBody,
@@ -8,12 +9,17 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Bill } from '@/schema/bill.validate'
+import BillItem from './bill-item'
+import BillForm from './bill-form'
+import { useState } from 'react'
 
 interface BillListProps {
   bills: Bill[]
 }
 
 const BillList = ({ bills }: BillListProps) => {
+  const [showDetail, setShowDetail] = useState<number | null>(null)
+
   return (
     <>
       <Table className="mt-4 h-full">
@@ -27,30 +33,12 @@ const BillList = ({ bills }: BillListProps) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {bills.map((bill) => (
-            <TableRow key={bill.id} className="font-medium cursor-pointer">
-              <TableCell className="py-3">{bill.id}</TableCell>
-              <TableCell className="">
-                <p className="">123</p>
-              </TableCell>
-              <TableCell>{bill.total_price}</TableCell>
-              <TableCell>{new Date().toLocaleDateString()}</TableCell>
-              <TableCell className="uppercase">
-                <Badge
-                  variant={`${
-                    bill.status == 'UNPAID'
-                      ? 'warning'
-                      : bill.status == 'OVERDUE'
-                      ? 'error'
-                      : 'info'
-                  }`}>
-                  {bill.status}
-                </Badge>
-              </TableCell>
-            </TableRow>
+          {bills.map((bill, index) => (
+            <BillItem bill={bill} key={index} setShowDetail={setShowDetail} />
           ))}
         </TableBody>
       </Table>
+      {showDetail && <BillForm setShowDetail={setShowDetail} />}
     </>
   )
 }
