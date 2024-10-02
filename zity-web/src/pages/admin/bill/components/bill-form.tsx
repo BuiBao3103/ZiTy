@@ -1,5 +1,4 @@
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
   Select,
@@ -18,6 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import BillAlertDelete from './bill-alert-delete'
 
 interface BillFormProps {
   setShowDetail: (value: number | null) => void
@@ -29,7 +29,7 @@ const BillForm = ({ setShowDetail }: BillFormProps) => {
       <div
         className="fixed inset-0 bg-black/20 animate-in fade-in"
         onClick={() => setShowDetail(null)}></div>
-      <div className="w-[500px] h-fit bg-white rounded-md relative z-[51] animate-in fade-in-95 zoom-in-95 shadow-lg">
+      <div className="max-w-sm min-[550px]:max-w-lg w-full h-fit bg-white rounded-md relative z-[51] animate-in fade-in-95 zoom-in-95 shadow-lg">
         <div className="w-full flex justify-between items-center px-4 py-3">
           <div className="flex flex-col">
             <p className="text-3xl font-medium">
@@ -106,7 +106,7 @@ const BillForm = ({ setShowDetail }: BillFormProps) => {
           </div>
           <div className="w-full ">
             <Label className="text-zinc-400">Status:</Label>
-            <Select defaultValue='UNPAID'>
+            <Select defaultValue="UNPAID">
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Theme" />
               </SelectTrigger>
@@ -119,16 +119,19 @@ const BillForm = ({ setShowDetail }: BillFormProps) => {
           </div>
         </div>
         <Separator />
-        <div className="w-full flex justify-end gap-2 p-4">
-          <Button
-            onClick={() => setShowDetail(null)}
-            type="button"
-            variant={'ghost'}>
-            Cancel
-          </Button>
-          <Button type="submit" variant={'default'}>
-            Save
-          </Button>
+        <div className="w-full flex justify-between items-center p-4">
+          <BillAlertDelete />
+          <div className="w-full flex justify-end gap-2">
+            <Button
+              onClick={() => setShowDetail(null)}
+              type="button"
+              variant={'ghost'}>
+              Cancel
+            </Button>
+            <Button type="submit" variant={'default'}>
+              Save
+            </Button>
+          </div>
         </div>
       </div>
     </div>
