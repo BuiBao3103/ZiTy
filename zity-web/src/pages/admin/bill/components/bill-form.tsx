@@ -17,13 +17,17 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import BillAlertDelete from './bill-alert-delete'
+import AlertDelete from '@/components/alert/AlertDelete'
 
 interface BillFormProps {
   setShowDetail: (value: number | null) => void
 }
 
 const BillForm = ({ setShowDetail }: BillFormProps) => {
+  const setAction = () => {
+    console.log('delete')
+  }
+
   return (
     <div className="fixed w-full h-screen flex justify-center items-center inset-0 z-50">
       <div
@@ -120,7 +124,7 @@ const BillForm = ({ setShowDetail }: BillFormProps) => {
         </div>
         <Separator />
         <div className="w-full flex justify-between items-center p-4">
-          <BillAlertDelete />
+          <AlertDelete description="bill" setAction={setAction} />
           <div className="w-full flex justify-end gap-2">
             <Button
               onClick={() => setShowDetail(null)}
