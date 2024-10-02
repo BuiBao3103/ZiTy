@@ -6,6 +6,7 @@ import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
 import { z } from 'zod'
 import { UserPartialSchema } from '@/schema/user.validate'
+import AlertDelete from '@/components/alert/AlertDelete'
 
 interface UserDetailProps {
   user: z.infer<typeof UserPartialSchema> | null
@@ -13,6 +14,10 @@ interface UserDetailProps {
 }
 
 const UserDetail = ({ user, setShowDetail }: UserDetailProps) => {
+  const setAction = () => {
+    console.log('delete')
+  }
+
   return (
     <div
       className={`fixed top-0 ${
@@ -56,7 +61,14 @@ const UserDetail = ({ user, setShowDetail }: UserDetailProps) => {
             <span>Date of birth</span>
           </div>
           <div className="flex gap-2 uppercase">
-            <Badge variant={`${Array.isArray(user?.user_type) ? 'info' : user?.user_type === 'ADMIN' ? 'success' : 'info'}`}>
+            <Badge
+              variant={`${
+                Array.isArray(user?.user_type)
+                  ? 'info'
+                  : user?.user_type === 'ADMIN'
+                  ? 'success'
+                  : 'info'
+              }`}>
               {user?.user_type}
             </Badge>
           </div>
@@ -88,9 +100,7 @@ const UserDetail = ({ user, setShowDetail }: UserDetailProps) => {
             <Button type="button" variant={'warning'}>
               Edit
             </Button>
-            <Button type="button" variant="destructive">
-              Delete
-            </Button>
+            <AlertDelete description="user" setAction={setAction} />
           </div>
         </div>
       </div>
