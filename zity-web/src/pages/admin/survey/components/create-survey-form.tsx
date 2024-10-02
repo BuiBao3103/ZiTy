@@ -68,7 +68,7 @@ const CreateSurveyForm = () => {
   }
 
   return (
-    <Card className='h-fit'>
+    <Card className="h-fit">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit, onError)}>
           <CardHeader className="space-y-2">
@@ -115,14 +115,16 @@ const CreateSurveyForm = () => {
           </CardHeader>
           <Separator />
           <CardContent className="pt-6 flex flex-col space-y-4">
-            {fields.map((field, index) => (
-              <QuestionItem
-                key={field.id}
-                control={form.control}
-                questionIndex={index}
-                removeQuestion={remove}
-              />
-            ))}
+            <div className={`w-full grid grid-cols-2 gap-4`}>
+              {fields.map((field, index) => (
+                <QuestionItem
+                  key={field.id}
+                  control={form.control}
+                  questionIndex={index}
+                  removeQuestion={remove}
+                />
+              ))}
+            </div>
             <div className="w-full flex justify-between items-center">
               <Button
                 type="button"

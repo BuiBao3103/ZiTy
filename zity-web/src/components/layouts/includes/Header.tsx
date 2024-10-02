@@ -72,13 +72,13 @@ const Header = () => {
       role: ['ADMIN', 'RESIDENT'],
     },
     {
-      label: 'User',
+      label: 'User Admin',
       icon: <UsersRound />,
       to: '/user',
       role: ['ADMIN'],
     },
     {
-      label: 'Service',
+      label: 'Service Admin',
       icon: <HandPlatter />,
       to: '/service',
       role: ['ADMIN'],
@@ -93,6 +93,12 @@ const Header = () => {
       label: 'Bill Admin',
       icon: <Receipt />,
       to: '/admin/bill',
+      role: ['ADMIN'],
+    },
+		{
+      label: 'Survey Admin',
+      icon: <NotebookText />,
+      to: '/admin/survey',
       role: ['ADMIN'],
     },
   ]

@@ -17,6 +17,7 @@ import User from '@admin/user'
 import Service from '@admin/service'
 import PackageAdmin from '@admin/package'
 import BillAdmin from '@admin/bill'
+import SurveyAdmin from '@admin/survey'
 
 //User Page
 import Package from '@user/package'
@@ -95,6 +96,10 @@ export const route = createBrowserRouter([
 					{
 						path: '/admin/bill',
 						element: <BillAdmin />,
+					},
+					{
+						path: '/admin/survey',
+						element: <SurveyAdmin />,
 					}
         ],
       },

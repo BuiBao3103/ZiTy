@@ -6,8 +6,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Separator } from '@/components/ui/separator'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useWindowSize } from 'usehooks-ts'
 import PackageList from './components/package-list'
 import { Search } from 'lucide-react'
