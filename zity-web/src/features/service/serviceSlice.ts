@@ -23,7 +23,7 @@ export const serviceApiSlice = apiSlice.injectEndpoints({
       }),
       // providesTags: (result, error, id) => [{ type: 'Service', id }],
     }),
-    createService: builder.mutation<Service, Partial<Service>>({
+    createService: builder.mutation<Service, Partial<Service> & Omit<Service,'id'>>({
       query: (body) => ({
         url: 'services',
         method: 'POST',

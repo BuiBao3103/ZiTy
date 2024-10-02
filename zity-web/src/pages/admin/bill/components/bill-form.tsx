@@ -18,6 +18,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import AlertDelete from '@/components/alert/AlertDelete'
+import { formatISODate } from '@/utils/ExtractTime'
 
 interface BillFormProps {
   setShowDetail: (value: number | null) => void
@@ -50,11 +51,7 @@ const BillForm = ({ setShowDetail }: BillFormProps) => {
           <div className="">
             <Label className="text-zinc-400">Issued on:</Label>
             <p className="font-medium">
-              {new Date().toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: '2-digit',
-              })}
+              {formatISODate(new Date().toISOString())}
             </p>
           </div>
           <div className="w-full flex justify-between items-center">
