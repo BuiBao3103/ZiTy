@@ -1,6 +1,13 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import {
   Table,
@@ -65,7 +72,7 @@ const BillForm = ({ setShowDetail }: BillFormProps) => {
           <div className="w-full flex flex-col gap-2">
             <Label className="">Invoice Items:</Label>
             <Table className="font-medium rounded-md">
-              <TableHeader className="bg-zinc-100">
+              <TableHeader className="bg-zinc-100 border">
                 <TableRow>
                   <TableHead className="w-3/4">Description</TableHead>
                   <TableHead className="text-right">Price</TableHead>
@@ -97,9 +104,21 @@ const BillForm = ({ setShowDetail }: BillFormProps) => {
               </TableFooter>
             </Table>
           </div>
+          <div className="w-full ">
+            <Label className="text-zinc-400">Status:</Label>
+            <Select defaultValue='UNPAID'>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Theme" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="UNPAID">UNPAID</SelectItem>
+                <SelectItem value="PAID">PAID</SelectItem>
+                <SelectItem value="OVERDUE">OVERDUE</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
         <Separator />
-
         <div className="w-full flex justify-end gap-2 p-4">
           <Button
             onClick={() => setShowDetail(null)}
