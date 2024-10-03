@@ -109,8 +109,9 @@ const Header = () => {
         <div className="sm:w-full h-full sm:h-[150px] sm:p-3 sm:order-none order-2">
           <img
             src={Logo}
+						onClick={() => navigate('/')}
             alt="Logo website"
-            className="w-full h-full object-contain aspect-square"
+            className="w-full h-full object-contain aspect-square cursor-pointer"
           />
         </div>
         {width <= 640 && <MobileMenu sidebar={userSideBars} />}

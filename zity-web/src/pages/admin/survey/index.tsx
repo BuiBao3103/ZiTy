@@ -77,7 +77,7 @@ const Index = () => {
                       </div>
                       <div className="w-full flex gap-4 justify-end items-center">
                         <section className="flex gap-2">
-                          <span className="w-16 inline-flex rounded-sm bg-zinc-300 justify-center items-center">
+                          <span className="w-16 inline-flex rounded-sm bg-zinc-100 justify-center items-center">
                             <Clock />
                           </span>
                           <div className="w-full flex flex-col">
@@ -88,7 +88,7 @@ const Index = () => {
                           </div>
                         </section>
                         <section className="flex gap-2">
-                          <span className="w-16 inline-flex rounded-sm bg-zinc-300 justify-center items-center">
+                          <span className="w-16 inline-flex rounded-sm bg-zinc-100 justify-center items-center">
                             <AlarmClock />
                           </span>
                           <div className="w-full flex flex-col">

@@ -23,6 +23,7 @@ import SurveyAdmin from '@admin/survey'
 import Package from '@user/package'
 import Report from '@user/report'
 import Bill from '@user/bill'
+import Survey from '@user/survey'
 
 //Error page
 import NotFound from '@pages/404'
@@ -100,6 +101,10 @@ export const route = createBrowserRouter([
 					{
 						path: '/admin/survey',
 						element: <SurveyAdmin />,
+					},
+					{
+						path: '/survey',
+						element: <Survey />
 					}
         ],
       },
