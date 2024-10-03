@@ -7,6 +7,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
+import { Fragment } from 'react/jsx-runtime'
 
 interface BreadcrumbProps {
   paths: { label: string; to?: string }[] // Array to handle multiple breadcrumb levels
@@ -24,20 +25,24 @@ const Index: React.FC<BreadcrumbProps> = ({ paths }) => {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           {paths.map((path, index) => (
-            <>
+            <Fragment key={index}>
               {index != paths.length - 1 ? (
-                <BreadcrumbItem key={index}>
+                <BreadcrumbItem>
                   <BreadcrumbLink asChild>
-                    <Link to={path.to || ''} className='first-letter:uppercase'>{path.label}</Link>
+                    <Link to={path.to || ''} className="first-letter:uppercase">
+                      {path.label}
+                    </Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
               ) : (
-                <BreadcrumbItem key={index}>
-                  <BreadcrumbPage className='first-letter:uppercase'>{path.label}</BreadcrumbPage>
+                <BreadcrumbItem>
+                  <BreadcrumbPage className="first-letter:uppercase">
+                    {path.label}
+                  </BreadcrumbPage>
                 </BreadcrumbItem>
               )}
               {index < paths.length - 1 && <BreadcrumbSeparator />}
-            </>
+            </Fragment>
           ))}
         </BreadcrumbList>
       </Breadcrumb>

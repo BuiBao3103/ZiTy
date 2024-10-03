@@ -50,5 +50,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
   }),
 })
 
+export const { userLoggedIn, userLoggedOut } = authSlice.actions
+
 export default authSlice.reducer
 export const { useLoginMutation } = authApiSlice
