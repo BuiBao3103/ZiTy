@@ -77,18 +77,24 @@ const Header = () => {
       to: '/user',
       role: ['ADMIN'],
     },
-		{
+    {
       label: 'Service',
       icon: <HandPlatter />,
       to: '/service',
       role: ['ADMIN'],
     },
-		{
-			label: 'Package Admin',
-			icon: <Package />,
-			to: '/admin/package',
-			role: ['ADMIN'],
-		}
+    {
+      label: 'Package Admin',
+      icon: <Package />,
+      to: '/admin/package',
+      role: ['ADMIN'],
+    },
+    {
+      label: 'Bill Admin',
+      icon: <Receipt />,
+      to: '/admin/bill',
+      role: ['ADMIN'],
+    },
   ]
 
   return (

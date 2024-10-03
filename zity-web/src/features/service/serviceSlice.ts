@@ -8,13 +8,13 @@ export const serviceApiSlice = apiSlice.injectEndpoints({
         url: 'services',
         method: 'GET',
       }),
-      // providesTags: (results) =>
-      //   results
-      //     ? [
-      //         ...results.map(({ id }) => ({ type: 'Service' as const, id })),
-      //         { type: 'Service', id: 'LIST' },
-      //       ]
-      //     : [{ type: 'Service', id: 'LIST' }],
+      providesTags: (results) =>
+        results
+          ? [
+              ...results.map(({ id }) => ({ type: 'Service' as const, id })),
+              { type: 'Service', id: 'LIST' },
+            ]
+          : [{ type: 'Service', id: 'LIST' }],
     }),
     getService: builder.query<Service, string>({
       query: (id: string) => ({
@@ -23,13 +23,16 @@ export const serviceApiSlice = apiSlice.injectEndpoints({
       }),
       // providesTags: (result, error, id) => [{ type: 'Service', id }],
     }),
-    createService: builder.mutation<Service, Partial<Service>>({
+    createService: builder.mutation<
+      Service,
+      Partial<Service> & Omit<Service, 'id'>
+    >({
       query: (body) => ({
         url: 'services',
         method: 'POST',
         body,
       }),
-			// invalidatesTags: [{ type: 'Service', id: 'LIST' }],
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }],
     }),
     updateService: builder.mutation<Service, Service>({
       query: (body) => ({
