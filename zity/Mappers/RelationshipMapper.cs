@@ -16,6 +16,9 @@ namespace zity.Mappers
                 UserId = relationship.UserId,
                 ApartmentId = relationship.ApartmentId,
                 User = relationship.User != null ? UserMapper.ToUserDTO(relationship.User) : null,
+                //Apartment = relationship.Apartment != null ? ApartmentMapper.ToDTO(relationship.Apartment) : null,
+                //Bills = relationship.Bills.Select(bill => BillMapper.ToDTO(bill)).ToList(),
+                //Reports = relationship.Reports.Select(report => ReportMapper.ToDTO(report)).ToList(),
             };
         }
 
@@ -43,13 +46,12 @@ namespace zity.Mappers
         {
             if (patchDTO.Role != null)
                 relationship.Role = patchDTO.Role;
-            if (patchDTO.UserId.HasValue)
+            if (patchDTO.UserId != null)
                 relationship.UserId = patchDTO.UserId.Value;
             if (patchDTO.ApartmentId != null)
                 relationship.ApartmentId = patchDTO.ApartmentId;
             relationship.UpdatedAt = DateTime.Now;
             return relationship;
-
         }
     }
 }
