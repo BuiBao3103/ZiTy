@@ -5,7 +5,6 @@ using zity.ExceptionHandling;
 using zity.Models;
 using zity.Repositories.Interfaces;
 using zity.Utilities;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace zity.Repositories.Implementations
 {
@@ -15,7 +14,7 @@ namespace zity.Repositories.Implementations
 
         public async Task<PaginatedResult<Relationship>> GetAllAsync(RelationshipQueryDTO queryParam)
         {
-            var filterParams = new Dictionary<string, string?> 
+            var filterParams = new Dictionary<string, string?>
                 {
                     { "Id", queryParam.Id },
                     { "UserId", queryParam.UserId },

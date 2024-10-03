@@ -1,4 +1,5 @@
-﻿using zity.DTOs.Relationships;
+﻿using System.Threading.Tasks;
+using zity.DTOs.Relationships;
 using zity.Mappers;
 using zity.Models;
 using zity.Repositories.Interfaces;
@@ -15,6 +16,7 @@ namespace zity.Services.Implementations
         public async Task<PaginatedResult<RelationshipDTO>> GetAllAsync(RelationshipQueryDTO queryParam)
         {
             var pageRelationships = await _relationshipRepository.GetAllAsync(queryParam);
+
             return new PaginatedResult<RelationshipDTO>(
                 pageRelationships.Contents.Select(RelationshipMapper.ToDTO).ToList(),
                 pageRelationships.TotalItems,
