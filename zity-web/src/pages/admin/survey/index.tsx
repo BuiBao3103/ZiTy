@@ -26,8 +26,9 @@ const Index = () => {
     <div className={`w-full ${isCreateNewSurvey ? "h-full" : "sm:h-screen"} flex flex-col bg-zinc-100`}>
       <BreadCrumb
         paths={[
-          { label: 'survey', to: '/survey' },
+          { label: 'survey', to: '/admin/survey' },
           ...(params.id ? [{ label: params.id }] : []),
+					...(isCreateNewSurvey ? [{label: 'New Survey'}] : []),
         ]}
       />
       <div className="w-full h-full p-4 overflow-hidden">
