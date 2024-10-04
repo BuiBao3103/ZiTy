@@ -1,4 +1,4 @@
-import CreateSurveyForm from '../admin/survery/components/create-survey-form'
+import CreateSurveyForm from '@admin/survey/components/create-survey-form'
 
 const Index = () => {
   return (

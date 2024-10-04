@@ -13,14 +13,15 @@ import { Button } from '@/components/ui/button'
 
 interface AlertDeleteProps {
   setAction: (value: void) => void
-  description: string
+  description: string,
+	buttonType?: "link" | "default" | "destructive" | "outline" | "secondary" | "ghost" | "success" | "warning" | "info" | "error"
 }
 
-const AlertDelete = ({ setAction, description }: AlertDeleteProps) => {
+const AlertDelete = ({ setAction, description,buttonType = "destructive" }: AlertDeleteProps) => {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button type="button" variant={'destructive'}>
+        <Button type="button" variant={buttonType}>
           Delete
         </Button>
       </AlertDialogTrigger>

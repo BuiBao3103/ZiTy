@@ -72,13 +72,13 @@ const Header = () => {
       role: ['ADMIN', 'RESIDENT'],
     },
     {
-      label: 'User',
+      label: 'User Admin',
       icon: <UsersRound />,
       to: '/user',
       role: ['ADMIN'],
     },
     {
-      label: 'Service',
+      label: 'Service Admin',
       icon: <HandPlatter />,
       to: '/service',
       role: ['ADMIN'],
@@ -95,6 +95,12 @@ const Header = () => {
       to: '/admin/bill',
       role: ['ADMIN'],
     },
+		{
+      label: 'Survey Admin',
+      icon: <NotebookText />,
+      to: '/admin/survey',
+      role: ['ADMIN'],
+    },
   ]
 
   return (
@@ -103,8 +109,9 @@ const Header = () => {
         <div className="sm:w-full h-full sm:h-[150px] sm:p-3 sm:order-none order-2">
           <img
             src={Logo}
+						onClick={() => navigate('/')}
             alt="Logo website"
-            className="w-full h-full object-contain aspect-square"
+            className="w-full h-full object-contain aspect-square cursor-pointer"
           />
         </div>
         {width <= 640 && <MobileMenu sidebar={userSideBars} />}

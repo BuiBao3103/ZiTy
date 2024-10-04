@@ -1,11 +1,4 @@
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
-import {
   Pagination,
   PaginationContent,
   PaginationItem,
@@ -13,12 +6,11 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination'
-
+import BreadCrumb from '@/components/breadcrumb'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { UserPartialSchema } from '@/schema/user.validate'
 import { Filter, Search } from 'lucide-react'
-import { Link } from 'react-router-dom'
 import UserList from './components/user-list'
 import { useDocumentTitle } from 'usehooks-ts'
 import UserForm from './components/user-form'
@@ -39,18 +31,7 @@ const Index = () => {
   return (
     <>
       <div className="w-full sm:h-screen flex flex-col bg-zinc-100">
-        <div className="w-full px-4 pt-4">
-          <Breadcrumb className="p-4 font-medium bg-white rounded-md">
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link to={'/'}>Home</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-            </BreadcrumbList>
-          </Breadcrumb>
-        </div>
+        <BreadCrumb paths={[{ label: 'user', to: '/user' }]} />
         <div className="size-full p-4">
           <div className="size-full p-4 bg-white rounded-md">
             <div className="w-full h-auto flex justify-between items-center">
