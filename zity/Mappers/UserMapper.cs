@@ -6,7 +6,7 @@ namespace zity.Mappers
 {
     public static class UserMapper
     {
-        public static UserDTO ToUserDTO(this User userModel)
+        public static UserDTO ToDTO(this User userModel)
         {
             return new UserDTO
             {
