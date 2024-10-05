@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace zity.Models;
+﻿namespace zity.Models;
 
 public partial class Apartment
 {

@@ -1,11 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using zity.Data;
 using zity.DTOs.Relationships;
-using zity.ExceptionHandling;
 using zity.Models;
 using zity.Repositories.Interfaces;
 using zity.Utilities;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace zity.Repositories.Implementations
 {
@@ -72,6 +70,6 @@ namespace zity.Repositories.Implementations
             return true;
         }
 
-        
+
     }
 }
