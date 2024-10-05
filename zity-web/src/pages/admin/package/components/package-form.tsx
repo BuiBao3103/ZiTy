@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
-import { FieldError, useForm } from 'react-hook-form'
+import { FieldErrors, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from 'sonner'
@@ -26,7 +26,12 @@ import { PackageSchema } from '@/schema/package.validate'
 import { PlusCircle, X } from 'lucide-react'
 import React, { useState } from 'react'
 
-const PackageForm = () => {
+interface PackageFormProps {
+  children: React.ReactNode
+  id?: string
+}
+
+const PackageForm = ({ children, id }: PackageFormProps) => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
 
   const form = useForm<z.infer<typeof PackageSchema>>({
@@ -43,16 +48,16 @@ const PackageForm = () => {
     console.log(data)
   }
 
-  const onError = (error: any) => {
-    console.log(error)
-    if (error['name']) {
-      toast.error(error['']?.message)
-      return
-    }
-    if (error['description']) {
-      toast.error(error['description']?.message)
-      return
-    }
+  const onError = (errors: FieldErrors<z.infer<typeof PackageSchema>>) => {
+    console.log(errors)
+    // if (error['name']) {
+    //   toast.error(error['']?.message)
+    //   return
+    // }
+    // if (error['description']) {
+    //   toast.error(error['description']?.message)
+    //   return
+    // }
     // if (error['price']) {
     //   toast.error(error['price']?.message)
     //   return
@@ -76,16 +81,14 @@ const PackageForm = () => {
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <Button className="w-full sm:w-fit" variant={'default'} size={'lg'}>
-          New Package
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent
         className="max-w-sm lg:max-w-lg xl:max-w-xl"
         aria-describedby={undefined}>
         <DialogHeader>
-          <DialogTitle className="text-2xl">New Package</DialogTitle>
+          <DialogTitle className="text-2xl">
+            {id ? `Package #123` : 'New Package'}
+          </DialogTitle>
         </DialogHeader>
         <Separator />
         <Form {...form}>
@@ -129,7 +132,6 @@ const PackageForm = () => {
                     <FormItem className="w-full">
                       <FormLabel>Status</FormLabel>
                       <FormControl>
-
                         <Input
                           type="text"
                           readOnly

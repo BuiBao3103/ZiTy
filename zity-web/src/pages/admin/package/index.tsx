@@ -1,4 +1,3 @@
-
 import { Input } from '@/components/ui/input'
 import {
   Pagination,
@@ -56,7 +55,7 @@ const Index = () => {
   return (
     <>
       <div className="w-full sm:h-screen flex flex-col bg-zinc-100">
-      <BreadCrumb paths={[{label: 'package',to: '/package'}]} />
+        <BreadCrumb paths={[{ label: 'package', to: '/package' }]} />
         <div className="size-full p-4">
           <div className="size-full p-4 bg-white rounded-md">
             <div className="w-full h-auto flex justify-between items-center">
@@ -73,7 +72,14 @@ const Index = () => {
                   Filter
                 </Button>
               </div>
-              <PackageForm />
+              <PackageForm>
+                <Button
+                  className="w-full sm:w-fit"
+                  variant={'default'}
+                  size={'lg'}>
+                  New Package
+                </Button>
+              </PackageForm>
             </div>
             <PackageList packages={packages} />
             <Pagination className="mt-2">
