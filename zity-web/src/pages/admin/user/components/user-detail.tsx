@@ -84,18 +84,18 @@ const UserDetail = ({ user, setShowDetail }: UserDetailProps) => {
           <p className="text-sm font-medium text-gray-500">
             Password: <span className="text-black">************</span>
           </p>
-          <p className="text-sm font-medium text-gray-500">
+          <div className="text-sm font-medium text-gray-500">
             First Login:{' '}
             <Badge className="uppercase" variant={'error'}>
               False
             </Badge>
-          </p>
-          <p className="text-sm font-medium text-gray-500">
+          </div>
+          <div className="text-sm font-medium text-gray-500">
             Is Staying:{' '}
             <Badge className="uppercase" variant={'success'}>
               True
             </Badge>
-          </p>
+          </div>
           <div className="w-full h-full flex items-end gap-2">
             <Button type="button" variant={'warning'}>
               Edit
