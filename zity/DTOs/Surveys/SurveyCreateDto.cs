@@ -12,5 +12,7 @@ namespace zity.DTOs.Surveys
         public DateTime EndDate { get; set; }
         [Required]
         public int TotalQuestions { get; set; }
+        [Required]
+        public int UserCreateId { get; set; }
     }
 }

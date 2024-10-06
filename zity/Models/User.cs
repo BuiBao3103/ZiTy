@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using zity.DTOs.Users;
 
 namespace zity.Models;
 
@@ -26,4 +27,9 @@ public partial class User
     public virtual ICollection<Relationship> Relationships { get; set; } = new List<Relationship>();
     public virtual ICollection<Survey> Surveys { get; set; } = new List<Survey>();
     public virtual ICollection<UserAnswer> UserAnswers { get; set; } = new List<UserAnswer>();
+
+    public static implicit operator User?(UserDTO? v)
+    {
+        throw new NotImplementedException();
+    }
 }

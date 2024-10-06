@@ -21,7 +21,8 @@ namespace zity.Mappers
             {
                 Name = serviceCreateDTO.Name,
                 Description = serviceCreateDTO.Description,
-                Price = serviceCreateDTO.Price
+                Price = serviceCreateDTO.Price,
+                CreatedAt = DateTime.Now,
             };
 
         // UpdateModelFromUpdate
@@ -30,6 +31,7 @@ namespace zity.Mappers
             service.Name = serviceUpdateDTO.Name;
             service.Description = serviceUpdateDTO.Description;
             service.Price = serviceUpdateDTO.Price;
+            service.UpdatedAt = DateTime.Now;
 
             return service;
         }
@@ -51,6 +53,7 @@ namespace zity.Mappers
             {
                 service.Price = servicePatchDTO.Price.Value;
             }
+            service.UpdatedAt = DateTime.Now;
 
             return service;
         }
