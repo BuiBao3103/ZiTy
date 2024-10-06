@@ -6,46 +6,46 @@ namespace zity.Mappers
 {
     public class AnswerMapper
     {
-        public static AnswerDTO ToDTO(Answer question)
+        public static AnswerDTO ToDTO(Answer answer)
         {
             return new AnswerDTO
             {
-                Id = question.Id,
-                CreatedAt = question.CreatedAt,
-                UpdatedAt = question.UpdatedAt,
-                Content = question.Content,
-                QuestionId = question.QuestionId,
-                // Question = question.Question != null ? QuestionMapper.ToDTO(question.Question) : null,
-                // UserAnswers = question.UserAnswers.Select(userAnswer => UserAnswerMapper.ToDTO(userAnswer)).ToList(),
+                Id = answer.Id,
+                CreatedAt = answer.CreatedAt,
+                UpdatedAt = answer.UpdatedAt,
+                Content = answer.Content,
+                QuestionId = answer.QuestionId,
+                // Question = answer.Question != null ? QuestionMapper.ToDTO(answer.Question) : null,
+                // UserAnswers = answer.UserAnswers.Select(userAnswer => UserAnswerMapper.ToDTO(userAnswer)).ToList(),
             };
         }
 
-        public static Answer ToModelFromCreate(AnswerCreateDTO questionCreateDTO)
+        public static Answer ToModelFromCreate(AnswerCreateDTO answerCreateDTO)
         {
             return new Answer
             {
-                Content = questionCreateDTO.Content,
-                QuestionId = questionCreateDTO.QuestionId,
+                Content = answerCreateDTO.Content,
+                QuestionId = answerCreateDTO.QuestionId,
                 CreatedAt = DateTime.Now,
             };
         }
 
-        public static Answer UpdateModelFromUpdate(Answer question, AnswerUpdateDTO updateDTO)
+        public static Answer UpdateModelFromUpdate(Answer answer, AnswerUpdateDTO updateDTO)
         {
-            question.Content = updateDTO.Content;
-            question.QuestionId = updateDTO.QuestionId;
-            question.UpdatedAt = DateTime.Now;
-            return question;
+            answer.Content = updateDTO.Content;
+            answer.QuestionId = updateDTO.QuestionId;
+            answer.UpdatedAt = DateTime.Now;
+            return answer;
         }
 
-        public static Answer PatchModelFromPatch(Answer question, AnswerPatchDTO patchDTO)
+        public static Answer PatchModelFromPatch(Answer answer, AnswerPatchDTO patchDTO)
         {
             if (patchDTO.Content != null)
-                question.Content = patchDTO.Content;
+                answer.Content = patchDTO.Content;
             if (patchDTO.QuestionId != null)
-                question.QuestionId = patchDTO.QuestionId.Value;
-            question.UpdatedAt = DateTime.Now;
-            return question;
+                answer.QuestionId = patchDTO.QuestionId.Value;
+            answer.UpdatedAt = DateTime.Now;
+            return answer;
         }
     }
 }
