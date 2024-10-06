@@ -42,6 +42,12 @@ var cloudinarySettings = new CloudinarySettings
     ApiSecret = Environment.GetEnvironmentVariable("CLOUDINARY_API_SECRET") ?? throw new ArgumentException("CLOUDINARY_API_SECRET is missing.")
 };
 
+// Retrieve the login URL from environment variables
+var appSettings = new AppSettings
+{
+    LoginUrl = Environment.GetEnvironmentVariable("LOGIN_URL") ?? throw new ArgumentException("LOGIN_URL is missing.")
+};
+
 // Add services to the container.
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -63,6 +69,7 @@ builder.Services.AddScoped<IRelationshipRepository, RelationshipRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRelationshipService, RelationshipService>();
 builder.Services.AddScoped<IMediaService, MediaService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 // Register Cloudinary as a singleton service
 var cloudinaryAccount = new Account(cloudinarySettings.CloudName, cloudinarySettings.ApiKey, cloudinarySettings.ApiSecret);
@@ -71,6 +78,9 @@ builder.Services.AddSingleton(cloudinary);
 
 // Register Mail settings
 builder.Services.AddSingleton(mailSettings);
+
+// Register AppSettings
+builder.Services.AddSingleton(appSettings);
 
 // Register exception handling
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
