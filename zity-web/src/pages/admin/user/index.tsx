@@ -26,6 +26,13 @@ const Index = () => {
       user_type: ['RESIDENT'],
       is_staying: true,
       avatar: 'https://picsum.photos/id/2/200/300',
+      nation_id: '123456789012',
+      date_of_birth: new Date(),
+      is_first_login: true,
+      email: 'user1@gmail.com',
+      gender: 'MALE',
+      password: 'password',
+      username: 'user1',
     },
   ]
   return (

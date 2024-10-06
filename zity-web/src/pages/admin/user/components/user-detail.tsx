@@ -1,6 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
-import { X } from 'lucide-react'
+import { CalendarIcon, X } from 'lucide-react'
 import GridWallpaper from '@/assets/grid-wallpaper.jpg'
 import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
@@ -18,6 +18,22 @@ import {
   FormLabel,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { format } from 'date-fns'
+import { cn } from '@/lib/utils'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+import { Calendar } from '@/components/ui/calendar'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { useState } from 'react'
 
 interface UserDetailProps {
   user: z.infer<typeof UserPartialSchema> | null
@@ -26,8 +42,25 @@ interface UserDetailProps {
 
 const UserDetail = ({ user, setShowDetail }: UserDetailProps) => {
   const dispatch = useAppDispath()
+  const [selectedImage, setSelectedImage] = useState<string | undefined>(
+    undefined,
+  )
   const form = useForm<z.infer<typeof UserPartialSchema>>({
-    defaultValues: {},
+    defaultValues: {
+      id: user?.id,
+      username: user?.username,
+      password: user?.password,
+      avatar: user?.avatar,
+      is_first_login: user?.is_first_login,
+      email: user?.email,
+      phone: user?.phone,
+      date_of_birth: user?.date_of_birth,
+      full_name: user?.full_name,
+      user_type: user?.user_type,
+      nation_id: user?.nation_id,
+      gender: user?.gender,
+      is_staying: user?.is_staying,
+    },
   })
   const setAction = () => {
     console.log('delete')
@@ -39,9 +72,7 @@ const UserDetail = ({ user, setShowDetail }: UserDetailProps) => {
 
   return (
     <div
-      className={`fixed top-0 ${
-        user ? 'right-0 animate-in fade-in-0 duration-300' : 'right-full'
-      } w-full h-screen z-50 flex justify-center items-center p-4`}>
+      className={`fixed top-0 left-0 w-full h-screen z-50 flex justify-center items-center p-4`}>
       <div
         onClick={() => setShowDetail(null)}
         className="w-full h-screen absolute animate-in fade-in inset-0 bg-gradient-to-b from-black/20 to-black/60"></div>
@@ -52,7 +83,7 @@ const UserDetail = ({ user, setShowDetail }: UserDetailProps) => {
           <img
             src={GridWallpaper}
             alt="grid wallpaper"
-            className="w-full h-[90px] object-cover absolute inset-0 border-b-4 border-white"
+            className="w-full h-[140px] object-cover absolute inset-0 border-b-4 border-white"
           />
           <Button
             className="absolute top-3 right-3"
@@ -62,27 +93,45 @@ const UserDetail = ({ user, setShowDetail }: UserDetailProps) => {
             <X />
           </Button>
           <div className="size-full flex flex-col space-y-4 px-4 pb-4 pt-10">
-            <Avatar className="size-28 border-4 border-white shadow-lg">
-              <AvatarImage src={user?.avatar} alt="User avatar" />
-              <AvatarFallback className="text-lg">
-                {user?.full_name ??
-                  ''
-                    .split(' ')
-                    .map((item) => item.charAt(0))
-                    .join('')}
-              </AvatarFallback>
-            </Avatar>
-            <p className="text-lg font-medium">{user?.full_name}</p>
-            <div className="w-full h-5 flex gap-2 font-medium text-sm">
-              <span>National ID</span>
-              <Separator orientation='vertical' />
-              <span>Phone number</span>
-              <Separator orientation="vertical" />
-              <span>Gender</span>
-              <Separator orientation="vertical" />
-              <span>Date of birth</span>
-            </div>
-            <div className="flex gap-2 uppercase">
+            <FormField
+              control={form.control}
+              name="avatar"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Avatar</FormLabel>
+                  <FormControl>
+                    <div className="relative size-32 overflow-hidden rounded-full shadow-lg">
+                      {/* Display current image */}
+                      <img
+                        src={field.value ?? selectedImage}
+                        alt="Avatar preview"
+                        className="size-full object-cover border-4 rounded-full border-zinc-100"
+                      />
+                      {/* File upload option */}
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        className="size-full absolute inset-0 opacity-0 cursor-pointer"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0]
+                          if (file) {
+                            const reader = new FileReader()
+                            reader.onload = () => {
+                              if (typeof reader.result === 'string') {
+                                form.setValue('avatar', reader.result) // Set image URL as base64 string
+                                setSelectedImage(reader.result) // Set image URL as base64 string
+                              }
+                            }
+                            reader.readAsDataURL(file)
+                          }
+                        }}
+                      />
+                    </div>
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <div className="uppercase">
               <Badge
                 variant={`${
                   Array.isArray(user?.user_type)
@@ -94,86 +143,171 @@ const UserDetail = ({ user, setShowDetail }: UserDetailProps) => {
                 {user?.user_type}
               </Badge>
             </div>
+            <FormField
+              control={form.control}
+              name="full_name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Full name</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Type your full name"
+                      {...field}
+                      className="focus-visible:ring-primary"
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <div className="w-full flex flex-wrap gap-2">
+              <FormField
+                control={form.control}
+                name="nation_id"
+                render={({ field }) => (
+                  <FormItem className="w-full flex-[1_1_150px]">
+                    <FormLabel>National ID</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Type your national ID"
+                        {...field}
+                        type="number"
+                        minLength={12}
+                        maxLength={12}
+                        className="focus-visible:ring-primary"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="gender"
+                render={({ field }) => (
+                  <FormItem className="w-full flex-[1_1_150px]">
+                    <FormLabel>Gender</FormLabel>
+                    <FormControl>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select gender" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="MALE">Male</SelectItem>
+                          <SelectItem value="FEMALE">Female</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="date_of_birth"
+                render={({ field }) => (
+                  <FormItem className="w-full flex-[1_1_150px]">
+                    <FormLabel>Date Of Birth</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant={'outline'}
+                            className={cn(
+                              'w-full pl-3 text-left font-normal',
+                              !field.value && 'text-muted-foreground',
+                            )}>
+                            {field.value ? (
+                              format(field.value, 'PPP')
+                            ) : (
+                              <span>Pick a date</span>
+                            )}
+                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={field.value}
+                          onSelect={field.onChange}
+                          disabled={(date) =>
+                            date > new Date() || date < new Date('1900-01-01')
+                          }
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </FormItem>
+                )}
+              />
+            </div>
             <p className="text-gray-500 font-medium text-sm">
               Account Information
             </p>
-            <FormField
-              control={form.control}
-              name="username"
-              render={({ field }) => (
-                <FormItem className="flex gap-4 items-start space-y-0">
-                  <FormLabel className="sm:w-[120px]">Username</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter username..." {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <Separator className="my-2" />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem className="flex gap-4 items-start space-y-0">
-                  <FormLabel className="sm:w-[120px]">Password</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter password..." {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <Separator className="my-2" />
-            <FormField
-              control={form.control}
-              name="avatar"
-              render={({ field }) => (
-                <FormItem className="flex gap-4 items-start space-y-0">
-                  <FormLabel className="sm:w-[120px]">Avatar</FormLabel>
-                  <FormControl>
-                    <div className="flex gap-4">
-                      <img
-                        src={user?.avatar}
-                        className="size-16 min-[450px]:size-20 rounded-full"
-                        alt=""
+            <div className="w-full flex gap-4">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter email..."
+                        type="email"
+                        {...field}
                       />
-                      <Button
-                        type="button"
-                        className="relative"
-                        variant={'secondary'}>
-                        Click here to replace
-                        <Input
-                          type="file"
-                          accept="image/*"
-                          className="absolute size-full inset-0 opacity-0"
-                          {...field}
-                        />
-                      </Button>
-                    </div>
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            {/* <div className="text-sm font-medium text-gray-500">
-              Username:{' '}
-              <span className="text-black">
-                {'username1234'.slice(0, -4) + '****'}
-              </span>
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Phone</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter phone..."
+                        type="tel"
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
             </div>
-            <div className="text-sm font-medium text-gray-500 flex items-start">
-              Password:
-            </div> */}
-            {/* <div className="text-sm font-medium text-gray-500">
-            First Login:{' '}
-            <Badge className="uppercase" variant={'error'}>
-              False
-            </Badge>
-          </div>
-          <div className="text-sm font-medium text-gray-500">
-            Is Staying:{' '}
-            <Badge className="uppercase" variant={'success'}>
-              True
-            </Badge>
-          </div> */}
+            <div className="w-full flex gap-4">
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Username</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter username..." {...field} />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter password..."
+                        type="password"
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
           </div>
           <Separator />
           <div className="w-full h-full flex justify-between items-center p-4">
