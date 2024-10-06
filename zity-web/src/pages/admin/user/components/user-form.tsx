@@ -281,7 +281,7 @@ const UserForm = () => {
             />
             <div className="w-full flex justify-end gap-4">
               <DialogClose asChild>
-                <Button size={'lg'} variant={'ghost'}>
+                <Button type='button' size={'lg'} variant={'ghost'}>
                   Cancel
                 </Button>
               </DialogClose>

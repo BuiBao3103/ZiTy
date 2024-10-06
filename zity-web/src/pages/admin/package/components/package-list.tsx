@@ -7,13 +7,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
 import { Package } from '@/schema/package.validate'
-import { Eye, Trash2 } from 'lucide-react'
+import { Eye } from 'lucide-react'
 import PackageForm from './package-form'
 import AlertDelete from '@/components/alert/AlertDelete'
 import { Button } from '@/components/ui/button'
@@ -54,29 +49,19 @@ const PackageList = ({ packages }: PackageListProps) => {
                 </Badge>
               </TableCell>
               <TableCell>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <PackageForm id="123">
-                      <Button size={"icon"} variant={"ghost"}>
-                        <Eye />
-                      </Button>
-                    </PackageForm>
-                  </TooltipTrigger>
-                  <TooltipContent>Detail</TooltipContent>
-                </Tooltip>
+                <PackageForm id="123">
+                  <Button size={'icon'} variant={'ghost'}>
+                    <Eye />
+                  </Button>
+                </PackageForm>
               </TableCell>
               <TableCell>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <AlertDelete
-                      description="package"
-                      setAction={() => {}}
-                      type="icon"
-                      variants="ghost"
-                    />
-                  </TooltipTrigger>
-                  <TooltipContent>Delete</TooltipContent>
-                </Tooltip>
+                <AlertDelete
+                  description="package"
+                  setAction={() => {}}
+                  type="icon"
+                  variants="ghost"
+                />
               </TableCell>
             </TableRow>
           ))}

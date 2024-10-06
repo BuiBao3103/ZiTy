@@ -20,12 +20,12 @@ const buttonVariants = cva(
         ghost: 'hover:bg-accent hover:text-accent-foreground',
         link: 'text-primary underline-offset-4 hover:underline',
         success:
-          'border border-success-500 bg-success text-success-foreground hover:bg-success/80',
+          'border border-success-foreground bg-success-foreground text-white hover:bg-success-foreground/80',
         warning:
-          'border border-yellow-500 bg-warning text-warning-foreground hover:bg-warning/80',
-        info: 'border bg-info text-info-foreground hover:bg-info/80',
+          'border border-warning-foreground bg-warning-foreground text-white hover:bg-warning-foreground/80',
+        info: 'border border-info-foreground bg-info-foreground text-white hover:bg-info-foreground/80',
         error:
-          'border border-red-500 bg-error text-error-foreground hover:bg-error/80',
+          'border border-error-foreground bg-error-foreground text-white hover:bg-error-foreground/80',
       },
       size: {
         default: 'h-9 px-4 py-2',
