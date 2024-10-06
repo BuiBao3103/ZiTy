@@ -28,6 +28,14 @@ namespace zity.Services.Implementations
             return user != null ? UserMapper.ToDTO(user) : null;
         }
 
+        public async Task<UserDTO> CreateAsync(UserCreateDTO userCreateDTO)
+        {
+            var user = UserMapper.FromCreateDTO(userCreateDTO);
+            user.Password = "password";
+            var createdUser = await _userRepository.CreateAsync(user);
+            return UserMapper.ToDTO(createdUser);
+        }
+
         public async Task<UserDTO?> UploadAvatarAsync(int id, IFormFile file)
         {
             var user = await _userRepository.GetByIdAsync(id, null);
