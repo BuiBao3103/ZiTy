@@ -19,7 +19,13 @@ export const UserSchema = z.object({
     .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
     .regex(/[0-9]/, 'Password must contain at least one number')
     .regex(/[\W_]/, 'Password must contain at least one special character'),
-  avatar: z.string(),
+  avatar: z
+    .string()
+    .url()
+    .refine(
+      (url) => /\.(jpg|jpeg|png|gif)$/i.test(url),
+      'Avatar must be a valid image URL (.jpg, .jpeg, .png, or .gif)',
+    ),
   is_first_login: z.boolean(),
   email: z.string().email('Invalid email address'),
   phone: z
@@ -27,7 +33,10 @@ export const UserSchema = z.object({
     .length(10, 'Phone number must be exactly 10 digits')
     .regex(/^\d{10}$/, 'Phone number must contain only digits'),
   gender: GenderSchema,
-  nation_id: z.string().min(12, 'Nation ID is required').max(12, 'Nation ID is required'),
+  nation_id: z
+    .string()
+    .min(12, 'Nation ID is required')
+    .max(12, 'Nation ID is required'),
   full_name: z
     .string()
     .min(2, 'Full name must be at least 2 characters long')
@@ -59,7 +68,8 @@ export const UserLoginSchema = UserSchema.pick({
 })
 
 // Example Zod schema for UserPartial (Partial<User>)
-export const UserPartialSchema = UserSchema.partial().optional()
+export const UserPartialSchema = UserSchema.partial()
+
 
 // Example Zod schema for UserApartment (which extends User)
 export const UserApartmentSchema = UserSchema.extend({

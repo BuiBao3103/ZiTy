@@ -3,11 +3,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import authSlice from './features/auth/authSlice'
 import { apiSlice } from './features/api/apiSlice'
 import surveySlice from './features/survey/surveySlice'
+import userSlice from './features/user/userSlice'
 
 export const store = configureStore({
   reducer: {
+    userReducer: userSlice,
     authReducer: authSlice,
-		surveyReducer: surveySlice,
+    surveyReducer: surveySlice,
     [apiSlice.reducerPath]: apiSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
