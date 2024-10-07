@@ -9,9 +9,9 @@ namespace zity.Services.Interfaces
     {
         Task<PaginatedResult<OtherAnswerDTO>> GetAllAsync(OtherAnswerQueryDTO query);
         Task<OtherAnswerDTO?> GetByIdAsync(int id, string? includes);
-        Task<OtherAnswerDTO> CreateAsync(OtherAnswerCreateDTO OtherAnswerCreateDTO);
-        Task<OtherAnswerDTO?> UpdateAsync(int id, OtherAnswerUpdateDTO OtherAnswerUpdateDTO);
-        Task<OtherAnswerDTO?> PatchAsync(int id, OtherAnswerPatchDTO OtherAnswerPatchDTO);
+        Task<OtherAnswerDTO> CreateAsync(OtherAnswerCreateDTO otherAnswerCreateDTO);
+        Task<OtherAnswerDTO?> UpdateAsync(int id, OtherAnswerUpdateDTO otherAnswerUpdateDTO);
+        Task<OtherAnswerDTO?> PatchAsync(int id, OtherAnswerPatchDTO otherAnswerPatchDTO);
         Task<bool> DeleteAsync(int id);
     }
 }
