@@ -25,7 +25,7 @@ import MobileMenu from './components/MobileMenu'
 import Logo from '@/assets/logo.svg'
 import LogoMobile from '@/assets/logoMobile.svg'
 import { UserRole } from '@/enums'
-import { useEffect, useState } from 'react'
+import {  useState } from 'react'
 export interface SideBarProps {
   label: string
   icon: React.ReactNode
@@ -176,7 +176,7 @@ const Header = () => {
                   <TooltipTrigger asChild>
                     <Link
                       to={sideBar.to}
-                      className={`w-full p-2 flex justify-center items-center rounded-md ${
+                      className={`w-full p-2 flex justify-center items-center rounded-md hover:bg-zinc-100 transition-all ${
                         (sideBar.to === '/'
                           ? location.pathname === '/'
                           : location.pathname.startsWith(sideBar.to)) &&
