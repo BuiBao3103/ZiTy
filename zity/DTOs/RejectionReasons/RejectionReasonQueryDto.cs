@@ -2,7 +2,7 @@
 
 namespace zity.DTOs.RejectionReasons
 {
-    public class RejectionReasonQueryDTO
+    public class RejectionReasonQueryDTO : BaseQueryDTO
     {
         [RegularExpression(@"^(eq|neq|gt|gte|lt|lte|like|in):[\w\s,]*$", ErrorMessage = "Invalid filter format")]
         public string? Id { get; set; }
@@ -10,7 +10,5 @@ namespace zity.DTOs.RejectionReasons
         public string? Content { get; set; }
         [RegularExpression(@"^(eq):[\w\s,]*$", ErrorMessage = "Invalid filter format")]
         public int? ReportId { get; set; }
-        public string? Includes { get; internal set; }
-
     }
 }
