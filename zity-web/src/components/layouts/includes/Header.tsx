@@ -106,6 +106,12 @@ const Header = () => {
       to: '/admin/survey',
       role: ['ADMIN'],
     },
+		{
+			label: 'Report Admin',
+			icon: <Flag />,
+			to: '/admin/report',
+			role: ['ADMIN'],
+		}
   ]
 
   // useEffect(() => {

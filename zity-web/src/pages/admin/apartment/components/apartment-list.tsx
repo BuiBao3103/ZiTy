@@ -1,9 +1,10 @@
 import { Button } from '@/components/ui/button'
-import React from 'react'
 import { useNavigate } from 'react-router-dom'
 
 const ApartmentList = () => {
+
   const navigate = useNavigate()
+
 
   return (
     <div className="w-full flex flex-col gap-4">
@@ -30,12 +31,12 @@ const ApartmentList = () => {
                 <span className="">Owner:</span>
                 <span className="font-medium place-self-end">Bui Hong Bao</span>
               </div>
-              <div className="w-full h-full grid grid-cols-2">
+              {/* <div className="w-full h-full grid grid-cols-2">
                 <span className="">User:</span>
                 <span className="font-medium place-self-end">
                   Bui Ngoc Thuc
                 </span>
-              </div>
+              </div> */}
               <div className="w-full h-full grid grid-cols-2">
                 <span className="">Phone:</span>
                 <span

@@ -17,7 +17,7 @@ const ApartmentDetail = () => {
         </Button>
         <h1 className="text-xl font-medium">{params.id}</h1>
       </div>
-
+			
     </div>
   )
 }

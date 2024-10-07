@@ -1,6 +1,11 @@
+import { ApartmentStatusSchema } from '@/enums'
 import { z } from 'zod'
 
 export const ApartmentSchema = z.object({
-	owner: z.string().min(3, 'Owner name must be at least 3 characters'),
-	
+	id: z.string(),
+	area: z.number().positive(),
+	description: z.string(),
+	floor_number: z.number().positive(),
+	apartment_number: z.number().positive(),
+	status: ApartmentStatusSchema,
 })
