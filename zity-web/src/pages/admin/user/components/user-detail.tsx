@@ -1,4 +1,3 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { CalendarIcon, X } from 'lucide-react'
 import GridWallpaper from '@/assets/grid-wallpaper.jpg'
