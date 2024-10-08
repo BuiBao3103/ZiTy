@@ -1,4 +1,8 @@
 ﻿using zity.DTOs.Relationships;
+<<<<<<< HEAD
+=======
+using zity.Models;
+>>>>>>> c1ccd1ae38cb1f0fa7de38e4e8c95d43d00ce767
 
 namespace zity.DTOs.Apartments
 {
@@ -20,8 +24,13 @@ namespace zity.DTOs.Apartments
 
         public DateTime? UpdatedAt { get; set; }
 
+<<<<<<< HEAD
         public DateTime? DeletedAt { get; set; }
 
         public ICollection<RelationshipDTO>? Relationships { get; set; } = [];
+=======
+        public ICollection<RelationshipDTO> Relationships { get; set; } = [];
+
+>>>>>>> c1ccd1ae38cb1f0fa7de38e4e8c95d43d00ce767
     }
 }

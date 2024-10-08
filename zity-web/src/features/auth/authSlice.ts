@@ -2,14 +2,18 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { apiSlice } from '../api/apiSlice'
 
 interface AuthState {
-  email: string
-  password: string
+  user: {
+    username: string
+    password: string
+  }
   accessToken: string
 }
 
 const initialState: AuthState = {
-  email: '',
-  password: '',
+  user: {
+    username: '',
+    password: '',
+  },
   accessToken: '',
 }
 
@@ -18,11 +22,11 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     userLoggedIn(state, action: PayloadAction<AuthState>) {
-      // state.user = action.payload.user
+      state.user = action.payload.user
       state.accessToken = action.payload.accessToken
     },
     userLoggedOut(state) {
-      // state.user = initialState.user
+      state.user = initialState.user
       state.accessToken = initialState.accessToken
     },
   },
@@ -45,6 +49,8 @@ export const authApiSlice = apiSlice.injectEndpoints({
     }),
   }),
 })
+
+export const { userLoggedIn, userLoggedOut } = authSlice.actions
 
 export default authSlice.reducer
 export const { useLoginMutation } = authApiSlice

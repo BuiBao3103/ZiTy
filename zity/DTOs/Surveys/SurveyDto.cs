@@ -1,4 +1,6 @@
-﻿using zity.Models;
+using zity.DTOs.Questions;
+using zity.DTOs.Users;
+
 
 namespace zity.DTOs.Surveys
 {
@@ -20,8 +22,8 @@ namespace zity.DTOs.Surveys
 
         public int? UserCreateId { get; set; }
 
-        public ICollection<Question> Questions { get; set; } = new List<Question>();
+        public ICollection<QuestionDTO> Questions { get; set; } = [];
 
-        public User? UserCreate { get; set; }
+        public virtual UserDTO? UserCreate { get; set; }
     }
 }

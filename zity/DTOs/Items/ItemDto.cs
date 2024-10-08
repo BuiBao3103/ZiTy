@@ -1,4 +1,4 @@
-﻿using zity.Models;
+using zity.DTOs.Users;
 
 namespace zity.DTOs.Items
 {
@@ -18,6 +18,6 @@ namespace zity.DTOs.Items
 
         public int? UserId { get; set; }
 
-        public User? User { get; set; }
+        public UserDTO? User { get; set; }
     }
 }

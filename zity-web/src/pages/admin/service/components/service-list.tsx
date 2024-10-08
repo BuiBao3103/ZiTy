@@ -1,3 +1,4 @@
+import AlertDelete from '@/components/alert/AlertDelete'
 import { Badge } from '@/components/ui/badge'
 import {
   Table,
@@ -7,6 +8,11 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 import { Service } from '@/schema/service.validate'
 
 interface ServiceListProps {
@@ -29,13 +35,26 @@ const ServiceList = ({ services }: ServiceListProps) => {
         <TableBody>
           {services.map((service) => (
             <TableRow key={service.id} className="font-medium cursor-pointer">
-              <TableCell className='py-3'>{service.id}</TableCell>
+              <TableCell className="py-3">{service.id}</TableCell>
               <TableCell className="">
                 <p className="">{service.name}</p>
               </TableCell>
               <TableCell>{service.price}</TableCell>
               <TableCell>{service.created_at.toISOString()}</TableCell>
               <TableCell className="uppercase">{service.description}</TableCell>
+              <TableCell>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <AlertDelete
+                      description="package"
+                      setAction={() => {}}
+                      type="icon"
+                      variants="ghost"
+                    />
+                  </TooltipTrigger>
+                  <TooltipContent>Delete</TooltipContent>
+                </Tooltip>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

@@ -1,4 +1,5 @@
-﻿using zity.Models;
+using zity.DTOs.BillDetails;
+
 
 namespace zity.DTOs.Services
 {
@@ -16,6 +17,6 @@ namespace zity.DTOs.Services
 
         public DateTime? UpdatedAt { get; set; }
 
-        public ICollection<BillDetail> BillDetails { get; set; } = [];
+        public ICollection<BillDetailDTO> BillDetails { get; set; } = [];
     }
 }

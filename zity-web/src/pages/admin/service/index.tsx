@@ -1,10 +1,3 @@
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
 import { Input } from '@/components/ui/input'
 import {
   Pagination,
@@ -16,73 +9,61 @@ import {
 } from '@/components/ui/pagination'
 import { Filter, Search } from 'lucide-react'
 import { Button } from '@components/ui/button'
-import { Link } from 'react-router-dom'
 import ServiceForm from './components/service-form'
 import ServiceList from './components/service-list'
 import { Service } from '@/schema/service.validate'
+import BreadCrumb from '@/components/breadcrumb'
 
 const Index = () => {
-
-	const services : Service[] = [
-		{
-			id: 1,
-			name: 'Service 1',
-			price: 100,
-			created_at: new Date(),
-			description: 'Description 1'
-		},
-		{
-			id: 2,
-			name: 'Service 2',
-			price: 200,
-			created_at: new Date(),
-			description: 'Description 2'
-		},
-		{
-			id: 3,
-			name: 'Service 3',
-			price: 300,
-			created_at: new Date(),
-			description: 'Description 3'
-		},
-		{
-			id: 4,
-			name: 'Service 4',
-			price: 400,
-			created_at:new Date(),
-			description: 'Description 4'
-		},
-		{
-			id: 5,
-			name: 'Service 5',
-			price: 500,
-			created_at: new Date(),
-			description: 'Description 5'
-		},
-		{
-			id: 6,
-			name: 'Service 6',
-			price: 600,
-			created_at: new Date(),
-			description: 'Description 6'
-		},
-	]
+  const services: Service[] = [
+    {
+      id: 1,
+      name: 'Service 1',
+      price: 100,
+      created_at: new Date(),
+      description: 'Description 1',
+    },
+    {
+      id: 2,
+      name: 'Service 2',
+      price: 200,
+      created_at: new Date(),
+      description: 'Description 2',
+    },
+    {
+      id: 3,
+      name: 'Service 3',
+      price: 300,
+      created_at: new Date(),
+      description: 'Description 3',
+    },
+    {
+      id: 4,
+      name: 'Service 4',
+      price: 400,
+      created_at: new Date(),
+      description: 'Description 4',
+    },
+    {
+      id: 5,
+      name: 'Service 5',
+      price: 500,
+      created_at: new Date(),
+      description: 'Description 5',
+    },
+    {
+      id: 6,
+      name: 'Service 6',
+      price: 600,
+      created_at: new Date(),
+      description: 'Description 6',
+    },
+  ]
 
   return (
     <>
       <div className="w-full sm:h-screen flex flex-col bg-zinc-100">
-        <div className="w-full px-4 pt-4">
-          <Breadcrumb className="p-4 font-medium bg-white rounded-md">
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link to={'/'}>Home</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-            </BreadcrumbList>
-          </Breadcrumb>
-        </div>
+        <BreadCrumb paths={[{ label: 'service', to: '/service' }]} />
         <div className="size-full p-4">
           <div className="size-full p-4 bg-white rounded-md">
             <div className="w-full h-auto flex justify-between items-center">
@@ -99,9 +80,9 @@ const Index = () => {
                   Filter
                 </Button>
               </div>
-							<ServiceForm />
+              <ServiceForm />
             </div>
-						<ServiceList services={services} />
+            <ServiceList services={services} />
             <Pagination className="mt-2">
               <PaginationContent>
                 <PaginationItem>

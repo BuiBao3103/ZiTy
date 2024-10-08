@@ -7,14 +7,9 @@ using zity.Utilities;
 
 namespace zity.Repositories.Implementations
 {
-    public class RelationshipRepository : IRelationshipRepository
+    public class RelationshipRepository(ApplicationDbContext dbContext) : IRelationshipRepository
     {
-        private readonly ApplicationDbContext _dbContext;
-
-        public RelationshipRepository(ApplicationDbContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
+        private readonly ApplicationDbContext _dbContext = dbContext;
 
         public async Task<PaginatedResult<Relationship>> GetAllAsync(RelationshipQueryDTO queryParam)
         {

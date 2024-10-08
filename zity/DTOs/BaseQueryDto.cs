@@ -4,7 +4,6 @@ namespace zity.DTOs
 {
     public class BaseQueryDTO
     {
-
         [Range(1, int.MaxValue, ErrorMessage = "Page must be greater than 0")]
         public int Page { get; set; } = PaginationConstants.DEFAULT_PAGE;
 
