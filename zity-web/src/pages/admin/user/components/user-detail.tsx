@@ -1,4 +1,3 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { CalendarIcon, X } from 'lucide-react'
 import GridWallpaper from '@/assets/grid-wallpaper.jpg'
@@ -79,7 +78,7 @@ const UserDetail = ({ user, setShowDetail }: UserDetailProps) => {
       <Form {...form}>
         <form
           onClick={() => form.handleSubmit(onSubmit)}
-          className="z-[99] min-[500px]:max-w-lg lg:max-w-2xl border-4 border-white/80 w-full animate-in slide-in-from-bottom-1 duration-500 relative bg-white rounded-lg overflow-hidden shadow-lg">
+          className="z-[99] min-[500px]:max-w-lg lg:max-w-2xl border-4 border-white/80 w-full animate-in fade-in slide-in-from-bottom-2 duration-300 relative bg-white rounded-lg overflow-hidden shadow-lg">
           <img
             src={GridWallpaper}
             alt="grid wallpaper"
@@ -100,13 +99,23 @@ const UserDetail = ({ user, setShowDetail }: UserDetailProps) => {
                 <FormItem className="w-full">
                   <FormLabel>Avatar</FormLabel>
                   <FormControl>
-                    <div className="relative size-32 overflow-hidden rounded-full shadow-lg">
+                    <div className="relative size-32 overflow-hidden rounded-full shadow-lg group/selectedImage">
                       {/* Display current image */}
                       <img
                         src={field.value ?? selectedImage}
                         alt="Avatar preview"
                         className="size-full object-cover border-4 rounded-full border-zinc-100"
                       />
+                      {selectedImage && (
+                        <div className="absolute size-full inset-0 flex justify-center items-center transition-all opacity-0 group-hover/selectedImage:opacity-100 group-hover/selectedImage:z-10 bg-gray-200">
+                          <Button onClick={() => {
+														form.setValue('avatar', undefined)
+														setSelectedImage(undefined)
+													}} type='button' size={'icon'} variant={"ghost"}>
+                            <X />
+                          </Button>
+                        </div>
+                      )}
                       {/* File upload option */}
                       <Input
                         type="file"
@@ -228,6 +237,8 @@ const UserDetail = ({ user, setShowDetail }: UserDetailProps) => {
                       <PopoverContent className="w-auto p-0" align="start">
                         <Calendar
                           mode="single"
+													fromYear={1924}
+													toYear={new Date().getFullYear()}
                           selected={field.value}
                           onSelect={field.onChange}
                           disabled={(date) =>

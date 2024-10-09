@@ -17,7 +17,7 @@ import {
 } from 'firebase/firestore'
 
 interface Message {
-  sender_id: number
+  senderId: number
   text: string
   timestamp: Timestamp // Changed to number
 }

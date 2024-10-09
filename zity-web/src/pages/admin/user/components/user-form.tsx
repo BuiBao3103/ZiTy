@@ -37,6 +37,7 @@ import { Calendar } from '@/components/ui/calendar'
 import { z } from 'zod'
 import { UserSchema } from '@/schema/user.validate'
 import { UserRole } from '@/enums'
+import { Checkbox } from '@/components/ui/checkbox'
 
 const UserForm = () => {
   const form = useForm<z.infer<typeof UserSchema>>({
@@ -249,39 +250,53 @@ const UserForm = () => {
             <FormField
               control={form.control}
               name="user_type"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>User Type</FormLabel>
-                  <FormControl>
-                    <div className="flex gap-2 items-center">
-                      {['ADMIN', 'RESIDENT'].map((role) => (
-                        <label
-                          key={role}
-                          className="flex items-center font-medium">
-                          <input
-                            type="checkbox"
-                            checked={field.value.includes(role as UserRole)}
-                            onChange={() => {
-                              const newValue = field.value.includes(
-                                role as UserRole,
-                              )
-                                ? field.value.filter((r) => r !== role)
-                                : [...field.value, role]
-                              field.onChange(newValue) // Update the field value
-                            }}
-                            className="mr-2"
-                          />
-                          {role}
-                        </label>
-                      ))}
-                    </div>
-                  </FormControl>
+              render={() => (
+                <FormItem>
+                  <div className="">
+                    <FormLabel className="text-base">Status</FormLabel>
+                  </div>
+                  <div className="flex space-x-4">
+                    {['ADMIN', 'RESIDENT'].map((role, index) => (
+                      <FormField
+                        key={index}
+                        control={form.control}
+                        name="user_type"
+                        render={({ field }) => {
+                          return (
+                            <FormItem
+                              key={index}
+                              className="flex flex-row items-center space-x-2 space-y-0">
+                              <FormControl>
+                                <Checkbox
+                                  checked={field.value?.includes(
+                                    role as UserRole,
+                                  )}
+                                  onCheckedChange={(checked) => {
+                                    return checked
+                                      ? field.onChange([...field.value, role])
+                                      : field.onChange(
+                                          field.value?.filter(
+                                            (value) => value !== role,
+                                          ),
+                                        )
+                                  }}
+                                />
+                              </FormControl>
+                              <FormLabel className="text-sm font-normal">
+                                {role}
+                              </FormLabel>
+                            </FormItem>
+                          )
+                        }}
+                      />
+                    ))}
+                  </div>
                 </FormItem>
               )}
             />
             <div className="w-full flex justify-end gap-4">
               <DialogClose asChild>
-                <Button type='button' size={'lg'} variant={'ghost'}>
+                <Button type="button" size={'lg'} variant={'ghost'}>
                   Cancel
                 </Button>
               </DialogClose>
