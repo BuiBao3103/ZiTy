@@ -11,6 +11,7 @@ import {
   HandPlatter,
   House,
   LogOut,
+  MessageCircleQuestion,
   NotebookText,
   Package,
   PanelRightClose,
@@ -25,7 +26,7 @@ import MobileMenu from './components/MobileMenu'
 import Logo from '@/assets/logo.svg'
 import LogoMobile from '@/assets/logoMobile.svg'
 import { UserRole } from '@/enums'
-import {  useState } from 'react'
+import { useState } from 'react'
 export interface SideBarProps {
   label: string
   icon: React.ReactNode
@@ -106,12 +107,18 @@ const Header = () => {
       to: '/admin/survey',
       role: ['ADMIN'],
     },
-		{
-			label: 'Report Admin',
-			icon: <Flag />,
-			to: '/admin/report',
-			role: ['ADMIN'],
-		}
+    {
+      label: 'Report Admin',
+      icon: <Flag />,
+      to: '/admin/report',
+      role: ['ADMIN'],
+    },
+    {
+      label: 'Ask For Support',
+      icon: <MessageCircleQuestion />,
+      to: '/chat',
+      role: ['RESIDENT'],
+    },
   ]
 
   // useEffect(() => {
