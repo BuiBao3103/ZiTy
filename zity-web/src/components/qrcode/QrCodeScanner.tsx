@@ -13,8 +13,6 @@ import {
   DialogTrigger,
 } from '../ui/dialog'
 import './style.css'
-import { getQrScanInformation } from '@/features/user/userSlice'
-
 interface QrCodeScannerProps {
   handleQrScanSuccess: (data: any) => void
 }
@@ -28,13 +26,31 @@ const QrCodeScanner = ({ handleQrScanSuccess }: QrCodeScannerProps) => {
       const scanner = new Html5QrcodeScanner(
         'reader',
         {
-          fps: 10,
+          fps: 20,
           qrbox: {
             width: 250,
             height: 250,
           },
           aspectRatio: 1,
-          formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE],
+          formatsToSupport: [
+            Html5QrcodeSupportedFormats.QR_CODE,
+            Html5QrcodeSupportedFormats.DATA_MATRIX,
+            Html5QrcodeSupportedFormats.AZTEC,
+            Html5QrcodeSupportedFormats.PDF_417,
+            Html5QrcodeSupportedFormats.MAXICODE,
+						Html5QrcodeSupportedFormats.EAN_13,
+						Html5QrcodeSupportedFormats.EAN_8,
+						Html5QrcodeSupportedFormats.UPC_A,
+						Html5QrcodeSupportedFormats.UPC_E,
+						Html5QrcodeSupportedFormats.UPC_EAN_EXTENSION,
+						Html5QrcodeSupportedFormats.CODE_39,
+						Html5QrcodeSupportedFormats.CODE_93,
+						Html5QrcodeSupportedFormats.CODE_128,
+						Html5QrcodeSupportedFormats.ITF,
+						Html5QrcodeSupportedFormats.RSS_14,
+						Html5QrcodeSupportedFormats.RSS_EXPANDED,
+						Html5QrcodeSupportedFormats.CODABAR,
+          ],
           defaultZoomValueIfSupported: 2,
           showZoomSliderIfSupported: true,
         },
@@ -52,7 +68,7 @@ const QrCodeScanner = ({ handleQrScanSuccess }: QrCodeScannerProps) => {
           dob: data[3],
           gender: data[4],
         }
-				setQrScanInformation(qrScanInformation)
+        setQrScanInformation(qrScanInformation)
       }
 
       function onScanError(errorMessage: string) {
@@ -100,18 +116,20 @@ const QrCodeScanner = ({ handleQrScanSuccess }: QrCodeScannerProps) => {
                   Name: {qrScanInformation.name}
                 </p>
                 <p className="text-sm text-gray-500 font-medium">
-                  Date of Birth: {qrScanInformation.dob}
+                  Date of Birth: {qrScanInformation.dob.slice(0,2)}/{qrScanInformation.dob.slice(2,4)}/{qrScanInformation.dob.slice(4)}
                 </p>
                 <p className="text-sm text-gray-500 font-medium">
                   Gender: {qrScanInformation.gender}
                 </p>
               </div>
-              <DialogFooter className="flex flex-row">
+              <DialogFooter className="w-full flex flex-row sm:justify-center mt-4">
                 <Button
                   onClick={() => {
                     setIsScannerInitialized(true)
+                    setQrScanInformation(undefined)
                   }}
                   type="button"
+									className='w-full'
                   variant={'secondary'}>
                   Scan Again
                 </Button>
@@ -119,10 +137,10 @@ const QrCodeScanner = ({ handleQrScanSuccess }: QrCodeScannerProps) => {
                   <Button
                     onClick={() => {
                       setIsScannerInitialized(false)
-											handleQrScanSuccess(qrScanInformation)
+                      handleQrScanSuccess(qrScanInformation)
                     }}
                     variant={'default'}
-                    className="mt-4">
+                    className="w-full">
                     Confirm
                   </Button>
                 </DialogClose>
