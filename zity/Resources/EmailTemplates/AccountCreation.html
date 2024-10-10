@@ -6,13 +6,15 @@
     <title>Welcome Email</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: Helvetica, sans-serif;
+            font-weight: 600; /* Added font-weight 500 */
             margin: 0;
-            padding: 0;
+            padding: 0 15px 0 15px;
             background-color: #f0f4f8;
             color: #333;
             text-align: center;
         }
+
 
         .container {
             max-width: 600px;
@@ -22,10 +24,11 @@
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             text-align: center;
+            color: #777;
         }
 
         .logo img {
-            width: 100px;
+            width: 175px;
         }
 
         .header {
@@ -33,7 +36,7 @@
         }
 
             .header img {
-                width: 50px;
+                width: 75px;
             }
 
         .welcome-message {
@@ -43,17 +46,18 @@
         }
 
         .message-text {
-            font-size: 16px;
+            font-size: 14px;
             margin-bottom: 30px;
+            line-height: 1.5;
         }
 
         .login-button {
-            background-color: #007bff;
+            background-color: #19c6ee;
             color: #ffffff;
             padding: 10px 20px;
             text-decoration: none;
-            border-radius: 5px;
-            font-size: 16px;
+            border-radius: 20px;
+            font-size: 14px;
         }
 
         .credentials {
@@ -61,15 +65,15 @@
             text-align: center;
         }
 
-        .credentials p {
-            font-size: 16px;
-            margin: 5px 0;
-        }
+            .credentials p {
+                font-size: 14px;
+                margin: 5px 0;
+            }
 
-        .credentials p strong {
-            display: inline-block;
-            width: 100px;
-        }
+                .credentials p strong {
+                    display: inline-block;
+                    width: 100px;
+                }
 
         .support {
             margin-top: 30px;
@@ -77,49 +81,63 @@
             color: #777;
         }
 
-        .support p {
-            margin: 5px 0;
-        }
+            .support p {
+                margin: 5px 0;
+            }
 
-        .support a {
-            color: #007bff;
-            text-decoration: none;
-        }
+            .support a {
+                color: #19c6ee;
+                text-decoration: none;
+            }
 
         .footer {
             margin-top: 20px;
-            color: #aaa;
-            font-size: 12px;
+        }
+
+            .footer img {
+                width: 50px;
+                filter: grayscale(100%);
+            }
+
+        .orange {
+            color: #F0762B;
+        }
+
+        .blue {
+            color: #19c6ee;
+        }
+        .bold{
+            font-weight: bold;
         }
     </style>
 </head>
 <body
     <div class="logo">
-        <img src="placeholder-logo.png" alt="Company Logo">
+        <img src="https://res.cloudinary.com/dloeqfbwm/image/upload/v1728571538/zity/assets/Zity-logo-256x256px.svg" alt="Company Logo">
     </div>
     <div class="container">
 
         <div class="header">
-            <img src="https://img.icons8.com/emoji/48/000000/party-popper.png" alt="Party Popper">
+            <img src="https://res.cloudinary.com/dloeqfbwm/image/upload/v1728571542/zity/assets/Firework.svg" alt="Party Popper">
         </div>
-        <div class="welcome-message">
-            Welcome to Awardco!
+        <div class="welcome-message orange">
+            Welcome to ZiTy!
         </div>
         <div class="message-text">
-            Hi {{FirstName}}! A new account for {{CompanyUrl}} has been created for you. Please log in and change your password immediately.
+            Hi {{FullName}}! A new account for <span class="orange bold">ZiTy</span> by <span class="blue bold">ZTech</span> has been created for you. Please log in and change your password immediately.
         </div>
         <a href="{{LoginUrl}}" class="login-button">Login to Your Account</a>
         <div class="credentials">
-            <p><strong>Email:</strong> {{Username}}</p>
-            <p><strong>Password:</strong> {{Password}}</p>
+            <p><strong class="orange">Username:</strong> {{Username}}</p>
+            <p><strong class="orange">Password:</strong> {{Password}}</p>
         </div>
     </div>
     <div class="support">
         <p>Support</p>
-        <p>Text or Call: 800.320.0893 | Email: <a href="mailto:support@awardco.com">support@awardco.com</a></p>
+        <p>Text or Call: xxx.xxx.xxx | Email: <a href="mailto:techsupport@zity.com">techsupport@zity.com</a></p>
     </div>
     <div class="footer">
-        ©2020 Awardco
+        <img src="https://res.cloudinary.com/dloeqfbwm/image/upload/v1728571536/zity/assets/Zity-logo-128x128px.svg" alt="Company Logo">
     </div>
 </body>
 </html>
