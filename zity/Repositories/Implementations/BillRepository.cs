@@ -63,10 +63,13 @@ namespace zity.Repositories.Implementations
                 return false;
             }
 
-            bill.DeletedAt = DateTime.UtcNow;
+            var vietnamTime = DateTime.UtcNow.AddHours(7);
+            bill.DeletedAt = vietnamTime;
+
             _dbContext.Bills.Update(bill);
             await _dbContext.SaveChangesAsync();
             return true;
         }
+
     }
 }
