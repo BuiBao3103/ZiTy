@@ -61,19 +61,23 @@
         }
 
         .credentials {
+            display: flex; 
             margin: 20px 0;
-            text-align: center;
+            justify-content: center;
+            gap: 10px;
         }
-
-            .credentials p {
-                font-size: 14px;
-                margin: 5px 0;
-            }
-
-                .credentials p strong {
-                    display: inline-block;
-                    width: 100px;
-                }
+        .credentials-left,
+        .credentials-right {
+            display: flex;
+            flex-direction: column; /* Sắp xếp theo chiều dọc */
+        }
+        .credentials p {
+            font-size: 14px;
+            margin: 5px 0;
+        }
+        .credentials p strong {
+            display: inline; /* Hiển thị inline để giữ nhãn cùng dòng với giá trị */
+        }
 
         .support {
             margin-top: 30px;
@@ -128,8 +132,14 @@
         </div>
         <a href="{{LoginUrl}}" class="login-button">Login to Your Account</a>
         <div class="credentials">
-            <p><strong class="orange">Username:</strong> {{Username}}</p>
-            <p><strong class="orange">Password:</strong> {{Password}}</p>
+            <div class="credentials-left">
+                <p><strong class="orange">Username:</strong></p>
+                <p><strong class="orange">Password:</strong></p>
+            </div>
+            <div class="credentials-right">
+                <p>{{Username}}</p>
+                <p>{{Password}}</p>
+            </div>
         </div>
     </div>
     <div class="support">
