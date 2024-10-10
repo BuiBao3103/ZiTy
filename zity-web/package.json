@@ -43,6 +43,7 @@
     "tailwindcss-animate": "^1.0.7",
     "universal-cookie": "^7.2.0",
     "usehooks-ts": "^3.1.0",
+    "zity-web": "file:",
     "zod": "^3.23.8"
   },
   "devDependencies": {

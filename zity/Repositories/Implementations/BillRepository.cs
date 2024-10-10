@@ -31,14 +31,19 @@ namespace zity.Repositories.Implementations
 
         public async Task<Bill?> GetByIdAsync(int id, string? includes)
         {
-            var billsQuery = _dbContext.Bills.Where(u => u.DeletedAt == null)
-                .ApplyIncludes(includes);
-            return await billsQuery.FirstOrDefaultAsync(u => u.Id == id);
+            var query = _dbContext.Bills.AsQueryable();
+
+            if (!string.IsNullOrEmpty(includes))
+            {
+                query = query.ApplyIncludes(includes);
+            }
+
+            return await query.FirstOrDefaultAsync(b => b.Id == id && b.DeletedAt == null);
         }
 
         public async Task<Bill> CreateAsync(Bill bill)
         {
-            await _dbContext.Bills.AddAsync(bill);
+            _dbContext.Bills.Add(bill);
             await _dbContext.SaveChangesAsync();
             return bill;
         }
@@ -52,21 +57,16 @@ namespace zity.Repositories.Implementations
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var bill = await _dbContext.Bills
-                .FirstOrDefaultAsync(u => u.Id == id && u.DeletedAt == null);
+            var bill = await _dbContext.Bills.FirstOrDefaultAsync(b => b.Id == id);
             if (bill == null)
             {
                 return false;
             }
-            bill.DeletedAt = DateTime.Now;
+
+            bill.DeletedAt = DateTime.UtcNow;
             _dbContext.Bills.Update(bill);
             await _dbContext.SaveChangesAsync();
             return true;
-        }
-
-        Task<PaginatedResult<Bill>> IBillRepository.GetAllAsync(BillQueryDTO queryParam)
-        {
-            throw new NotImplementedException();
         }
     }
 }
