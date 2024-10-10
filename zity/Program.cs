@@ -18,7 +18,7 @@ var MySQLServer = Environment.GetEnvironmentVariable("MYSQL_SERVER") ?? throw ne
 var MySQLPort = Environment.GetEnvironmentVariable("MYSQL_PORT") ?? throw new ArgumentException("MYSQL_PORT is missing.");
 var MySQLDatabase = Environment.GetEnvironmentVariable("MYSQL_DATABASE") ?? throw new ArgumentException("MYSQL_DATABASE is missing.");
 var MySQLUser = Environment.GetEnvironmentVariable("MYSQL_USER") ?? throw new ArgumentException("MYSQL_USER is missing.");
-var MySQLPassword = Environment.GetEnvironmentVariable("MYSQL_PASSWORD") ?? throw new ArgumentException("MYSQL_PASSWORD is missing.");
+var MySQLPassword = Environment.GetEnvironmentVariable("MYSQL_PASSWORD");
 
 // Convert MySQL port to integer
 if (!int.TryParse(MySQLPort, out int port))
@@ -52,11 +52,15 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Register repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRelationshipRepository, RelationshipRepository>();
+builder.Services.AddScoped<IBillRepository, BillRepository>();
+builder.Services.AddScoped<IBillDetailRepository, BillDetailRepository>();
 
 // Register services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRelationshipService, RelationshipService>();
 builder.Services.AddScoped<IMediaService, MediaService>();
+builder.Services.AddScoped<IBillService, BillService>();
+builder.Services.AddScoped<IBillDetailService, BillDetailService>();
 
 // Register Cloudinary as a singleton service
 builder.Services.AddSingleton(cloudinary);
