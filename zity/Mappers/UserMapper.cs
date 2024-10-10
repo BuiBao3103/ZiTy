@@ -17,7 +17,16 @@ namespace zity.Mappers
                 FullName = userModel.FullName,
                 Gender = userModel.Gender,
                 UserType = userModel.UserType,
-                DateOfBirth = userModel.DateOfBirth
+                NationId = userModel.NationId,
+                DateOfBirth = userModel.DateOfBirth,
+                CreatedAt = userModel.CreatedAt,
+                UpdatedAt = userModel.UpdatedAt,
+                IsStaying = userModel.IsStaying,
+                //Items = userModel.Items.Select(ItemMapper.ToDTO).ToList(),
+                //OtherAnswers = userModel.OtherAnswers.Select(OtherAnswerMapper.ToDTO).ToList(),
+                Relationships = userModel.Relationships.Select(RelationshipMapper.ToDTO).ToList(),
+                //Surveys = userModel.Surveys.Select(SurveyMapper.ToDTO).ToList(),
+                //UserAnswers = userModel.UserAnswers.Select(UserAnswerMapper.ToDTO).ToList()
             };
         }
 
