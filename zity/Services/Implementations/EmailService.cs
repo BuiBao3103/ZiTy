@@ -15,15 +15,14 @@ namespace zity.Services.Implementations
 
         public async Task SendAccountCreationEmail(User user, string password)
         {
-            user.Email = "test@gmail.com";
-            user.Username = "test";
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress("Zity", _mailSettings.FromEmail));
             message.To.Add(new MailboxAddress(user.Username, user.Email));
             message.Subject = "Account Creation Notification";
             var bodyBuilder = new BodyBuilder();
             string bodyHtml = await LoadTemplateAsync("Resources/EmailTemplates/AccountCreation.html");
-            bodyHtml = bodyHtml.Replace("{{Username}}", user.Username)
+            bodyHtml = bodyHtml.Replace("{{FullName}}", user.FullName)
+                               .Replace("{{Username}}", user.Username)
                                .Replace("{{Password}}", password)
                                .Replace("{{LoginUrl}}", _appSettings.LoginUrl);
             bodyBuilder.HtmlBody = bodyHtml;
@@ -32,13 +31,11 @@ namespace zity.Services.Implementations
 
             try
             {
-                using (var client = new SmtpClient())
-                {
-                    await client.ConnectAsync(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);
-                    await client.AuthenticateAsync(_mailSettings.Username, _mailSettings.Password);
-                    await client.SendAsync(message);
-                    await client.DisconnectAsync(true);
-                }
+                using var client = new SmtpClient();
+                await client.ConnectAsync(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);
+                await client.AuthenticateAsync(_mailSettings.Username, _mailSettings.Password);
+                await client.SendAsync(message);
+                await client.DisconnectAsync(true);
             }
             catch (Exception ex)
             {
@@ -46,7 +43,7 @@ namespace zity.Services.Implementations
             }
         }
 
-        private async Task<string> LoadTemplateAsync(string templatePath)
+        private static async Task<string> LoadTemplateAsync(string templatePath)
         {
             string filePath = Path.Combine(Directory.GetCurrentDirectory(), templatePath);
             return await File.ReadAllTextAsync(filePath);
