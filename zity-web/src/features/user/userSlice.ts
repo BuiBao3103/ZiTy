@@ -21,9 +21,6 @@ const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    editingUser(state, action: PayloadAction<boolean>) {
-      state.isEditingUser = action.payload
-    },
     getQrScanInformation: (state, action: PayloadAction<QrScanInformation | undefined>) => {
       state.qrScanInformation = action.payload
     },
@@ -31,4 +28,4 @@ const userSlice = createSlice({
 })
 
 export default userSlice.reducer
-export const { editingUser, getQrScanInformation } = userSlice.actions
+export const { getQrScanInformation } = userSlice.actions

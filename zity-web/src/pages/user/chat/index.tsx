@@ -29,7 +29,6 @@ import { FieldErrors, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { MessageSchema } from '@/schema/message.validate'
 import Messages from '@components/chat/messages'
-
 const Index = () => {
   const [messages, setMessages] = useState<z.infer<typeof MessageSchema>[]>([])
   const msgContainerRef = useRef<HTMLDivElement>(null)
@@ -39,6 +38,9 @@ const Index = () => {
     },
   })
   const onSubmit = async (data: z.infer<typeof MessageSchema>) => {
+		if(data.text.length === 0) {
+			return;
+		}
     const messagesRef = collection(db, `conversations/1/messages`)
     const messageDocRef = await addDoc(messagesRef, {
       senderId: 1,
