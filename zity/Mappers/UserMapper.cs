@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using zity.DTOs.Users;
+﻿using zity.DTOs.Users;
 using zity.Models;
 
 namespace zity.Mappers
@@ -18,9 +17,36 @@ namespace zity.Mappers
                 FullName = userModel.FullName,
                 Gender = userModel.Gender,
                 UserType = userModel.UserType,
-                DateOfBirth = userModel.DateOfBirth
+                NationId = userModel.NationId,
+                DateOfBirth = userModel.DateOfBirth,
+                CreatedAt = userModel.CreatedAt,
+                UpdatedAt = userModel.UpdatedAt,
+                IsStaying = userModel.IsStaying,
+                //Items = userModel.Items.Select(ItemMapper.ToDTO).ToList(),
+                //OtherAnswers = userModel.OtherAnswers.Select(OtherAnswerMapper.ToDTO).ToList(),
+                Relationships = userModel.Relationships.Select(RelationshipMapper.ToDTO).ToList(),
+                //Surveys = userModel.Surveys.Select(SurveyMapper.ToDTO).ToList(),
+                //UserAnswers = userModel.UserAnswers.Select(UserAnswerMapper.ToDTO).ToList()
             };
         }
 
+        public static User FromCreateDTO(UserCreateDTO userCreateDTO)
+        {
+            return new User
+            {
+                Username = userCreateDTO.Username,
+                Email = userCreateDTO.Email,
+                Phone = userCreateDTO.Phone,
+                Gender = userCreateDTO.Gender,
+                FullName = userCreateDTO.FullName,
+                NationId = userCreateDTO.NationId,
+                DateOfBirth = userCreateDTO.DateOfBirth,
+                IsFirstLogin = true,
+                UserType = "RESIDENT",
+                IsStaying = true,
+                CreatedAt = DateTime.Now
+            };
+        }
     }
 }
+
