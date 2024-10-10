@@ -59,32 +59,30 @@ const ReportDetail = ({ setShowDetail, report }: ReportDetailProps) => {
           </div>
           <Separator />
           <div className="p-4 w-full flex flex-col space-y-4">
-            <div className="w-full rounded-md border-2 border-zinc-200 flex flex-col space-y-2 p-4">
-              <p>{report?.title}</p>
-              <div className="w-full flex items-center gap-3">
-                <Avatar>
-                  <AvatarImage
-                    src={report?.user?.avatar ?? DefaultAvatar}
-                    className="size-12 rounded-full object-cover hidden sm:inline-block"
-                  />
-                  <AvatarFallback>
-                    {report?.user.full_name
-                      ? report?.user.full_name.slice(0, 2)
-                      : 'CN'}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex flex-col">
-                  <p className="font-medium">{report?.user?.full_name}</p>
-                </div>
+            <div className="w-full rounded-md border-2 border-zinc-200 flex space-x-2 items-start p-4">
+              <Avatar>
+                <AvatarImage
+                  src={report?.user?.avatar ?? DefaultAvatar}
+                  className="size-12 rounded-full object-cover hidden sm:inline-block"
+                />
+                <AvatarFallback>
+                  {report?.user.full_name
+                    ? report?.user.full_name.slice(0, 2)
+                    : 'CN'}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex flex-col space-y-1.5">
+                <p className="font-medium">{report?.user?.full_name}</p>
+                <p className='text-sm text-zinc-500 font-medium'>{report?.title}</p>
+                <p className='text-sm '>{report?.content}</p>
               </div>
-              <p>{report?.content}</p>
             </div>
             <FormField
               control={form.control}
               name="content"
               render={({ field }) => (
                 <FormItem>
-									<FormLabel>Description</FormLabel>
+                  <FormLabel>Description</FormLabel>
                   <FormControl>
                     <Textarea {...field} rows={5} />
                   </FormControl>

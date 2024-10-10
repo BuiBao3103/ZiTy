@@ -58,7 +58,7 @@ const AlertDelete = ({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={() => setAction()}>
+          <AlertDialogAction className='bg-red-500 text-white hover:bg-red-400' type='button' onClick={() => setAction()}>
             Continue
           </AlertDialogAction>
         </AlertDialogFooter>
