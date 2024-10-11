@@ -48,6 +48,14 @@ var appSettings = new AppSettings
     LoginUrl = Environment.GetEnvironmentVariable("LOGIN_URL") ?? throw new ArgumentException("LOGIN_URL is missing.")
 };
 
+// Configure Esms settings
+var esmsSettings = new EsmsSettings
+{
+    ApiKey = Environment.GetEnvironmentVariable("ESMS_API_KEY") ?? throw new ArgumentException("ESMS_API_KEY is missing."),
+    ApiSecret = Environment.GetEnvironmentVariable("ESMS_API_SECRET") ?? throw new ArgumentException("ESMS_API_SECRET is missing."),
+    BrandName = Environment.GetEnvironmentVariable("ESMS_BRAND_NAME") ?? throw new ArgumentException("ESMS_BRAND_NAME is missing.")
+};
+
 // Add services to the container.
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -70,6 +78,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRelationshipService, RelationshipService>();
 builder.Services.AddScoped<IMediaService, MediaService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<ISmsService, SmsService>();
 
 // Register Cloudinary as a singleton service
 var cloudinaryAccount = new Account(cloudinarySettings.CloudName, cloudinarySettings.ApiKey, cloudinarySettings.ApiSecret);
@@ -81,6 +90,9 @@ builder.Services.AddSingleton(mailSettings);
 
 // Register AppSettings
 builder.Services.AddSingleton(appSettings);
+
+// Register ESMS settings
+builder.Services.AddSingleton(esmsSettings);
 
 // Register exception handling
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
