@@ -1,6 +1,6 @@
 ﻿namespace zity.Configuration
 {
-    public class VonageSettings
+    public class EsmsSettings
     {
         public string ApiKey { get; set; } = null!;
         public string ApiSecret { get; set; } = null!;
