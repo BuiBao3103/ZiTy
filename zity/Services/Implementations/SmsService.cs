@@ -1,38 +1,50 @@
-﻿using System.Diagnostics;
-using Vonage;
-using Vonage.Request;
+﻿using System.Text;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using zity.Configuration;
 using zity.ExceptionHandling;
 using zity.Services.Interfaces;
 
 namespace zity.Services.Implementations
 {
-    public class SmsService(VonageSettings vonageSettings) : ISmsService
+    public class SmsService(EsmsSettings vonageSettings) : ISmsService
     {
-        private readonly VonageSettings _vonageSettings = vonageSettings;
+        private readonly EsmsSettings _esmsSettings = vonageSettings;
+
         public async Task SendSMSAsync(string phoneNumber, string message)
         {
-            var credentials = Credentials.FromApiKeyAndSecret(
-               _vonageSettings.ApiKey,
-               _vonageSettings.ApiSecret
-            );
-
-            var vonageClient = new VonageClient(credentials);
-
-            var smsRequest = new Vonage.Messaging.SendSmsRequest
+            using var client = new HttpClient();
+            var url = "https://rest.esms.vn/MainService.svc/json/SendMultipleMessage_V4_post_json/";
+            var smsRequest = new
             {
-                To = phoneNumber,
-                From = _vonageSettings.BrandName,
-                Text = message
+                ApiKey = _esmsSettings.ApiKey,
+                Content = message,
+                Phone = phoneNumber,
+                SecretKey = _esmsSettings.ApiSecret,
+                SmsType = "2",
+                IsUnicode = "0",
+                Brandname = _esmsSettings.BrandName
             };
 
-            var response = await vonageClient.SmsClient.SendAnSmsAsync(smsRequest);
-            if (response.Messages[0].Status != "0")
+            var content = new StringContent(JsonConvert.SerializeObject(smsRequest), Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = await client.PostAsync(url, content);
+
+            if (!response.IsSuccessStatusCode)
             {
-                throw new AppError(message: "Failed to send SMS with error: " + response.Messages[0].ErrorText);
+                var responseBody = await response.Content.ReadAsStringAsync();
+                throw new AppError(message: "Failed to send SMS (HTTP error): " + responseBody);
             }
 
+            var responseBodyString = await response.Content.ReadAsStringAsync();
+            var jsonResponse = JObject.Parse(responseBodyString);
+
+            var codeResult = (string?)jsonResponse["CodeResult"];
+            if (codeResult != "100")
+            {
+                var errorMessage = (string?)jsonResponse["ErrorMessage"] ?? "Unknown error";
+                throw new Exception(message: "Failed to send SMS (API error): " + errorMessage);
+            }
         }
     }
-
 }
