@@ -1,10 +1,20 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { useEffect, useRef, useState } from 'react'
+import bg1 from '@/assets/background/bg-1.jpg'
+import bg2 from '@/assets/background/bg-2.jpg'
+import bg3 from '@/assets/background/bg-3.jpg'
+import bg4 from '@/assets/background/bg-4.jpg'
 import BreadCrumb from '@components/breadcrumb'
 import DefaultAvatar from '@/assets/default-avatar.jpeg'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Send } from 'lucide-react'
-import { Separator } from '@/components/ui/separator'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { z } from 'zod'
+import { MessageSchema } from '@/schema/message.validate'
+import { FieldErrors, useForm } from 'react-hook-form'
 import {
   addDoc,
   collection,
@@ -16,8 +26,10 @@ import {
   serverTimestamp,
   updateDoc,
 } from 'firebase/firestore'
-import { useEffect, useRef, useState } from 'react'
 import { db } from '@/firebase'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Separator } from '@/components/ui/separator'
+import Messages from '@/components/chat/messages'
 import {
   Form,
   FormControl,
@@ -25,12 +37,46 @@ import {
   FormItem,
   FormLabel,
 } from '@/components/ui/form'
-import { FieldErrors, useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { MessageSchema } from '@/schema/message.validate'
-import Messages from '@components/chat/messages'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Send } from 'lucide-react'
+
+interface Theme {
+  id: string
+  name: string
+  src: string
+  color?: string
+}
+
+const themes = [
+  { id: 'white', name: 'Default White', src: 'white' },
+  { id: 'bg1', name: 'Theme 1', src: bg1, color: '#ffcf7a' },
+  { id: 'bg2', name: 'Theme 2', src: bg2, color: '#9cd0db' },
+  { id: 'bg3', name: 'Theme 3', src: bg3, color: '#cdbef7' },
+  { id: 'bg4', name: 'Theme 4', src: bg4, color: '#c5ebfe' },
+]
 
 const Index = () => {
+  const [theme, setTheme] = useState<Theme>(() => {
+    const savedTheme = localStorage.getItem('selectedTheme')
+    return savedTheme ? JSON.parse(savedTheme) : themes[0]
+  })
+
+  const changeTheme = (id: string) => {
+    const selectedTheme = themes.find((theme) => theme.id === id)
+    if (selectedTheme) {
+      setTheme(selectedTheme)
+      localStorage.setItem('selectedTheme', JSON.stringify(selectedTheme))
+    }
+  }
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('selectedTheme')
+    if (savedTheme) {
+      setTheme(JSON.parse(savedTheme))
+    }
+  }, [])
+
   const [messages, setMessages] = useState<z.infer<typeof MessageSchema>[]>([])
   const msgContainerRef = useRef<HTMLDivElement>(null)
   const form = useForm<z.infer<typeof MessageSchema>>({
@@ -39,19 +85,19 @@ const Index = () => {
     },
   })
   const onSubmit = async (data: z.infer<typeof MessageSchema>) => {
-    const messagesRef = collection(db, `conversations/1/messages`)
+    const messagesRef = collection(db, 'conversations/1/messages')
     const messageDocRef = await addDoc(messagesRef, {
       senderId: 1,
       timestamp: serverTimestamp(),
       text: data.text,
     })
-
-    // Reference to the conversation document
-    const conversationRef = doc(db, `conversations/1`)
-
-    // Update the conversation docume
     form.reset({ text: '' })
     form.setFocus('text')
+
+    // Reference to the conversation document
+    const conversationRef = doc(db, 'conversations/1')
+
+    // Update the conversation docume
     await updateDoc(conversationRef, {
       is_admin_seen: false,
       is_resident_seen: true,
@@ -85,23 +131,49 @@ const Index = () => {
       })
     }
   }, [messages])
+
   return (
     <div className="w-full h-dvh flex flex-col bg-zinc-100 overflow-hidden">
       <BreadCrumb paths={[{ label: 'chat', to: '/chat' }]} />
       <div className="w-full h-full p-4 flex gap-4 overflow-hidden">
-        <div className="w-full h-full flex flex-col bg-white rounded-md">
-          <div className="w-full rounded-md bg-zinc-50 flex gap-2 p-4">
-            <Avatar className="size-12">
-              <AvatarImage src={DefaultAvatar} />
-              <AvatarFallback>ADMIN</AvatarFallback>
-            </Avatar>
-            <div className="flex flex-col font-medium">
-              <h2>Admin</h2>
-              <p className="text-xs text-green-400">Online</p>
+        <div className="w-full h-full flex flex-col rounded-md overflow-hidden border">
+          <div className="w-full flex justify-between items-center p-4 shadow-md bg-white">
+            <div className="flex items-center gap-2">
+              <Avatar className="size-12">
+                <AvatarImage src={DefaultAvatar} />
+                <AvatarFallback>ADMIN</AvatarFallback>
+              </Avatar>
+              <div className="flex flex-col font-medium">
+                <h2>Admin</h2>
+                <p className="text-xs text-green-400">Online</p>
+              </div>
             </div>
+
+            {/* Theme selection using ShadCN/UI Select component */}
+            <Select onValueChange={changeTheme} defaultValue={theme.id}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select a theme" />
+              </SelectTrigger>
+              <SelectContent>
+                {themes.map((theme) => (
+                  <SelectItem key={theme.id} value={theme.id}>
+                    {theme.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <Separator />
-          <div className="size-full p-4 overflow-hidden">
+          <div
+            style={{
+              backgroundColor: theme.src === 'white' ? 'white' : undefined,
+              backgroundImage:
+                theme.src !== 'white'
+                  ? `linear-gradient(to bottom, rgba(255,255,255, 0.2), rgba(0, 0, 0, 0.1)), url(${theme?.src})`
+                  : undefined,
+              backgroundSize: 'cover',
+            }}
+            className="size-full px-4 overflow-hidden transition-all">
             <div
               ref={msgContainerRef}
               className="size-full flex flex-col overflow-y-auto gap-2">
@@ -112,7 +184,7 @@ const Index = () => {
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit, onError)}
-              className="p-4 flex gap-4">
+              className="p-4 flex gap-4 bg-white">
               <FormField
                 control={form.control}
                 name="text"
