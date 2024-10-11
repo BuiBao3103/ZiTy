@@ -40,7 +40,7 @@ const Index = () => {
       <div className="w-full sm:h-screen flex flex-col bg-zinc-100">
         <BreadCrumb paths={[{ label: 'user', to: '/user' }]} />
         <div className="size-full p-4">
-          <div className="size-full p-4 bg-white rounded-md">
+          <div className="size-full p-4 bg-white rounded-md flex flex-col">
             <div className="w-full h-auto flex justify-between items-center">
               <div className="w-full flex gap-4 items-center">
                 <div className="lg:w-1/4 flex items-center border px-3 py-0.5 relative rounded-md focus-within:border-primary transition-all">
@@ -57,7 +57,9 @@ const Index = () => {
               </div>
               <UserForm />
             </div>
-            <UserList users={users} />
+            <div className="size-full">
+              <UserList users={users} />
+            </div>
             <Pagination className="mt-2">
               <PaginationContent>
                 <PaginationItem>

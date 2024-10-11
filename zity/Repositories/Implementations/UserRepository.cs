@@ -35,6 +35,13 @@ namespace zity.Services.Implementations
             return await usersQuery.FirstOrDefaultAsync(u => u.Id == id);
         }
 
+        public async Task<User> CreateAsync(User user)
+        {
+            await _dbContext.Users.AddAsync(user);
+            await _dbContext.SaveChangesAsync();
+            return user;
+        }
+
         public async Task<User> UpdateAsync(User user)
         {
             _dbContext.Users.Update(user);

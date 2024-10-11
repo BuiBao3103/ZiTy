@@ -6,8 +6,6 @@ import { Badge } from '@/components/ui/badge'
 import { z } from 'zod'
 import { UserPartialSchema } from '@/schema/user.validate'
 import AlertDelete from '@/components/alert/AlertDelete'
-import { useAppDispath } from '@/store'
-import { editingUser } from '@/features/user/userSlice'
 import { useForm } from 'react-hook-form'
 import {
   Form,
@@ -40,7 +38,6 @@ interface UserDetailProps {
 }
 
 const UserDetail = ({ user, setShowDetail }: UserDetailProps) => {
-  const dispatch = useAppDispath()
   const [selectedImage, setSelectedImage] = useState<string | undefined>(
     undefined,
   )
@@ -326,14 +323,12 @@ const UserDetail = ({ user, setShowDetail }: UserDetailProps) => {
             <div className="flex gap-2">
               <Button
                 type="button"
-                variant={'ghost'}
-                onClick={() => dispatch(editingUser({ isEditingUser: false }))}>
+                variant={'ghost'}>
                 Cancel
               </Button>
               <Button
                 type="submit"
-                variant={'info'}
-                onClick={() => dispatch(editingUser({ isEditingUser: false }))}>
+                variant={'info'}>
                 Submit
               </Button>
             </div>

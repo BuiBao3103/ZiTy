@@ -48,7 +48,7 @@ const ReportDetail = ({ setShowDetail, report }: ReportDetailProps) => {
   return (
     <div className="fixed w-full h-screen flex justify-center items-center inset-0 z-50">
       <div
-        className="fixed inset-0 bg-black/20 animate-in fade-in"
+        className="fixed inset-0 bg-gradient-to-b from-black/20 to-black/60 animate-in fade-in"
         onClick={() => setShowDetail(null)}></div>
       <Form {...form}>
         <form

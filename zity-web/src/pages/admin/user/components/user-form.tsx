@@ -38,6 +38,8 @@ import { z } from 'zod'
 import { UserSchema } from '@/schema/user.validate'
 import { UserRole } from '@/enums'
 import { Checkbox } from '@/components/ui/checkbox'
+import QrCodeScanner from '@/components/qrcode/QrCodeScanner'
+import { parseDateFromString } from '@/utils/ExtractTime'
 
 const UserForm = () => {
   const form = useForm<z.infer<typeof UserSchema>>({
@@ -60,6 +62,18 @@ const UserForm = () => {
     // Handle form submission logic here
   }
 
+  const handleQrScanSuccess = (data: any) => {
+    // Assuming the scanned data is an object with keys: name, nationId, gender, and dob
+    form.setValue('full_name', data.name)
+    form.setValue('nation_id', data.nationID)
+    form.setValue('gender', data.gender == 'Nam' ? 'MALE' : 'FEMALE')
+    console.log(form.getValues('gender'))
+    form.setValue(
+      'date_of_birth',
+      (data.dob && parseDateFromString(data.dob)) ?? undefined,
+    ) // Adjust as necessary
+  }
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -74,6 +88,10 @@ const UserForm = () => {
           <DialogTitle className="text-2xl">New User</DialogTitle>
         </DialogHeader>
         <Separator />
+        <div className="flex items-center gap-4">
+          <h2 className="font-medium">Personal Information</h2>
+          <QrCodeScanner handleQrScanSuccess={handleQrScanSuccess} />
+        </div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
@@ -121,13 +139,14 @@ const UserForm = () => {
                     <FormControl>
                       <Select
                         onValueChange={field.onChange}
-                        defaultValue={field.value}>
+                        value={field.value || ''} // Add this line
+                      >
                         <SelectTrigger>
                           <SelectValue placeholder="Select gender" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="MALE">Male</SelectItem>
-                          <SelectItem value="FEMALE">Female</SelectItem>
+                          <SelectItem value={'MALE'}>Male</SelectItem>
+                          <SelectItem value={'FEMALE'}>Female</SelectItem>
                         </SelectContent>
                       </Select>
                     </FormControl>

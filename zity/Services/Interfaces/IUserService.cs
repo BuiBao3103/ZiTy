@@ -7,6 +7,7 @@ namespace zity.Services.Interfaces
     {
         Task<PaginatedResult<UserDTO>> GetAllAsync(UserQueryDTO query);
         Task<UserDTO?> GetByIdAsync(int id, string? includes);
+        Task<UserDTO> CreateAsync(UserCreateDTO userCreateDTO);
         Task<UserDTO?> UploadAvatarAsync(int id, IFormFile file);
     }
 }

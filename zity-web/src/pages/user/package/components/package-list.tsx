@@ -16,8 +16,6 @@ const PackageList = ({ id }: PackageListProps) => {
     '/' +
     date.getFullYear()
 
-	console.log(id)
-
   return (
     <div className="w-full flex flex-col gap-4 bg-white">
       {Array.from({ length: 10 }).map((_, index) => (
