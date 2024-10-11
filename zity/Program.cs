@@ -48,6 +48,14 @@ var appSettings = new AppSettings
     LoginUrl = Environment.GetEnvironmentVariable("LOGIN_URL") ?? throw new ArgumentException("LOGIN_URL is missing.")
 };
 
+// Configure Vonage settings
+var vonageSettings = new VonageSettings
+{
+    ApiKey = Environment.GetEnvironmentVariable("VONAGE_API_KEY") ?? throw new ArgumentException("VONAGE_API_KEY is missing."),
+    ApiSecret = Environment.GetEnvironmentVariable("VONAGE_API_SECRET") ?? throw new ArgumentException("VONAGE_API_SECRET is missing."),
+    BrandName = Environment.GetEnvironmentVariable("VONAGE_BRAND_NAME") ?? throw new ArgumentException("VONAGE_BRAND_NAME is missing.")
+};
+
 // Add services to the container.
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -81,6 +89,9 @@ builder.Services.AddSingleton(mailSettings);
 
 // Register AppSettings
 builder.Services.AddSingleton(appSettings);
+
+// Register Vonage settings
+builder.Services.AddSingleton(vonageSettings);
 
 // Register exception handling
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
