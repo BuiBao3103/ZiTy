@@ -16,7 +16,7 @@ namespace zity.Mappers
                 UserId = item.UserId,
                 CreatedAt = item.CreatedAt,
                 UpdatedAt = item.UpdatedAt,
-                User = item.User != null ? UserMapper.ToUserDTO(item.User) : null,
+                User = item.User != null ? UserMapper.ToDTO(item.User) : null,
             };
 
         // ToModelFromCreate

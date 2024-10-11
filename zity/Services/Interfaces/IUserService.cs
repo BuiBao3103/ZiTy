@@ -9,5 +9,6 @@ namespace zity.Services.Interfaces
         Task<UserDTO?> GetByIdAsync(int id, string? includes);
         Task<UserDTO> CreateAsync(UserCreateDTO userCreateDTO);
         Task<UserDTO?> UploadAvatarAsync(int id, IFormFile file);
+        Task NotifyReceivedPackage(int userId);
     }
 }

@@ -9,7 +9,7 @@ namespace zity.Controllers
     public class UsersController(IUserService userService, IEmailService emailService) : ControllerBase
     {
         private readonly IUserService _userService = userService;
-        private readonly IEmailService _emailService= emailService;
+        private readonly IEmailService _emailService = emailService;
 
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] UserQueryDTO query)
@@ -35,6 +35,13 @@ namespace zity.Controllers
         public async Task<IActionResult> UploadAvatarAsync([FromRoute] int id, IFormFile file)
         {
             return Ok(await _userService.UploadAvatarAsync(id, file));
+        }
+
+        [HttpPost("{id}/notify-received-package")]
+        public async Task<IActionResult> NotifyReceivedPackage([FromRoute] int id)
+        {
+            await _userService.NotifyReceivedPackage(id);
+            return Ok();
         }
     }
 
