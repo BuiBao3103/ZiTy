@@ -40,6 +40,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Send } from 'lucide-react'
+import { useDocumentTitle } from 'usehooks-ts'
 
 interface Theme {
   id: string
@@ -56,6 +57,9 @@ const themes = [
   { id: 'bg4', name: 'Theme 4', src: bg4, color: '#c5ebfe' },
 ]
 const Index = () => {
+
+	useDocumentTitle('Chat')
+
   const [theme, setTheme] = useState<Theme>(() => {
     const savedTheme = localStorage.getItem('selectedTheme')
     return savedTheme ? JSON.parse(savedTheme) : themes[0]
