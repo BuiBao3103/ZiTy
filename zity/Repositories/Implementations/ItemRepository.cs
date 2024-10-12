@@ -2,11 +2,12 @@
 using zity.Data;
 using zity.DTOs.Items;
 using zity.Models;
+using zity.Repositories.Interfaces;
 using zity.Utilities;
 
 namespace zity.Repositories.Implementations
 {
-    public class ItemRepository
+    public class ItemRepository: IItemRepository
     {
         private readonly ApplicationDbContext _dbContext;
 
