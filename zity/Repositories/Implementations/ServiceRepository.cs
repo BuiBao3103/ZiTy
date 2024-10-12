@@ -7,14 +7,9 @@ using zity.Utilities;
 
 namespace zity.Repositories.Implementations
 {
-    public class ServiceRepository : IServiceRepository
+    public class ServiceRepository(ApplicationDbContext context) : IServiceRepository
     {
-        private readonly ApplicationDbContext _dbContext;
-
-        public ServiceRepository(ApplicationDbContext context)
-        {
-            _dbContext = context;
-        }
+        private readonly ApplicationDbContext _dbContext = context;
 
         public async Task<PaginatedResult<Service>> GetAllAsync(ServiceQueryDTO queryParam)
         {

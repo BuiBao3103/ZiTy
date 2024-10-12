@@ -7,14 +7,9 @@ using zity.Utilities;
 
 namespace zity.Repositories.Implementations
 {
-    public class SurveyRepository : ISurveyRepository
+    public class SurveyRepository(ApplicationDbContext context) : ISurveyRepository
     {
-        private readonly ApplicationDbContext _dbContext;
-
-        public SurveyRepository(ApplicationDbContext context)
-        {
-            _dbContext = context;
-        }
+        private readonly ApplicationDbContext _dbContext = context;
 
         public async Task<PaginatedResult<Survey>> GetAllAsync(SurveyQueryDTO queryParam)
         {

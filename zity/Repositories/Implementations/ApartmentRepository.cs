@@ -7,14 +7,10 @@ using zity.Utilities;
 
 namespace zity.Repositories.Implementations
 {
-    public class ApartmentRepository : IApartmentRepository
+    public class ApartmentRepository(ApplicationDbContext dbContext) : IApartmentRepository
     {
-        private readonly ApplicationDbContext _dbContext;
+        private readonly ApplicationDbContext _dbContext = dbContext;
 
-        public ApartmentRepository(ApplicationDbContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
         public async Task<Apartment> CreateAsync(Apartment apartment)
         {
 
