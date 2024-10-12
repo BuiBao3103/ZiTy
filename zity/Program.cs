@@ -3,6 +3,7 @@ using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 using zity.Data;
 using zity.ExceptionHandling;
+using zity.Mappers;
 using zity.Repositories.Implementations;
 using zity.Repositories.Interfaces;
 using zity.Services.Implementations;
@@ -68,6 +69,9 @@ builder.Services.AddSingleton(cloudinary);
 // Register exception handling
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails(); // enables tracking/returning ProblemDetails to a user
+
+// Register AutoMapper
+builder.Services.AddAutoMapper(typeof(BillMapping), typeof(BillDetailMapping));
 
 var app = builder.Build();
 
