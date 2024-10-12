@@ -25,9 +25,8 @@ namespace zity.DTOs.Bills
         public DateTime? UpdatedAt { get; set; }
 
         public int RelationshipId { get; set; }
-
+        public RelationshipDTO? Relationship { get; set; } = null!;
         public ICollection<BillDetailDTO> BillDetails { get; set; } = [];
 
-        public RelationshipDTO Relationship { get; set; } = null!;
     }
 }

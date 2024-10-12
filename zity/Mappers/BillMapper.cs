@@ -19,7 +19,7 @@ namespace zity.Mappers
                 CreatedAt = bill.CreatedAt,
                 UpdatedAt = bill.UpdatedAt,
                 RelationshipId = bill.RelationshipId,
-                // Relationship = RelationshipMapper.ToDTO(bill.Relationship),
+                Relationship = bill.Relationship != null ? RelationshipMapper.ToDTO(bill.Relationship) : null,
                 BillDetails = bill.BillDetails.Select(BillDetailMapper.ToDTO).ToList()
             };
         }
