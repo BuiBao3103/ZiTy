@@ -8,7 +8,7 @@ using zity.Utilities;
 
 namespace zity.Services.Implementations
 {
-  
+
     public class RelationshipService(IRelationshipRepository relationshipRepository) : IRelationshipService
     {
         private readonly IRelationshipRepository _relationshipRepository = relationshipRepository;
@@ -23,8 +23,6 @@ namespace zity.Services.Implementations
                 pageRelationships.Page,
                 pageRelationships.PageSize);
         }
-
-
         public async Task<RelationshipDTO?> GetByIdAsync(int id, string? includes)
         {
             var relationship = await _relationshipRepository.GetByIdAsync(id, includes);
@@ -47,7 +45,6 @@ namespace zity.Services.Implementations
             var updatedRelationship = await _relationshipRepository.UpdateAsync(existingRelationship);
             return RelationshipMapper.ToDTO(updatedRelationship);
         }
-
         public async Task<RelationshipDTO?> PatchAsync(int id, RelationshipPatchDTO patchDTO)
         {
             var existingRelationship = await _relationshipRepository.GetByIdAsync(id, null);
@@ -60,12 +57,11 @@ namespace zity.Services.Implementations
             var patchedRelationship = await _relationshipRepository.UpdateAsync(existingRelationship);
             return RelationshipMapper.ToDTO(patchedRelationship);
         }
-
         public async Task<bool> DeleteAsync(int id)
         {
-            return  await _relationshipRepository.DeleteAsync(id);
+            return await _relationshipRepository.DeleteAsync(id);
         }
 
-       
+
     }
 }
