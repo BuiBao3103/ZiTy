@@ -3,7 +3,9 @@ import BreadCrumb from '@/components/breadcrumb'
 import { useParams } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { AlarmClock, Clock } from 'lucide-react'
+import { useDocumentTitle } from 'usehooks-ts'
 const Index = () => {
+	useDocumentTitle('Survey')
   const params = useParams()
 
   return (

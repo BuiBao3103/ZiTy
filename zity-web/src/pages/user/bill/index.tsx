@@ -1,10 +1,11 @@
 import { useParams } from 'react-router-dom'
-import { useWindowSize } from 'usehooks-ts'
+import { useDocumentTitle, useWindowSize } from 'usehooks-ts'
 import BillList from './components/bill-list'
 import { Input } from '@/components/ui/input'
 import { Search } from 'lucide-react'
 import BreadCrumb from '@/components/breadcrumb'
 const Index = () => {
+	useDocumentTitle('Bill')
   const params = useParams()
   const { width = 0 } = useWindowSize()
 

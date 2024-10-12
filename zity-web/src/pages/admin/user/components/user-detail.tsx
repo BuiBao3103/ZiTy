@@ -1,4 +1,3 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { CalendarIcon, X } from 'lucide-react'
 import GridWallpaper from '@/assets/grid-wallpaper.jpg'
@@ -7,8 +6,6 @@ import { Badge } from '@/components/ui/badge'
 import { z } from 'zod'
 import { UserPartialSchema } from '@/schema/user.validate'
 import AlertDelete from '@/components/alert/AlertDelete'
-import { useAppDispath } from '@/store'
-import { editingUser } from '@/features/user/userSlice'
 import { useForm } from 'react-hook-form'
 import {
   Form,
@@ -18,14 +15,6 @@ import {
   FormLabel,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { format } from 'date-fns'
-import { cn } from '@/lib/utils'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
-import { Calendar } from '@/components/ui/calendar'
 import {
   Select,
   SelectContent,
@@ -34,6 +23,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useState } from 'react'
+import { DateTimePicker } from '@/components/ui/datetime-picker'
 
 interface UserDetailProps {
   user: z.infer<typeof UserPartialSchema> | null
@@ -41,7 +31,6 @@ interface UserDetailProps {
 }
 
 const UserDetail = ({ user, setShowDetail }: UserDetailProps) => {
-  const dispatch = useAppDispath()
   const [selectedImage, setSelectedImage] = useState<string | undefined>(
     undefined,
   )
@@ -79,7 +68,7 @@ const UserDetail = ({ user, setShowDetail }: UserDetailProps) => {
       <Form {...form}>
         <form
           onClick={() => form.handleSubmit(onSubmit)}
-          className="z-[99] min-[500px]:max-w-lg lg:max-w-2xl border-4 border-white/80 w-full animate-in slide-in-from-bottom-1 duration-500 relative bg-white rounded-lg overflow-hidden shadow-lg">
+          className="z-[99] min-[500px]:max-w-lg lg:max-w-2xl border-4 border-white/80 w-full animate-in fade-in slide-in-from-bottom-2 duration-300 relative bg-white rounded-lg overflow-hidden shadow-lg">
           <img
             src={GridWallpaper}
             alt="grid wallpaper"
@@ -100,13 +89,27 @@ const UserDetail = ({ user, setShowDetail }: UserDetailProps) => {
                 <FormItem className="w-full">
                   <FormLabel>Avatar</FormLabel>
                   <FormControl>
-                    <div className="relative size-32 overflow-hidden rounded-full shadow-lg">
+                    <div className="relative size-32 overflow-hidden rounded-full shadow-lg group/selectedImage">
                       {/* Display current image */}
                       <img
                         src={field.value ?? selectedImage}
                         alt="Avatar preview"
                         className="size-full object-cover border-4 rounded-full border-zinc-100"
                       />
+                      {selectedImage && (
+                        <div className="absolute size-full inset-0 flex justify-center items-center transition-all opacity-0 group-hover/selectedImage:opacity-100 group-hover/selectedImage:z-10 bg-gray-200">
+                          <Button
+                            onClick={() => {
+                              form.setValue('avatar', undefined)
+                              setSelectedImage(undefined)
+                            }}
+                            type="button"
+                            size={'icon'}
+                            variant={'ghost'}>
+                            <X />
+                          </Button>
+                        </div>
+                      )}
                       {/* File upload option */}
                       <Input
                         type="file"
@@ -207,36 +210,15 @@ const UserDetail = ({ user, setShowDetail }: UserDetailProps) => {
                 render={({ field }) => (
                   <FormItem className="w-full flex-[1_1_150px]">
                     <FormLabel>Date Of Birth</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant={'outline'}
-                            className={cn(
-                              'w-full pl-3 text-left font-normal',
-                              !field.value && 'text-muted-foreground',
-                            )}>
-                            {field.value ? (
-                              format(field.value, 'PPP')
-                            ) : (
-                              <span>Pick a date</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          disabled={(date) =>
-                            date > new Date() || date < new Date('1900-01-01')
-                          }
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
+                    <FormControl>
+                      <DateTimePicker
+                        granularity="day"
+                        displayFormat={{ hour24: 'MMM, dd, yyyy' }}
+                        placeholder="Pick a date"
+                        value={field.value}
+                        onChange={field.onChange}
+                      />
+                    </FormControl>
                   </FormItem>
                 )}
               />
@@ -313,16 +295,10 @@ const UserDetail = ({ user, setShowDetail }: UserDetailProps) => {
           <div className="w-full h-full flex justify-between items-center p-4">
             <AlertDelete description="user" setAction={setAction} />
             <div className="flex gap-2">
-              <Button
-                type="button"
-                variant={'ghost'}
-                onClick={() => dispatch(editingUser({ isEditingUser: false }))}>
+              <Button type="button" variant={'ghost'}>
                 Cancel
               </Button>
-              <Button
-                type="submit"
-                variant={'info'}
-                onClick={() => dispatch(editingUser({ isEditingUser: false }))}>
+              <Button type="submit" variant={'info'}>
                 Submit
               </Button>
             </div>

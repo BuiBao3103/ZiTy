@@ -13,7 +13,10 @@ import { Package } from '@/schema/package.validate'
 import PackageForm from './components/package-form'
 import PackageList from './components/package-list'
 import BreadCrumb from '@/components/breadcrumb'
+import { useDocumentTitle } from 'usehooks-ts'
 const Index = () => {
+
+	useDocumentTitle('Package')
   const packages: Package[] = [
     {
       id: 1,
@@ -57,7 +60,7 @@ const Index = () => {
       <div className="w-full sm:h-screen flex flex-col bg-zinc-100">
         <BreadCrumb paths={[{ label: 'package', to: '/package' }]} />
         <div className="size-full p-4">
-          <div className="size-full p-4 bg-white rounded-md">
+          <div className="size-full p-4 bg-white rounded-md flex flex-col">
             <div className="w-full h-auto flex justify-between items-center">
               <div className="w-full flex gap-4 items-center">
                 <div className="lg:w-1/4 flex items-center border px-3 py-0.5 relative rounded-md focus-within:border-primary transition-all">
@@ -81,7 +84,9 @@ const Index = () => {
                 </Button>
               </PackageForm>
             </div>
-            <PackageList packages={packages} />
+            <div className="size-full">
+              <PackageList packages={packages} />
+            </div>
             <Pagination className="mt-2">
               <PaginationContent>
                 <PaginationItem>

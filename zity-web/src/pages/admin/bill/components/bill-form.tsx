@@ -32,7 +32,7 @@ const BillForm = ({ setShowDetail }: BillFormProps) => {
   return (
     <div className="fixed w-full h-screen flex justify-center items-center inset-0 z-50">
       <div
-        className="fixed inset-0 bg-black/20 animate-in fade-in"
+        className="fixed inset-0 bg-gradient-to-b from-black/20 to-black/60 animate-in fade-in"
         onClick={() => setShowDetail(null)}></div>
       <div className="max-w-sm min-[550px]:max-w-lg w-full h-fit bg-white rounded-md relative z-[51] animate-in fade-in-95 zoom-in-95 shadow-lg">
         <div className="w-full flex justify-between items-center px-4 py-3">

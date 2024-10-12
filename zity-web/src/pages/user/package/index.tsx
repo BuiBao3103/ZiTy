@@ -7,12 +7,13 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useWindowSize } from 'usehooks-ts'
+import { useDocumentTitle, useWindowSize } from 'usehooks-ts'
 import PackageList from './components/package-list'
 import { Search } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import BreadCrumb from '@components/breadcrumb'
 const Index = () => {
+	useDocumentTitle('Package')
   const filterBar: string[] = ['All', 'Not Collected', 'Collected']
   const params = useParams()
   const { width = 0 } = useWindowSize()

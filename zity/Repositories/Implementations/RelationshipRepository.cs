@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using zity.Data;
 using zity.DTOs.Relationships;
-using zity.ExceptionHandling;
 using zity.Models;
 using zity.Repositories.Interfaces;
 using zity.Utilities;
@@ -66,6 +65,6 @@ namespace zity.Repositories.Implementations
             return true;
         }
 
-        
+
     }
 }

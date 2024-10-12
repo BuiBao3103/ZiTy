@@ -1,6 +1,15 @@
-﻿namespace zity.Repositories.Interfaces
+﻿using zity.DTOs.Reports;
+using zity.Models;
+using zity.Utilities;
+
+namespace zity.Repositories.Interfaces
 {
     public interface IReportRepository
     {
+        Task<PaginatedResult<Report>> GetAllAsync(ReportQueryDTO query);
+        Task<Report?> GetByIdAsync(int id, string? includes);
+        Task<Report> CreateAsync(Report report);
+        Task<Report> UpdateAsync(Report report);
+        Task<bool> DeleteAsync(int id);
     }
 }

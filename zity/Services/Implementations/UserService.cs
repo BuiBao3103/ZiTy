@@ -3,17 +3,17 @@ using zity.Repositories.Interfaces;
 using zity.Mappers;
 using zity.Services.Interfaces;
 using zity.Utilities;
-using CloudinaryDotNet;
-using CloudinaryDotNet.Actions;
-using zity.ExceptionHandling;
 using zity.Constraints;
+using zity.ExceptionHandling;
 
 namespace zity.Services.Implementations
 {
-    public class UserService(IUserRepository userRepository, IMediaService mediaService) : IUserService
+    public class UserService(IUserRepository userRepository, IMediaService mediaService, IEmailService emailService, ISmsService smsService) : IUserService
     {
         private readonly IUserRepository _userRepository = userRepository;
         private readonly IMediaService _mediaService = mediaService;
+        private readonly IEmailService _emailService = emailService;
+        private readonly ISmsService _smsService = smsService;
 
         public async Task<PaginatedResult<UserDTO>> GetAllAsync(UserQueryDTO query)
         {
@@ -26,6 +26,19 @@ namespace zity.Services.Implementations
         {
             var user = await _userRepository.GetByIdAsync(id, includes);
             return user != null ? UserMapper.ToDTO(user) : null;
+        }
+
+        public async Task<UserDTO> CreateAsync(UserCreateDTO userCreateDTO)
+        {
+            var user = UserMapper.FromCreateDTO(userCreateDTO);
+
+            var password = PasswordGenerator.GeneratePassword(12);
+            user.Password = BCrypt.Net.BCrypt.HashPassword(password);
+
+            var createdUser = await _userRepository.CreateAsync(user);
+
+            await _emailService.SendAccountCreationEmail(createdUser, password);
+            return UserMapper.ToDTO(createdUser);
         }
 
         public async Task<UserDTO?> UploadAvatarAsync(int id, IFormFile file)
@@ -42,6 +55,19 @@ namespace zity.Services.Implementations
             await _userRepository.UpdateAsync(user);
 
             return user != null ? UserMapper.ToDTO(user) : null;
+        }
+
+        public async Task NotifyReceivedPackage(int userId)
+        {
+            var user = await _userRepository.GetByIdAsync(userId, null);
+            if (user == null)
+            {
+                throw new AppError(message: "User not found", statusCode: 404);
+            }
+            string phoneNumber = user.Phone;
+            string message = "You have received a package!";
+            //string message = "Cam on quy khach da su dung dich vu cua chung toi. Chuc quy khach mot ngay tot lanh!";
+            await _smsService.SendSMSAsync(phoneNumber, message);
         }
     }
 }

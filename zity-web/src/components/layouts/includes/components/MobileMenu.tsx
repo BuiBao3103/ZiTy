@@ -35,7 +35,7 @@ export default function MobileMenu({ sidebar }: MobileMenuProps) {
       <SheetContent side={'left'}>
         <div className="w-full h-full flex flex-col gap-2">
           <SheetHeader>
-            <div className="w-fit sm:w-full h-[80px] sm:p-3 sm:order-none order-2">
+            <div className="w-fit md:w-full h-[120px] sm:p-3 sm:order-none order-2">
               <img
                 src={Logo}
                 alt="Logo website"

@@ -1,5 +1,4 @@
-﻿using zity.DTOs.Users;
-using zity.Models;
+using zity.DTOs.Users;
 
 namespace zity.DTOs.Items
 {

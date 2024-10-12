@@ -11,6 +11,7 @@ import {
   HandPlatter,
   House,
   LogOut,
+  MessageCircleQuestion,
   NotebookText,
   Package,
   PanelRightClose,
@@ -25,7 +26,7 @@ import MobileMenu from './components/MobileMenu'
 import Logo from '@/assets/logo.svg'
 import LogoMobile from '@/assets/logoMobile.svg'
 import { UserRole } from '@/enums'
-import {  useState } from 'react'
+import { useEffect, useState } from 'react'
 export interface SideBarProps {
   label: string
   icon: React.ReactNode
@@ -106,25 +107,37 @@ const Header = () => {
       to: '/admin/survey',
       role: ['ADMIN'],
     },
+    {
+      label: 'Report Admin',
+      icon: <Flag />,
+      to: '/admin/report',
+      role: ['ADMIN'],
+    },
+    {
+      label: 'Ask For Support',
+      icon: <MessageCircleQuestion />,
+      to: '/chat',
+      role: ['RESIDENT'],
+    },
   ]
 
-  // useEffect(() => {
-  //   console.log(width)
-  //   if (width <= 1024) {
-  //     setPanelRightOpen(true)
-  //   } else {
-  //     setPanelRightOpen(false)
-  //   }
-  // }, [width])
+  useEffect(() => {
+    console.log(width)
+    if (width >= 1024) {
+      setPanelRightOpen(true)
+    } else {
+      setPanelRightOpen(false)
+    }
+  }, [width])
 
   return (
     <header
       className={`${
-        panelRightOpen ? 'sm:w-[60px]' : 'sm:w-[300px]'
-      } transition-all duration-300 w-full h-20 sm:h-screen sticky top-0 z-40 flex sm:flex-row flex-col bg-white`}>
-      <div className="w-full h-full flex sm:flex-col flex-row sm:items-stretch items-center sm:justify-start justify-between sm:p-0 p-4">
+        panelRightOpen ? 'md:w-[60px]' : 'md:w-[300px]'
+      } transition-all duration-300 w-full h-20 md:h-screen sticky top-0 z-40 flex md:flex-row flex-col bg-white`}>
+      <div className="w-full h-full flex md:flex-col flex-row md:items-stretch items-center md:justify-start justify-between md:p-0 p-4">
         <div
-          className={`sm:w-full h-full sm:h-[150px] sm:p-3 sm:order-none order-2 relative`}>
+          className={`md:w-full h-full md:h-[150px] md:p-3 md:order-none order-2 relative`}>
           <img
             src={panelRightOpen ? LogoMobile : Logo}
             onClick={() => navigate('/')}
@@ -134,7 +147,7 @@ const Header = () => {
               panelRightOpen && 'mt-5'
             }`}
           />
-          {width > 640 && (
+          {width > 768 && (
             <Button
               size={'icon'}
               variant={'secondary'}
@@ -145,16 +158,16 @@ const Header = () => {
                   {panelRightOpen ? <PanelRightClose /> : <PanelRightOpen />}
                 </TooltipTrigger>
                 <TooltipContent side="right">
-                  {panelRightOpen ? 'Close menu' : 'Open menu'}
+                  {panelRightOpen ? 'Open menu' : 'Close menu'}
                 </TooltipContent>
               </Tooltip>
             </Button>
           )}
         </div>
-        {width <= 640 && <MobileMenu sidebar={userSideBars} />}
-        {width > 640 && <Separator />}
+        {width <= 768 && <MobileMenu sidebar={userSideBars} />}
+        {width > 768 && <Separator />}
         <div
-          className={`w-full h-full hidden sm:flex flex-col ${
+          className={`sidebar w-full h-full hidden md:flex flex-col overflow-y-auto ${
             panelRightOpen ? 'gap-2 p-2' : 'gap-2 p-4'
           }`}>
           {userSideBars.map((sideBar, index) => (
@@ -196,11 +209,11 @@ const Header = () => {
             </Button>
           ))}
         </div>
-        {width > 640 && <Separator />}
+        {width > 768 && <Separator />}
         <div
           className={`w-full p-3 hidden ${
             panelRightOpen ? 'flex-col' : 'flex-row'
-          } sm:flex items-center gap-2`}>
+          } md:flex items-center gap-2`}>
           <Avatar>
             <AvatarImage src="" />
             <AvatarFallback>CN</AvatarFallback>
@@ -225,7 +238,7 @@ const Header = () => {
           </div>
         </div>
       </div>
-      {width > 640 ? (
+      {width > 768 ? (
         <Separator orientation="vertical" />
       ) : (
         <Separator orientation="horizontal" />

@@ -13,8 +13,11 @@ import ServiceForm from './components/service-form'
 import ServiceList from './components/service-list'
 import { Service } from '@/schema/service.validate'
 import BreadCrumb from '@/components/breadcrumb'
+import { useDocumentTitle } from 'usehooks-ts'
 
 const Index = () => {
+
+	useDocumentTitle('Service')
   const services: Service[] = [
     {
       id: 1,
@@ -65,7 +68,7 @@ const Index = () => {
       <div className="w-full sm:h-screen flex flex-col bg-zinc-100">
         <BreadCrumb paths={[{ label: 'service', to: '/service' }]} />
         <div className="size-full p-4">
-          <div className="size-full p-4 bg-white rounded-md">
+          <div className="size-full p-4 bg-white rounded-md flex flex-col">
             <div className="w-full h-auto flex justify-between items-center">
               <div className="w-full flex gap-4 items-center">
                 <div className="lg:w-1/4 flex items-center border px-3 py-0.5 relative rounded-md focus-within:border-primary transition-all">
@@ -82,7 +85,9 @@ const Index = () => {
               </div>
               <ServiceForm />
             </div>
-            <ServiceList services={services} />
+            <div className="size-full">
+              <ServiceList services={services} />
+            </div>
             <Pagination className="mt-2">
               <PaginationContent>
                 <PaginationItem>
