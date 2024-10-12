@@ -15,8 +15,8 @@ namespace zity.Mappers
                 UpdatedAt = billDetail.UpdatedAt,
                 BillId = billDetail.BillId,
                 ServiceId = billDetail.ServiceId,
-                Bill = BillMapper.ToDTO(billDetail.Bill),
-                // Service = ServiceMapper.ToDTO(billDetail.Service)
+                Bill = billDetail.Bill != null ? BillMapper.ToDTO(billDetail.Bill) : null,
+                //Service = billDetail.Service != null ? ServiceMapper.ToDTO(billDetail.Service) :null,
             };
         }
 

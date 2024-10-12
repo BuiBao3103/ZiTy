@@ -18,8 +18,8 @@ namespace zity.DTOs.BillDetails
 
         public int ServiceId { get; set; }
 
-        public BillDTO Bill { get; set; } = null!;
+        public BillDTO? Bill { get; set; } = null;
 
-        public ServiceDTO Service { get; set; } = null!;
+        public ServiceDTO? Service { get; set; } = null;
     }
 }
