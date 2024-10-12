@@ -57,6 +57,14 @@ var esmsSettings = new EsmsSettings
     BrandName = Environment.GetEnvironmentVariable("ESMS_BRAND_NAME") ?? throw new ArgumentException("ESMS_BRAND_NAME is missing.")
 };
 
+// Configure VNPay settings
+var vnpaySettings = new VNPaySettings
+{
+    TmnCode = Environment.GetEnvironmentVariable("VNP_TMN_CODE") ?? throw new ArgumentException("VNP_TMN_CODE is missing."),
+    HashSecret = Environment.GetEnvironmentVariable("VNP_HASH_SECRET") ?? throw new ArgumentException("VNP_HASH_SECRET is missing."),
+    Url = Environment.GetEnvironmentVariable("VNP_URL") ?? throw new ArgumentException("VNP_URL is missing.")
+};
+
 // Add services to the container.
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -109,6 +117,9 @@ builder.Services.AddSingleton(appSettings);
 
 // Register ESMS settings
 builder.Services.AddSingleton(esmsSettings);
+
+// Register VNPay settings
+builder.Services.AddSingleton(vnpaySettings);
 
 // Register exception handling
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
