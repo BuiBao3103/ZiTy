@@ -15,14 +15,6 @@ import {
   FormLabel,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { format } from 'date-fns'
-import { cn } from '@/lib/utils'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
-import { Calendar } from '@/components/ui/calendar'
 import {
   Select,
   SelectContent,
@@ -31,6 +23,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useState } from 'react'
+import { DateTimePicker } from '@/components/ui/datetime-picker'
 
 interface UserDetailProps {
   user: z.infer<typeof UserPartialSchema> | null
@@ -105,10 +98,14 @@ const UserDetail = ({ user, setShowDetail }: UserDetailProps) => {
                       />
                       {selectedImage && (
                         <div className="absolute size-full inset-0 flex justify-center items-center transition-all opacity-0 group-hover/selectedImage:opacity-100 group-hover/selectedImage:z-10 bg-gray-200">
-                          <Button onClick={() => {
-														form.setValue('avatar', undefined)
-														setSelectedImage(undefined)
-													}} type='button' size={'icon'} variant={"ghost"}>
+                          <Button
+                            onClick={() => {
+                              form.setValue('avatar', undefined)
+                              setSelectedImage(undefined)
+                            }}
+                            type="button"
+                            size={'icon'}
+                            variant={'ghost'}>
                             <X />
                           </Button>
                         </div>
@@ -213,38 +210,15 @@ const UserDetail = ({ user, setShowDetail }: UserDetailProps) => {
                 render={({ field }) => (
                   <FormItem className="w-full flex-[1_1_150px]">
                     <FormLabel>Date Of Birth</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant={'outline'}
-                            className={cn(
-                              'w-full pl-3 text-left font-normal',
-                              !field.value && 'text-muted-foreground',
-                            )}>
-                            {field.value ? (
-                              format(field.value, 'PPP')
-                            ) : (
-                              <span>Pick a date</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-													fromYear={1924}
-													toYear={new Date().getFullYear()}
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          disabled={(date) =>
-                            date > new Date() || date < new Date('1900-01-01')
-                          }
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
+                    <FormControl>
+                      <DateTimePicker
+                        granularity="day"
+                        displayFormat={{ hour24: 'MMM, dd, yyyy' }}
+                        placeholder="Pick a date"
+                        value={field.value}
+                        onChange={field.onChange}
+                      />
+                    </FormControl>
                   </FormItem>
                 )}
               />
@@ -321,14 +295,10 @@ const UserDetail = ({ user, setShowDetail }: UserDetailProps) => {
           <div className="w-full h-full flex justify-between items-center p-4">
             <AlertDelete description="user" setAction={setAction} />
             <div className="flex gap-2">
-              <Button
-                type="button"
-                variant={'ghost'}>
+              <Button type="button" variant={'ghost'}>
                 Cancel
               </Button>
-              <Button
-                type="submit"
-                variant={'info'}>
+              <Button type="submit" variant={'info'}>
                 Submit
               </Button>
             </div>

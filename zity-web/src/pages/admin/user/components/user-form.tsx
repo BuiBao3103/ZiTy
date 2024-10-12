@@ -33,7 +33,7 @@ import { useForm } from 'react-hook-form'
 import { cn } from '@/lib/utils'
 import { format } from 'date-fns'
 import { CalendarIcon } from 'lucide-react'
-import { Calendar } from '@/components/ui/calendar'
+import { DateTimePicker } from '@/components/ui/datetime-picker'
 import { z } from 'zod'
 import { UserSchema } from '@/schema/user.validate'
 import { UserRole } from '@/enums'
@@ -82,7 +82,7 @@ const UserForm = () => {
         </Button>
       </DialogTrigger>
       <DialogContent
-        className="max-w-sm lg:max-w-lg xl:max-w-xl"
+        className="max-w-sm min-[450px]:max-w-md lg:max-w-2xl"
         aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle className="text-2xl">New User</DialogTitle>
@@ -93,7 +93,7 @@ const UserForm = () => {
           <QrCodeScanner handleQrScanSuccess={handleQrScanSuccess} />
         </div>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 lg:space-y-4">
             <FormField
               control={form.control}
               name="full_name"
@@ -115,7 +115,7 @@ const UserForm = () => {
                 control={form.control}
                 name="nation_id"
                 render={({ field }) => (
-                  <FormItem className="w-full">
+                  <FormItem className="w-full flex-[1_1_140px]">
                     <FormLabel>National ID</FormLabel>
                     <FormControl>
                       <Input
@@ -134,7 +134,7 @@ const UserForm = () => {
                 control={form.control}
                 name="gender"
                 render={({ field }) => (
-                  <FormItem className="w-full">
+                  <FormItem className="w-full flex-[1_1_140px]">
                     <FormLabel>Gender</FormLabel>
                     <FormControl>
                       <Select
@@ -157,38 +157,17 @@ const UserForm = () => {
                 control={form.control}
                 name="date_of_birth"
                 render={({ field }) => (
-                  <FormItem className="w-full">
+                  <FormItem className="w-full flex-[1_1_140px]">
                     <FormLabel>Date Of Birth</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant={'outline'}
-                            className={cn(
-                              'w-full md:w-[180px] pl-3 text-left font-normal',
-                              !field.value && 'text-muted-foreground',
-                            )}>
-                            {field.value ? (
-                              format(field.value, 'PPP')
-                            ) : (
-                              <span>Pick a date</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          disabled={(date) =>
-                            date > new Date() || date < new Date('1900-01-01')
-                          }
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
+                    <FormControl>
+                      <DateTimePicker
+                        granularity="day"
+												displayFormat={{ hour24: 'MMM, dd, yyyy' }}
+												placeholder='Pick a date'
+                        value={field.value}
+                        onChange={field.onChange}
+                      />
+                    </FormControl>
                   </FormItem>
                 )}
               />
