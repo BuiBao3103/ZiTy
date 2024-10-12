@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using AutoMapper;
+using System.Threading.Tasks;
 using zity.DTOs.BillDetails;
 using zity.Mappers;
 using zity.Models;
@@ -8,16 +9,17 @@ using zity.Utilities;
 
 namespace zity.Services.Implementations
 {
-    public class BillDetailService(IBillDetailRepository billDetailRepository) : IBillDetailService
+    public class BillDetailService(IBillDetailRepository billDetailRepository, IMapper mapper) : IBillDetailService
     {
+        private readonly IMapper _mapper = mapper;
         private readonly IBillDetailRepository _billDetailRepository = billDetailRepository;
 
         public async Task<PaginatedResult<BillDetailDTO>> GetAllAsync(BillDetailQueryDTO queryParam)
         {
             var pageBillDetails = await _billDetailRepository.GetAllAsync(queryParam);
-
+            var billDetails = pageBillDetails.Contents.Select(_mapper.Map<BillDetailDTO>).ToList();
             return new PaginatedResult<BillDetailDTO>(
-                pageBillDetails.Contents.Select(BillDetailMapper.ToDTO).ToList(),
+                billDetails,
                 pageBillDetails.TotalItems,
                 pageBillDetails.Page,
                 pageBillDetails.PageSize);
@@ -26,13 +28,13 @@ namespace zity.Services.Implementations
         public async Task<BillDetailDTO?> GetByIdAsync(int id, string? includes)
         {
             var billDetail = await _billDetailRepository.GetByIdAsync(id, includes);
-            return billDetail != null ? BillDetailMapper.ToDTO(billDetail) : null;
+            return billDetail != null ? _mapper.Map<BillDetailDTO>(billDetail) : null;
         }
 
         public async Task<BillDetailDTO> CreateAsync(BillDetailCreateDTO createDTO)
         {
-            var billDetail = BillDetailMapper.ToModelFromCreate(createDTO);
-            return BillDetailMapper.ToDTO(await _billDetailRepository.CreateAsync(billDetail));
+            var billDetail = _mapper.Map<BillDetail>(createDTO);
+            return _mapper.Map<BillDetailDTO>(await _billDetailRepository.CreateAsync(billDetail));
         }
 
         public async Task<BillDetailDTO?> UpdateAsync(int id, BillDetailUpdateDTO updateDTO)
@@ -43,9 +45,9 @@ namespace zity.Services.Implementations
                 return null;
             }
 
-            BillDetailMapper.UpdateModelFromUpdate(existingBillDetail, updateDTO);
+            _mapper.Map(updateDTO, existingBillDetail);
             var updatedBillDetail = await _billDetailRepository.UpdateAsync(existingBillDetail);
-            return BillDetailMapper.ToDTO(updatedBillDetail);
+            return _mapper.Map<BillDetailDTO>(updatedBillDetail);
         }
 
         public async Task<BillDetailDTO?> PatchAsync(int id, BillDetailPatchDTO patchDTO)
@@ -56,9 +58,9 @@ namespace zity.Services.Implementations
                 return null;
             }
 
-            BillDetailMapper.PatchModelFromPatch(existingBillDetail, patchDTO);
+            _mapper.Map(patchDTO, existingBillDetail);
             var patchedBillDetail = await _billDetailRepository.UpdateAsync(existingBillDetail);
-            return BillDetailMapper.ToDTO(patchedBillDetail);
+            return _mapper.Map<BillDetailDTO>(patchedBillDetail);
         }
 
         public async Task<bool> DeleteAsync(int id)
