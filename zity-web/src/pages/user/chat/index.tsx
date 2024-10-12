@@ -55,7 +55,6 @@ const themes = [
   { id: 'bg3', name: 'Theme 3', src: bg3, color: '#cdbef7' },
   { id: 'bg4', name: 'Theme 4', src: bg4, color: '#c5ebfe' },
 ]
-
 const Index = () => {
   const [theme, setTheme] = useState<Theme>(() => {
     const savedTheme = localStorage.getItem('selectedTheme')
@@ -85,7 +84,10 @@ const Index = () => {
     },
   })
   const onSubmit = async (data: z.infer<typeof MessageSchema>) => {
-    const messagesRef = collection(db, 'conversations/1/messages')
+		if(data.text.length === 0) {
+			return;
+		}
+    const messagesRef = collection(db, `conversations/1/messages`)
     const messageDocRef = await addDoc(messagesRef, {
       senderId: 1,
       timestamp: serverTimestamp(),
