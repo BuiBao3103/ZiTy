@@ -13,7 +13,10 @@ import { Package } from '@/schema/package.validate'
 import PackageForm from './components/package-form'
 import PackageList from './components/package-list'
 import BreadCrumb from '@/components/breadcrumb'
+import { useDocumentTitle } from 'usehooks-ts'
 const Index = () => {
+
+	useDocumentTitle('Package')
   const packages: Package[] = [
     {
       id: 1,

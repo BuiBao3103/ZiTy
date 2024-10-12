@@ -13,8 +13,11 @@ import ServiceForm from './components/service-form'
 import ServiceList from './components/service-list'
 import { Service } from '@/schema/service.validate'
 import BreadCrumb from '@/components/breadcrumb'
+import { useDocumentTitle } from 'usehooks-ts'
 
 const Index = () => {
+
+	useDocumentTitle('Service')
   const services: Service[] = [
     {
       id: 1,
