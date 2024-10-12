@@ -134,7 +134,7 @@ const Header = () => {
     <header
       className={`${
         panelRightOpen ? 'sm:w-[60px]' : 'sm:w-[300px]'
-      } transition-all duration-300 w-full h-20 sm:h-screen sticky top-0 z-40 flex sm:flex-row flex-col bg-white`}>
+      } transition-all duration-300 w-full h-20 sm:h-screen sticky top-0 z-40 flex sm:flex-row flex-col bg-white overflow-hidden`}>
       <div className="w-full h-full flex sm:flex-col flex-row sm:items-stretch items-center sm:justify-start justify-between sm:p-0 p-4">
         <div
           className={`sm:w-full h-full sm:h-[150px] sm:p-3 sm:order-none order-2 relative`}>
@@ -167,7 +167,7 @@ const Header = () => {
         {width <= 640 && <MobileMenu sidebar={userSideBars} />}
         {width > 640 && <Separator />}
         <div
-          className={`w-full h-full hidden sm:flex flex-col ${
+          className={`sidebar w-full h-full hidden sm:flex flex-col overflow-y-auto ${
             panelRightOpen ? 'gap-2 p-2' : 'gap-2 p-4'
           }`}>
           {userSideBars.map((sideBar, index) => (
