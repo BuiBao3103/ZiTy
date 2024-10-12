@@ -1,10 +1,9 @@
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useNavigate } from 'react-router-dom'
 
 const ApartmentList = () => {
-
   const navigate = useNavigate()
-
 
   return (
     <div className="w-full flex flex-col gap-4">
@@ -28,22 +27,12 @@ const ApartmentList = () => {
                 </Button>
               </div>
               <div className="w-full h-full grid grid-cols-2">
-                <span className="">Owner:</span>
-                <span className="font-medium place-self-end">Bui Hong Bao</span>
-              </div>
-              {/* <div className="w-full h-full grid grid-cols-2">
-                <span className="">User:</span>
-                <span className="font-medium place-self-end">
-                  Bui Ngoc Thuc
+                <span className="text-sm font-medium">
+                  Status
                 </span>
-              </div> */}
-              <div className="w-full h-full grid grid-cols-2">
-                <span className="">Phone:</span>
-                <span
-                  className="font-medium place-self-end"
-                  onClick={() => window.open(`tel:0344248396`)}>
-                  0123456789
-                </span>
+                <Badge className='w-fit place-self-end uppercase' variant={"error"}>
+									disruption
+								</Badge>
               </div>
             </div>
           ))}
