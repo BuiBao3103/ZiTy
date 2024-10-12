@@ -48,10 +48,21 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Register repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRelationshipRepository, RelationshipRepository>();
+builder.Services.AddScoped<IAnswerRepository, AnswerRepository>();
+builder.Services.AddScoped<IOtherAnswerRepository, OtherAnswerRepository>();
+builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
+builder.Services.AddScoped<IRejectionReasonRepository, RejectionReasonRepository>();
+builder.Services.AddScoped<IUserAnswerRepository, UserAnswerRepository>();
+
 
 // Register services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRelationshipService, RelationshipService>();
+builder.Services.AddScoped<IAnswerService, AnswerService>();
+builder.Services.AddScoped<IOtherAnswerService, OtherAnswerService>();
+builder.Services.AddScoped<IQuestionService, QuestionService>();
+builder.Services.AddScoped<IRejectionReasonService, RejectionReasonService>();
+builder.Services.AddScoped<IUserAnswerService, UserAnswerService>();
 
 // Register exception handling
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
