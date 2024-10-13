@@ -12,12 +12,14 @@ import PackageList from './components/package-list'
 import { Search } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import BreadCrumb from '@components/breadcrumb'
+import { PDFViewer, usePDF } from '@react-pdf/renderer'
+import PackageDetail from './components/package-detail'
+import { Skeleton } from '@/components/ui/skeleton'
 const Index = () => {
-	useDocumentTitle('Package')
+  useDocumentTitle('Package')
   const filterBar: string[] = ['All', 'Not Collected', 'Collected']
   const params = useParams()
   const { width = 0 } = useWindowSize()
-  const navigate = useNavigate()
   return (
     <div className="w-full sm:h-screen flex flex-col bg-zinc-100 overflow-hidden">
       <BreadCrumb
@@ -73,8 +75,10 @@ const Index = () => {
           </div>
         </div>
         {params.id && width > 1024 && (
-          <div className="w-full h-full p-4 bg-white rounded-md lg:block hidden">
-            {params.id}
+          <div className="size-full p-4 bg-white rounded-md lg:block hidden">
+            <PDFViewer className="size-full">
+              <PackageDetail id={parseInt(params.id)} />
+            </PDFViewer>
           </div>
         )}
       </div>
