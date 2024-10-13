@@ -15,7 +15,7 @@ namespace zity.Mappers
                 UpdatedAt = relationship.UpdatedAt,
                 UserId = relationship.UserId,
                 ApartmentId = relationship.ApartmentId,
-                User = relationship.User != null ? UserMapper.ToDTO(relationship.User) : null,
+                User = relationship.User != null ? UserMapping.ToDTO(relationship.User) : null,
                 //Apartment = relationship.Apartment != null ? ApartmentMapper.ToDTO(relationship.Apartment) : null,
                 //Bills = relationship.Bills.Select(bill => BillMapper.ToDTO(bill)).ToList(),
                 //Reports = relationship.Reports.Select(report => ReportMapper.ToDTO(report)).ToList(),

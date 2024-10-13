@@ -1,7 +1,7 @@
 using CloudinaryDotNet;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
-using zity.Configuration; 
+using zity.Configuration;
 using zity.Data;
 using zity.ExceptionHandling;
 using zity.Mappers;
@@ -79,7 +79,7 @@ builder.Services.AddScoped<IApartmentRepository, ApartmentRepository>();
 builder.Services.AddScoped<IItemRepository, ItemRepository>();
 builder.Services.AddScoped<IReportRepository, ReportRepository>();
 builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
-builder.Services.AddScoped<ISurveyRepository,SurveyRepository>();
+builder.Services.AddScoped<ISurveyRepository, SurveyRepository>();
 
 
 // Register services
@@ -115,7 +115,11 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails(); // enables tracking/returning ProblemDetails to a user
 
 // Register AutoMapper
-builder.Services.AddAutoMapper(typeof(BillMapping), typeof(BillDetailMapping));
+builder.Services.AddAutoMapper(
+        typeof(BillMapping),
+        typeof(BillDetailMapping),
+        typeof(UserMapping)
+    );
 
 var app = builder.Build();
 
