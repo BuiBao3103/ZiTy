@@ -40,7 +40,7 @@
 		--success-border: 145 92% 91%;
 		--success-foreground: 140 100% 27%;
 
-		--warning: 49 100% 97%;
+		--warning: 50 75% 92%;
 		--warning-border: 49 91% 91%;
 		--warning-foreground: 31 92% 45%;
 
@@ -48,7 +48,7 @@
 		--error-border: 359 100% 94%;
 		--error-foreground: 360 100% 45%;
 
-		--info: 208 100% 97%;
+		--info: 210 100% 97%;
 		--info-border: 221 91% 91%;
 		--info-foreground: 210 92% 45%;
 
@@ -104,4 +104,14 @@
 	background-clip: padding-box;
 	border-radius: 9999px;
 	background-color: #AAAAAA;
+}
+
+.sidebar::-webkit-scrollbar {
+	display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.sidebar {
+	-ms-overflow-style: none; /* IE and Edge */
+	scrollbar-width: none; /* Firefox */
 }

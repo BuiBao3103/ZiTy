@@ -27,9 +27,10 @@ import { Textarea } from '@/components/ui/textarea'
 
 interface ReportFormProps {
   children: React.ReactNode
+  id?: string
 }
 
-const ReportForm = ({ children }: ReportFormProps) => {
+const ReportForm = ({ children, id = undefined }: ReportFormProps) => {
   const form = useForm()
 
   const onSubmit = async (data: any) => {
@@ -39,9 +40,13 @@ const ReportForm = ({ children }: ReportFormProps) => {
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="max-w-sm md:max-w-lg lg:max-w-2xl" aria-describedby={undefined}>
+      <DialogContent
+        className="max-w-sm min-[500px]:max-w-md sm:max-w-lg lg:max-w-2xl"
+        aria-describedby={undefined}>
         <DialogHeader>
-          <DialogTitle className="text-2xl">New Report</DialogTitle>
+          <DialogTitle className="text-2xl">
+            {id ? 'Report - 05/10/2024' : 'New Report'}
+          </DialogTitle>
         </DialogHeader>
         <Separator />
         <Form {...form}>
@@ -98,23 +103,28 @@ const ReportForm = ({ children }: ReportFormProps) => {
                     What do you think about that problem? (Write something)
                   </FormLabel>
                   <FormControl>
-                    <Textarea rows={5} placeholder='Write something...'></Textarea>
+                    <Textarea
+                      rows={5}
+                      disabled={id ? true : false}
+                      placeholder="Write something..."></Textarea>
                   </FormControl>
                 </FormItem>
               )}
             />
-            <div className="w-full flex justify-end gap-4">
-              <DialogClose asChild>
-                <Button size={'lg'} variant={'ghost'}>
-                  Cancel
-                </Button>
-              </DialogClose>
-              <DialogClose asChild>
-                <Button size={'lg'} variant={'default'}>
-                  Send
-                </Button>
-              </DialogClose>
-            </div>
+            {!id && (
+              <div className="w-full flex justify-end gap-4">
+                <DialogClose asChild>
+                  <Button size={'lg'} variant={'ghost'}>
+                    Cancel
+                  </Button>
+                </DialogClose>
+                <DialogClose asChild>
+                  <Button size={'lg'} variant={'default'}>
+                    Send
+                  </Button>
+                </DialogClose>
+              </div>
+            )}
           </form>
         </Form>
       </DialogContent>

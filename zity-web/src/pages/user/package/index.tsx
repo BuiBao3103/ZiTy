@@ -1,12 +1,4 @@
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
-import {
   Select,
   SelectContent,
   SelectGroup,
@@ -14,50 +6,28 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Separator } from '@/components/ui/separator'
-import { Link, useNavigate, useParams } from 'react-router-dom'
-import { useWindowSize } from 'usehooks-ts'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useDocumentTitle, useWindowSize } from 'usehooks-ts'
 import PackageList from './components/package-list'
 import { Search } from 'lucide-react'
 import { Input } from '@/components/ui/input'
-
+import BreadCrumb from '@components/breadcrumb'
+import { PDFViewer, usePDF } from '@react-pdf/renderer'
+import PackageDetail from './components/package-detail'
+import { Skeleton } from '@/components/ui/skeleton'
 const Index = () => {
+  useDocumentTitle('Package')
   const filterBar: string[] = ['All', 'Not Collected', 'Collected']
   const params = useParams()
   const { width = 0 } = useWindowSize()
-  const navigate = useNavigate()
   return (
     <div className="w-full sm:h-screen flex flex-col bg-zinc-100 overflow-hidden">
-      <div className="w-full px-4 pt-4">
-        <Breadcrumb className="p-4 font-medium bg-white rounded-md">
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link to={'/'}>Home</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            {!params.id && (
-              <BreadcrumbItem>
-                <BreadcrumbPage>Package</BreadcrumbPage>
-              </BreadcrumbItem>
-            )}
-            {params.id && (
-              <>
-                <BreadcrumbItem>
-                  <BreadcrumbLink asChild>
-                    <Link to={'/package'}>Package</Link>
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>{params.id}</BreadcrumbPage>
-                </BreadcrumbItem>
-              </>
-            )}
-          </BreadcrumbList>
-        </Breadcrumb>
-      </div>
+      <BreadCrumb
+        paths={[
+          { label: 'package', to: '/package' },
+          ...(params.id ? [{ label: params.id }] : []),
+        ]}
+      />
       <div className="w-full h-full p-4 flex gap-4 overflow-hidden">
         <div className="w-full h-full flex flex-col p-4 bg-white rounded-md">
           <div className="w-full h-full overflow-y-auto flex flex-col gap-4">
@@ -105,8 +75,10 @@ const Index = () => {
           </div>
         </div>
         {params.id && width > 1024 && (
-          <div className="w-full h-full p-4 bg-white rounded-md lg:block hidden">
-            {params.id}
+          <div className="size-full p-4 bg-white rounded-md lg:block hidden">
+            <PDFViewer className="size-full">
+              <PackageDetail id={parseInt(params.id)} />
+            </PDFViewer>
           </div>
         )}
       </div>

@@ -1,5 +1,6 @@
-﻿using zity.DTOs.RejectionReasons;
+using zity.DTOs.RejectionReasons;
 using zity.DTOs.Relationships;
+
 
 namespace zity.DTOs.Reports
 {
@@ -21,6 +22,6 @@ namespace zity.DTOs.Reports
 
         public ICollection<RejectionReasonDTO> RejectionReasons { get; set; } = [];
 
-        public virtual RelationshipDTO? Relationship { get; set; }
+        public RelationshipDTO? Relationship { get; set; }
     }
 }

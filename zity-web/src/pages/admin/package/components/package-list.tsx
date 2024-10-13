@@ -8,6 +8,10 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Package } from '@/schema/package.validate'
+import { Eye } from 'lucide-react'
+import PackageForm from './package-form'
+import AlertDelete from '@/components/alert/AlertDelete'
+import { Button } from '@/components/ui/button'
 
 interface PackageListProps {
   packages: Package[]
@@ -39,9 +43,25 @@ const PackageList = ({ packages }: PackageListProps) => {
               <TableCell>123</TableCell>
               <TableCell>123</TableCell>
               <TableCell className={`uppercase`}>
-                <Badge variant={`${packagee.is_received ? 'success' : 'error'}`}>
+                <Badge
+                  variant={`${packagee.is_received ? 'success' : 'error'}`}>
                   {packagee.is_received ? 'Collected' : 'Not Collected'}
                 </Badge>
+              </TableCell>
+              <TableCell>
+                <PackageForm id="123">
+                  <Button size={'icon'} variant={'ghost'}>
+                    <Eye />
+                  </Button>
+                </PackageForm>
+              </TableCell>
+              <TableCell>
+                <AlertDelete
+                  description="package"
+                  setAction={() => {}}
+                  type="icon"
+                  variants="ghost"
+                />
               </TableCell>
             </TableRow>
           ))}

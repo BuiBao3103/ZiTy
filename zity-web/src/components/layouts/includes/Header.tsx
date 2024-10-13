@@ -11,8 +11,11 @@ import {
   HandPlatter,
   House,
   LogOut,
+  MessageCircleQuestion,
   NotebookText,
   Package,
+  PanelRightClose,
+  PanelRightOpen,
   Receipt,
   TableCellsMerge,
   UsersRound,
@@ -21,7 +24,9 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useWindowSize } from 'usehooks-ts'
 import MobileMenu from './components/MobileMenu'
 import Logo from '@/assets/logo.svg'
+import LogoMobile from '@/assets/logoMobile.svg'
 import { UserRole } from '@/enums'
+import { useEffect, useState } from 'react'
 export interface SideBarProps {
   label: string
   icon: React.ReactNode
@@ -33,6 +38,7 @@ const Header = () => {
   const { width = 0 } = useWindowSize()
   const location = useLocation()
   const navigate = useNavigate()
+  const [panelRightOpen, setPanelRightOpen] = useState<boolean>(false)
 
   const userSideBars: SideBarProps[] = [
     {
@@ -72,13 +78,13 @@ const Header = () => {
       role: ['ADMIN', 'RESIDENT'],
     },
     {
-      label: 'User',
+      label: 'User Admin',
       icon: <UsersRound />,
       to: '/user',
       role: ['ADMIN'],
     },
     {
-      label: 'Service',
+      label: 'Service Admin',
       icon: <HandPlatter />,
       to: '/service',
       role: ['ADMIN'],
@@ -95,51 +101,130 @@ const Header = () => {
       to: '/admin/bill',
       role: ['ADMIN'],
     },
+    {
+      label: 'Survey Admin',
+      icon: <NotebookText />,
+      to: '/admin/survey',
+      role: ['ADMIN'],
+    },
+    {
+      label: 'Report Admin',
+      icon: <Flag />,
+      to: '/admin/report',
+      role: ['ADMIN'],
+    },
+    {
+      label: 'Ask For Support',
+      icon: <MessageCircleQuestion />,
+      to: '/chat',
+      role: ['RESIDENT'],
+    },
   ]
 
+  useEffect(() => {
+    console.log(width)
+    if (width >= 1024) {
+      setPanelRightOpen(false)
+    }
+		if(width <= 768){
+			setPanelRightOpen(false)
+		}
+  }, [width])
+
   return (
-    <header className="w-full h-20 sm:h-screen sm:w-[300px] sticky top-0 z-40 flex sm:flex-row flex-col bg-white">
-      <div className="w-full h-full flex sm:flex-col flex-row sm:items-stretch items-center sm:justify-start justify-between sm:p-0 p-4">
-        <div className="sm:w-full h-full sm:h-[150px] sm:p-3 sm:order-none order-2">
+    <header
+      className={`${
+        panelRightOpen ? 'md:w-[60px]' : 'md:w-[300px]'
+      } transition-all duration-300 w-full h-20 md:h-screen sticky top-0 z-40 flex md:flex-row flex-col bg-white`}>
+      <div className="w-full h-full flex md:flex-col flex-row md:items-stretch items-center md:justify-start justify-between md:p-0 p-4">
+        <div
+          className={`md:w-full h-full md:h-[150px] md:p-3 md:order-none order-2 relative`}>
           <img
-            src={Logo}
+            src={panelRightOpen ? LogoMobile : Logo}
+            onClick={() => navigate('/')}
+            loading="lazy"
             alt="Logo website"
-            className="w-full h-full object-contain aspect-square"
+            className={`w-full h-full object-contain aspect-square cursor-pointer ${
+              panelRightOpen && 'mt-5'
+            }`}
           />
+          {width > 768 && (
+            <Button
+              size={'icon'}
+              variant={'secondary'}
+              onClick={() => setPanelRightOpen(!panelRightOpen)}
+              className="absolute top-3 right-3 z-10">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  {panelRightOpen ? <PanelRightClose /> : <PanelRightOpen />}
+                </TooltipTrigger>
+                <TooltipContent side="right">
+                  {panelRightOpen ? 'Open menu' : 'Close menu'}
+                </TooltipContent>
+              </Tooltip>
+            </Button>
+          )}
         </div>
-        {width <= 640 && <MobileMenu sidebar={userSideBars} />}
-        {width > 640 && <Separator />}
-        <div className="w-full h-full hidden sm:flex flex-col gap-2 p-3">
+        {width <= 768 && <MobileMenu sidebar={userSideBars} />}
+        {width > 768 && <Separator />}
+        <div
+          className={`sidebar w-full h-full hidden md:flex flex-col overflow-y-auto ${
+            panelRightOpen ? 'gap-2 p-2' : 'gap-2 p-4'
+          }`}>
           {userSideBars.map((sideBar, index) => (
             <Button
               asChild
               type="button"
               key={index}
               variant={'ghost'}
-              size={'lg'}
-              className={`gap-2 justify-start px-2 ${
+              size={`${panelRightOpen ? 'icon' : 'lg'}`}
+              className={`${
+                !panelRightOpen ? 'gap-2 justify-start px-2' : 'justify-center'
+              } ${
                 (sideBar.to === '/'
                   ? location.pathname === '/'
                   : location.pathname.startsWith(sideBar.to)) && 'bg-primary'
               }`}>
-              <Link to={sideBar.to}>
-                {sideBar.icon}
-                {sideBar.label}
-              </Link>
+              {panelRightOpen ? (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Link
+                      to={sideBar.to}
+                      className={`w-full p-2 flex justify-center items-center rounded-md hover:bg-zinc-100 transition-all ${
+                        (sideBar.to === '/'
+                          ? location.pathname === '/'
+                          : location.pathname.startsWith(sideBar.to)) &&
+                        'bg-primary'
+                      }`}>
+                      {sideBar.icon}
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">{sideBar.label}</TooltipContent>
+                </Tooltip>
+              ) : (
+                <Link to={sideBar.to}>
+                  {sideBar.icon}
+                  <span>{sideBar.label}</span>
+                </Link>
+              )}
             </Button>
           ))}
         </div>
-        {width > 640 && <Separator />}
-        <div className="w-full p-3 hidden sm:flex items-center gap-2">
+        {width > 768 && <Separator />}
+        <div
+          className={`w-full p-3 hidden ${
+            panelRightOpen ? 'flex-col' : 'flex-row'
+          } md:flex items-center gap-2`}>
           <Avatar>
             <AvatarImage src="" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
-          <div className="w-full flex flex-col">
+          <div
+            className={`w-full ${panelRightOpen ? 'hidden' : 'flex'} flex-col`}>
             <span className="text-sm font-bold">User Name</span>
             <span className="text-xs">Role</span>
           </div>
-          <div className="flex justify-end">
+          <div className={`w-full flex justify-end`}>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
@@ -149,12 +234,12 @@ const Header = () => {
                   <LogOut />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>Log out</TooltipContent>
+              <TooltipContent side="right">Log out</TooltipContent>
             </Tooltip>
           </div>
         </div>
       </div>
-      {width > 640 ? (
+      {width > 768 ? (
         <Separator orientation="vertical" />
       ) : (
         <Separator orientation="horizontal" />

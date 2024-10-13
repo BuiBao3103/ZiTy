@@ -1,5 +1,4 @@
 ﻿using zity.DTOs.Relationships;
-using zity.Models;
 
 namespace zity.DTOs.Apartments
 {
@@ -20,8 +19,6 @@ namespace zity.DTOs.Apartments
         public DateTime CreatedAt { get; set; }
 
         public DateTime? UpdatedAt { get; set; }
-
         public ICollection<RelationshipDTO> Relationships { get; set; } = [];
-
     }
 }

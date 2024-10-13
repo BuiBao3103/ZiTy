@@ -1,11 +1,4 @@
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
-import {
   Pagination,
   PaginationContent,
   PaginationItem,
@@ -13,12 +6,11 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination'
-
+import BreadCrumb from '@/components/breadcrumb'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { UserPartialSchema } from '@/schema/user.validate'
 import { Filter, Search } from 'lucide-react'
-import { Link } from 'react-router-dom'
 import UserList from './components/user-list'
 import { useDocumentTitle } from 'usehooks-ts'
 import UserForm from './components/user-form'
@@ -34,42 +26,40 @@ const Index = () => {
       user_type: ['RESIDENT'],
       is_staying: true,
       avatar: 'https://picsum.photos/id/2/200/300',
+      nation_id: '123456789012',
+      date_of_birth: new Date(),
+      is_first_login: true,
+      email: 'user1@gmail.com',
+      gender: 'MALE',
+      password: 'password',
+      username: 'user1',
     },
   ]
   return (
     <>
       <div className="w-full sm:h-screen flex flex-col bg-zinc-100">
-        <div className="w-full px-4 pt-4">
-          <Breadcrumb className="p-4 font-medium bg-white rounded-md">
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link to={'/'}>Home</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-            </BreadcrumbList>
-          </Breadcrumb>
-        </div>
+        <BreadCrumb paths={[{ label: 'user', to: '/user' }]} />
         <div className="size-full p-4">
-          <div className="size-full p-4 bg-white rounded-md">
-            <div className="w-full h-auto flex justify-between items-center">
-              <div className="w-full flex gap-4 items-center">
-                <div className="lg:w-1/4 flex items-center border px-3 py-0.5 relative rounded-md focus-within:border-primary transition-all">
-                  <Search size={20} />
-                  <Input
-                    placeholder="Search something"
-                    className="border-none shadow-none focus-visible:ring-0"
-                  />
-                </div>
-                <Button className="gap-1" size={'lg'} variant={'secondary'}>
+          <div className="size-full p-4 bg-white rounded-md flex flex-col">
+            <div className="w-full h-auto flex lg:flex-row flex-col gap-4 justify-between items-center">
+              <div className="w-full lg:w-1/4 flex items-center border px-3 py-0.5 relative rounded-md focus-within:border-primary transition-all">
+                <Search size={20} />
+                <Input
+                  placeholder="Search something"
+                  className="border-none shadow-none focus-visible:ring-0"
+                />
+              </div>
+              <div className="w-full flex gap-4 lg:justify-between items-center">
+                <Button className="w-full lg:w-fit gap-1" size={'lg'} variant={'secondary'}>
                   <Filter size={20} />
                   Filter
                 </Button>
+                <UserForm />
               </div>
-              <UserForm />
             </div>
-            <UserList users={users} />
+            <div className="size-full">
+              <UserList users={users} />
+            </div>
             <Pagination className="mt-2">
               <PaginationContent>
                 <PaginationItem>

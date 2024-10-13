@@ -11,6 +11,7 @@ import UserDetail from './user-detail'
 import { useState } from 'react'
 import { z } from 'zod'
 import { UserPartialSchema } from '@/schema/user.validate'
+import AlertDelete from '@/components/alert/AlertDelete'
 
 interface UserListProps {
   users: z.infer<typeof UserPartialSchema>[]

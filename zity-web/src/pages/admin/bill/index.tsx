@@ -1,11 +1,3 @@
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
 import { Input } from '@/components/ui/input'
 import {
   Pagination,
@@ -17,14 +9,12 @@ import {
 } from '@/components/ui/pagination'
 import { Filter, Search } from 'lucide-react'
 import { Button } from '@components/ui/button'
-import { Link } from 'react-router-dom'
 import BillList from './components/bill-list'
 import { Bill } from '@/schema/bill.validate'
 import { useDocumentTitle } from 'usehooks-ts'
-
+import BreadCrumb from '@/components/breadcrumb'
 const Index = () => {
-
-	useDocumentTitle('Bill')
+  useDocumentTitle('Bill')
 
   const bills: Bill[] = [
     {
@@ -59,21 +49,7 @@ const Index = () => {
   return (
     <>
       <div className="w-full sm:h-screen flex flex-col bg-zinc-100">
-        <div className="w-full px-4 pt-4">
-          <Breadcrumb className="p-4 font-medium bg-white rounded-md">
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link to={'/'}>Home</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Bill</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-        </div>
+        <BreadCrumb paths={[{ label: 'bill', to: '/bill' }]} />
         <div className="size-full p-4">
           <div className="size-full p-4 bg-white rounded-md">
             <div className="w-full h-auto flex justify-between items-center">

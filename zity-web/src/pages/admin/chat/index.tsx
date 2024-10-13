@@ -17,12 +17,12 @@ import {
 } from 'firebase/firestore'
 
 interface Message {
-  sender_id: number
+  senderId: number
   text: string
   timestamp: Timestamp // Changed to number
 }
 const Index = () => {
-	const [messages, setMessages] = useState<Message[]>([])
+  const [messages, setMessages] = useState<Message[]>([])
   const [msg, setMsg] = useState<string>('')
 
   useEffect(() => {
@@ -40,10 +40,7 @@ const Index = () => {
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const messagesRef = collection(
-      db,
-      `conversations/1/messages`,
-    )
+    const messagesRef = collection(db, `conversations/1/messages`)
     const messageDocRef = await addDoc(messagesRef, {
       senderId: 1,
       timestamp: serverTimestamp(),
@@ -62,9 +59,9 @@ const Index = () => {
     })
     setMsg('')
   }
-	return (
-		<div className="">
-		 <div className="flex flex-col gap-2 p-4 border bg-gradient-to-r from-green-200 to-red-200 rounded-md">
+  return (
+    <div className="">
+      <div className="flex flex-col gap-2 p-4 border bg-gradient-to-r from-green-200 to-red-200 rounded-md">
         {messages.map((message, index) => (
           <Message key={index} {...message} />
         ))}
@@ -80,8 +77,8 @@ const Index = () => {
           Submit
         </Button>
       </form>
-		</div>
-	)
+    </div>
+  )
 }
 
 export default Index

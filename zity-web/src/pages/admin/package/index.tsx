@@ -1,10 +1,3 @@
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
 import { Input } from '@/components/ui/input'
 import {
   Pagination,
@@ -16,12 +9,14 @@ import {
 } from '@/components/ui/pagination'
 import { Filter, Search } from 'lucide-react'
 import { Button } from '@components/ui/button'
-import { Link } from 'react-router-dom'
 import { Package } from '@/schema/package.validate'
 import PackageForm from './components/package-form'
 import PackageList from './components/package-list'
-
+import BreadCrumb from '@/components/breadcrumb'
+import { useDocumentTitle } from 'usehooks-ts'
 const Index = () => {
+
+	useDocumentTitle('Package')
   const packages: Package[] = [
     {
       id: 1,
@@ -63,20 +58,9 @@ const Index = () => {
   return (
     <>
       <div className="w-full sm:h-screen flex flex-col bg-zinc-100">
-        <div className="w-full px-4 pt-4">
-          <Breadcrumb className="p-4 font-medium bg-white rounded-md">
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link to={'/'}>Home</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-            </BreadcrumbList>
-          </Breadcrumb>
-        </div>
+        <BreadCrumb paths={[{ label: 'package', to: '/package' }]} />
         <div className="size-full p-4">
-          <div className="size-full p-4 bg-white rounded-md">
+          <div className="size-full p-4 bg-white rounded-md flex flex-col">
             <div className="w-full h-auto flex justify-between items-center">
               <div className="w-full flex gap-4 items-center">
                 <div className="lg:w-1/4 flex items-center border px-3 py-0.5 relative rounded-md focus-within:border-primary transition-all">
@@ -91,9 +75,18 @@ const Index = () => {
                   Filter
                 </Button>
               </div>
-              <PackageForm />
+              <PackageForm>
+                <Button
+                  className="w-full sm:w-fit"
+                  variant={'default'}
+                  size={'lg'}>
+                  New Package
+                </Button>
+              </PackageForm>
             </div>
-            <PackageList packages={packages} />
+            <div className="size-full">
+              <PackageList packages={packages} />
+            </div>
             <Pagination className="mt-2">
               <PaginationContent>
                 <PaginationItem>

@@ -17,11 +17,15 @@ import User from '@admin/user'
 import Service from '@admin/service'
 import PackageAdmin from '@admin/package'
 import BillAdmin from '@admin/bill'
+import SurveyAdmin from '@admin/survey'
+import ReportAdmin from '@admin/report'
 
 //User Page
 import Package from '@user/package'
 import Report from '@user/report'
 import Bill from '@user/bill'
+import Survey from '@user/survey'
+import Chat from '@user/chat'
 
 //Error page
 import NotFound from '@pages/404'
@@ -88,14 +92,36 @@ export const route = createBrowserRouter([
             path: '/service',
             element: <Service />,
           },
-					{
-						path: '/admin/package',
-						element: <PackageAdmin />,
-					},
-					{
-						path: '/admin/bill',
-						element: <BillAdmin />,
-					}
+          {
+            path: '/admin/package',
+            element: <PackageAdmin />,
+          },
+          {
+            path: '/admin/bill',
+            element: <BillAdmin />,
+          },
+          {
+            path: '/admin/survey',
+            element: <SurveyAdmin />,
+          },
+          {
+            path: '/survey',
+            element: <Survey />,
+          },
+          {
+            path: '/chat',
+            element: <Chat />,
+          },
+          {
+            path: '/admin/report',
+            element: <ReportAdmin />,
+            children: [
+              {
+                path: ':id',
+                element: <ReportAdmin />,
+              },
+            ],
+          },
         ],
       },
     ],
