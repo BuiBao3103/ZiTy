@@ -128,7 +128,8 @@ builder.Services.AddProblemDetails(); // enables tracking/returning ProblemDetai
 builder.Services.AddAutoMapper(
         typeof(BillMapping),
         typeof(BillDetailMapping),
-        typeof(UserMapping)
+        typeof(UserMapping),
+        typeof(AnswerMapping)
     );
 
 var app = builder.Build();

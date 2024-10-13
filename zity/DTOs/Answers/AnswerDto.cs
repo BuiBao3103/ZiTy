@@ -17,6 +17,6 @@ namespace zity.DTOs.Answers
 
         public QuestionDTO Question { get; set; } = null!;
 
-        public virtual ICollection<UserAnswerDTO> UserAnswers { get; set; } = [];
+        public ICollection<UserAnswerDTO> UserAnswers { get; set; } = [];
     }
 }
