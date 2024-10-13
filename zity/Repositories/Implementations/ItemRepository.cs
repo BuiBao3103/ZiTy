@@ -2,18 +2,14 @@
 using zity.Data;
 using zity.DTOs.Items;
 using zity.Models;
+using zity.Repositories.Interfaces;
 using zity.Utilities;
 
 namespace zity.Repositories.Implementations
 {
-    public class ItemRepository
+    public class ItemRepository(ApplicationDbContext dbContext) : IItemRepository
     {
-        private readonly ApplicationDbContext _dbContext;
-
-        public ItemRepository(ApplicationDbContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
+        private readonly ApplicationDbContext _dbContext = dbContext;
 
         public async Task<PaginatedResult<Item>> GetAllAsync(ItemQueryDTO queryParam)
         {

@@ -1,9 +1,10 @@
 using CloudinaryDotNet;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
-using zity.Configuration; // Import the configuration namespaces
+using zity.Configuration; 
 using zity.Data;
 using zity.ExceptionHandling;
+using zity.Mappers;
 using zity.Repositories.Implementations;
 using zity.Repositories.Interfaces;
 using zity.Services.Implementations;
@@ -72,6 +73,14 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Register repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRelationshipRepository, RelationshipRepository>();
+builder.Services.AddScoped<IBillRepository, BillRepository>();
+builder.Services.AddScoped<IBillDetailRepository, BillDetailRepository>();
+builder.Services.AddScoped<IApartmentRepository, ApartmentRepository>();
+builder.Services.AddScoped<IItemRepository, ItemRepository>();
+builder.Services.AddScoped<IReportRepository, ReportRepository>();
+builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
+builder.Services.AddScoped<ISurveyRepository,SurveyRepository>();
+
 
 // Register services
 builder.Services.AddScoped<IUserService, UserService>();
@@ -79,6 +88,13 @@ builder.Services.AddScoped<IRelationshipService, RelationshipService>();
 builder.Services.AddScoped<IMediaService, MediaService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<ISmsService, SmsService>();
+builder.Services.AddScoped<IBillService, BillService>();
+builder.Services.AddScoped<IBillDetailService, BillDetailService>();
+builder.Services.AddScoped<IApartmentService, ApartmentService>();
+builder.Services.AddScoped<IItemService, ItemService>();
+builder.Services.AddScoped<IReportService, ReportService>();
+builder.Services.AddScoped<IServiceService, ServiceService>();
+builder.Services.AddScoped<ISurveyService, SurveyService>();
 
 // Register Cloudinary as a singleton service
 var cloudinaryAccount = new Account(cloudinarySettings.CloudName, cloudinarySettings.ApiKey, cloudinarySettings.ApiSecret);
@@ -97,6 +113,9 @@ builder.Services.AddSingleton(esmsSettings);
 // Register exception handling
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails(); // enables tracking/returning ProblemDetails to a user
+
+// Register AutoMapper
+builder.Services.AddAutoMapper(typeof(BillMapping), typeof(BillDetailMapping));
 
 var app = builder.Build();
 

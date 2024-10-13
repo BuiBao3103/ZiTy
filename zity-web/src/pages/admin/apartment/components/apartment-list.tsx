@@ -13,7 +13,7 @@ const ApartmentList = () => {
           {Array.from({ length: 6 }).map((_, index) => (
             <div
               key={index}
-              className="p-4 min-w-full sm:min-w-[300px] flex flex-col gap-1.5 bg-white rounded-lg border">
+              className="p-4 min-w-full sm:min-w-[300px] flex flex-col gap-2 bg-white rounded-lg border">
               <div className="w-full h-full grid grid-cols-2">
                 <span className="text-lg font-medium">A.10{index}</span>
                 <Button
