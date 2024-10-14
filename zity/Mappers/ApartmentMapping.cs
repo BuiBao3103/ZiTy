@@ -8,7 +8,8 @@ namespace zity.Mappers
     {
         public ApartmentMapping()
         {
-            CreateMap<Apartment, ApartmentDTO>();
+            CreateMap<Apartment, ApartmentDTO>()
+                .ForMember(dest => dest.Relationships, opt => opt.MapFrom(src => src.Relationships));
 
             CreateMap<ApartmentCreateDTO, Apartment>()
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.Now));
