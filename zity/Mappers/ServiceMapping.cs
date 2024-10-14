@@ -8,7 +8,8 @@ namespace zity.Mappers
     {
         public ServiceMapping()
         {
-            CreateMap<Service, ServiceDTO>();
+            CreateMap<Service, ServiceDTO>()
+                .ForMember(dest => dest.BillDetails, opt => opt.MapFrom(src => src.BillDetails));
 
             CreateMap<ServiceCreateDTO, Service>()
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.Now));
