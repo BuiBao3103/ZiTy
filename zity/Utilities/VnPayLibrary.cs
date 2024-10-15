@@ -125,10 +125,10 @@ namespace zity.Utilities
 
                 if (remoteIpAddress != null)
                 {
-                    if (remoteIpAddress.AddressFamily == AddressFamily.InterNetworkV6)
+                    if (remoteIpAddress.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)
                     {
-                        remoteIpAddress = Dns.GetHostEntry(remoteIpAddress).AddressList
-                            .FirstOrDefault(x => x.AddressFamily == AddressFamily.InterNetwork);
+                        remoteIpAddress = System.Net.Dns.GetHostEntry(remoteIpAddress).AddressList
+                            .FirstOrDefault(x => x.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork);
                     }
 
                     if (remoteIpAddress != null) ipAddress = remoteIpAddress.ToString();
