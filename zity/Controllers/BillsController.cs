@@ -63,5 +63,13 @@ namespace zity.Controllers
             }
             return NoContent();
         }
+
+        [HttpPost("{id}/payment/vnpay")]
+        public async Task<IActionResult> CreatePaymentUrl(int id)
+        {
+
+            var paymentUrl = await _billService.CreatePaymentAsync(id);
+            return Ok(new { paymentUrl });
+        }
     }
 }

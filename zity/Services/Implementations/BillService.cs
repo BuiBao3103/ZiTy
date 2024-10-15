@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using zity.DTOs.Bills;
+using zity.ExceptionHandling;
 using zity.Mappers;
 using zity.Models;
 using zity.Repositories.Interfaces;
@@ -8,10 +9,11 @@ using zity.Utilities;
 
 namespace zity.Services.Implementations
 {
-    public class BillService(IBillRepository billRepository, IMapper mapper) : IBillService
+    public class BillService(IBillRepository billRepository, IMapper mapper, IVNPayService vnpayService) : IBillService
     {
         private readonly IMapper _mapper = mapper;
         private readonly IBillRepository _billRepository = billRepository;
+        private readonly IVNPayService _vnpayService = vnpayService;
 
         public async Task<PaginatedResult<BillDTO>> GetAllAsync(BillQueryDTO queryParam)
         {
@@ -68,5 +70,15 @@ namespace zity.Services.Implementations
             return await _billRepository.DeleteAsync(id);
         }
 
+        public async Task<string> CreatePaymentAsync(int id)
+        {
+            var bill = await _billRepository.GetByIdAsync(id, null);
+            if (bill == null)
+            {
+                throw new AppError("Bill not found");
+            }
+            var paymentUrl = _vnpayService.CreatePaymentUrl(bill);
+            return paymentUrl;
+        }
     }
 }
