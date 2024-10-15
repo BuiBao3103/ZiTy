@@ -72,6 +72,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHttpContextAccessor();
 
 // Register DbContext with MySQL
 var connectionString = $"Server={mySqlSettings.Server};Port={mySqlSettings.Port};Database={mySqlSettings.Database};User={mySqlSettings.User};Password={mySqlSettings.Password}";
@@ -103,6 +104,7 @@ builder.Services.AddScoped<IItemService, ItemService>();
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IServiceService, ServiceService>();
 builder.Services.AddScoped<ISurveyService, SurveyService>();
+builder.Services.AddScoped<IVNPayService, VNPayService>();
 
 // Register Cloudinary as a singleton service
 var cloudinaryAccount = new Account(cloudinarySettings.CloudName, cloudinarySettings.ApiKey, cloudinarySettings.ApiSecret);
