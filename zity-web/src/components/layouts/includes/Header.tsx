@@ -7,6 +7,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import {
+  Cog,
   Flag,
   HandPlatter,
   House,
@@ -119,6 +120,12 @@ const Header = () => {
       to: '/chat',
       role: ['RESIDENT'],
     },
+    {
+      label: 'Setting Admin',
+      icon: <Cog />,
+      to: '/admin/setting',
+      role: ['RESIDENT'],
+    },
   ]
 
   useEffect(() => {
@@ -126,9 +133,9 @@ const Header = () => {
     if (width >= 1024) {
       setPanelRightOpen(false)
     }
-		if(width <= 768){
-			setPanelRightOpen(false)
-		}
+    if (width <= 768) {
+      setPanelRightOpen(false)
+    }
   }, [width])
 
   return (
