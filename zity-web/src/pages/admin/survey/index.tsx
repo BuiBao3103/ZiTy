@@ -8,7 +8,7 @@ import { Clock, Filter, Search, AlarmClock } from 'lucide-react'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { useDocumentTitle } from 'usehooks-ts'
-import CreateSurveyForm from './components/create-survey-form'
+import SurveyForm from './components/survey-form'
 
 const Index = () => {
   useDocumentTitle('Survey')
@@ -23,18 +23,21 @@ const Index = () => {
   }
 
   return (
-    <div className={`w-full ${isCreateNewSurvey ? "h-full" : "sm:h-screen"} flex flex-col bg-zinc-100`}>
+    <div
+      className={`w-full ${
+        isCreateNewSurvey ? 'h-full' : 'sm:h-screen'
+      } flex flex-col bg-zinc-100`}>
       <BreadCrumb
         paths={[
           { label: 'survey', to: '/admin/survey' },
           ...(params.id ? [{ label: params.id }] : []),
-					...(isCreateNewSurvey ? [{label: 'New Survey'}] : []),
+          ...(isCreateNewSurvey ? [{ label: 'New Survey' }] : []),
         ]}
       />
       <div className="w-full h-full p-4 overflow-hidden">
         <div className="w-full h-full bg-white rounded-md p-4 flex flex-col	space-y-4">
           {isCreateNewSurvey ? (
-            <CreateSurveyForm />
+            <SurveyForm />
           ) : (
             <>
               <div className="w-full h-auto flex justify-between items-center">
@@ -106,7 +109,7 @@ const Index = () => {
                       <AlertDelete
                         description="survey"
                         setAction={setAction}
-                        buttonType="error"
+                        variants="error"
                       />
                     </div>
                   </div>

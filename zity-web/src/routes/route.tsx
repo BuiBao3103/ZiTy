@@ -19,6 +19,7 @@ import PackageAdmin from '@admin/package'
 import BillAdmin from '@admin/bill'
 import SurveyAdmin from '@admin/survey'
 import ReportAdmin from '@admin/report'
+import SettingAdmin from '@admin/setting'
 
 //User Page
 import Package from '@user/package'
@@ -119,6 +120,16 @@ export const route = createBrowserRouter([
               {
                 path: ':id',
                 element: <ReportAdmin />,
+              },
+            ],
+          },
+					{
+            path: '/admin/setting',
+            element: <SettingAdmin />,
+            children: [
+              {
+                path: ':id',
+                element: <SettingAdmin />,
               },
             ],
           },
