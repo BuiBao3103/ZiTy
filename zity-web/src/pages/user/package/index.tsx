@@ -1,25 +1,20 @@
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { useDocumentTitle, useWindowSize } from 'usehooks-ts'
 import PackageList from './components/package-list'
 import { Search } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import BreadCrumb from '@components/breadcrumb'
-import { PDFViewer, usePDF } from '@react-pdf/renderer'
+import { PDFDownloadLink, PDFViewer, usePDF } from '@react-pdf/renderer'
 import PackageDetail from './components/package-detail'
-import { Skeleton } from '@/components/ui/skeleton'
+import { Separator } from '@/components/ui/separator'
+import { Button } from '@/components/ui/button'
+import { useEffect } from 'react'
 const Index = () => {
   useDocumentTitle('Package')
   const filterBar: string[] = ['All', 'Not Collected', 'Collected']
   const params = useParams()
   const { width = 0 } = useWindowSize()
+
   return (
     <div className="w-full sm:h-screen flex flex-col bg-zinc-100 overflow-hidden">
       <BreadCrumb
@@ -32,8 +27,8 @@ const Index = () => {
         <div className="w-full h-full flex flex-col p-4 bg-white rounded-md">
           <div className="w-full h-full overflow-y-auto flex flex-col gap-4">
             {params.id && width < 1024 ? (
-              <div className="w-full h-full p-4 bg-white rounded-md">
-                {params.id}
+              <div className="size-full p-4 bg-white rounded-md lg:flex hidden overflow-hidden flex-col">
+                <PackageDetail />
               </div>
             ) : (
               <>
@@ -75,10 +70,8 @@ const Index = () => {
           </div>
         </div>
         {params.id && width > 1024 && (
-          <div className="size-full p-4 bg-white rounded-md lg:block hidden">
-            <PDFViewer className="size-full">
-              <PackageDetail id={parseInt(params.id)} />
-            </PDFViewer>
+          <div className="size-full p-4 bg-white rounded-md lg:flex hidden overflow-hidden flex-col">
+            <PackageDetail />
           </div>
         )}
       </div>
