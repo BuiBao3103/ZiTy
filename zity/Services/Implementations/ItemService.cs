@@ -1,36 +1,48 @@
-﻿using zity.DTOs.Items;
+﻿using AutoMapper;
+using zity.DTOs.Items;
 using zity.Mappers;
+using zity.Models;
 using zity.Repositories.Interfaces;
 using zity.Services.Interfaces;
 using zity.Utilities;
 
 namespace zity.Services.Implementations
 {
-    public class ItemService(IItemRepository itemRepository) : IItemService
+    public class ItemService : IItemService
     {
-        private readonly IItemRepository _itemRepository = itemRepository;
+        private readonly IItemRepository _itemRepository;
+        private readonly IMapper _mapper;
+
+        public ItemService(IItemRepository itemRepository, IMapper mapper)
+        {
+            _itemRepository = itemRepository;
+            _mapper = mapper;
+        }
 
         public async Task<PaginatedResult<ItemDTO>> GetAllAsync(ItemQueryDTO queryParam)
         {
             var pageItems = await _itemRepository.GetAllAsync(queryParam);
+            var items = pageItems.Contents.Select(_mapper.Map<ItemDTO>).ToList();
             return new PaginatedResult<ItemDTO>(
-                pageItems.Contents.Select(ItemMapper.ItemToDTO).ToList(),
+                items,
                 pageItems.TotalItems,
                 pageItems.Page,
                 pageItems.PageSize);
         }
 
-
         public async Task<ItemDTO?> GetByIdAsync(int id, string? includes)
         {
             var item = await _itemRepository.GetByIdAsync(id, includes);
-            return item != null ? ItemMapper.ItemToDTO(item) : null;
+            return item != null ? _mapper.Map<ItemDTO>(item) : null;
         }
+
         public async Task<ItemDTO> CreateAsync(ItemCreateDTO createDTO)
         {
-            var item = ItemMapper.ToModelFromCreate(createDTO);
-            return ItemMapper.ItemToDTO(await _itemRepository.CreateAsync(item));
+            var item = _mapper.Map<Item>(createDTO);
+            var createdItem = await _itemRepository.CreateAsync(item);
+            return _mapper.Map<ItemDTO>(createdItem);
         }
+
         public async Task<ItemDTO?> UpdateAsync(int id, ItemUpdateDTO updateDTO)
         {
             var existingItem = await _itemRepository.GetByIdAsync(id, null);
@@ -39,9 +51,9 @@ namespace zity.Services.Implementations
                 return null;
             }
 
-            ItemMapper.UpdateModelFromUpdate(existingItem, updateDTO);
+            _mapper.Map(updateDTO, existingItem);
             var updatedItem = await _itemRepository.UpdateAsync(existingItem);
-            return ItemMapper.ItemToDTO(updatedItem);
+            return _mapper.Map<ItemDTO>(updatedItem);
         }
 
         public async Task<ItemDTO?> PatchAsync(int id, ItemPatchDTO patchDTO)
@@ -52,9 +64,9 @@ namespace zity.Services.Implementations
                 return null;
             }
 
-            ItemMapper.PatchModelFromPatch(existingItem, patchDTO);
+            _mapper.Map(patchDTO, existingItem);
             var patchedItem = await _itemRepository.UpdateAsync(existingItem);
-            return ItemMapper.ItemToDTO(patchedItem);
+            return _mapper.Map<ItemDTO>(patchedItem);
         }
 
         public async Task<bool> DeleteAsync(int id)

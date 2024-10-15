@@ -1,36 +1,41 @@
-﻿using zity.DTOs.Services;
-using zity.Mappers;
+﻿using AutoMapper;
+using zity.DTOs.Services;
+using zity.Models;
 using zity.Repositories.Interfaces;
 using zity.Services.Interfaces;
 using zity.Utilities;
 
 namespace zity.Services.Implementations
 {
-    public class ServiceService(IServiceRepository serviceRepository) : IServiceService
+    public class ServiceService(IServiceRepository serviceRepository, IMapper mapper) : IServiceService
     {
+        private readonly IMapper _mapper = mapper;
         private readonly IServiceRepository _serviceRepository = serviceRepository;
 
         public async Task<PaginatedResult<ServiceDTO>> GetAllAsync(ServiceQueryDTO queryParam)
         {
             var pageServices = await _serviceRepository.GetAllAsync(queryParam);
+            var services = pageServices.Contents.Select(_mapper.Map<ServiceDTO>).ToList();
+
             return new PaginatedResult<ServiceDTO>(
-                pageServices.Contents.Select(ServiceMapper.ToDTO).ToList(),
+                services,
                 pageServices.TotalItems,
                 pageServices.Page,
                 pageServices.PageSize);
         }
 
-
         public async Task<ServiceDTO?> GetByIdAsync(int id, string? includes)
         {
             var service = await _serviceRepository.GetByIdAsync(id, includes);
-            return service != null ? ServiceMapper.ToDTO(service) : null;
+            return service != null ? _mapper.Map<ServiceDTO>(service) : null;
         }
+
         public async Task<ServiceDTO> CreateAsync(ServiceCreateDTO createDTO)
         {
-            var service = ServiceMapper.ToModelFromCreate(createDTO);
-            return ServiceMapper.ToDTO(await _serviceRepository.CreateAsync(service));
+            var service = _mapper.Map<Service>(createDTO);
+            return _mapper.Map<ServiceDTO>(await _serviceRepository.CreateAsync(service));
         }
+
         public async Task<ServiceDTO?> UpdateAsync(int id, ServiceUpdateDTO updateDTO)
         {
             var existingService = await _serviceRepository.GetByIdAsync(id, null);
@@ -39,9 +44,9 @@ namespace zity.Services.Implementations
                 return null;
             }
 
-            ServiceMapper.UpdateModelFromUpdate(existingService, updateDTO);
+            _mapper.Map(updateDTO, existingService);
             var updatedService = await _serviceRepository.UpdateAsync(existingService);
-            return ServiceMapper.ToDTO(updatedService);
+            return _mapper.Map<ServiceDTO>(updatedService);
         }
 
         public async Task<ServiceDTO?> PatchAsync(int id, ServicePatchDTO patchDTO)
@@ -52,9 +57,9 @@ namespace zity.Services.Implementations
                 return null;
             }
 
-            ServiceMapper.PatchModelFromPatch(existingService, patchDTO);
+            _mapper.Map(patchDTO, existingService);
             var patchedService = await _serviceRepository.UpdateAsync(existingService);
-            return ServiceMapper.ToDTO(patchedService);
+            return _mapper.Map<ServiceDTO>(patchedService);
         }
 
         public async Task<bool> DeleteAsync(int id)
