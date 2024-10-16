@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using zity.DTOs.Bills;
+using zity.DTOs.Momo;
 using zity.Services.Interfaces;
 
 namespace zity.Controllers
@@ -73,9 +74,9 @@ namespace zity.Controllers
         }
 
         [HttpPost("{id}/payment/momo")]
-        public async Task<IActionResult> CreatePaymentMomo(int id)
+        public async Task<IActionResult> CreatePaymentMomo(int id, [FromBody] MomoRequestCreatePaymentDto request)
         {
-            var payment = await _billService.CreatePaymentMomoAsync(id);
+            var payment = await _billService.CreatePaymentMomoAsync(id, request);
             return Ok(payment);
         }
 

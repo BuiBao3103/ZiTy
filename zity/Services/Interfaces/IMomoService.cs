@@ -5,6 +5,6 @@ namespace zity.Services.Interfaces
 {
     public interface IMomoService
     {
-        Task<MomoCreatePaymentDto> CreatePaymentAsync(Bill bill);
+        Task<MomoCreatePaymentDto> CreatePaymentAsync(Bill bill, MomoRequestCreatePaymentDto request);
     }
 }

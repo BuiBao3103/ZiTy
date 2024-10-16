@@ -83,14 +83,14 @@ namespace zity.Services.Implementations
             return paymentUrl;
         }
 
-        public async Task<MomoCreatePaymentDto> CreatePaymentMomoAsync(int id)
+        public async Task<MomoCreatePaymentDto> CreatePaymentMomoAsync(int id, MomoRequestCreatePaymentDto request)
         {
             var bill = await _billRepository.GetByIdAsync(id, null);
             if (bill == null)
             {
                 throw new AppError("Bill not found");
             }
-            var momoCreatePaymentDto = await _momoService.CreatePaymentAsync(bill);
+            var momoCreatePaymentDto = await _momoService.CreatePaymentAsync(bill, request);
             return momoCreatePaymentDto;
         }
     }

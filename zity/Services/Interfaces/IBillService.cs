@@ -13,6 +13,6 @@ namespace zity.Services.Interfaces
         Task<BillDTO?> PatchAsync(int id, BillPatchDTO billPatchDTO);
         Task<bool> DeleteAsync(int id);
         Task<string> CreatePaymentVNPayAsync(int id);
-        Task<MomoCreatePaymentDto> CreatePaymentMomoAsync(int id);
+        Task<MomoCreatePaymentDto> CreatePaymentMomoAsync(int id, MomoRequestCreatePaymentDto request);
     }
 }

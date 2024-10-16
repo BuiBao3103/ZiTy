@@ -8,19 +8,14 @@ using zity.DTOs.Momo;
 using zity.Models;
 using zity.Services.Interfaces;
 
-public class MomoService : IMomoService
+public class MomoService(MomoSettings momoSettings) : IMomoService
 {
-    private readonly MomoSettings _momoSettings;
+    private readonly MomoSettings _momoSettings = momoSettings;
 
-    public MomoService(MomoSettings momoSettings)
-    {
-        _momoSettings = momoSettings;
-    }
-
-    public async Task<MomoCreatePaymentDto> CreatePaymentAsync(Bill bill)
+    public async Task<MomoCreatePaymentDto> CreatePaymentAsync(Bill bill, MomoRequestCreatePaymentDto request)
     {
         Console.WriteLine("Creating Momo payment...");
-        var billInfo = $"Thanh toan hoa don {bill.Monthly}";
+        var billInfo = $"Payment for the bill {bill.Monthly}";
         var requestId = Guid.NewGuid().ToString();
         var orderId = $"{DateTime.Now.Ticks}_{bill.Id}";
 
@@ -32,38 +27,39 @@ public class MomoService : IMomoService
             $"accessKey={_momoSettings.AccessKey}&amount={bill.TotalPrice}&extraData={extraData}" +
             $"&ipnUrl={_momoSettings.NotifyUrl}&orderId={orderId}&orderInfo={billInfo}" +
             $"&partnerCode={_momoSettings.PartnerCode}&redirectUrl={_momoSettings.ReturnUrl}" +
-            $"&requestId={requestId}&requestType=payWithATM";
+            $"&requestId={requestId}&requestType={request.RequestType}";
 
         // Tạo chữ ký
         var signature = ComputeHmacSha256(rawData, _momoSettings.SecretKey);
 
         // Tạo RestClient và RestRequest
         var client = new RestClient(_momoSettings.MomoApiUrl);
-        var request = new RestRequest() { Method = Method.Post };
-        request.AddHeader("Content-Type", "application/json; charset=UTF-8");
+        var restRequest = new RestRequest() { Method = Method.Post };
+        restRequest.AddHeader("Content-Type", "application/json; charset=UTF-8");
 
         // Dữ liệu gửi lên API
         var requestData = new
         {
             partnerCode = _momoSettings.PartnerCode,
-            requestId = requestId,
+            requestId,
             amount = (long) bill.TotalPrice,
-            orderId = orderId,
+            orderId,
             orderInfo = billInfo,
             redirectUrl = _momoSettings.ReturnUrl,
             ipnUrl = _momoSettings.NotifyUrl,
             lang = "vi",
-            extraData = extraData,
-            requestType = "payWithATM",//captureWallet
-            signature = signature,
+            orderExpireTime = 15,
+            extraData,
+            requestType = request.RequestType,
+            signature,
             autoCapture = true
         };
 
-        request.AddParameter("application/json", JsonConvert.SerializeObject(requestData), ParameterType.RequestBody);
+        restRequest.AddParameter("application/json", JsonConvert.SerializeObject(requestData), ParameterType.RequestBody);
 
         try
         {
-            var response = await client.ExecuteAsync(request);
+            var response = await client.ExecuteAsync(restRequest);
 
             if (response.IsSuccessful)
             {
