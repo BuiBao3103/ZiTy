@@ -6,7 +6,7 @@ using zity.Services.Interfaces;
 namespace zity.Controllers
 {
     [ApiController]
-    [Route("api/bill")]
+    [Route("api/bills")]
     public class BillController(IBillService billService) : ControllerBase
     {
         private readonly IBillService _billService = billService;
@@ -80,11 +80,11 @@ namespace zity.Controllers
             return Ok(payment);
         }
 
-        [HttpPost("/callback")]
-        public async Task<IActionResult> CallbackMomo()
+        [HttpPost("{id}/momo-callback")]
+        public async Task<IActionResult> MoMoCallBack([FromRoute] int id, [FromBody] MomoCallBackDto callbackDto)
         {
-            Console.WriteLine("Momo callback");
-            return NoContent();
+            await _billService.HandleMoMoCallBackAsync(id, callbackDto);
+            return NoContent(); 
         }
     }
 }

@@ -18,14 +18,14 @@ public class MomoService(MomoSettings momoSettings) : IMomoService
         var billInfo = $"Payment for the bill {bill.Monthly}";
         var requestId = Guid.NewGuid().ToString();
         var orderId = $"{DateTime.Now.Ticks}_{bill.Id}";
-
+        var notifyUrl = _momoSettings.NotifyUrl.Replace("{{id}}", bill.Id.ToString());
         // Tạo extraData
         var extraData = Convert.ToBase64String(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(new { bill_id = bill.Id })));
 
         // Xây dựng rawData với các thuộc tính theo đúng thứ tự a-z
         var rawData =
             $"accessKey={_momoSettings.AccessKey}&amount={bill.TotalPrice}&extraData={extraData}" +
-            $"&ipnUrl={_momoSettings.NotifyUrl}&orderId={orderId}&orderInfo={billInfo}" +
+            $"&ipnUrl={notifyUrl}&orderId={orderId}&orderInfo={billInfo}" +
             $"&partnerCode={_momoSettings.PartnerCode}&redirectUrl={_momoSettings.ReturnUrl}" +
             $"&requestId={requestId}&requestType={request.RequestType}";
 
@@ -42,11 +42,11 @@ public class MomoService(MomoSettings momoSettings) : IMomoService
         {
             partnerCode = _momoSettings.PartnerCode,
             requestId,
-            amount = (long) bill.TotalPrice,
+            amount = (long)bill.TotalPrice,
             orderId,
             orderInfo = billInfo,
             redirectUrl = _momoSettings.ReturnUrl,
-            ipnUrl = _momoSettings.NotifyUrl,
+            ipnUrl = notifyUrl,
             lang = "vi",
             orderExpireTime = 15,
             extraData,

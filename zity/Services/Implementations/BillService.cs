@@ -93,5 +93,17 @@ namespace zity.Services.Implementations
             var momoCreatePaymentDto = await _momoService.CreatePaymentAsync(bill, request);
             return momoCreatePaymentDto;
         }
+
+        public async Task HandleMoMoCallBackAsync(int id, MomoCallBackDto callbackDto)
+        {
+            if (callbackDto.ResultCode == 0) 
+            {
+                Bill bill = await _billRepository.GetByIdAsync(id, null);
+                if (bill == null)
+                    return;
+                bill.Status = "Paid";
+                await _billRepository.UpdateAsync(bill);
+            }
+        }
     }
 }
