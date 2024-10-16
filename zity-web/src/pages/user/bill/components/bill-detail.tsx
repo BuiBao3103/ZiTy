@@ -27,23 +27,23 @@ const BillDetail = ({ id }: { id: number }) => {
               BILL_STYLES['page-bottom'],
               { flexDirection: 'column', width: '100%' },
             ]}>
-            <View style={{ flexDirection: 'row', marginBottom: 4, gap: 4 }}>
+            <View style={{ flexDirection: 'row', marginBottom: 2, gap: 4 }}>
               <Text>Sender:</Text>
               <Text>ZTech Apartment's Manager</Text>
             </View>
-            <View style={{ flexDirection: 'row', marginBottom: 4, gap: 4 }}>
+            <View style={{ flexDirection: 'row', marginBottom: 2, gap: 4 }}>
               <Text>Customer's name:</Text>
               <Text>Bui Hong Bao</Text>
             </View>
-            <View style={{ flexDirection: 'row', marginBottom: 4, gap: 4 }}>
+            <View style={{ flexDirection: 'row', marginBottom: 2, gap: 4 }}>
               <Text>Room:</Text>
               <Text>101</Text>
             </View>
-            <View style={{ flexDirection: 'row', marginBottom: 4, gap: 4 }}>
+            <View style={{ flexDirection: 'row', marginBottom: 2, gap: 4 }}>
               <Text>Phone number:</Text>
               <Text>(+84) 123456789</Text>
             </View>
-            <View style={{ flexDirection: 'row', marginBottom: 4, gap: 4 }}>
+            <View style={{ flexDirection: 'row', marginBottom: 2, gap: 4 }}>
               <Text>Bill Date:</Text>
               <Text>15/10/2024</Text>
             </View>
@@ -51,9 +51,8 @@ const BillDetail = ({ id }: { id: number }) => {
               <Text style={BILL_STYLES.headerText}>electric usage table</Text>
               <View></View>
             </View>
-            <View style={{ flexDirection: 'column', gap: 4 }}>
+            <View style={{ flexDirection: 'column' }}>
               <Text style={BILL_STYLES.headerText}>Water Usage Table</Text>
-
               <View style={BILL_STYLES.table}>
                 {/* Table Header */}
                 <View style={BILL_STYLES.tableRow}>
@@ -100,6 +99,46 @@ const BillDetail = ({ id }: { id: number }) => {
                     style={[
                       BILL_STYLES.lastColumnCell,
                       {
+                        width: '20%',
+                      },
+                      BILL_STYLES.tableCell,
+                      BILL_STYLES.tableCellHeader,
+                    ]}>
+                    Value-Added Tax
+                  </Text>
+                  <Text
+                    style={[
+                      BILL_STYLES.lastColumnCell,
+                      {
+                        width: '20%',
+                      },
+                      BILL_STYLES.tableCell,
+                    ]}>
+                    5%
+                  </Text>
+                  <Text
+                    style={[
+                      BILL_STYLES.lastColumnCell,
+                      BILL_STYLES.tableCell,
+                      {
+                        width: '20%',
+                        fontFamily: 'Helvetica-Bold',
+                      },
+                    ]}>
+                    $123.2
+                  </Text>
+                </View>
+                <View
+                  style={[
+                    BILL_STYLES.tableRow,
+                    {
+                      justifyContent: 'flex-end',
+                    },
+                  ]}>
+                  <Text
+                    style={[
+                      BILL_STYLES.lastColumnCell,
+                      {
                         backgroundColor: 'black',
                         color: 'white',
                         width: '80%',
@@ -122,7 +161,7 @@ const BillDetail = ({ id }: { id: number }) => {
               </View>
             </View>
             <View style={BILL_STYLES.separator}></View>
-            <View>
+            <View style={{ paddingVertical: 4 }}>
               <Text style={BILL_STYLES.title}>
                 Payment is due 30 days from bill date
               </Text>
@@ -140,17 +179,19 @@ const BillDetail = ({ id }: { id: number }) => {
               </Text>
             </View>
             <View style={BILL_STYLES.separator}></View>
-            <View>
+            <View style={{ paddingVertical: 4 }}>
               <Text style={BILL_STYLES.title}>Payment Methods</Text>
               <View style={{ flexDirection: 'row', gap: 8 }}>
                 <View
                   style={{
+                    width: '60%',
                     flexDirection: 'column',
                   }}>
                   <Text
                     style={{
                       fontSize: 10,
                       marginBottom: 8,
+                      padding: 2.5,
                     }}>
                     Please make payment by bank transfer to the following
                     account:
@@ -158,34 +199,66 @@ const BillDetail = ({ id }: { id: number }) => {
                   <Text
                     style={{
                       fontSize: 10,
-                      marginBottom: 4,
+                      backgroundColor: 'black',
+                      color: 'white',
+                      padding: 2.5,
                     }}>
                     Account Name: ZTech Apartment
                   </Text>
                   <Text
                     style={{
                       fontSize: 10,
-                      marginBottom: 4,
+                      padding: 2.5,
                     }}>
                     Account Number: 123456789
                   </Text>
                   <Text
                     style={{
                       fontSize: 10,
-                      marginBottom: 4,
+                      padding: 2.5,
                     }}>
                     Bank: Vietcombank - Thanh Xuan Branch
                   </Text>
                   <Text
                     style={{
                       fontSize: 10,
-                      marginBottom: 4,
+                      lineHeight: 1.25,
+                      padding: 2.5,
+                    }}>
+                    Transfer content: Apartment Room ... ZTech Apartment + pay
+                    service fees for the month of ...
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 10,
+                      padding: 2.5,
+
                       fontFamily: 'Times-Italic',
                     }}>
                     Please check the account number carefully before making the
                     transaction
                   </Text>
+                  <Text
+                    style={{
+                      fontSize: 10,
+                      padding: 2.5,
+
+                      fontFamily: 'Times-Italic',
+                    }}>
+                    Any questions please contact: 0123456789
+                  </Text>
+									<Text
+                    style={{
+                      fontSize: 10,
+                      padding: 2.5,
+
+                      fontFamily: 'Times-Italic',
+                    }}>
+                    Best regards!
+                  </Text>
                 </View>
+
+                {/* separator */}
                 <View
                   style={{
                     width: 1,
@@ -193,6 +266,7 @@ const BillDetail = ({ id }: { id: number }) => {
                     height: '100%',
                   }}></View>
 
+                {/* QR Code */}
                 <View
                   style={{
                     flexDirection: 'column',
@@ -208,8 +282,8 @@ const BillDetail = ({ id }: { id: number }) => {
                   </Text>
                   <View
                     style={{
-                      width: 180,
-                      height: 180,
+                      width: 150,
+                      height: 150,
                     }}>
                     <Image
                       src={QrGetMoney}

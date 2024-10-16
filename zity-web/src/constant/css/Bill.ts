@@ -6,7 +6,7 @@ export const BILL_STYLES = StyleSheet.create({
     flexDirection: 'column',
     backgroundColor: '#ffffff',
     padding: 10,
-		fontFamily: 'Helvetica'
+    fontFamily: 'Helvetica',
   },
   page_top: {
     flexDirection: 'row',
@@ -57,7 +57,7 @@ export const BILL_STYLES = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     width: 'auto',
-    marginVertical: 10,
+    marginVertical: 8,
   },
   tableRow: {
     display: 'flex',
@@ -87,23 +87,22 @@ export const BILL_STYLES = StyleSheet.create({
     fontSize: 10,
     textAlign: 'center',
   },
-	tableFirstCell: {
-		borderLeft: '1px solid #e4e4e4',
-	},
-	separator: {
-		width: '100%',
-		height: 1,
-		backgroundColor: '#e4e4e4',
-	},
-	section: {
-    marginBottom: 12,
+  tableFirstCell: {
+    borderLeft: '1px solid #e4e4e4',
+  },
+  separator: {
+    width: '100%',
+    height: 1,
+    backgroundColor: '#e4e4e4',
+  },
+  section: {
+    marginBottom: 4,
     fontSize: 10,
     lineHeight: 1.5,
   },
   title: {
     fontSize: 12,
-    fontWeight: 'bold',
     marginBottom: 8,
-		textTransform: 'uppercase',
+    textTransform: 'uppercase',
   },
 })
