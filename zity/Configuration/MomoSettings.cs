@@ -8,6 +8,5 @@ namespace zity.Configuration
         public string ReturnUrl { get; set; } = null!;
         public string NotifyUrl { get; set; } = null!;
         public string PartnerCode { get; set; } = null!;
-        public string RequestType { get; set; } = null!;
     }
 }

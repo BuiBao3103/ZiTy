@@ -74,7 +74,6 @@ var momoSettings = new MomoSettings
     ReturnUrl = Environment.GetEnvironmentVariable("MOMO_RETURN_URL") ?? throw new ArgumentException("MOMO_RETURN_URL is missing."),
     NotifyUrl = Environment.GetEnvironmentVariable("MOMO_NOTIFY_URL") ?? throw new ArgumentException("MOMO_NOTIFY_URL is missing."),
     PartnerCode = Environment.GetEnvironmentVariable("MOMO_PARTNER_CODE") ?? throw new ArgumentException("MOMO_PARTNER_CODE is missing."),
-    RequestType = Environment.GetEnvironmentVariable("MOMO_REQUEST_TYPE") ?? throw new ArgumentException("MOMO_REQUEST_TYPE is missing.")
 };
 
 // Add services to the container.
