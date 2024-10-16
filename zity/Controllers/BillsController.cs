@@ -5,7 +5,7 @@ using zity.Services.Interfaces;
 namespace zity.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/bill")]
     public class BillController(IBillService billService) : ControllerBase
     {
         private readonly IBillService _billService = billService;
@@ -68,8 +68,22 @@ namespace zity.Controllers
         public async Task<IActionResult> CreatePaymentUrl(int id)
         {
 
-            var paymentUrl = await _billService.CreatePaymentAsync(id);
+            var paymentUrl = await _billService.CreatePaymentVNPayAsync(id);
             return Ok(new { paymentUrl });
+        }
+
+        [HttpPost("{id}/payment/momo")]
+        public async Task<IActionResult> CreatePaymentMomo(int id)
+        {
+            var payment = await _billService.CreatePaymentMomoAsync(id);
+            return Ok(payment);
+        }
+
+        [HttpPost("/callback")]
+        public async Task<IActionResult> CallbackMomo()
+        {
+            Console.WriteLine("Momo callback");
+            return NoContent();
         }
     }
 }

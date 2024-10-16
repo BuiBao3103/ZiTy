@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using zity.DTOs.Bills;
+using zity.DTOs.Momo;
 using zity.ExceptionHandling;
 using zity.Mappers;
 using zity.Models;
@@ -9,11 +10,12 @@ using zity.Utilities;
 
 namespace zity.Services.Implementations
 {
-    public class BillService(IBillRepository billRepository, IMapper mapper, IVNPayService vnpayService) : IBillService
+    public class BillService(IBillRepository billRepository, IMapper mapper, IVNPayService vnpayService, IMomoService momoService) : IBillService
     {
         private readonly IMapper _mapper = mapper;
         private readonly IBillRepository _billRepository = billRepository;
         private readonly IVNPayService _vnpayService = vnpayService;
+        private readonly IMomoService _momoService = momoService;
 
         public async Task<PaginatedResult<BillDTO>> GetAllAsync(BillQueryDTO queryParam)
         {
@@ -70,7 +72,7 @@ namespace zity.Services.Implementations
             return await _billRepository.DeleteAsync(id);
         }
 
-        public async Task<string> CreatePaymentAsync(int id)
+        public async Task<string> CreatePaymentVNPayAsync(int id)
         {
             var bill = await _billRepository.GetByIdAsync(id, null);
             if (bill == null)
@@ -79,6 +81,17 @@ namespace zity.Services.Implementations
             }
             var paymentUrl = _vnpayService.CreatePaymentUrl(bill);
             return paymentUrl;
+        }
+
+        public async Task<MomoCreatePaymentDto> CreatePaymentMomoAsync(int id)
+        {
+            var bill = await _billRepository.GetByIdAsync(id, null);
+            if (bill == null)
+            {
+                throw new AppError("Bill not found");
+            }
+            var momoCreatePaymentDto = await _momoService.CreatePaymentAsync(bill);
+            return momoCreatePaymentDto;
         }
     }
 }
