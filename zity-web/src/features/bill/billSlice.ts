@@ -15,12 +15,6 @@ export const billSlice = apiSlice.injectEndpoints({
         method: 'GET',
       }),
     }),
-    // createBill: builder.mutation<void, void>({
-    //   query: () => ({
-    //     url: 'bills',
-    //     method: 'POST',
-    //   }),
-    // }),
     updateBill: builder.mutation<void, { id: string; body: Partial<Bill> }>({
       query: (data) => ({
         url: `bills/${data.id}`,
@@ -34,5 +28,26 @@ export const billSlice = apiSlice.injectEndpoints({
         method: 'DELETE',
       }),
     }),
+    paidByMomo: builder.mutation<
+      void,
+      {
+        id?: string
+        body: { requiredType?: string }
+      }
+    >({
+      query: (data) => ({
+        url: `bills/${data.id}/payment/momo`,
+        method: 'POST',
+        body: data.body,
+      }),
+    }),
+    paidByVnpay: builder.mutation<void, { id?: string }>({
+      query: (data) => ({
+        url: `bills/${data.id}/payment/vnpay`,
+        method: 'POST',
+      }),
+    }),
   }),
 })
+
+export const { usePaidByMomoMutation, usePaidByVnpayMutation } = billSlice

@@ -49,3 +49,16 @@ export const ReportReasonsSchema = z.enum([
   'Other',
 ])
 export type ReportReasons = z.infer<typeof ReportReasonsSchema>
+
+export const PaymentMethodTypeSchema = z.enum(['VNPAY', 'MOMO'], {
+  message: 'Please choose a payment method',
+})
+export type PaymentMethod = z.infer<typeof PaymentMethodTypeSchema>
+
+export const RequestTypeForMomoSchema = z.enum(
+  ['captureWallet', 'payWithATM', 'payWithCC'],
+  {
+    message: 'Please choose a request type',
+  },
+)
+export type RequestTypeForMomo = z.infer<typeof RequestTypeForMomoSchema>

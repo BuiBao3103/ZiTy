@@ -8,6 +8,7 @@ import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer'
 import BillDetail from './components/bill-detail'
 import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
+import BillPaidDialog from './components/bill-paid-dialog'
 const Index = () => {
   useDocumentTitle('Bill')
   const params = useParams()
@@ -29,12 +30,14 @@ const Index = () => {
                 <div className="w-full h-14 bg-success flex justify-between items-center rounded-b-md p-4">
                   <p className="font-medium">Bill-{params.id}.pdf</p>
                   <div className="flex gap-4 items-center">
-                    <Button
-                      value={'default'}
-                      type="button"
-                      className="text-white">
-                      Paid now
-                    </Button>
+                    <BillPaidDialog id={params.id}>
+                      <Button
+                        value={'default'}
+                        type="button"
+                        className="text-white">
+                        Paid now
+                      </Button>
+                    </BillPaidDialog>
                     <PDFDownloadLink
                       document={<BillDetail id={parseInt(params.id)} />}
                       fileName={`Bill-${params.id}.pdf`}>
@@ -69,12 +72,17 @@ const Index = () => {
               <BillDetail id={parseInt(params.id)} />
             </PDFViewer>
             <Separator />
-            <div className="w-full h-14 bg-success flex justify-between items-center rounded-b-md p-4">
+            <div className="w-full h-14 bg-success flex justify-between items-center rounded-b-md p-4 relative">
               <p className="font-medium">Bill-{params.id}.pdf</p>
               <div className="flex gap-4 items-center">
-                <Button value={'default'} type="button" className="text-white">
-                  Paid now
-                </Button>
+                <BillPaidDialog id={params.id}>
+                  <Button
+                    value={'default'}
+                    type="button"
+                    className="text-white">
+                    Paid now
+                  </Button>
+                </BillPaidDialog>
                 <PDFDownloadLink
                   document={<BillDetail id={parseInt(params.id)} />}
                   fileName={`Bill-${params.id}.pdf`}>

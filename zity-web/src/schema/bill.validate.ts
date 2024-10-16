@@ -1,4 +1,8 @@
-import { BillStatusSchema } from '@/enums'
+import {
+  BillStatusSchema,
+  PaymentMethodTypeSchema,
+  RequestTypeForMomoSchema,
+} from '@/enums'
 import { z } from 'zod'
 
 export const BillSchema = z.object({
@@ -11,3 +15,22 @@ export const BillSchema = z.object({
   relationship_id: z.number(),
 })
 export type Bill = z.infer<typeof BillSchema>
+
+export const PaymentMethodSchema = z
+  .object({
+    name: PaymentMethodTypeSchema.optional(),
+    requestType: RequestTypeForMomoSchema.optional(),
+  })
+  .refine(
+    (data) => {
+      // If name is "MOMO", then requestType must be present
+      return (
+        data.name !== 'MOMO' ||
+        (data.requestType !== undefined && data.requestType !== null)
+      )
+    },
+    {
+      message: 'requestType is required when name is "MOMO"',
+      path: ['requestType'], // specify the path to the error
+    },
+  )
