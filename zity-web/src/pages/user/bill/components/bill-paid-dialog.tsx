@@ -55,7 +55,7 @@ const BillPaidDialog = ({ children, id }: BillPaidDialogProps) => {
           .unwrap()
           .then((payload: any) => {
             console.log(payload)
-            navigate(payload.paymentUrl)
+            window.open(payload.paymentUrl, '_blank')
           })
           .catch((error: FetchBaseQueryError) => {
             if (error.status === 'FETCH_ERROR') {
@@ -63,16 +63,19 @@ const BillPaidDialog = ({ children, id }: BillPaidDialogProps) => {
             }
           })
       } else if (data.name === 'MOMO') {
-        // await usePaidByMomo({ id: id, body: { requiredType: data.requestType } })
-        toast.success('You submitted the following values', {
-          description: (
-            <pre className="mt-2 w-[300px] rounded-md bg-slate-950 p-4">
-              <code className="text-white">
-                {JSON.stringify(data, null, 2)}
-              </code>
-            </pre>
-          ),
+        await usePaidByMomo({
+          id: id,
+          body: { requiredType: data.requestType },
         })
+          .unwrap()
+          .then((payload: any) => {
+            window.open(payload.payUrl, '_blank')
+          })
+          .catch((error: FetchBaseQueryError) => {
+            if (error.status === 'FETCH_ERROR') {
+              toast.error('Something went wrong')
+            }
+          })
       } else {
         throw new Error('Please choose a payment method')
       }
@@ -214,13 +217,11 @@ const BillPaidDialog = ({ children, id }: BillPaidDialogProps) => {
             </div>
           </form>
         </Form>
-				{
-					( isPaidByVnpayLoading || isPaidByVnpayLoading )&& (
-						<div className="size-full z-50 absolute inset-0 bg-black/30 flex justify-center items-center cursor-not-allowed rounded-lg backdrop-blur">
-							<Loader className='animate-spin text-white' size={28}  />
-						</div>
-					)
-				}
+        {(isPaidByVnpayLoading || isPaidByMomoLoading) && (
+          <div className="size-full z-50 absolute inset-0 bg-black/30 flex justify-center items-center cursor-not-allowed rounded-lg backdrop-blur">
+            <Loader className="animate-spin text-white" size={28} />
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   )
