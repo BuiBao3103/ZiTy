@@ -8,11 +8,14 @@ import { z } from 'zod'
 export const BillSchema = z.object({
   id: z.number(),
   monthly: z.number(),
-  total_price: z.number(),
-  old_water: z.number().nullable(),
-  new_water: z.number().nullable(),
+  totalPrice: z.number(),
+  oldWater: z.number().nullable(),
+  newWater: z.number().nullable(),
   status: BillStatusSchema,
-  relationship_id: z.number(),
+  relationshipId: z.number(),
+  createdAt: z.string(),
+  updatedAt: z.string().nullable(),
+  waterReadingDate: z.string().nullable(),
 })
 export type Bill = z.infer<typeof BillSchema>
 

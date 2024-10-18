@@ -3,7 +3,16 @@ import { apiSlice } from '../api/apiSlice'
 
 export const billSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getBills: builder.query<void, void>({
+    getBills: builder.query<
+      {
+        contents: Bill[],
+        page: 1,
+        pageSize: 10,
+        totalItems: 28,
+        totalPages: 3,
+      },
+      void
+    >({
       query: () => ({
         url: 'bills',
         method: 'GET',
@@ -50,4 +59,9 @@ export const billSlice = apiSlice.injectEndpoints({
   }),
 })
 
-export const { usePaidByMomoMutation, usePaidByVnpayMutation } = billSlice
+export const {
+  usePaidByMomoMutation,
+  usePaidByVnpayMutation,
+  useGetBillsQuery,
+  useGetBillQuery,
+} = billSlice

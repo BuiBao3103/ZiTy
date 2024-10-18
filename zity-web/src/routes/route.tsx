@@ -81,7 +81,7 @@ export const route = createBrowserRouter([
             element: <User />,
           },
           {
-            path: '/bill',
+            path: '/bills',
             element: <Bill />,
             children: [
               {

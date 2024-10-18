@@ -9,16 +9,18 @@ import BillDetail from './components/bill-detail'
 import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
 import BillPaidDialog from './components/bill-paid-dialog'
+import { useGetBillsQuery } from '@/features/bill/billSlice'
+import UserBillSkeleton from '@/components/skeleton/UserBillSkeleton'
 const Index = () => {
   useDocumentTitle('Bill')
   const params = useParams()
   const { width = 0 } = useWindowSize()
-
+  const { data: bills, isLoading, isFetching } = useGetBillsQuery()
   return (
     <div className="w-full sm:h-screen flex flex-col bg-zinc-100 overflow-hidden">
       <BreadCrumb
         paths={[
-          { label: 'bill', to: '/bill' },
+          { label: 'bill', to: '/bills' },
           ...(params.id ? [{ label: params.id }] : []),
         ]}
       />
@@ -61,7 +63,13 @@ const Index = () => {
                     className="border-none shadow-none focus-visible:ring-0"
                   />
                 </div>
-                <BillList id={params.id} />
+                {isFetching || isLoading ? (
+                  Array.from({ length: 5 }).map((_, index) => (
+                    <UserBillSkeleton key={index} />
+                  ))
+                ) : (
+                  <BillList bills={bills?.contents} />
+                )}
               </>
             )}
           </div>
