@@ -16,7 +16,7 @@ const BillItem = ({ bill }: BillItemProps) => {
         bill.id === parseInt(params?.id ?? '0') ? 'border-primary' : ''
       }`}>
       <div className="w-full flex flex-col p-4">
-        <h1 className="text-lg font-medium">P-A10{bill.id}-Sep-2024</h1>
+        <h1 className="text-lg font-medium">ID: {bill.id}</h1>
         {/* <div className="w-full grid grid-cols-[100px_auto] text-sm">
 				<span className="text-muted-foreground">Owner:</span>
 				<span className="">Bui Hong Bao</span>

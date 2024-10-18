@@ -11,11 +11,18 @@ import { Button } from '@/components/ui/button'
 import BillPaidDialog from './components/bill-paid-dialog'
 import { useGetBillsQuery } from '@/features/bill/billSlice'
 import UserBillSkeleton from '@/components/skeleton/UserBillSkeleton'
+import PaginationCustom from '@/components/pagination/PaginationCustom'
+import { useState } from 'react'
 const Index = () => {
   useDocumentTitle('Bill')
   const params = useParams()
   const { width = 0 } = useWindowSize()
-  const { data: bills, isLoading, isFetching } = useGetBillsQuery()
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const { data: bills, isLoading, isFetching } = useGetBillsQuery(currentPage)
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page)
+  }
+  console.log(bills)
   return (
     <div className="w-full sm:h-screen flex flex-col bg-zinc-100 overflow-hidden">
       <BreadCrumb
@@ -63,13 +70,20 @@ const Index = () => {
                     className="border-none shadow-none focus-visible:ring-0"
                   />
                 </div>
-                {isFetching || isLoading ? (
-                  Array.from({ length: 5 }).map((_, index) => (
-                    <UserBillSkeleton key={index} />
-                  ))
-                ) : (
-                  <BillList bills={bills?.contents} />
-                )}
+                <div className="w-full h-full flex flex-col gap-4 overflow-hidden">
+                  {isFetching || isLoading ? (
+                    Array.from({ length: 5 }).map((_, index) => (
+                      <UserBillSkeleton key={index} />
+                    ))
+                  ) : (
+                    <BillList bills={bills?.contents} />
+                  )}
+                  <PaginationCustom
+                    currentPage={bills?.page}
+                    totalPages={bills?.totalPages}
+                    onPageChange={handlePageChange}
+                  />
+                </div>
               </>
             )}
           </div>

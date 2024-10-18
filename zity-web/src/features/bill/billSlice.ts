@@ -3,20 +3,12 @@ import { apiSlice } from '../api/apiSlice'
 
 export const billSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getBills: builder.query<
-      {
-        contents: Bill[],
-        page: 1,
-        pageSize: 10,
-        totalItems: 28,
-        totalPages: 3,
+    getBills: builder.query<ResponseDataType<Bill>, number | void>({
+      query: (page = 1) => {
+        return {
+          url: `bills?page=${page}`,
+        };
       },
-      void
-    >({
-      query: () => ({
-        url: 'bills',
-        method: 'GET',
-      }),
     }),
     getBill: builder.query<Bill, string>({
       query: (id: string) => ({
