@@ -60,16 +60,16 @@ public class MomoService(MomoSettings momoSettings) : IMomoService
         try
         {
             var response = await client.ExecuteAsync(restRequest);
-
+            var momoCreatePaymentDto = JsonConvert.DeserializeObject<MomoCreatePaymentDto>(response.Content);
             if (response.IsSuccessful)
             {
-                return JsonConvert.DeserializeObject<MomoCreatePaymentDto>(response.Content);
+                return momoCreatePaymentDto;
             }
             else
             {
                 // Log the error and throw an exception
-                Console.WriteLine($"Error: {response.ErrorMessage}");
-                throw new Exception($"Failed to create Momo payment: {response.ErrorMessage}");
+                Console.WriteLine($"Error: {momoCreatePaymentDto.Message}");
+                throw new Exception($"Failed to create Momo payment: {momoCreatePaymentDto.}");
             }
         }
         catch (Exception ex)
