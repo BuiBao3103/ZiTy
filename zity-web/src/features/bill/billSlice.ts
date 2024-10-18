@@ -32,7 +32,7 @@ export const billSlice = apiSlice.injectEndpoints({
       void,
       {
         id?: string
-        body: { requiredType?: string }
+        body: { RequestType?: string }
       }
     >({
       query: (data) => ({

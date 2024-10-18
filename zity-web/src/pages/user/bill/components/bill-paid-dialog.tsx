@@ -58,6 +58,7 @@ const BillPaidDialog = ({ children, id }: BillPaidDialogProps) => {
             window.open(payload.paymentUrl, '_blank')
           })
           .catch((error: FetchBaseQueryError) => {
+						console.log(error)
             if (error.status === 'FETCH_ERROR') {
               toast.error('Something went wrong')
             }
@@ -65,13 +66,14 @@ const BillPaidDialog = ({ children, id }: BillPaidDialogProps) => {
       } else if (data.name === 'MOMO') {
         await usePaidByMomo({
           id: id,
-          body: { requiredType: data.requestType },
+          body: { RequestType: data.requestType },
         })
           .unwrap()
           .then((payload: any) => {
             window.open(payload.payUrl, '_blank')
           })
           .catch((error: FetchBaseQueryError) => {
+						console.log(error)
             if (error.status === 'FETCH_ERROR') {
               toast.error('Something went wrong')
             }
@@ -218,8 +220,8 @@ const BillPaidDialog = ({ children, id }: BillPaidDialogProps) => {
           </form>
         </Form>
         {(isPaidByVnpayLoading || isPaidByMomoLoading) && (
-          <div className="size-full z-50 absolute inset-0 bg-black/30 flex justify-center items-center cursor-not-allowed rounded-lg backdrop-blur">
-            <Loader className="animate-spin text-white" size={28} />
+          <div className="size-full z-50 absolute inset-0 bg-white/50 flex justify-center items-center cursor-not-allowed rounded-lg backdrop-blur">
+            <Loader className="animate-spin text-black" size={28} />
           </div>
         )}
       </DialogContent>

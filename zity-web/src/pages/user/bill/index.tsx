@@ -18,7 +18,7 @@ const Index = () => {
     <div className="w-full sm:h-screen flex flex-col bg-zinc-100 overflow-hidden">
       <BreadCrumb
         paths={[
-          { label: 'user', to: '/user' },
+          { label: 'bill', to: '/bill' },
           ...(params.id ? [{ label: params.id }] : []),
         ]}
       />

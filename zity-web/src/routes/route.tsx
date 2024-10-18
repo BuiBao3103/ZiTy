@@ -30,6 +30,7 @@ import Chat from '@user/chat'
 
 //Error page
 import NotFound from '@pages/404'
+import MomoPaymentSuccess from '@/pages/notify-payment/MomoPaymentSuccess'
 
 export const route = createBrowserRouter([
   {
@@ -147,6 +148,11 @@ export const route = createBrowserRouter([
       },
     ],
   },
+	{
+		path: '/payment',
+		element: <MomoPaymentSuccess />,
+	},
+
   {
     path: '*',
     element: <NotFound />,
