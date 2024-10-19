@@ -1,6 +1,9 @@
 using CloudinaryDotNet;
 using DotNetEnv;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using zity.Configuration;
 using zity.Data;
 using zity.ExceptionHandling;
@@ -41,6 +44,15 @@ var cloudinarySettings = new CloudinarySettings
     CloudName = Environment.GetEnvironmentVariable("CLOUDINARY_CLOUD_NAME") ?? throw new ArgumentException("CLOUDINARY_CLOUD_NAME is missing."),
     ApiKey = Environment.GetEnvironmentVariable("CLOUDINARY_API_KEY") ?? throw new ArgumentException("CLOUDINARY_API_KEY is missing."),
     ApiSecret = Environment.GetEnvironmentVariable("CLOUDINARY_API_SECRET") ?? throw new ArgumentException("CLOUDINARY_API_SECRET is missing.")
+};
+
+// Configure JWT settings
+var jwtSettings = new JWTSettings
+{
+    Secret = Environment.GetEnvironmentVariable("JWT_SECRET") ?? throw new ArgumentException("JWT_SECRET is missing."),
+    Issuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? throw new ArgumentException("JWT_ISSUER is missing."),
+    Audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? throw new ArgumentException("JWT_AUDIENCE is missing."),
+    ExpirationInMinutes = int.Parse(Environment.GetEnvironmentVariable("JWT_EXPIRATION_IN_MINUTES") ?? throw new ArgumentException("JWT_EXPIRATION_IN_MINUTES is missing."))
 };
 
 // Retrieve the login URL from environment variables
@@ -120,6 +132,24 @@ builder.Services.AddAutoMapper(
         typeof(BillDetailMapping),
         typeof(UserMapping)
     );
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtSettings.Issuer,
+            ValidAudience = jwtSettings.Audience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret))
+        };
+    });
+
+builder.Services.AddAuthorization();
+
 
 var app = builder.Build();
 
