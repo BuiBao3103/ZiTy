@@ -1,67 +1,22 @@
 import { Input } from '@/components/ui/input'
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from '@/components/ui/pagination'
 import { Filter, Search } from 'lucide-react'
 import { Button } from '@components/ui/button'
-import ServiceForm from './components/service-form'
 import ServiceList from './components/service-list'
-import { Service } from '@/schema/service.validate'
 import BreadCrumb from '@/components/breadcrumb'
 import { useDocumentTitle } from 'usehooks-ts'
+import { useGetServicesQuery } from '@/features/service/serviceSlice'
+import { useState } from 'react'
+import PaginationCustom from '@/components/pagination/PaginationCustom'
+import ServiceDetail from './components/service-detail'
 
 const Index = () => {
-
-	useDocumentTitle('Service')
-  const services: Service[] = [
-    {
-      id: 1,
-      name: 'Service 1',
-      price: 100,
-      created_at: new Date(),
-      description: 'Description 1',
-    },
-    {
-      id: 2,
-      name: 'Service 2',
-      price: 200,
-      created_at: new Date(),
-      description: 'Description 2',
-    },
-    {
-      id: 3,
-      name: 'Service 3',
-      price: 300,
-      created_at: new Date(),
-      description: 'Description 3',
-    },
-    {
-      id: 4,
-      name: 'Service 4',
-      price: 400,
-      created_at: new Date(),
-      description: 'Description 4',
-    },
-    {
-      id: 5,
-      name: 'Service 5',
-      price: 500,
-      created_at: new Date(),
-      description: 'Description 5',
-    },
-    {
-      id: 6,
-      name: 'Service 6',
-      price: 600,
-      created_at: new Date(),
-      description: 'Description 6',
-    },
-  ]
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const {
+    data: services,
+    isLoading,
+    isFetching,
+  } = useGetServicesQuery(currentPage)
+  useDocumentTitle('Service')
 
   return (
     <>
@@ -83,28 +38,20 @@ const Index = () => {
                   Filter
                 </Button>
               </div>
-              <ServiceForm />
+              <ServiceDetail mode="create" />
             </div>
             <div className="size-full">
-              <ServiceList services={services} />
+              <ServiceList
+                services={services?.contents}
+                isFetching={isFetching}
+                isLoading={isLoading}
+              />
             </div>
-            <Pagination className="mt-2">
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious to="#" />
-                </PaginationItem>
-                {[1, 2, 3, 4, 5].map((page) => (
-                  <PaginationItem
-                    key={page}
-                    className={`${page === 1 ? 'bg-primary rounded-md' : ''}`}>
-                    <PaginationLink to="#">{page}</PaginationLink>
-                  </PaginationItem>
-                ))}
-                <PaginationItem>
-                  <PaginationNext to="#" />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
+            <PaginationCustom
+              currentPage={currentPage}
+              onPageChange={setCurrentPage}
+              totalPages={services?.totalPages}
+            />
           </div>
         </div>
       </div>
