@@ -69,7 +69,7 @@ public class MomoService(MomoSettings momoSettings) : IMomoService
             {
                 // Log the error and throw an exception
                 Console.WriteLine($"Error: {momoCreatePaymentDto.Message}");
-                throw new Exception($"Failed to create Momo payment: {momoCreatePaymentDto.}");
+                throw new Exception($"Failed to create Momo payment: {momoCreatePaymentDto.Message}");
             }
         }
         catch (Exception ex)
