@@ -1,9 +1,6 @@
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { BadgePlus, Search } from 'lucide-react'
+import { Search } from 'lucide-react'
 import { useDocumentTitle } from 'usehooks-ts'
-import ReportForm from './components/report-form'
-import { Badge } from '@/components/ui/badge'
 import BreadCrumb from '@/components/breadcrumb'
 import ReportList from './components/report-list'
 const Index = () => {

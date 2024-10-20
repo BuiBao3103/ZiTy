@@ -75,7 +75,7 @@ const Header = () => {
     {
       label: 'Bill',
       icon: <Receipt />,
-      to: '/bill',
+      to: '/bills',
       role: ['ADMIN', 'RESIDENT'],
     },
     {

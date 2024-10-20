@@ -179,124 +179,24 @@ const BillDetail = ({ id }: { id: number }) => {
               </Text>
             </View>
             <View style={BILL_STYLES.separator}></View>
-            <View style={{ paddingVertical: 4 }}>
-              <Text style={BILL_STYLES.title}>Payment Methods</Text>
-              <View style={{ flexDirection: 'row', gap: 8 }}>
-                <View
-                  style={{
-                    width: '60%',
-                    flexDirection: 'column',
-                  }}>
-                  <Text
-                    style={{
-                      fontSize: 10,
-                      marginBottom: 8,
-                      padding: 2.5,
-                    }}>
-                    Please make payment by bank transfer to the following
-                    account:
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 10,
-                      backgroundColor: 'black',
-                      color: 'white',
-                      padding: 2.5,
-                    }}>
-                    Account Name: ZTech Apartment
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 10,
-                      padding: 2.5,
-                    }}>
-                    Account Number: 123456789
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 10,
-                      padding: 2.5,
-                    }}>
-                    Bank: Vietcombank - Thanh Xuan Branch
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 10,
-                      lineHeight: 1.25,
-                      padding: 2.5,
-                    }}>
-                    Transfer content: Apartment Room ... ZTech Apartment + pay
-                    service fees for the month of ...
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 10,
-                      padding: 2.5,
+            <Text
+              style={{
+                fontSize: 10,
+                padding: 2.5,
 
-                      fontFamily: 'Times-Italic',
-                    }}>
-                    Please check the account number carefully before making the
-                    transaction
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 10,
-                      padding: 2.5,
+                fontFamily: 'Times-Italic',
+              }}>
+              Any questions please contact: 0123456789
+            </Text>
+            <Text
+              style={{
+                fontSize: 10,
+                padding: 2.5,
 
-                      fontFamily: 'Times-Italic',
-                    }}>
-                    Any questions please contact: 0123456789
-                  </Text>
-									<Text
-                    style={{
-                      fontSize: 10,
-                      padding: 2.5,
-
-                      fontFamily: 'Times-Italic',
-                    }}>
-                    Best regards!
-                  </Text>
-                </View>
-
-                {/* separator */}
-                <View
-                  style={{
-                    width: 1,
-                    backgroundColor: '#e4e4e4',
-                    height: '100%',
-                  }}></View>
-
-                {/* QR Code */}
-                <View
-                  style={{
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <Text
-                    style={{
-                      fontSize: 10,
-                      marginBottom: 8,
-                    }}>
-                    Or scan the QR code below to make payment:
-                  </Text>
-                  <View
-                    style={{
-                      width: 150,
-                      height: 150,
-                    }}>
-                    <Image
-                      src={QrGetMoney}
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'contain',
-                      }}
-                    />
-                  </View>
-                </View>
-              </View>
-            </View>
+                fontFamily: 'Times-Italic',
+              }}>
+              Best regards!
+            </Text>
           </View>
         </Page>
       </Document>
