@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { useGetApartmentQuery } from '@/features/apartment/apartmentSlice'
 import { ChevronLeft } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-import ApartmentFormDetail from './components/apartment-form-detail'
+import ApartmentDetailForm from './components/apartment-detail-form'
 
 interface IApartmentDetailProps {
   id: string
@@ -29,7 +29,7 @@ const ApartmentDetail = ({ id }: IApartmentDetailProps) => {
             </Button>
             <h1 className="text-xl font-medium">{data?.id}</h1>
           </div>
-          <ApartmentFormDetail apartment={data} />
+          <ApartmentDetailForm apartment={data} />
         </>
       )}
     </div>

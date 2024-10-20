@@ -3,29 +3,32 @@ import { apiSlice } from '../api/apiSlice'
 
 export const serviceApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getServices: builder.query<Service[], void>({
-      query: () => ({
-        url: 'services',
+    getServices: builder.query<ResponseDataType<Service>, number | void>({
+      query: (page = 1) => ({
+        url: `services?page${page}`,
         method: 'GET',
       }),
       providesTags: (results) =>
         results
           ? [
-              ...results.map(({ id }) => ({ type: 'Service' as const, id })),
+              ...results.contents.map(({ id }) => ({
+                type: 'Service' as const,
+                id,
+              })),
               { type: 'Service', id: 'LIST' },
             ]
           : [{ type: 'Service', id: 'LIST' }],
     }),
-    getService: builder.query<Service, string>({
+    getService: builder.query<Service, string | number | undefined>({
       query: (id: string) => ({
         url: `services/${id}`,
         method: 'GET',
       }),
-      // providesTags: (result, error, id) => [{ type: 'Service', id }],
+      providesTags: (result, error, id) => [{ type: 'Service', id }],
     }),
     createService: builder.mutation<
       Service,
-      Partial<Service> & Omit<Service, 'id'>
+      Omit<Service, 'id' | 'createdAt' | 'updatedAt'>
     >({
       query: (body) => ({
         url: 'services',
@@ -34,12 +37,18 @@ export const serviceApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: [{ type: 'Service', id: 'LIST' }],
     }),
-    updateService: builder.mutation<Service, Service>({
-      query: (body) => ({
-        url: `services/${body.id}`,
+    updateService: builder.mutation<
+      Service,
+      { id: number | undefined; body: Partial<Service> & Omit<Service, 'id' | 'createdAt' | 'updatedAt'> }
+    >({
+      query: (data) => ({
+        url: `services/${data.id}`,
         method: 'PUT',
-        body,
+        body: data.body,
       }),
+      invalidatesTags: (result, error, arg) => [
+        { type: 'Service', id: arg.id },
+      ],
     }),
     patchService: builder.mutation<Service, Partial<Service>>({
       query: (body) => ({
@@ -48,11 +57,12 @@ export const serviceApiSlice = apiSlice.injectEndpoints({
         body,
       }),
     }),
-    deleteService: builder.mutation<void, string>({
+    deleteService: builder.mutation<void, string | number | undefined>({
       query: (id: string) => ({
         url: `services/${id}`,
         method: 'DELETE',
       }),
+      invalidatesTags: (result, error, id) => [{ type: 'Service', id }],
     }),
   }),
 })

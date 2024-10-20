@@ -1,5 +1,5 @@
 import { useGetReportQuery } from '@/features/reports/reportSlice'
-import ReportFormDetail from './components/report-form-detail'
+import ReportDetailForm from './components/report-detail-form'
 import { Loader } from 'lucide-react'
 
 interface ReportDetailProps {
@@ -26,7 +26,7 @@ const ReportDetail = ({ setShowDetail, report }: ReportDetailProps) => {
           <Loader className="animate-spin text-primary" size={52} />
         </div>
       ) : (
-        <ReportFormDetail report={reportData} setShowDetail={setShowDetail} />
+        <ReportDetailForm report={reportData} setShowDetail={setShowDetail} />
       )}
     </div>
   )
