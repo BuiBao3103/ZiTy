@@ -5,3 +5,9 @@ interface ResponseDataType<T> {
   totalItems: number
   totalPages: number
 }
+
+interface BaseEntity {
+  createdAt: Date | string
+  updatedAt: Date | string
+  deletedAt?: Date | string
+}
