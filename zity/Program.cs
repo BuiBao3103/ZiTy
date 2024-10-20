@@ -122,6 +122,9 @@ builder.Services.AddSingleton(appSettings);
 // Register ESMS settings
 builder.Services.AddSingleton(esmsSettings);
 
+// Register JWT settings
+builder.Services.AddSingleton(jwtSettings);
+
 // Register exception handling
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails(); // enables tracking/returning ProblemDetails to a user
