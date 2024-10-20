@@ -42,90 +42,90 @@ const Header = () => {
   const [panelRightOpen, setPanelRightOpen] = useState<boolean>(false)
 
   const userSideBars: SideBarProps[] = [
-    // {
-    //   label: 'Home',
-    //   icon: <House />,
-    //   to: '/',
-    //   role: 'RESIDENT',
-    // },
-    // {
-    //   label: 'Package',
-    //   icon: <Package />,
-    //   to: '/package',
-    //   role: 'RESIDENT',
-    // },
-    // {
-    //   label: 'Survey',
-    //   icon: <NotebookText />,
-    //   to: '/survey',
-    //   role: 'RESIDENT',
-    // },
-    // {
-    //   label: 'Apartments',
-    //   icon: <TableCellsMerge />,
-    //   to: '/apartment',
-    //   role: 'RESIDENT',
-    // },
-    // {
-    //   label: 'Report',
-    //   icon: <Flag />,
-    //   to: '/report',
-    //   role: 'RESIDENT',
-    // },
+    {
+      label: 'Home',
+      icon: <House />,
+      to: '/',
+      role: 'RESIDENT',
+    },
+    {
+      label: 'Package',
+      icon: <Package />,
+      to: '/package',
+      role: 'RESIDENT',
+    },
+    {
+      label: 'Survey',
+      icon: <NotebookText />,
+      to: '/survey',
+      role: 'RESIDENT',
+    },
+    {
+      label: 'Apartments',
+      icon: <TableCellsMerge />,
+      to: '/apartment',
+      role: 'RESIDENT',
+    },
+    {
+      label: 'Report',
+      icon: <Flag />,
+      to: '/report',
+      role: 'RESIDENT',
+    },
     {
       label: 'Bill',
       icon: <Receipt />,
       to: '/bills',
       role: ['ADMIN', 'RESIDENT'],
     },
-    // {
-    //   label: 'User Admin',
-    //   icon: <UsersRound />,
-    //   to: '/user',
-    //   role: ['ADMIN'],
-    // },
-    // {
-    //   label: 'Service Admin',
-    //   icon: <HandPlatter />,
-    //   to: '/service',
-    //   role: ['ADMIN'],
-    // },
-    // {
-    //   label: 'Package Admin',
-    //   icon: <Package />,
-    //   to: '/admin/package',
-    //   role: ['ADMIN'],
-    // },
-    // {
-    //   label: 'Bill Admin',
-    //   icon: <Receipt />,
-    //   to: '/admin/bill',
-    //   role: ['ADMIN'],
-    // },
-    // {
-    //   label: 'Survey Admin',
-    //   icon: <NotebookText />,
-    //   to: '/admin/survey',
-    //   role: ['ADMIN'],
-    // },
-    // {
-    //   label: 'Report Admin',
-    //   icon: <Flag />,
-    //   to: '/admin/report',
-    //   role: ['ADMIN'],
-    // },
-    // {
-    //   label: 'Ask For Support',
-    //   icon: <MessageCircleQuestion />,
-    //   to: '/chat',
-    //   role: ['RESIDENT'],
-    // },
-    // {
-    //   label: 'Setting Admin',
-    //   icon: <Cog />,
-    //   to: '/admin/setting',
-    //   role: ['RESIDENT'],
-    // },
+    {
+      label: 'User Admin',
+      icon: <UsersRound />,
+      to: '/user',
+      role: ['ADMIN'],
+    },
+    {
+      label: 'Service Admin',
+      icon: <HandPlatter />,
+      to: '/service',
+      role: ['ADMIN'],
+    },
+    {
+      label: 'Package Admin',
+      icon: <Package />,
+      to: '/admin/package',
+      role: ['ADMIN'],
+    },
+    {
+      label: 'Bill Admin',
+      icon: <Receipt />,
+      to: '/admin/bill',
+      role: ['ADMIN'],
+    },
+    {
+      label: 'Survey Admin',
+      icon: <NotebookText />,
+      to: '/admin/survey',
+      role: ['ADMIN'],
+    },
+    {
+      label: 'Report Admin',
+      icon: <Flag />,
+      to: '/admin/report',
+      role: ['ADMIN'],
+    },
+    {
+      label: 'Ask For Support',
+      icon: <MessageCircleQuestion />,
+      to: '/chat',
+      role: ['RESIDENT'],
+    },
+    {
+      label: 'Setting Admin',
+      icon: <Cog />,
+      to: '/admin/setting',
+      role: ['RESIDENT'],
+    },
   ]
 
   useEffect(() => {
