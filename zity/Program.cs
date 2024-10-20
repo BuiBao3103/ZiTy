@@ -172,7 +172,7 @@ builder.Services.AddAutoMapper(
         typeof(ItemMapping),
         typeof(ReportMapping),
         typeof(ServiceMapping),
-        typeof(SurveyMapping)
+        typeof(SurveyMapping),
         typeof(AnswerMapping)
     );
 
