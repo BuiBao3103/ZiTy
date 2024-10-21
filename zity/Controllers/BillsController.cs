@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using zity.DTOs.Bills;
+using zity.DTOs.Momo;
 using zity.Services.Interfaces;
 
 namespace zity.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/bills")]
     public class BillController(IBillService billService) : ControllerBase
     {
         private readonly IBillService _billService = billService;
@@ -62,6 +63,28 @@ namespace zity.Controllers
                 return NotFound();
             }
             return NoContent();
+        }
+
+        [HttpPost("{id}/payment/vnpay")]
+        public async Task<IActionResult> CreatePaymentUrl(int id)
+        {
+
+            var paymentUrl = await _billService.CreatePaymentVNPayAsync(id);
+            return Ok(new { paymentUrl });
+        }
+
+        [HttpPost("{id}/payment/momo")]
+        public async Task<IActionResult> CreatePaymentMomo(int id, [FromBody] MomoRequestCreatePaymentDto request)
+        {
+            var payment = await _billService.CreatePaymentMomoAsync(id, request);
+            return Ok(payment);
+        }
+
+        [HttpPost("{id}/momo-callback")]
+        public async Task<IActionResult> MoMoCallBack([FromRoute] int id, [FromBody] MomoCallBackDto callbackDto)
+        {
+            await _billService.HandleMoMoCallBackAsync(id, callbackDto);
+            return NoContent(); 
         }
     }
 }

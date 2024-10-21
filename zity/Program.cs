@@ -57,6 +57,25 @@ var esmsSettings = new EsmsSettings
     BrandName = Environment.GetEnvironmentVariable("ESMS_BRAND_NAME") ?? throw new ArgumentException("ESMS_BRAND_NAME is missing.")
 };
 
+// Configure VNPay settings
+var vnpaySettings = new VNPaySettings
+{
+    TmnCode = Environment.GetEnvironmentVariable("VNP_TMN_CODE") ?? throw new ArgumentException("VNP_TMN_CODE is missing."),
+    HashSecret = Environment.GetEnvironmentVariable("VNP_HASH_SECRET") ?? throw new ArgumentException("VNP_HASH_SECRET is missing."),
+    Url = Environment.GetEnvironmentVariable("VNP_URL") ?? throw new ArgumentException("VNP_URL is missing.")
+};
+
+// Configure Momo settings
+var momoSettings = new MomoSettings
+{
+    MomoApiUrl = Environment.GetEnvironmentVariable("MOMO_API_URL") ?? throw new ArgumentException("MOMO_API_URL is missing."),
+    SecretKey = Environment.GetEnvironmentVariable("MOMO_SECRET_KEY") ?? throw new ArgumentException("MOMO_SECRET_KEY is missing."),
+    AccessKey = Environment.GetEnvironmentVariable("MOMO_ACCESS_KEY") ?? throw new ArgumentException("MOMO_ACCESS_KEY is missing."),
+    ReturnUrl = Environment.GetEnvironmentVariable("MOMO_RETURN_URL") ?? throw new ArgumentException("MOMO_RETURN_URL is missing."),
+    NotifyUrl = Environment.GetEnvironmentVariable("MOMO_NOTIFY_URL") ?? throw new ArgumentException("MOMO_NOTIFY_URL is missing."),
+    PartnerCode = Environment.GetEnvironmentVariable("MOMO_PARTNER_CODE") ?? throw new ArgumentException("MOMO_PARTNER_CODE is missing."),
+};
+
 // Add services to the container.
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -64,6 +83,19 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHttpContextAccessor();
+
+// CORS policy
+var corsPolicy = "AllowAll";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(corsPolicy, builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
 
 // Register DbContext with MySQL
 var connectionString = $"Server={mySqlSettings.Server};Port={mySqlSettings.Port};Database={mySqlSettings.Database};User={mySqlSettings.User};Password={mySqlSettings.Password}";
@@ -86,7 +118,6 @@ builder.Services.AddScoped<IReportRepository, ReportRepository>();
 builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
 builder.Services.AddScoped<ISurveyRepository, SurveyRepository>();
 
-
 // Register services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRelationshipService, RelationshipService>();
@@ -105,6 +136,8 @@ builder.Services.AddScoped<IItemService, ItemService>();
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IServiceService, ServiceService>();
 builder.Services.AddScoped<ISurveyService, SurveyService>();
+builder.Services.AddScoped<IVNPayService, VNPayService>();
+builder.Services.AddScoped<IMomoService, MomoService>();
 
 // Register Cloudinary as a singleton service
 var cloudinaryAccount = new Account(cloudinarySettings.CloudName, cloudinarySettings.ApiKey, cloudinarySettings.ApiSecret);
@@ -120,6 +153,12 @@ builder.Services.AddSingleton(appSettings);
 // Register ESMS settings
 builder.Services.AddSingleton(esmsSettings);
 
+// Register VNPay settings
+builder.Services.AddSingleton(vnpaySettings);
+
+// Register Momo settings
+builder.Services.AddSingleton(momoSettings);
+
 // Register exception handling
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails(); // enables tracking/returning ProblemDetails to a user
@@ -133,7 +172,12 @@ builder.Services.AddAutoMapper(
         typeof(OtherAnswerMapping),
         typeof(QuestionMapping),
         typeof(RejectionReasonMapping),
-        typeof(UserAnswerMapping)
+        typeof(UserAnswerMapping),
+        typeof(ApartmentMapping),
+        typeof(ItemMapping),
+        typeof(ReportMapping),
+        typeof(ServiceMapping),
+        typeof(SurveyMapping)
     );
 
 var app = builder.Build();
@@ -168,6 +212,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// Use CORS middleware
+app.UseCors(corsPolicy);
+
 app.UseExceptionHandler();
 app.UseHttpsRedirection();
 app.UseAuthorization();

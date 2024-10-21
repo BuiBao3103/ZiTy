@@ -5,7 +5,10 @@ export const ApartmentSchema = z.object({
 	id: z.string(),
 	area: z.number().positive(),
 	description: z.string(),
-	floor_number: z.number().positive(),
-	apartment_number: z.number().positive(),
+	floorNumber: z.number().positive(),
+	apartmentNumber: z.number().positive(),
 	status: ApartmentStatusSchema,
 })
+export type ApartmentFromSchema = z.infer<typeof ApartmentSchema>
+
+export interface Apartment extends BaseEntity, ApartmentFromSchema {}

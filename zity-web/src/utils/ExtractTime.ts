@@ -6,6 +6,21 @@ export function formatISODate(dateTime: string): string {
     day: '2-digit',
   })
 }
+export function formateTimestampToDateAndTime(timestamp: number): string {
+  const date = new Date(timestamp)
+  return date
+    .toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false,
+    })
+    .replace(',', '')
+}
+
 // utils/parseDate.ts
 // utils/parseDate.ts
 export const parseDateFromString = (dateString: string): Date | undefined => {

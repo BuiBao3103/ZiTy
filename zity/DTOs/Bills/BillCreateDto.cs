@@ -23,7 +23,6 @@ namespace zity.DTOs.Bills
         [Required]
         public int RelationshipId { get; set; }
 
-        public ICollection<BillDetailDTO> BillDetails { get; set; } = new List<BillDetailDTO>();
     }
 
 }
