@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+﻿using AutoMapper;
 using zity.DTOs.OtherAnswers;
 using zity.Mappers;
 using zity.Models;
@@ -8,16 +8,17 @@ using zity.Utilities;
 
 namespace zity.Services.Implementations
 {
-    public class OtherAnswerService(IOtherAnswerRepository otherAnswerRepository) : IOtherAnswerService
+    public class OtherAnswerService(IOtherAnswerRepository otherAnswerRepository, IMapper mapper) : IOtherAnswerService
     {
+        private readonly IMapper _mapper = mapper;
         private readonly IOtherAnswerRepository _otherAnswerRepository = otherAnswerRepository;
 
         public async Task<PaginatedResult<OtherAnswerDTO>> GetAllAsync(OtherAnswerQueryDTO queryParam)
         {
             var pageOtherAnswers = await _otherAnswerRepository.GetAllAsync(queryParam);
-
+            var otherAnswers = pageOtherAnswers.Contents.Select(_mapper.Map<OtherAnswerDTO>).ToList();
             return new PaginatedResult<OtherAnswerDTO>(
-                pageOtherAnswers.Contents.Select(OtherAnswerMapper.ToDTO).ToList(),
+                otherAnswers,
                 pageOtherAnswers.TotalItems,
                 pageOtherAnswers.Page,
                 pageOtherAnswers.PageSize);
@@ -27,12 +28,12 @@ namespace zity.Services.Implementations
         public async Task<OtherAnswerDTO?> GetByIdAsync(int id, string? includes)
         {
             var otherAnswer = await _otherAnswerRepository.GetByIdAsync(id, includes);
-            return otherAnswer != null ? OtherAnswerMapper.ToDTO(otherAnswer) : null;
+            return otherAnswer != null ? _mapper.Map<OtherAnswerDTO> (otherAnswer) : null;
         }
         public async Task<OtherAnswerDTO> CreateAsync(OtherAnswerCreateDTO createDTO)
         {
-            var otherAnswer = OtherAnswerMapper.ToModelFromCreate(createDTO);
-            return OtherAnswerMapper.ToDTO(await _otherAnswerRepository.CreateAsync(otherAnswer));
+            var otherAnswer = _mapper.Map<OtherAnswer>(createDTO);
+            return _mapper.Map<OtherAnswerDTO>(await _otherAnswerRepository.CreateAsync(otherAnswer));
         }
         public async Task<OtherAnswerDTO?> UpdateAsync(int id, OtherAnswerUpdateDTO updateDTO)
         {
@@ -41,10 +42,9 @@ namespace zity.Services.Implementations
             {
                 return null;
             }
-
-            OtherAnswerMapper.UpdateModelFromUpdate(existingOtherAnswer, updateDTO);
+            _mapper.Map(updateDTO, existingOtherAnswer);
             var updatedOtherAnswer = await _otherAnswerRepository.UpdateAsync(existingOtherAnswer);
-            return OtherAnswerMapper.ToDTO(updatedOtherAnswer);
+            return _mapper.Map<OtherAnswerDTO>(updatedOtherAnswer) ;
         }
 
         public async Task<OtherAnswerDTO?> PatchAsync(int id, OtherAnswerPatchDTO patchDTO)
@@ -55,9 +55,9 @@ namespace zity.Services.Implementations
                 return null;
             }
 
-            OtherAnswerMapper.PatchModelFromPatch(existingOtherAnswer, patchDTO);
+            _mapper.Map(patchDTO, existingOtherAnswer);
             var patchedOtherAnswer = await _otherAnswerRepository.UpdateAsync(existingOtherAnswer);
-            return OtherAnswerMapper.ToDTO(patchedOtherAnswer);
+            return _mapper.Map<OtherAnswerDTO>(patchedOtherAnswer);
         }
 
         public async Task<bool> DeleteAsync(int id)
