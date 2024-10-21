@@ -131,7 +131,8 @@ builder.Services.AddAutoMapper(
         typeof(UserMapping),
         typeof(AnswerMapping),
         typeof(OtherAnswerMapping),
-        typeof(QuestionMapping)
+        typeof(QuestionMapping),
+        typeof(RejectionReasonMapping)
     );
 
 var app = builder.Build();
