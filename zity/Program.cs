@@ -130,7 +130,8 @@ builder.Services.AddAutoMapper(
         typeof(BillDetailMapping),
         typeof(UserMapping),
         typeof(AnswerMapping),
-        typeof(OtherAnswerMapping)
+        typeof(OtherAnswerMapping),
+        typeof(QuestionMapping)
     );
 
 var app = builder.Build();
