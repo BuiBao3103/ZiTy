@@ -107,6 +107,7 @@ builder.Services.AddScoped<IItemService, ItemService>();
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IServiceService, ServiceService>();
 builder.Services.AddScoped<ISurveyService, SurveyService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 // Register Cloudinary as a singleton service
 var cloudinaryAccount = new Account(cloudinarySettings.CloudName, cloudinarySettings.ApiKey, cloudinarySettings.ApiSecret);

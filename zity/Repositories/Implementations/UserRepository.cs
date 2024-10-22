@@ -48,6 +48,12 @@ namespace zity.Services.Implementations
             await _dbContext.SaveChangesAsync();
             return user;
         }
+        public async Task<User> GetByUsernameAsync(string username)
+        {
+            return await _dbContext.Users
+                //.Include(u => u.RefreshTokens)
+                .FirstOrDefaultAsync(u => u.Username == username);
+        }
     }
 }
 

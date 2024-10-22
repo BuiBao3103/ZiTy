@@ -10,5 +10,6 @@ namespace zity.Repositories.Interfaces
         Task<User?> GetByIdAsync(int id, string? includes);
         Task<User> CreateAsync(User user);
         Task<User> UpdateAsync(User user);
+        Task<User> GetByUsernameAsync(string username);
     }
 }

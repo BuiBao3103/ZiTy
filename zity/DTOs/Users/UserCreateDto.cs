@@ -21,5 +21,8 @@ namespace zity.DTOs.Users
         public string NationId { get; set; } = null!;
         [Required]
         public DateTime DateOfBirth { get; set; }
+        [Required]
+        public string UserType { get; set; } = null!;
+
     }
 }
