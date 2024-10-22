@@ -46,6 +46,10 @@ public partial class ApplicationDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.LogTo(Console.WriteLine, LogLevel.None);
+        }
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -560,7 +564,6 @@ public partial class ApplicationDbContext : DbContext
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("user_answers_ibfk_1");
         });
-
         OnModelCreatingPartial(modelBuilder);
     }
 

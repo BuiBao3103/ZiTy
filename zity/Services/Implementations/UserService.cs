@@ -29,7 +29,7 @@ namespace zity.Services.Implementations
                 pageUsers.PageSize);
         }
 
-        public async Task<UserDTO?> GetByIdAsync(int id, string? includes)
+        public async Task<UserDTO?> GetByIdAsync(int id, string? includes = null)
         {
             var user = await _userRepository.GetByIdAsync(id, includes);
             return user != null ? _mapper.Map<UserDTO>(user) : null;

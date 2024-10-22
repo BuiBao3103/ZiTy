@@ -1,6 +1,9 @@
 using CloudinaryDotNet;
 using DotNetEnv;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using zity.Configuration;
 using zity.Data;
 using zity.ExceptionHandling;
@@ -41,6 +44,17 @@ var cloudinarySettings = new CloudinarySettings
     CloudName = Environment.GetEnvironmentVariable("CLOUDINARY_CLOUD_NAME") ?? throw new ArgumentException("CLOUDINARY_CLOUD_NAME is missing."),
     ApiKey = Environment.GetEnvironmentVariable("CLOUDINARY_API_KEY") ?? throw new ArgumentException("CLOUDINARY_API_KEY is missing."),
     ApiSecret = Environment.GetEnvironmentVariable("CLOUDINARY_API_SECRET") ?? throw new ArgumentException("CLOUDINARY_API_SECRET is missing.")
+};
+
+// Configure JWT settings
+var jwtSettings = new JWTSettings
+{
+    AccessTokenKey = Environment.GetEnvironmentVariable("JWT_ACCESS_TOKEN_KEY") ?? throw new ArgumentException("JWT_ACCESS_TOKEN_KEY is missing."),
+    RefreshTokenKey = Environment.GetEnvironmentVariable("JWT_REFRESH_TOKEN_KEY") ?? throw new ArgumentException("JWT_REFRESH_TOKEN_KEY is missing."),
+    Issuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? throw new ArgumentException("JWT_ISSUER is missing."),
+    Audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? throw new ArgumentException("JWT_AUDIENCE is missing."),
+    AccessExpirationInMinutes = int.Parse(Environment.GetEnvironmentVariable("JWT_ACCESS_EXPIRATION_IN_MINUTES") ?? throw new ArgumentException("JWT_ACCESS_EXPIRATION_IN_MINUTES is missing.")),
+    RefreshExpirationInDays = int.Parse(Environment.GetEnvironmentVariable("JWT_REFRESH_EXPIRATION_IN_DAYS") ?? throw new ArgumentException("JWT_REFRESH_EXPIRATION_IN_DAYS is missing.")),
 };
 
 // Retrieve the login URL from environment variables
@@ -136,8 +150,6 @@ builder.Services.AddScoped<IItemService, ItemService>();
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IServiceService, ServiceService>();
 builder.Services.AddScoped<ISurveyService, SurveyService>();
-builder.Services.AddScoped<IVNPayService, VNPayService>();
-builder.Services.AddScoped<IMomoService, MomoService>();
 
 // Register Cloudinary as a singleton service
 var cloudinaryAccount = new Account(cloudinarySettings.CloudName, cloudinarySettings.ApiKey, cloudinarySettings.ApiSecret);
@@ -152,12 +164,6 @@ builder.Services.AddSingleton(appSettings);
 
 // Register ESMS settings
 builder.Services.AddSingleton(esmsSettings);
-
-// Register VNPay settings
-builder.Services.AddSingleton(vnpaySettings);
-
-// Register Momo settings
-builder.Services.AddSingleton(momoSettings);
 
 // Register exception handling
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
@@ -176,6 +182,42 @@ builder.Services.AddAutoMapper(
         typeof(AnswerMapping)
     );
 
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtSettings!.Issuer,
+        ValidAudience = jwtSettings.Audience,
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(jwtSettings.AccessTokenKey)),
+        ClockSkew = TimeSpan.Zero
+    };
+}).AddJwtBearer("RefreshToken", options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtSettings!.Issuer,
+        ValidAudience = jwtSettings.Audience,
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(jwtSettings.RefreshTokenKey)),
+        ClockSkew = TimeSpan.Zero
+    };
+});
+
+builder.Services.AddAuthorization();
 var app = builder.Build();
 
 // Check connection to the MySQL database

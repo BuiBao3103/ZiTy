@@ -16,7 +16,9 @@ namespace zity.Mappers
                 .ForMember(dest => dest.UserAnswers, opt => opt.MapFrom(src => src.UserAnswers));
 
             CreateMap<UserCreateDTO, User>()
-                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.Now));
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.Now))
+                .ForMember(dest => dest.IsFirstLogin, opt => opt.MapFrom(src => true))
+                .ForMember(dest => dest.IsStaying, opt => opt.MapFrom(src => true));
 
             CreateMap<UserUpdateDTO, User>()
                 .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => DateTime.Now));
