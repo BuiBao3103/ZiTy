@@ -174,12 +174,16 @@ builder.Services.AddAutoMapper(
         typeof(BillMapping),
         typeof(BillDetailMapping),
         typeof(UserMapping),
+        typeof(AnswerMapping),
+        typeof(OtherAnswerMapping),
+        typeof(QuestionMapping),
+        typeof(RejectionReasonMapping),
+        typeof(UserAnswerMapping),
         typeof(ApartmentMapping),
         typeof(ItemMapping),
         typeof(ReportMapping),
         typeof(ServiceMapping),
-        typeof(SurveyMapping),
-        typeof(AnswerMapping)
+        typeof(SurveyMapping)
     );
 
 builder.Services.AddAuthentication(options =>

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using AutoMapper;
+using System.Threading.Tasks;
 using zity.DTOs.RejectionReasons;
 using zity.Mappers;
 using zity.Models;
@@ -8,16 +9,16 @@ using zity.Utilities;
 
 namespace zity.Services.Implementations
 {
-    public class RejectionReasonService(IRejectionReasonRepository rejectionReasonRepository) : IRejectionReasonService
+    public class RejectionReasonService(IRejectionReasonRepository rejectionReasonRepository, IMapper mapper) : IRejectionReasonService
     {
         private readonly IRejectionReasonRepository _rejectionReasonRepository = rejectionReasonRepository;
-
+        private readonly IMapper _mapper = mapper;
         public async Task<PaginatedResult<RejectionReasonDTO>> GetAllAsync(RejectionReasonQueryDTO queryParam)
         {
             var pageRejectionReasons = await _rejectionReasonRepository.GetAllAsync(queryParam);
-
+            var rejectionReasons = pageRejectionReasons.Contents.Select(_mapper.Map<RejectionReasonDTO>).ToList();
             return new PaginatedResult<RejectionReasonDTO>(
-                pageRejectionReasons.Contents.Select(RejectionReasonMapper.ToDTO).ToList(),
+                rejectionReasons,
                 pageRejectionReasons.TotalItems,
                 pageRejectionReasons.Page,
                 pageRejectionReasons.PageSize);
@@ -27,12 +28,12 @@ namespace zity.Services.Implementations
         public async Task<RejectionReasonDTO?> GetByIdAsync(int id, string? includes)
         {
             var rejectionReason = await _rejectionReasonRepository.GetByIdAsync(id, includes);
-            return rejectionReason != null ? RejectionReasonMapper.ToDTO(rejectionReason) : null;
+            return rejectionReason != null ? _mapper.Map<RejectionReasonDTO> (rejectionReason) : null;
         }
         public async Task<RejectionReasonDTO> CreateAsync(RejectionReasonCreateDTO createDTO)
         {
-            var rejectionReason = RejectionReasonMapper.ToModelFromCreate(createDTO);
-            return RejectionReasonMapper.ToDTO(await _rejectionReasonRepository.CreateAsync(rejectionReason));
+            var rejectionReason = _mapper.Map<RejectionReason>(createDTO);
+            return _mapper.Map<RejectionReasonDTO>(await _rejectionReasonRepository.CreateAsync(rejectionReason));
         }
         public async Task<RejectionReasonDTO?> UpdateAsync(int id, RejectionReasonUpdateDTO updateDTO)
         {
@@ -42,9 +43,9 @@ namespace zity.Services.Implementations
                 return null;
             }
 
-            RejectionReasonMapper.UpdateModelFromUpdate(existingRejectionReason, updateDTO);
+            _mapper.Map(updateDTO, existingRejectionReason);
             var updatedRejectionReason = await _rejectionReasonRepository.UpdateAsync(existingRejectionReason);
-            return RejectionReasonMapper.ToDTO(updatedRejectionReason);
+            return _mapper.Map<RejectionReasonDTO>(updatedRejectionReason);
         }
 
         public async Task<RejectionReasonDTO?> PatchAsync(int id, RejectionReasonPatchDTO patchDTO)
@@ -55,9 +56,9 @@ namespace zity.Services.Implementations
                 return null;
             }
 
-            RejectionReasonMapper.PatchModelFromPatch(existingRejectionReason, patchDTO);
+            _mapper.Map(patchDTO, existingRejectionReason);
             var patchedRejectionReason = await _rejectionReasonRepository.UpdateAsync(existingRejectionReason);
-            return RejectionReasonMapper.ToDTO(patchedRejectionReason);
+            return _mapper.Map<RejectionReasonDTO>(patchedRejectionReason);
         }
 
         public async Task<bool> DeleteAsync(int id)
