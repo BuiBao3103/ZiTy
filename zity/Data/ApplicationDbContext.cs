@@ -44,6 +44,9 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<UserAnswer> UserAnswers { get; set; }
 
+    public DbSet<RefreshToken> RefreshTokens { get; set; } = null!; 
+
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (!optionsBuilder.IsConfigured)
@@ -564,7 +567,15 @@ public partial class ApplicationDbContext : DbContext
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("user_answers_ibfk_1");
         });
+        modelBuilder.Entity<RefreshToken>(entity =>
+        {
+            entity.HasIndex(e => e.Token).IsUnique();
 
+            entity.HasOne(d => d.User)
+                .WithMany()
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
         OnModelCreatingPartial(modelBuilder);
     }
 
