@@ -46,6 +46,10 @@ public partial class ApplicationDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.LogTo(Console.WriteLine, LogLevel.None);
+        }
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
