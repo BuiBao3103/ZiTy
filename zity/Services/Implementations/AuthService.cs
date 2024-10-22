@@ -1,7 +1,6 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 using zity.Configuration;
 using zity.DTOs.Auth;
@@ -30,27 +29,42 @@ namespace zity.Services.Implementations
             if (user == null || !VerifyPassword(user, loginDto.Password))
                 return null;
 
-            var token = GenerateJwtToken(user);
-            var refreshToken = GenerateRefreshToken();
+            return await GenerateTokensAsync(user);
+        }
 
-            // Hash the refresh token before saving it
-            var hashedRefreshToken = HashRefreshToken(refreshToken);
+        private async Task<TokenDto> GenerateTokensAsync(User user)
+        {
+            var accessToken = GenerateJwtToken(user, false);
+            var refreshToken = GenerateJwtToken(user, true);
+
+            // Hash the refresh token before saving
+            var hashedRefreshToken = HashToken(refreshToken);
+
+            // Save hashed refresh token to database
             await _refreshTokenRepository.AddAsync(new RefreshToken
             {
                 Token = hashedRefreshToken,
                 ExpiryTime = DateTime.UtcNow.AddDays(30),
-                UserId = user.Id
+                UserId = user.Id,
+                IsRevoked = false
             });
 
-            return new TokenDto { Token = token, RefreshToken = refreshToken };
+            // Return original tokens to client
+            return new TokenDto
+            {
+                Token = accessToken,
+                RefreshToken = refreshToken
+            };
         }
 
-        public string GenerateJwtToken(User user)
+        public string GenerateJwtToken(User user, bool isRefreshToken)
         {
             var claims = new List<Claim>
             {
                 new(ClaimTypes.Name, user.Username),
+                new(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new(ClaimTypes.Role, user.UserType),
+                new("tokenType", isRefreshToken ? "refresh" : "access")
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
@@ -60,58 +74,96 @@ namespace zity.Services.Implementations
                 issuer: _jwtSettings.Issuer,
                 audience: _jwtSettings.Audience,
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(_jwtSettings.ExpirationInMinutes),
+                expires: isRefreshToken
+                    ? DateTime.UtcNow.AddDays(30)
+                    : DateTime.UtcNow.AddMinutes(_jwtSettings.ExpirationInMinutes),
                 signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public string GenerateRefreshToken()
-        {
-            // Generate a random refresh token
-            var randomNumber = new byte[32];
-            using (var rng = RandomNumberGenerator.Create())
-            {
-                rng.GetBytes(randomNumber);
-                return Convert.ToBase64String(randomNumber);
-            }
-        }
-
         public async Task<TokenDto> RefreshTokenAsync(string refreshToken)
         {
-            var existingToken = await _refreshTokenRepository.GetByValueAsync(refreshToken);
-
-            if (existingToken == null || existingToken.IsRevoked || existingToken.ExpiryTime < DateTime.UtcNow)
+            try
             {
-                throw new SecurityTokenException("Invalid refresh token.");
+                // Validate refresh token
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = Encoding.UTF8.GetBytes(_jwtSettings.Key);
+                var validationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = true,
+                    ValidIssuer = _jwtSettings.Issuer,
+                    ValidateAudience = true,
+                    ValidAudience = _jwtSettings.Audience,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
+                };
+
+                ClaimsPrincipal principal;
+                try
+                {
+                    principal = tokenHandler.ValidateToken(refreshToken, validationParameters, out var validatedToken);
+
+                    // Verify this is a refresh token
+                    var tokenType = principal.Claims.FirstOrDefault(x => x.Type == "tokenType")?.Value;
+                    if (tokenType != "refresh")
+                    {
+                        throw new SecurityTokenException("Invalid token type.");
+                    }
+                }
+                catch (Exception)
+                {
+                    throw new SecurityTokenException("Invalid refresh token.");
+                }
+
+                // Get user ID from claims
+                var userId = int.Parse(principal.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                    ?? throw new SecurityTokenException("Invalid token claims."));
+
+                // Find all non-revoked refresh tokens for this user
+                var userTokens = await _refreshTokenRepository.GetUserRefreshTokensAsync(userId);
+                var validStoredToken = userTokens
+                    .Where(t => !t.IsRevoked && t.ExpiryTime > DateTime.UtcNow)
+                    .FirstOrDefault(t => VerifyToken(refreshToken, t.Token));
+
+                if (validStoredToken == null)
+                {
+                    throw new SecurityTokenException("Invalid or expired refresh token.");
+                }
+
+                // Get user
+                var user = await _userRepository.GetByIdAsync(userId);
+                if (user == null)
+                {
+                    throw new SecurityTokenException("User not found.");
+                }
+
+                // Revoke the old refresh token
+                await _refreshTokenRepository.RevokeAsync(validStoredToken);
+
+                // Generate new tokens
+                return await GenerateTokensAsync(user);
             }
-
-            var user = existingToken.User;
-            var newJwtToken = GenerateJwtToken(user);
-            var newRefreshToken = GenerateRefreshToken();
-
-            // Revoke the old refresh token
-            await _refreshTokenRepository.RevokeAsync(existingToken);
-
-            // Hash and save the new refresh token
-            var hashedRefreshToken = HashRefreshToken(newRefreshToken);
-            await _refreshTokenRepository.AddAsync(new RefreshToken
+            catch (Exception ex)
             {
-                Token = hashedRefreshToken,
-                ExpiryTime = DateTime.UtcNow.AddDays(30),
-                UserId = user.Id
-            });
-
-            return new TokenDto { Token = newJwtToken, RefreshToken = newRefreshToken };
+                throw new SecurityTokenException("Error processing refresh token.", ex);
+            }
         }
 
         public async Task RevokeRefreshTokenAsync(string refreshToken)
         {
-            var existingToken = await _refreshTokenRepository.GetByValueAsync(refreshToken);
-            if (existingToken != null)
+            // Find token by comparing hashes
+            var userTokens = await _refreshTokenRepository.GetAllActiveTokensAsync();
+            var storedToken = userTokens.FirstOrDefault(t => VerifyToken(refreshToken, t.Token));
+
+            if (storedToken == null)
             {
-                await _refreshTokenRepository.RevokeAsync(existingToken);
+                throw new SecurityTokenException("Token not found.");
             }
+
+            await _refreshTokenRepository.RevokeAsync(storedToken);
         }
 
         private static bool VerifyPassword(User user, string password)
@@ -119,10 +171,14 @@ namespace zity.Services.Implementations
             return BCrypt.Net.BCrypt.Verify(password, user.Password);
         }
 
-        private static string HashRefreshToken(string refreshToken)
+        private static string HashToken(string token)
         {
-            // Hash the refresh token using BCrypt
-            return BCrypt.Net.BCrypt.HashPassword(refreshToken);
+            return BCrypt.Net.BCrypt.HashPassword(token, BCrypt.Net.BCrypt.GenerateSalt());
+        }
+
+        private static bool VerifyToken(string providedToken, string hashedToken)
+        {
+            return BCrypt.Net.BCrypt.Verify(providedToken, hashedToken);
         }
     }
 }

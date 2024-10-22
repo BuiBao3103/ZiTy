@@ -9,5 +9,6 @@ namespace zity.Repositories.Interfaces
         Task UpdateAsync(RefreshToken refreshToken);
         Task RevokeAsync(RefreshToken refreshToken);
         Task<List<RefreshToken>> GetUserRefreshTokensAsync(int userId);
+        Task<List<RefreshToken>> GetAllActiveTokensAsync();
     }
 }

@@ -19,11 +19,17 @@ namespace zity.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
-            var result = await _authService.AuthenticateAsync(loginDto);
-            if (result == null)
-                return Unauthorized();
-
-            return Ok(result);
+            try
+            {
+                var result = await _authService.AuthenticateAsync(loginDto);
+                if (result == null)
+                    return Unauthorized(new { message = "Invalid username or password." });
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while processing your request.", error = ex.Message });
+            }
         }
 
         [HttpPost("refresh-token")]
@@ -31,20 +37,41 @@ namespace zity.Controllers
         {
             try
             {
+                if (string.IsNullOrEmpty(refreshTokenDto.RefreshToken))
+                    return BadRequest(new { message = "Refresh token is required." });
+
                 var result = await _authService.RefreshTokenAsync(refreshTokenDto.RefreshToken);
                 return Ok(result);
             }
-            catch (SecurityTokenException)
+            catch (SecurityTokenException ex)
             {
-                return Unauthorized("Invalid refresh token.");
+                return Unauthorized(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while processing your request.", error = ex.Message });
             }
         }
 
         [HttpPost("revoke-token")]
         public async Task<IActionResult> RevokeToken([FromBody] RevokeTokenDto revokeTokenDto)
         {
-            await _authService.RevokeRefreshTokenAsync(revokeTokenDto.RefreshToken);
-            return NoContent(); 
+            try
+            {
+                if (string.IsNullOrEmpty(revokeTokenDto.RefreshToken))
+                    return BadRequest(new { message = "Refresh token is required." });
+
+                await _authService.RevokeRefreshTokenAsync(revokeTokenDto.RefreshToken);
+                return Ok(new { message = "Token revoked successfully." });
+            }
+            catch (SecurityTokenException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while processing your request.", error = ex.Message });
+            }
         }
     }
 }
