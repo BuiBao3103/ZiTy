@@ -1,6 +1,6 @@
 ﻿using zity.Models;
 
-namespace zity.Services.Interfaces
+namespace zity.Repositories.Interfaces
 {
     public interface IRefreshTokenRepository
     {

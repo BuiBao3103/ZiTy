@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using zity.Data;
 using zity.Models;
-using zity.Services.Interfaces;
+using zity.Repositories.Interfaces;
 
 namespace zity.Repositories.Implementations
 {
