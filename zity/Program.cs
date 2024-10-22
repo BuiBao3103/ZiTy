@@ -49,10 +49,12 @@ var cloudinarySettings = new CloudinarySettings
 // Configure JWT settings
 var jwtSettings = new JWTSettings
 {
-    Key = Environment.GetEnvironmentVariable("JWT_KEY") ?? throw new ArgumentException("JWT_KEY is missing."),
+    AccessTokenKey = Environment.GetEnvironmentVariable("JWT_ACCESS_TOKEN_KEY") ?? throw new ArgumentException("JWT_ACCESS_TOKEN_KEY is missing."),
+    RefreshTokenKey = Environment.GetEnvironmentVariable("JWT_REFRESH_TOKEN_KEY") ?? throw new ArgumentException("JWT_REFRESH_TOKEN_KEY is missing."),
     Issuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? throw new ArgumentException("JWT_ISSUER is missing."),
     Audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? throw new ArgumentException("JWT_AUDIENCE is missing."),
-    ExpirationInMinutes = int.Parse(Environment.GetEnvironmentVariable("JWT_EXPIRATION_IN_MINUTES") ?? throw new ArgumentException("JWT_EXPIRATION_IN_MINUTES is missing."))
+    AccessExpirationInMinutes = int.Parse(Environment.GetEnvironmentVariable("JWT_ACCESS_EXPIRATION_IN_MINUTES") ?? throw new ArgumentException("JWT_ACCESS_EXPIRATION_IN_MINUTES is missing.")),
+    RefreshExpirationInDays = int.Parse(Environment.GetEnvironmentVariable("JWT_REFRESH_EXPIRATION_IN_DAYS") ?? throw new ArgumentException("JWT_REFRESH_EXPIRATION_IN_DAYS is missing.")),
 };
 
 // Retrieve the login URL from environment variables
@@ -92,8 +94,6 @@ builder.Services.AddScoped<IItemRepository, ItemRepository>();
 builder.Services.AddScoped<IReportRepository, ReportRepository>();
 builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
 builder.Services.AddScoped<ISurveyRepository, SurveyRepository>();
-builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();  
-
 
 // Register services
 builder.Services.AddScoped<IUserService, UserService>();
@@ -139,32 +139,42 @@ builder.Services.AddAutoMapper(
         typeof(UserMapping)
     );
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
     {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = jwtSettings.Issuer,
-            ValidAudience = jwtSettings.Audience,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key)),
-            ClockSkew = TimeSpan.Zero
-        };
-    });
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtSettings!.Issuer,
+        ValidAudience = jwtSettings.Audience,
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(jwtSettings.AccessTokenKey)),
+        ClockSkew = TimeSpan.Zero
+    };
+}).AddJwtBearer("RefreshToken", options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtSettings!.Issuer,
+        ValidAudience = jwtSettings.Audience,
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(jwtSettings.RefreshTokenKey)),
+        ClockSkew = TimeSpan.Zero
+    };
+});
 
 builder.Services.AddAuthorization();
-//builder.Services.AddAuthorizationBuilder()
-//    .AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"))
-//    .AddPolicy("UserOnly", policy => policy.RequireRole("User"))
-//    .AddPolicy("SuperAdminOnly", policy => policy.RequireRole("SuperAdmin"))
-//    .AddPolicy("AdminOrSuperAdmin", policy =>
-//        policy.RequireRole("Admin", "SuperAdmin"))
-//    .AddPolicy("CanAccessSensitiveData", policy =>
-//        policy.RequireClaim("CanAccessSensitiveData", "true"));
-
 var app = builder.Build();
 
 // Check connection to the MySQL database

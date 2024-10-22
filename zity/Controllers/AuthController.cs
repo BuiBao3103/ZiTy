@@ -53,25 +53,6 @@ namespace zity.Controllers
             }
         }
 
-        [HttpPost("revoke-token")]
-        public async Task<IActionResult> RevokeToken([FromBody] RevokeTokenDto revokeTokenDto)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(revokeTokenDto.RefreshToken))
-                    return BadRequest(new { message = "Refresh token is required." });
-
-                await _authService.RevokeRefreshTokenAsync(revokeTokenDto.RefreshToken);
-                return Ok(new { message = "Token revoked successfully." });
-            }
-            catch (SecurityTokenException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = "An error occurred while processing your request.", error = ex.Message });
-            }
-        }
+   
     }
 }
