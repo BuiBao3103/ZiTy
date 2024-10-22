@@ -17,6 +17,7 @@ namespace zity.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     token = table.Column<string>(type: "varchar(255)", nullable: false),
                     expiry_time = table.Column<DateTime>(type: "datetime", nullable: false),
+                    is_revoked = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValue: false), // New column for revoked status
                     user_id = table.Column<int>(type: "int", nullable: false) // Giả sử id trong bảng users là int
                 },
                 constraints: table =>

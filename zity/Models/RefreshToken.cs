@@ -19,6 +19,10 @@ namespace zity.Models
         public DateTime ExpiryTime { get; set; }
 
         [Required]
+        [Column("is_revoked")]
+        public bool IsRevoked { get; set; } = false; // Default to false (not revoked)
+
+        [Required]
         [Column("user_id")]
         public int UserId { get; set; }
 
