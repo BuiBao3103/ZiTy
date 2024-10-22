@@ -9,14 +9,14 @@ import {
 import { useCallback } from 'react'
 
 interface PaginationCustomProps {
-  currentPage: number
-  totalPages: number
+  currentPage?: number
+  totalPages?: number
   onPageChange: (page: number) => void
 }
 
 const PaginationCustom = ({
-  currentPage,
-  totalPages,
+  currentPage = 1,
+  totalPages = 1,
   onPageChange,
 }: PaginationCustomProps) => {
   // Function to handle page click
@@ -46,7 +46,7 @@ const PaginationCustom = ({
           return (
             <PaginationItem
               key={page}
-              className={`${
+              className={`cursor-pointer ${
                 page === currentPage ? 'bg-primary rounded-md' : ''
               }`}>
               <PaginationLink to="#" onClick={() => handlePageClick(page)}>

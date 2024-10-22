@@ -26,27 +26,27 @@ export const UserSchema = z.object({
       (url) => /\.(jpg|jpeg|png|gif)$/i.test(url),
       'Avatar must be a valid image URL (.jpg, .jpeg, .png, or .gif)',
     ),
-  is_first_login: z.boolean(),
+  isFirstLogin: z.boolean(),
   email: z.string().email('Invalid email address'),
   phone: z
     .string()
     .length(10, 'Phone number must be exactly 10 digits')
     .regex(/^\d{10}$/, 'Phone number must contain only digits'),
   gender: GenderSchema,
-  nation_id: z
+  nationId: z
     .string()
     .min(12, 'Nation ID is required')
     .max(12, 'Nation ID is required'),
-  full_name: z
+  fullName: z
     .string()
     .min(2, 'Full name must be at least 2 characters long')
     .max(50, 'Full name must be at most 50 characters long'),
-  user_type: z
+  userType: z
     .array(UserRoleSchema)
     .refine((value) => value.some((item) => item), {
       message: 'You have to select at least one item.',
     }),
-  date_of_birth: z
+  dateOfBirth: z
     .date()
     .refine(
       (date) => date <= new Date(),
@@ -56,7 +56,7 @@ export const UserSchema = z.object({
       const age = new Date().getFullYear() - date.getFullYear()
       return age <= 100 // Check if age is 100 years or less
     }, 'You must be 100 years old or younger'),
-  is_staying: z.boolean(),
+  isStaying: z.boolean(),
 })
 // Example of schema for Nullable type
 export const NullableUserSchema = UserSchema.partial().nullable()

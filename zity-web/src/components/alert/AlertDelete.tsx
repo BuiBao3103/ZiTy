@@ -10,10 +10,11 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
-import { Trash2 } from 'lucide-react'
+import { Loader, Trash2 } from 'lucide-react'
+import { useState } from 'react'
 
 interface AlertDeleteProps {
-  setAction: (value: void) => void
+  setAction: (value: void) => Promise<void>
   description: string
   variants?:
     | 'link'
@@ -27,6 +28,7 @@ interface AlertDeleteProps {
     | 'info'
     | 'error'
   type?: 'icon' | 'button'
+  isLoading?: boolean
 }
 
 const AlertDelete = ({
@@ -34,21 +36,41 @@ const AlertDelete = ({
   description,
   variants = 'destructive',
   type = 'button',
+  isLoading = false,
 }: AlertDeleteProps) => {
+  const [isOpen, setIsOpen] = useState<boolean>(false)
+
+  const handleAction = async () => {
+    await setAction()
+    setIsOpen(false)
+  }
+
   return (
-    <AlertDialog>
+    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogTrigger asChild>
         {type === 'icon' ? (
-          <Button size={'icon'} variant={variants}>
+          <Button
+            onClick={() => setIsOpen(true)}
+            size={'icon'}
+            type="button"
+            variant={variants}>
             <Trash2 />
           </Button>
         ) : (
-          <Button type="button" variant={variants}>
+          <Button
+            onClick={() => setIsOpen(true)}
+            type="button"
+            variant={variants}>
             Delete
           </Button>
         )}
       </AlertDialogTrigger>
       <AlertDialogContent>
+        {isLoading && (
+          <div className="w-full h-full absolute rounded-lg bg-black/50 flex justify-center items-center">
+            <Loader size={20} className="animate-spin text-white" />
+          </div>
+        )}
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
@@ -58,8 +80,16 @@ const AlertDelete = ({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction className='bg-red-500 text-white hover:bg-red-400' type='button' onClick={() => setAction()}>
-            Continue
+          <AlertDialogAction asChild>
+            <Button
+              className="bg-red-500 text-white hover:bg-red-400"
+              type="button"
+              onClick={(e) => {
+                e.preventDefault()
+                handleAction()
+              }}>
+              Continue
+            </Button>
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

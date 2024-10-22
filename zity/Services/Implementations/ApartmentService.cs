@@ -1,19 +1,29 @@
-﻿using zity.DTOs.Apartments;
+﻿using AutoMapper;
+using zity.DTOs.Apartments;
 using zity.Mappers;
+using zity.Models;
 using zity.Repositories.Interfaces;
 using zity.Services.Interfaces;
 using zity.Utilities;
 
 namespace zity.Services.Implementations
 {
-    public class ApartmentService(IApartmentRepository apartmentRepository) : IApartmentService
+    public class ApartmentService : IApartmentService
     {
-        private readonly IApartmentRepository _apartmentRepository = apartmentRepository;
+        private readonly IApartmentRepository _apartmentRepository;
+        private readonly IMapper _mapper;
+
+        public ApartmentService(IApartmentRepository apartmentRepository, IMapper mapper)
+        {
+            _apartmentRepository = apartmentRepository;
+            _mapper = mapper;
+        }
 
         public async Task<ApartmentDTO> CreateAsync(ApartmentCreateDTO apartmentCreateDTO)
         {
-            var apartment = ApartmentMapper.ToModelFromCreate(apartmentCreateDTO);
-            return ApartmentMapper.ToDTO(await _apartmentRepository.CreateAsync(apartment));
+            var apartment = _mapper.Map<Apartment>(apartmentCreateDTO);
+            var createdApartment = await _apartmentRepository.CreateAsync(apartment);
+            return _mapper.Map<ApartmentDTO>(createdApartment);
         }
 
         public async Task<bool> DeleteAsync(string id)
@@ -24,8 +34,9 @@ namespace zity.Services.Implementations
         public async Task<PaginatedResult<ApartmentDTO>> GetAllAsync(ApartmentQueryDTO query)
         {
             var pageApartments = await _apartmentRepository.GetAllAsync(query);
+            var apartments = pageApartments.Contents.Select(_mapper.Map<ApartmentDTO>).ToList();
             return new PaginatedResult<ApartmentDTO>(
-                pageApartments.Contents.Select(ApartmentMapper.ToDTO).ToList(),
+                apartments,
                 pageApartments.TotalItems,
                 pageApartments.Page,
                 pageApartments.PageSize);
@@ -34,7 +45,7 @@ namespace zity.Services.Implementations
         public async Task<ApartmentDTO?> GetByIdAsync(string id, string? includes)
         {
             var apartment = await _apartmentRepository.GetByIdAsync(id, includes);
-            return apartment != null ? ApartmentMapper.ToDTO(apartment) : null;
+            return apartment != null ? _mapper.Map<ApartmentDTO>(apartment) : null;
         }
 
         public async Task<ApartmentDTO?> PatchAsync(string id, ApartmentPatchDTO apartmentPatchDTO)
@@ -44,9 +55,10 @@ namespace zity.Services.Implementations
             {
                 return null;
             }
-            ApartmentMapper.PatchModelFromPatch(existingApartment, apartmentPatchDTO);
+
+            _mapper.Map(apartmentPatchDTO, existingApartment);
             var patchedApartment = await _apartmentRepository.UpdateAsync(existingApartment);
-            return ApartmentMapper.ToDTO(patchedApartment);
+            return _mapper.Map<ApartmentDTO>(patchedApartment);
         }
 
         public async Task<ApartmentDTO?> UpdateAsync(string id, ApartmentUpdateDTO apartmentUpdateDTO)
@@ -56,9 +68,10 @@ namespace zity.Services.Implementations
             {
                 return null;
             }
-            ApartmentMapper.UpdateModelFromUpdate(existingApartment, apartmentUpdateDTO);
+
+            _mapper.Map(apartmentUpdateDTO, existingApartment);
             var updatedApartment = await _apartmentRepository.UpdateAsync(existingApartment);
-            return ApartmentMapper.ToDTO(updatedApartment);
+            return _mapper.Map<ApartmentDTO>(updatedApartment);
         }
     }
 }

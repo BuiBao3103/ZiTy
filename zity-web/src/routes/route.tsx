@@ -19,6 +19,7 @@ import PackageAdmin from '@admin/package'
 import BillAdmin from '@admin/bill'
 import SurveyAdmin from '@admin/survey'
 import ReportAdmin from '@admin/report'
+import SettingAdmin from '@admin/setting'
 
 //User Page
 import Package from '@user/package'
@@ -29,6 +30,7 @@ import Chat from '@user/chat'
 
 //Error page
 import NotFound from '@pages/404'
+import MomoPaymentSuccess from '@/pages/notify-payment/MomoPaymentSuccess'
 
 export const route = createBrowserRouter([
   {
@@ -79,7 +81,7 @@ export const route = createBrowserRouter([
             element: <User />,
           },
           {
-            path: '/bill',
+            path: '/bills',
             element: <Bill />,
             children: [
               {
@@ -122,6 +124,16 @@ export const route = createBrowserRouter([
               },
             ],
           },
+					{
+            path: '/admin/setting',
+            element: <SettingAdmin />,
+            children: [
+              {
+                path: ':id',
+                element: <SettingAdmin />,
+              },
+            ],
+          },
         ],
       },
     ],
@@ -136,6 +148,11 @@ export const route = createBrowserRouter([
       },
     ],
   },
+	{
+		path: '/payment',
+		element: <MomoPaymentSuccess />,
+	},
+
   {
     path: '*',
     element: <NotFound />,
