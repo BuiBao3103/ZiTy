@@ -1,8 +1,12 @@
-﻿namespace zity.DTOs.Auth
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace zity.DTOs.Auth
 {
     public class LoginDto
     {
+        [Required]
         public string Username { get; set; } = null!;
+        [Required]
         public string Password { get; set; } = null!;
     }
 }
