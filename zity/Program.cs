@@ -49,7 +49,7 @@ var cloudinarySettings = new CloudinarySettings
 // Configure JWT settings
 var jwtSettings = new JWTSettings
 {
-    Secret = Environment.GetEnvironmentVariable("JWT_SECRET") ?? throw new ArgumentException("JWT_SECRET is missing."),
+    Key = Environment.GetEnvironmentVariable("JWT_KEY") ?? throw new ArgumentException("JWT_KEY is missing."),
     Issuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? throw new ArgumentException("JWT_ISSUER is missing."),
     Audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? throw new ArgumentException("JWT_AUDIENCE is missing."),
     ExpirationInMinutes = int.Parse(Environment.GetEnvironmentVariable("JWT_EXPIRATION_IN_MINUTES") ?? throw new ArgumentException("JWT_EXPIRATION_IN_MINUTES is missing."))
@@ -147,12 +147,20 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             ValidIssuer = jwtSettings.Issuer,
             ValidAudience = jwtSettings.Audience,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key)),
+            ClockSkew = TimeSpan.Zero
         };
     });
 
 builder.Services.AddAuthorization();
-
+//builder.Services.AddAuthorizationBuilder()
+//    .AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"))
+//    .AddPolicy("UserOnly", policy => policy.RequireRole("User"))
+//    .AddPolicy("SuperAdminOnly", policy => policy.RequireRole("SuperAdmin"))
+//    .AddPolicy("AdminOrSuperAdmin", policy =>
+//        policy.RequireRole("Admin", "SuperAdmin"))
+//    .AddPolicy("CanAccessSensitiveData", policy =>
+//        policy.RequireClaim("CanAccessSensitiveData", "true"));
 
 var app = builder.Build();
 
