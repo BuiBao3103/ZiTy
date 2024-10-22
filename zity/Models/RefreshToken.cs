@@ -20,7 +20,7 @@ namespace zity.Models
 
         [Required]
         [Column("is_revoked")]
-        public bool IsRevoked { get; set; } = false; // Default to false (not revoked)
+        public bool IsRevoked { get; set; } = false;
 
         [Required]
         [Column("user_id")]

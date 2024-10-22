@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using zity.DTOs.Auth;
+﻿using zity.DTOs.Auth;
 using zity.Models;
 
 namespace zity.Services.Interfaces
@@ -8,5 +7,7 @@ namespace zity.Services.Interfaces
     {
         Task<TokenDto?> AuthenticateAsync(LoginDto loginDto);
         string GenerateJwtToken(User user);
+        Task<TokenDto> RefreshTokenAsync(string refreshToken);
+        Task RevokeRefreshTokenAsync(string refreshToken);
     }
 }
