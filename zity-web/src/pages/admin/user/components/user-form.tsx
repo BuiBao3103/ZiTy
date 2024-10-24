@@ -22,17 +22,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import { useForm } from 'react-hook-form'
-import { cn } from '@/lib/utils'
-import { format } from 'date-fns'
-import { CalendarIcon } from 'lucide-react'
 import { DateTimePicker } from '@/components/ui/datetime-picker'
 import { z } from 'zod'
 import { UserSchema } from '@/schema/user.validate'
@@ -45,15 +37,14 @@ const UserForm = () => {
   const form = useForm<z.infer<typeof UserSchema>>({
     mode: 'onSubmit',
     defaultValues: {
-      full_name: '',
-      nation_id: '',
+      fullName: '',
+      nationId: '',
       gender: undefined,
-      date_of_birth: undefined,
+      dateOfBirth: undefined,
       username: '',
-      password: '',
       email: '',
       phone: '',
-      user_type: [],
+      userType: 'RESIDENT',
     },
   })
 
@@ -64,12 +55,12 @@ const UserForm = () => {
 
   const handleQrScanSuccess = (data: any) => {
     // Assuming the scanned data is an object with keys: name, nationId, gender, and dob
-    form.setValue('full_name', data.name)
-    form.setValue('nation_id', data.nationID)
+    form.setValue('fullName', data.name)
+    form.setValue('nationId', data.nationID)
     form.setValue('gender', data.gender == 'Nam' ? 'MALE' : 'FEMALE')
     console.log(form.getValues('gender'))
     form.setValue(
-      'date_of_birth',
+      'dateOfBirth',
       (data.dob && parseDateFromString(data.dob)) ?? undefined,
     ) // Adjust as necessary
   }
@@ -93,10 +84,12 @@ const UserForm = () => {
           <QrCodeScanner handleQrScanSuccess={handleQrScanSuccess} />
         </div>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 lg:space-y-4">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-2 lg:space-y-4">
             <FormField
               control={form.control}
-              name="full_name"
+              name="fullName"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Full name</FormLabel>
@@ -113,7 +106,7 @@ const UserForm = () => {
             <div className="w-full flex flex-wrap md:flex-nowrap gap-2">
               <FormField
                 control={form.control}
-                name="nation_id"
+                name="nationId"
                 render={({ field }) => (
                   <FormItem className="w-full flex-[1_1_140px]">
                     <FormLabel>National ID</FormLabel>
@@ -155,15 +148,15 @@ const UserForm = () => {
               />
               <FormField
                 control={form.control}
-                name="date_of_birth"
+                name="dateOfBirth"
                 render={({ field }) => (
                   <FormItem className="w-full flex-[1_1_140px]">
                     <FormLabel>Date Of Birth</FormLabel>
                     <FormControl>
                       <DateTimePicker
                         granularity="day"
-												displayFormat={{ hour24: 'MMM, dd, yyyy' }}
-												placeholder='Pick a date'
+                        displayFormat={{ hour24: 'MMM, dd, yyyy' }}
+                        placeholder="Pick a date"
                         value={field.value}
                         onChange={field.onChange}
                       />
@@ -226,28 +219,10 @@ const UserForm = () => {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="The password is auto-generated"
-                        readOnly
-                        {...field}
-                        type="password"
-                        className="focus-visible:ring-primary read-only:bg-muted"
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
             </div>
             <FormField
               control={form.control}
-              name="user_type"
+              name="userType"
               render={() => (
                 <FormItem>
                   <div className="">
@@ -258,27 +233,14 @@ const UserForm = () => {
                       <FormField
                         key={index}
                         control={form.control}
-                        name="user_type"
+                        name="userType"
                         render={({ field }) => {
                           return (
                             <FormItem
                               key={index}
                               className="flex flex-row items-center space-x-2 space-y-0">
                               <FormControl>
-                                <Checkbox
-                                  checked={field.value?.includes(
-                                    role as UserRole,
-                                  )}
-                                  onCheckedChange={(checked) => {
-                                    return checked
-                                      ? field.onChange([...field.value, role])
-                                      : field.onChange(
-                                          field.value?.filter(
-                                            (value) => value !== role,
-                                          ),
-                                        )
-                                  }}
-                                />
+                                <Checkbox {...field} />
                               </FormControl>
                               <FormLabel className="text-sm font-normal">
                                 {role}

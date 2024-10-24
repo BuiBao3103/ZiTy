@@ -12,21 +12,15 @@ export const UserSchema = z.object({
       /^[a-zA-Z0-9_]+$/,
       'Username can only contain letters, numbers, and underscores',
     ),
-  password: z
-    .string()
-    .min(6, 'Password must be at least 6 characters')
-    .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
-    .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
-    .regex(/[0-9]/, 'Password must contain at least one number')
-    .regex(/[\W_]/, 'Password must contain at least one special character'),
   avatar: z
     .string()
     .url()
     .refine(
       (url) => /\.(jpg|jpeg|png|gif)$/i.test(url),
       'Avatar must be a valid image URL (.jpg, .jpeg, .png, or .gif)',
-    ),
-  isFirstLogin: z.boolean(),
+    )
+    .optional(),
+  isFirstLogin: z.boolean().optional(),
   email: z.string().email('Invalid email address'),
   phone: z
     .string()
@@ -41,12 +35,8 @@ export const UserSchema = z.object({
     .string()
     .min(2, 'Full name must be at least 2 characters long')
     .max(50, 'Full name must be at most 50 characters long'),
-  userType: z
-    .array(UserRoleSchema)
-    .refine((value) => value.some((item) => item), {
-      message: 'You have to select at least one item.',
-    }),
-  dateOfBirth: z
+  userType: UserRoleSchema,
+  dateOfBirth: z.coerce
     .date()
     .refine(
       (date) => date <= new Date(),
@@ -55,23 +45,43 @@ export const UserSchema = z.object({
     .refine((date) => {
       const age = new Date().getFullYear() - date.getFullYear()
       return age <= 100 // Check if age is 100 years or less
-    }, 'You must be 100 years old or younger'),
-  isStaying: z.boolean(),
+    }, 'Bro are you a vampire?'),
+  isStaying: z.boolean().optional(),
 })
+
+const AddtionalSchema = z.object({
+  items: z.array(z.string()).optional(),
+  otherAnswers: z.array(z.string()).optional(),
+  relationships: z.array(z.string()).optional(),
+  surveys: z.array(z.string()).optional(),
+  userAnswers: z.array(z.string()).optional(),
+})
+
+export type UserFormSchema = z.infer<typeof UserSchema>
 // Example of schema for Nullable type
 export const NullableUserSchema = UserSchema.partial().nullable()
 
 // Zod schema for UserLogin type
-export const UserLoginSchema = UserSchema.pick({
-  username: true,
-  password: true,
+export const UserLoginSchema = z.object({
+  username: z
+    .string()
+    .min(3, 'Username must be at least 3 characters long')
+    .max(20, 'Username must be at most 20 characters long')
+    .regex(
+      /^[a-zA-Z0-9_]+$/,
+      'Username can only contain letters, numbers, and underscores',
+    ),
+  password: z
+    .string()
+    .min(6, 'Password must be at least 6 characters')
+    .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+    .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
+    .regex(/[0-9]/, 'Password must contain at least one number')
+    .regex(/[\W_]/, 'Password must contain at least one special character'),
 })
+
+export interface UserLogin extends z.infer<typeof UserLoginSchema> {}
 
 // Example Zod schema for UserPartial (Partial<User>)
-export const UserPartialSchema = UserSchema.partial()
 
-
-// Example Zod schema for UserApartment (which extends User)
-export const UserApartmentSchema = UserSchema.extend({
-  // Add any additional fields specific to UserApartment here
-})
+export interface User extends UserFormSchema, BaseEntity,z.infer<typeof AddtionalSchema> {}
