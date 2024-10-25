@@ -25,7 +25,7 @@ namespace zity.Services.Implementations
                 pageRelationships.PageSize);
         }
 
-        public async Task<RelationshipDTO> GetByIdAsync(int id, string? includes)
+        public async Task<RelationshipDTO> GetByIdAsync(int id, string? includes = null)
         {
             var relationship = await _relationshipRepository.GetByIdAsync(id, includes)
                     ?? throw new EntityNotFoundException(nameof(Relationship), id);

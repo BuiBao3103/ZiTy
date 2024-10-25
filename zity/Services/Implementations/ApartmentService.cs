@@ -37,7 +37,7 @@ namespace zity.Services.Implementations
                 pageApartments.PageSize);
         }
 
-        public async Task<ApartmentDTO> GetByIdAsync(string id, string? includes)
+        public async Task<ApartmentDTO> GetByIdAsync(string id, string? includes = null)
         {
             var apartment = await _apartmentRepository.GetByIdAsync(id, includes)
                 ?? throw new EntityNotFoundException(nameof(Apartment), id);
@@ -55,7 +55,7 @@ namespace zity.Services.Implementations
 
         public async Task<ApartmentDTO> UpdateAsync(string id, ApartmentUpdateDTO apartmentUpdateDTO)
         {
-            var existingApartment = await _apartmentRepository.GetByIdAsync(id, null) 
+            var existingApartment = await _apartmentRepository.GetByIdAsync(id, null)
                 ?? throw new EntityNotFoundException(nameof(Apartment), id);
             _mapper.Map(apartmentUpdateDTO, existingApartment);
             var updatedApartment = await _apartmentRepository.UpdateAsync(existingApartment);

@@ -26,7 +26,7 @@ namespace zity.Services.Implementations
         }
 
 
-        public async Task<OtherAnswerDTO> GetByIdAsync(int id, string? includes)
+        public async Task<OtherAnswerDTO> GetByIdAsync(int id, string? includes = null)
         {
             var otherAnswer = await _otherAnswerRepository.GetByIdAsync(id, includes)
                     ?? throw new EntityNotFoundException(nameof(OtherAnswer), id);
@@ -43,7 +43,7 @@ namespace zity.Services.Implementations
                     ?? throw new EntityNotFoundException(nameof(OtherAnswer), id);
             _mapper.Map(updateDTO, existingOtherAnswer);
             var updatedOtherAnswer = await _otherAnswerRepository.UpdateAsync(existingOtherAnswer);
-            return _mapper.Map<OtherAnswerDTO>(updatedOtherAnswer) ;
+            return _mapper.Map<OtherAnswerDTO>(updatedOtherAnswer);
         }
 
         public async Task<OtherAnswerDTO> PatchAsync(int id, OtherAnswerPatchDTO patchDTO)
@@ -57,7 +57,7 @@ namespace zity.Services.Implementations
 
         public async Task DeleteAsync(int id)
         {
-           await _otherAnswerRepository.DeleteAsync(id);
+            await _otherAnswerRepository.DeleteAsync(id);
         }
 
     }

@@ -26,7 +26,7 @@ namespace zity.Services.Implementations
                 pageBillDetails.PageSize);
         }
 
-        public async Task<BillDetailDTO> GetByIdAsync(int id, string? includes)
+        public async Task<BillDetailDTO> GetByIdAsync(int id, string? includes = null)
         {
             var billDetail = await _billDetailRepository.GetByIdAsync(id, includes)
                     ?? throw new EntityNotFoundException(nameof(BillDetail), id);
@@ -50,7 +50,7 @@ namespace zity.Services.Implementations
 
         public async Task<BillDetailDTO> PatchAsync(int id, BillDetailPatchDTO patchDTO)
         {
-            var existingBillDetail = await _billDetailRepository.GetByIdAsync(id, null) 
+            var existingBillDetail = await _billDetailRepository.GetByIdAsync(id, null)
                     ?? throw new EntityNotFoundException(nameof(BillDetail), id);
             _mapper.Map(patchDTO, existingBillDetail);
             var patchedBillDetail = await _billDetailRepository.UpdateAsync(existingBillDetail);

@@ -31,7 +31,7 @@ namespace zity.Services.Implementations
                 pageItems.PageSize);
         }
 
-        public async Task<ItemDTO> GetByIdAsync(int id, string? includes)
+        public async Task<ItemDTO> GetByIdAsync(int id, string? includes = null)
         {
             var item = await _itemRepository.GetByIdAsync(id, includes)
                     ?? throw new EntityNotFoundException(nameof(Item), id);

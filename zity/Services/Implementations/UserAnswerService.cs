@@ -24,7 +24,7 @@ namespace zity.Services.Implementations
                 pageUserAnswers.Page,
                 pageUserAnswers.PageSize);
         }
-        public async Task<UserAnswerDTO> GetByIdAsync(int id, string? includes)
+        public async Task<UserAnswerDTO> GetByIdAsync(int id, string? includes = null)
         {
             var userAnswer = await _userAnswerRepository.GetByIdAsync(id, includes)
                     ?? throw new EntityNotFoundException(nameof(UserAnswer), id);

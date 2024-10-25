@@ -25,7 +25,7 @@ namespace zity.Services.Implementations
                 pageReports.PageSize);
         }
 
-        public async Task<ReportDTO> GetByIdAsync(int id, string? includes)
+        public async Task<ReportDTO> GetByIdAsync(int id, string? includes = null)
         {
             var report = await _reportRepository.GetByIdAsync(id, includes)
                     ?? throw new EntityNotFoundException(nameof(Report), id);

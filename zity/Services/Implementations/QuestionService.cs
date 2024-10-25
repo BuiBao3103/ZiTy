@@ -26,11 +26,11 @@ namespace zity.Services.Implementations
         }
 
 
-        public async Task<QuestionDTO> GetByIdAsync(int id, string? includes)
+        public async Task<QuestionDTO> GetByIdAsync(int id, string? includes = null)
         {
             var question = await _questionRepository.GetByIdAsync(id, includes)
                     ?? throw new EntityNotFoundException(nameof(Question), id);
-            return _mapper.Map<QuestionDTO> (question);
+            return _mapper.Map<QuestionDTO>(question);
         }
         public async Task<QuestionDTO> CreateAsync(QuestionCreateDTO createDTO)
         {

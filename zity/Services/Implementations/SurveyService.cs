@@ -25,7 +25,7 @@ namespace zity.Services.Implementations
                 pageSurveys.PageSize);
         }
 
-        public async Task<SurveyDTO> GetByIdAsync(int id, string? includes)
+        public async Task<SurveyDTO> GetByIdAsync(int id, string? includes = null)
         {
             var survey = await _surveyRepository.GetByIdAsync(id, includes)
                     ?? throw new EntityNotFoundException(nameof(Survey), id);

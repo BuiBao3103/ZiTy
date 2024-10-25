@@ -30,7 +30,7 @@ namespace zity.Services.Implementations
                 pageBills.PageSize);
         }
 
-        public async Task<BillDTO> GetByIdAsync(int id, string? includes)
+        public async Task<BillDTO> GetByIdAsync(int id, string? includes = null)
         {
             var bill = await _billRepository.GetByIdAsync(id, includes)
                     ?? throw new EntityNotFoundException(nameof(Bill), id);
@@ -84,7 +84,7 @@ namespace zity.Services.Implementations
 
         public async Task HandleMoMoCallBackAsync(int id, MomoCallBackDto callbackDto)
         {
-            if (callbackDto.ResultCode == 0) 
+            if (callbackDto.ResultCode == 0)
             {
                 Bill bill = await _billRepository.GetByIdAsync(id, null);
                 if (bill == null)

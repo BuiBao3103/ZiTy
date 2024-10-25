@@ -26,11 +26,11 @@ namespace zity.Services.Implementations
         }
 
 
-        public async Task<RejectionReasonDTO> GetByIdAsync(int id, string? includes)
+        public async Task<RejectionReasonDTO> GetByIdAsync(int id, string? includes = null)
         {
             var rejectionReason = await _rejectionReasonRepository.GetByIdAsync(id, includes)
                     ?? throw new EntityNotFoundException(nameof(RejectionReason), id);
-            return _mapper.Map<RejectionReasonDTO> (rejectionReason);
+            return _mapper.Map<RejectionReasonDTO>(rejectionReason);
         }
         public async Task<RejectionReasonDTO> CreateAsync(RejectionReasonCreateDTO createDTO)
         {
