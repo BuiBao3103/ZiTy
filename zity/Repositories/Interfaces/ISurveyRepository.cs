@@ -10,6 +10,6 @@ namespace zity.Repositories.Interfaces
         Task<Survey?> GetByIdAsync(int id, string? includes);
         Task<Survey> CreateAsync(Survey survey);
         Task<Survey> UpdateAsync(Survey survey);
-        Task<bool> DeleteAsync(int id);
+        Task DeleteAsync(int id);
     }
 }

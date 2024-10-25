@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using zity.Data;
 using zity.DTOs.Relationships;
+using zity.ExceptionHandling.Exceptions;
 using zity.Models;
 using zity.Repositories.Interfaces;
 using zity.Utilities;
@@ -51,20 +52,15 @@ namespace zity.Repositories.Implementations
         }
 
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
             var relationship = await _dbContext.Relationships
-                .FirstOrDefaultAsync(u => u.Id == id && u.DeletedAt == null);
-            if (relationship == null)
-            {
-                return false;
-            }
+                .FirstOrDefaultAsync(u => u.Id == id && u.DeletedAt == null)
+                                ?? throw new EntityNotFoundException(nameof(Relationship), id);
+
             relationship.DeletedAt = DateTime.Now;
             _dbContext.Relationships.Update(relationship);
             await _dbContext.SaveChangesAsync();
-            return true;
         }
-
-
     }
 }

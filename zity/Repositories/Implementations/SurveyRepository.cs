@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using zity.Data;
 using zity.DTOs.Surveys;
+using zity.ExceptionHandling.Exceptions;
 using zity.Models;
 using zity.Repositories.Interfaces;
 using zity.Utilities;
@@ -50,17 +51,15 @@ namespace zity.Repositories.Implementations
             return survey;
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
-            var survey = await _dbContext.Surveys.FindAsync(id);
-            if (survey == null)
-            {
-                return false;
-            }
+            var survey = await _dbContext.Surveys
+                .FirstOrDefaultAsync(u => u.Id == id && u.DeletedAt == null)
+                ?? throw new EntityNotFoundException(nameof(Survey), id);
 
-            _dbContext.Surveys.Remove(survey);
+            survey.DeletedAt = DateTime.Now;
+            _dbContext.Surveys.Update(survey);
             await _dbContext.SaveChangesAsync();
-            return true;
         }
     }
 }
