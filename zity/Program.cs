@@ -150,6 +150,8 @@ builder.Services.AddScoped<IItemService, ItemService>();
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IServiceService, ServiceService>();
 builder.Services.AddScoped<ISurveyService, SurveyService>();
+builder.Services.AddScoped<IVNPayService, VNPayService>();
+builder.Services.AddScoped<IMomoService, MomoService>();
 
 // Register Cloudinary as a singleton service
 var cloudinaryAccount = new Account(cloudinarySettings.CloudName, cloudinarySettings.ApiKey, cloudinarySettings.ApiSecret);
@@ -164,6 +166,12 @@ builder.Services.AddSingleton(appSettings);
 
 // Register ESMS settings
 builder.Services.AddSingleton(esmsSettings);
+
+// Register VNPay settings
+builder.Services.AddSingleton(vnpaySettings);
+
+// Register Momo settings
+builder.Services.AddSingleton(momoSettings);
 
 // Register exception handling
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
