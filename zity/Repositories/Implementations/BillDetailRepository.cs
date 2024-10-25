@@ -32,7 +32,7 @@ namespace zity.Repositories.Implementations
             return await billDetailsQuery;
         }
 
-        public async Task<BillDetail?> GetByIdAsync(int id, string? includes)
+        public async Task<BillDetail?> GetByIdAsync(int id, string? includes = null)
         {
             var billDetailQuery = _dbContext.BillDetails
                 .Where(bd => bd.DeletedAt == null)

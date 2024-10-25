@@ -30,7 +30,7 @@ namespace zity.Repositories.Implementations
             return await billsQuery;
         }
 
-        public async Task<Bill?> GetByIdAsync(int id, string? includes)
+        public async Task<Bill?> GetByIdAsync(int id, string? includes = null)
         {
             var query = _dbContext.Bills.AsQueryable();
 

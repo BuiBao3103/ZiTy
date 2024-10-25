@@ -32,7 +32,7 @@ namespace zity.Repositories.Implementations
             return await otherAnswersQuery;
         }
 
-        public async Task<OtherAnswer?> GetByIdAsync(int id, string? includes)
+        public async Task<OtherAnswer?> GetByIdAsync(int id, string? includes = null)
         {
             var otherAnswersQuery = _dbContext.OtherAnswers.Where(u => u.DeletedAt == null)
                 .ApplyIncludes(includes);

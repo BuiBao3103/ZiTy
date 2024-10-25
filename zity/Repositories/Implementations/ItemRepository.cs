@@ -29,7 +29,7 @@ namespace zity.Repositories.Implementations
             return await itemsQuery;
         }
 
-        public async Task<Item?> GetByIdAsync(int id, string? includes)
+        public async Task<Item?> GetByIdAsync(int id, string? includes = null)
         {
             var itemsQuery = _dbContext.Items.Where(u => u.DeletedAt == null)
                 .ApplyIncludes(includes);
