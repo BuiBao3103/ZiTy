@@ -10,6 +10,6 @@ namespace zity.Repositories.Interfaces
         Task<RejectionReason?> GetByIdAsync(int id, string? includes);
         Task<RejectionReason> CreateAsync(RejectionReason rejectionReason);
         Task<RejectionReason> UpdateAsync(RejectionReason rejectionReason);
-        Task<bool> DeleteAsync(int id);
+        Task DeleteAsync(int id);
     }
 }

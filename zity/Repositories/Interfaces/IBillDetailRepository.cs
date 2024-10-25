@@ -14,6 +14,6 @@ namespace zity.Repositories.Interfaces
 
         Task<BillDetail> UpdateAsync(BillDetail billDetail);
 
-        Task<bool> DeleteAsync(int id);
+        Task DeleteAsync(int id);
     }
 }

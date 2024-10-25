@@ -10,6 +10,6 @@ namespace zity.Repositories.Interfaces
         Task<OtherAnswer?> GetByIdAsync(int id, string? includes);
         Task<OtherAnswer> CreateAsync(OtherAnswer otherAnswer);
         Task<OtherAnswer> UpdateAsync(OtherAnswer otherAnswer);
-        Task<bool> DeleteAsync(int id);
+        Task DeleteAsync(int id);
     }
 }

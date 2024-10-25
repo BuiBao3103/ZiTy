@@ -10,6 +10,6 @@ namespace zity.Repositories.Interfaces
         Task<Report?> GetByIdAsync(int id, string? includes);
         Task<Report> CreateAsync(Report report);
         Task<Report> UpdateAsync(Report report);
-        Task<bool> DeleteAsync(int id);
+        Task DeleteAsync(int id);
     }
 }
