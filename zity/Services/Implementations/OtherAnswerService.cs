@@ -39,7 +39,7 @@ namespace zity.Services.Implementations
         }
         public async Task<OtherAnswerDTO> UpdateAsync(int id, OtherAnswerUpdateDTO updateDTO)
         {
-            var existingOtherAnswer = await _otherAnswerRepository.GetByIdAsync(id, null)
+            var existingOtherAnswer = await _otherAnswerRepository.GetByIdAsync(id)
                     ?? throw new EntityNotFoundException(nameof(OtherAnswer), id);
             _mapper.Map(updateDTO, existingOtherAnswer);
             var updatedOtherAnswer = await _otherAnswerRepository.UpdateAsync(existingOtherAnswer);
@@ -48,7 +48,7 @@ namespace zity.Services.Implementations
 
         public async Task<OtherAnswerDTO> PatchAsync(int id, OtherAnswerPatchDTO patchDTO)
         {
-            var existingOtherAnswer = await _otherAnswerRepository.GetByIdAsync(id, null)
+            var existingOtherAnswer = await _otherAnswerRepository.GetByIdAsync(id)
                     ?? throw new EntityNotFoundException(nameof(OtherAnswer), id);
             _mapper.Map(patchDTO, existingOtherAnswer);
             var patchedOtherAnswer = await _otherAnswerRepository.UpdateAsync(existingOtherAnswer);

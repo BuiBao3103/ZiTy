@@ -39,7 +39,7 @@ namespace zity.Services.Implementations
         }
         public async Task<RejectionReasonDTO> UpdateAsync(int id, RejectionReasonUpdateDTO updateDTO)
         {
-            var existingRejectionReason = await _rejectionReasonRepository.GetByIdAsync(id, null)
+            var existingRejectionReason = await _rejectionReasonRepository.GetByIdAsync(id)
                     ?? throw new EntityNotFoundException(nameof(RejectionReason), id);
             _mapper.Map(updateDTO, existingRejectionReason);
             var updatedRejectionReason = await _rejectionReasonRepository.UpdateAsync(existingRejectionReason);
@@ -48,7 +48,7 @@ namespace zity.Services.Implementations
 
         public async Task<RejectionReasonDTO> PatchAsync(int id, RejectionReasonPatchDTO patchDTO)
         {
-            var existingRejectionReason = await _rejectionReasonRepository.GetByIdAsync(id, null)
+            var existingRejectionReason = await _rejectionReasonRepository.GetByIdAsync(id)
                     ?? throw new EntityNotFoundException(nameof(RejectionReason), id);
             _mapper.Map(patchDTO, existingRejectionReason);
             var patchedRejectionReason = await _rejectionReasonRepository.UpdateAsync(existingRejectionReason);

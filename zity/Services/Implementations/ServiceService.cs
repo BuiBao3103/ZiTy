@@ -40,7 +40,7 @@ namespace zity.Services.Implementations
 
         public async Task<ServiceDTO> UpdateAsync(int id, ServiceUpdateDTO updateDTO)
         {
-            var existingService = await _serviceRepository.GetByIdAsync(id, null)
+            var existingService = await _serviceRepository.GetByIdAsync(id)
                     ?? throw new EntityNotFoundException(nameof(Report), id);
             _mapper.Map(updateDTO, existingService);
             var updatedService = await _serviceRepository.UpdateAsync(existingService);
@@ -49,7 +49,7 @@ namespace zity.Services.Implementations
 
         public async Task<ServiceDTO> PatchAsync(int id, ServicePatchDTO patchDTO)
         {
-            var existingService = await _serviceRepository.GetByIdAsync(id, null)
+            var existingService = await _serviceRepository.GetByIdAsync(id)
                     ?? throw new EntityNotFoundException(nameof(Report), id);
             _mapper.Map(patchDTO, existingService);
             var patchedService = await _serviceRepository.UpdateAsync(existingService);

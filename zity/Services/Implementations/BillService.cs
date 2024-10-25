@@ -45,7 +45,7 @@ namespace zity.Services.Implementations
 
         public async Task<BillDTO> UpdateAsync(int id, BillUpdateDTO updateDTO)
         {
-            var existingBill = await _billRepository.GetByIdAsync(id, null)
+            var existingBill = await _billRepository.GetByIdAsync(id)
                     ?? throw new EntityNotFoundException(nameof(Bill), id);
             _mapper.Map(updateDTO, existingBill);
             var updatedBill = await _billRepository.UpdateAsync(existingBill);
@@ -54,7 +54,7 @@ namespace zity.Services.Implementations
 
         public async Task<BillDTO> PatchAsync(int id, BillPatchDTO patchDTO)
         {
-            var existingBill = await _billRepository.GetByIdAsync(id, null)
+            var existingBill = await _billRepository.GetByIdAsync(id)
                     ?? throw new EntityNotFoundException(nameof(Bill), id);
             _mapper.Map(patchDTO, existingBill);
             var patchedBill = await _billRepository.UpdateAsync(existingBill);
@@ -68,7 +68,7 @@ namespace zity.Services.Implementations
 
         public async Task<string> CreatePaymentVNPayAsync(int id)
         {
-            var bill = await _billRepository.GetByIdAsync(id, null)
+            var bill = await _billRepository.GetByIdAsync(id)
                     ?? throw new EntityNotFoundException(nameof(Bill), id);
             var paymentUrl = _vnpayService.CreatePaymentUrl(bill);
             return paymentUrl;
@@ -76,7 +76,7 @@ namespace zity.Services.Implementations
 
         public async Task<MomoCreatePaymentDto> CreatePaymentMomoAsync(int id, MomoRequestCreatePaymentDto request)
         {
-            var bill = await _billRepository.GetByIdAsync(id, null)
+            var bill = await _billRepository.GetByIdAsync(id)
                     ?? throw new EntityNotFoundException(nameof(Bill), id);
             var momoCreatePaymentDto = await _momoService.CreatePaymentAsync(bill, request);
             return momoCreatePaymentDto;
@@ -86,7 +86,7 @@ namespace zity.Services.Implementations
         {
             if (callbackDto.ResultCode == 0) 
             {
-                Bill bill = await _billRepository.GetByIdAsync(id, null);
+                Bill bill = await _billRepository.GetByIdAsync(id);
                 if (bill == null)
                 {
                     return;

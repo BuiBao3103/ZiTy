@@ -52,7 +52,7 @@ namespace zity.Services.Implementations
 
         public async Task<UserDTO> UploadAvatarAsync(int id, IFormFile file)
         {
-            var user = await _userRepository.GetByIdAsync(id, null)
+            var user = await _userRepository.GetByIdAsync(id)
                     ?? throw new EntityNotFoundException(nameof(UserAnswer), id);
             if (!string.IsNullOrEmpty(user.Avatar))
             {
