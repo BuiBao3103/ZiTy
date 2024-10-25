@@ -2,6 +2,7 @@
 using zity.Data;
 using zity.DTOs.Answers;
 using zity.ExceptionHandling;
+using zity.ExceptionHandling.Exceptions;
 using zity.Models;
 using zity.Repositories.Interfaces;
 using zity.Utilities;
@@ -52,18 +53,14 @@ namespace zity.Repositories.Implementations
         }
 
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
             var answer = await _dbContext.Answers
-                .FirstOrDefaultAsync(u => u.Id == id && u.DeletedAt == null);
-            if (answer == null)
-            {
-                return false;
-            }
+                .FirstOrDefaultAsync(u => u.Id == id && u.DeletedAt == null) 
+                ?? throw new EntityNotFoundException(nameof(Answer), id);
             answer.DeletedAt = DateTime.Now;
             _dbContext.Answers.Update(answer);
             await _dbContext.SaveChangesAsync();
-            return true;
         }
     }
 }
