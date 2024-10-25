@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using zity.Data;
 using zity.DTOs.Apartments;
+using zity.ExceptionHandling.Exceptions;
 using zity.Models;
 using zity.Repositories.Interfaces;
 using zity.Utilities;
@@ -11,26 +12,6 @@ namespace zity.Repositories.Implementations
     {
         private readonly ApplicationDbContext _dbContext = dbContext;
 
-        public async Task<Apartment> CreateAsync(Apartment apartment)
-        {
-
-            await _dbContext.Apartments.AddAsync(apartment);
-            await _dbContext.SaveChangesAsync();
-            return apartment;
-        }
-
-        public async Task<bool> DeleteAsync(string id)
-        {
-            var apartment = await _dbContext.Apartments.
-                FirstOrDefaultAsync(u => u.Id.Equals(id) && u.DeletedAt == null);
-            if (apartment == null)
-                return false;
-            apartment.DeletedAt = DateTime.Now;
-            _dbContext.Apartments.Update(apartment);
-            await _dbContext.SaveChangesAsync();
-            return true;
-        }
-
         public async Task<PaginatedResult<Apartment>> GetAllAsync(ApartmentQueryDTO queryParam)
         {
             var filterParams = new Dictionary<string, string?>
@@ -39,14 +20,14 @@ namespace zity.Repositories.Implementations
                     { "FloorId", queryParam.FloorNumber },
                     { "ApartmentNumber", queryParam.ApartmentNumber }
                 };
-            var ApartmentsQuery = _dbContext.Apartments
+            var apartmentsQuery = _dbContext.Apartments
                 .Where(u => u.DeletedAt == null)
                 .ApplyIncludes(queryParam.Includes)
                 .ApplyFilters(filterParams)
                 .ApplySorting(queryParam.Sort)
                 .ApplyPaginationAsync(queryParam.Page, queryParam.PageSize);
 
-            return await ApartmentsQuery;
+            return await apartmentsQuery;
         }
 
         public async Task<Apartment?> GetByIdAsync(string id, string? includes)
@@ -56,11 +37,28 @@ namespace zity.Repositories.Implementations
             return await apartmentsQuery.FirstOrDefaultAsync(u => u.Id.Equals(id));
         }
 
+        public async Task<Apartment> CreateAsync(Apartment apartment)
+        {
+            await _dbContext.Apartments.AddAsync(apartment);
+            await _dbContext.SaveChangesAsync();
+            return apartment;
+        }
+
         public async Task<Apartment> UpdateAsync(Apartment apartment)
         {
             _dbContext.Apartments.Update(apartment);
             await _dbContext.SaveChangesAsync();
             return apartment;
+        }
+
+        public async Task DeleteAsync(string id)
+        {
+            var apartment = await _dbContext.Apartments
+                .FirstOrDefaultAsync(u => u.Id.Equals(id) && u.DeletedAt == null)
+                ?? throw new EntityNotFoundException(nameof(Apartment), id);
+            apartment.DeletedAt = DateTime.Now;
+            _dbContext.Apartments.Update(apartment);
+            await _dbContext.SaveChangesAsync();
         }
     }
 }
