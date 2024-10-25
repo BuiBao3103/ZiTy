@@ -20,8 +20,7 @@ namespace zity.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get([FromRoute] int id, [FromQuery] string? includes)
         {
-            var rejectionReason = await _rejectionReasonService.GetByIdAsync(id, includes);
-            return rejectionReason == null ? NotFound() : Ok(rejectionReason);
+            return Ok(await _rejectionReasonService.GetByIdAsync(id, includes));
         }
 
         [HttpPost]
@@ -34,22 +33,20 @@ namespace zity.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] RejectionReasonUpdateDTO rejectionReasonUpdateDTO)
         {
-            var updatedRejectionReason = await _rejectionReasonService.UpdateAsync(id, rejectionReasonUpdateDTO);
-            return updatedRejectionReason == null ? NotFound() : Ok(updatedRejectionReason);
+            return Ok(await _rejectionReasonService.UpdateAsync(id, rejectionReasonUpdateDTO));
         }
 
         [HttpPatch("{id}")]
         public async Task<IActionResult> Patch([FromRoute] int id, [FromBody] RejectionReasonPatchDTO rejectionReasonPatchDTO)
         {
-            var patchedRejectionReason = await _rejectionReasonService.PatchAsync(id, rejectionReasonPatchDTO);
-            return patchedRejectionReason == null ? NotFound() : Ok(patchedRejectionReason);
+            return Ok(await _rejectionReasonService.PatchAsync(id, rejectionReasonPatchDTO));
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var result = await _rejectionReasonService.DeleteAsync(id);
-            return !result ? NotFound() : NoContent();
+            await _rejectionReasonService.DeleteAsync(id);
+            return NoContent();
         }
     }
 }

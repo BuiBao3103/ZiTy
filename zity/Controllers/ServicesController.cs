@@ -19,8 +19,7 @@ namespace zity.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get([FromRoute] int id, [FromQuery] string? includes)
         {
-            var service = await _serviceService.GetByIdAsync(id, includes);
-            return service == null ? NotFound() : Ok(service);
+            return Ok(await _serviceService.GetByIdAsync(id, includes));
         }
 
         [HttpPost]
@@ -33,22 +32,20 @@ namespace zity.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] ServiceUpdateDTO serviceUpdateDTO)
         {
-            var updatedService = await _serviceService.UpdateAsync(id, serviceUpdateDTO);
-            return updatedService == null ? NotFound() : Ok(updatedService);
+            return Ok(await _serviceService.UpdateAsync(id, serviceUpdateDTO));
         }
 
         [HttpPatch("{id}")]
         public async Task<IActionResult> Patch([FromRoute] int id, [FromBody] ServicePatchDTO servicePatchDTO)
         {
-            var patchedService = await _serviceService.PatchAsync(id, servicePatchDTO);
-            return patchedService == null ? NotFound() : Ok(patchedService);
+            return Ok(await _serviceService.PatchAsync(id, servicePatchDTO));
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var result = await _serviceService.DeleteAsync(id);
-            return !result ? NotFound() : NoContent();
+            await _serviceService.DeleteAsync(id);
+            return NoContent();
         }
     }
 }

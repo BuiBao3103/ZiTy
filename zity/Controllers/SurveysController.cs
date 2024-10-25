@@ -19,8 +19,7 @@ namespace zity.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get([FromRoute] int id, [FromQuery] string? includes)
         {
-            var survey = await _surveyService.GetByIdAsync(id, includes);
-            return survey == null ? NotFound() : Ok(survey);
+            return Ok(await _surveyService.GetByIdAsync(id, includes));
         }
 
         [HttpPost]
@@ -33,22 +32,20 @@ namespace zity.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] SurveyUpdateDTO surveyUpdateDTO)
         {
-            var updatedSurvey = await _surveyService.UpdateAsync(id, surveyUpdateDTO);
-            return updatedSurvey == null ? NotFound() : Ok(updatedSurvey);
+            return Ok(await _surveyService.UpdateAsync(id, surveyUpdateDTO));
         }
 
         [HttpPatch("{id}")]
         public async Task<IActionResult> Patch([FromRoute] int id, [FromBody] SurveyPatchDTO surveyPatchDTO)
         {
-            var patchedSurvey = await _surveyService.PatchAsync(id, surveyPatchDTO);
-            return patchedSurvey == null ? NotFound() : Ok(patchedSurvey);
+            return Ok(await _surveyService.PatchAsync(id, surveyPatchDTO));
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var result = await _surveyService.DeleteAsync(id);
-            return !result ? NotFound() : NoContent();
+            await _surveyService.DeleteAsync(id);
+            return NoContent();
         }
     }
 
