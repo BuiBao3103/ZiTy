@@ -7,14 +7,14 @@ namespace zity.Services.Interfaces
     {
         Task<PaginatedResult<BillDetailDTO>> GetAllAsync(BillDetailQueryDTO queryParam);
 
-        Task<BillDetailDTO?> GetByIdAsync(int id, string? includes);
+        Task<BillDetailDTO> GetByIdAsync(int id, string? includes);
 
         Task<BillDetailDTO> CreateAsync(BillDetailCreateDTO createDTO);
 
-        Task<BillDetailDTO?> UpdateAsync(int id, BillDetailUpdateDTO updateDTO);
+        Task<BillDetailDTO> UpdateAsync(int id, BillDetailUpdateDTO updateDTO);
 
-        Task<BillDetailDTO?> PatchAsync(int id, BillDetailPatchDTO patchDTO);
+        Task<BillDetailDTO> PatchAsync(int id, BillDetailPatchDTO patchDTO);
 
-        Task<bool> DeleteAsync(int id);
+        Task DeleteAsync(int id);
     }
 }
