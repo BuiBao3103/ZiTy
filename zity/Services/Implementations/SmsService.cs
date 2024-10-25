@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using zity.Configuration;
 using zity.ExceptionHandling;
+using zity.ExceptionHandling.Exceptions;
 using zity.Services.Interfaces;
 
 namespace zity.Services.Implementations
@@ -33,7 +34,7 @@ namespace zity.Services.Implementations
             if (!response.IsSuccessStatusCode)
             {
                 var responseBody = await response.Content.ReadAsStringAsync();
-                throw new AppError(message: "Failed to send SMS (HTTP error): " + responseBody);
+                throw new AppError(message: "Failed to send SMS (HTTP error): " + responseBody, statusCode: StatusCodes.Status500InternalServerError, errorCode: "SEND_SMS_FAILED");
             }
 
             var responseBodyString = await response.Content.ReadAsStringAsync();

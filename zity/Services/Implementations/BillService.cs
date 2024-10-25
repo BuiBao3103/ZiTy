@@ -2,6 +2,7 @@
 using zity.DTOs.Bills;
 using zity.DTOs.Momo;
 using zity.ExceptionHandling;
+using zity.ExceptionHandling.Exceptions;
 using zity.Mappers;
 using zity.Models;
 using zity.Repositories.Interfaces;
@@ -77,7 +78,7 @@ namespace zity.Services.Implementations
             var bill = await _billRepository.GetByIdAsync(id, null);
             if (bill == null)
             {
-                throw new AppError("Bill not found");
+                throw new EntityNotFoundException(nameof(Bill), id);
             }
             var paymentUrl = _vnpayService.CreatePaymentUrl(bill);
             return paymentUrl;
@@ -88,7 +89,7 @@ namespace zity.Services.Implementations
             var bill = await _billRepository.GetByIdAsync(id, null);
             if (bill == null)
             {
-                throw new AppError("Bill not found");
+                throw new EntityNotFoundException(nameof(Bill), id);
             }
             var momoCreatePaymentDto = await _momoService.CreatePaymentAsync(bill, request);
             return momoCreatePaymentDto;

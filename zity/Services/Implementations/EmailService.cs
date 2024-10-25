@@ -3,6 +3,7 @@ using MailKit.Security;
 using MimeKit;
 using zity.Configuration;
 using zity.ExceptionHandling;
+using zity.ExceptionHandling.Exceptions;
 using zity.Models;
 using zity.Services.Interfaces;
 
@@ -39,7 +40,7 @@ namespace zity.Services.Implementations
             }
             catch (Exception ex)
             {
-                throw new AppError($"Failed to send email: {ex.Message}");
+                throw new AppError($"Failed to send email: {ex.Message}", StatusCodes.Status500InternalServerError, "SEND_EMAIL_FAILED");
             }
         }
 

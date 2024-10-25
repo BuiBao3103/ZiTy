@@ -1,6 +1,7 @@
 ﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using zity.ExceptionHandling;
+using zity.ExceptionHandling.Exceptions;
 using zity.Services.Interfaces;
 
 namespace zity.Services.Implementations
@@ -19,7 +20,7 @@ namespace zity.Services.Implementations
 
                 if (deletionResult.Result != "ok")
                 {
-                    throw new AppError("Failed to delete the old image.");
+                    throw new AppError("Failed to delete the old image.", StatusCodes.Status500InternalServerError, "DELETE_IMAGE_FAILED");
                 }
             }
         }
@@ -37,7 +38,7 @@ namespace zity.Services.Implementations
 
             if (uploadResult.Error != null)
             {
-                throw new AppError(uploadResult.Error.Message);
+                throw new AppError(uploadResult.Error.Message, StatusCodes.Status500InternalServerError, "UPLOAD_IMAGE_FAILED");
             }
 
             return uploadResult.SecureUrl.ToString();

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using zity.ExceptionHandling;
+using zity.ExceptionHandling.Exceptions;
 
 namespace zity.Utilities
 {
@@ -30,7 +31,11 @@ namespace zity.Utilities
                 }
                 else
                 {
-                    throw new AppError($"Invalid include path: '{propertyNames}' does not exist in the entity '{typeof(T).Name}'.");
+                    var errors = new Dictionary<string, string[]>
+                    {
+                        { "Includes", new[] { $"Invalid include path: '{propertyNames}' does not exist in the entity '{typeof(T).Name}'." } },
+                    };
+                    throw new ValidationException(errors);
                 }
             }
             return query;
@@ -64,7 +69,11 @@ namespace zity.Utilities
                 var filterParts = filter.Value.Split(':');
                 if (filterParts.Length != 2)
                 {
-                    throw new AppError($"Invalid filter format for {filter.Key}");
+                    var errors = new Dictionary<string, string[]>
+                    {
+                        {filter.Key, new[] { "Invalid filter format. The correct format is 'operator:value'." } },
+                    };
+                    throw new ValidationException(errors);
                 }
 
                 var operatorType = filterParts[0];
@@ -106,7 +115,11 @@ namespace zity.Utilities
                     query = query.Where(e => e != null && EF.Property<string>(e, property) != null && values.Contains(EF.Property<string>(e, property)));
                     break;
                 default:
-                    throw new AppError($"Invalid filter operator: {operatorType}");
+                    var errors = new Dictionary<string, string[]>
+                    {
+                        { property, new[] { $"Invalid filter operator: {operatorType}" } },
+                    };
+                    throw new ValidationException(errors);
             }
 
             return query;
@@ -130,7 +143,11 @@ namespace zity.Utilities
                 // Check if the property exists
                 if (typeof(T).GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance) == null)
                 {
-                    throw new AppError($"Invalid sort property: '{propertyName}' does not exist in the entity '{typeof(T).Name}'.");
+                    var errors = new Dictionary<string, string[]>
+                    {
+                        { "Sort", new[] { $"Invalid sort property: '{propertyName}' does not exist in the entity '{typeof(T).Name}'." } },
+                    };
+                    throw new ValidationException(errors);
                 }
 
                 query = isDescending

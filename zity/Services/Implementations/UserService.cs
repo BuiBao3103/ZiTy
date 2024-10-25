@@ -7,6 +7,7 @@ using zity.Constraints;
 using zity.ExceptionHandling;
 using AutoMapper;
 using zity.Models;
+using zity.ExceptionHandling.Exceptions;
 
 namespace zity.Services.Implementations
 {
@@ -69,7 +70,7 @@ namespace zity.Services.Implementations
             var user = await _userRepository.GetByIdAsync(userId, null);
             if (user == null)
             {
-                throw new AppError(message: "User not found", statusCode: 404);
+                throw new EntityNotFoundException(nameof(User), userId);
             }
             string phoneNumber = user.Phone;
             string message = "You have received a package!";
