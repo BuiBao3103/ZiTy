@@ -1,5 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { apiSlice } from '../api/apiSlice'
+import { ISurvey } from '@/schema/survey.validate'
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
+import { IQuestion } from '@/schema/question.validate'
 
 interface SurveyState {
   isCreateNewSurvey: boolean
@@ -21,29 +24,48 @@ const surveySlice = createSlice({
 
 const surveyApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getSurverys: builder.query<void, void>({
-      query: () => '/survey',
+    getSurverys: builder.query<ResponseDataType<ISurvey>, number | void>({
+      query: (page = 1) => `surveys?page=${page}`,
     }),
-    getSurveyById: builder.query<void, string>({
-      query: (id) => `/survey/${id}`,
-    }),
+    getSurveyById: builder.query<ISurvey, string | number>({
+      async queryFn(_arg, _queryApi, _extraOptions, fetchWithBQ) {
+        // Fetch survey details
+        const surveyResult = await fetchWithBQ(`/surveys/${_arg}`);
+        if (surveyResult.error)
+          return { error: surveyResult.error as FetchBaseQueryError };
+        const survey = surveyResult.data as ISurvey;
+        // Fetch questions using the survey ID
+        const questionsResult = await fetchWithBQ(`/questions?SurveyId=eq:${survey.id}`);
+        if (questionsResult.error)
+          return { error: questionsResult.error as FetchBaseQueryError };
+        const questions = (questionsResult.data as ResponseDataType<IQuestion>).contents;
+        // Combine survey data with questions and return the combined result
+        return {
+          data: {
+            ...survey,
+            questions, // Attach questions to the survey
+          },
+        };
+      },
+		}),
+		
     createSurvey: builder.mutation<void, void>({
       query: (data) => ({
-        url: '/survey',
+        url: 'surveys',
         method: 'POST',
         body: data,
       }),
     }),
-    editSurvery: builder.mutation<void, { id: string; data: void }>({
+    updateSurvery: builder.mutation<void, { id: string; data: void }>({
       query: (data) => ({
-        url: `/survey/${data.id}`,
+        url: `surveys/${data.id}`,
         method: 'PUT',
         body: data,
       }),
     }),
-    deleteSurvey: builder.mutation<void, string>({
+    deleteSurvey: builder.mutation<void, string | number>({
       query: (id) => ({
-        url: `/survey/${id}`,
+        url: `surveys/${id}`,
         method: 'DELETE',
       }),
     }),
@@ -52,4 +74,10 @@ const surveyApiSlice = apiSlice.injectEndpoints({
 
 export const { createNewSurvey } = surveySlice.actions
 export default surveySlice.reducer
-export const { useGetSurveyByIdQuery } = surveyApiSlice
+export const {
+  useGetSurveyByIdQuery,
+  useGetSurverysQuery,
+  useCreateSurveyMutation,
+  useUpdateSurveryMutation,
+  useDeleteSurveyMutation,
+} = surveyApiSlice

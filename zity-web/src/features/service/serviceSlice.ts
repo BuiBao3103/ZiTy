@@ -39,16 +39,17 @@ export const serviceApiSlice = apiSlice.injectEndpoints({
     }),
     updateService: builder.mutation<
       Service,
-      { id: number | undefined; body: Partial<Service> & Omit<Service, 'id' | 'createdAt' | 'updatedAt'> }
+      {
+        id: number | undefined
+        body: Partial<Service> & Omit<Service, 'id' | 'createdAt' | 'updatedAt'>
+      }
     >({
       query: (data) => ({
         url: `services/${data.id}`,
         method: 'PUT',
         body: data.body,
       }),
-      invalidatesTags: (result, error, arg) => [
-        { type: 'Service', id: arg.id },
-      ],
+      invalidatesTags: (result, error, { id }) => [{ type: 'Service', id }],
     }),
     patchService: builder.mutation<Service, Partial<Service>>({
       query: (body) => ({

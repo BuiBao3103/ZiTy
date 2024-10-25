@@ -14,6 +14,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
+	FormMessage,
 } from '@/components/ui/form'
 import {
   Select,
@@ -22,17 +23,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import { useForm } from 'react-hook-form'
-import { cn } from '@/lib/utils'
-import { format } from 'date-fns'
-import { CalendarIcon } from 'lucide-react'
 import { DateTimePicker } from '@/components/ui/datetime-picker'
 import { z } from 'zod'
 import { UserSchema } from '@/schema/user.validate'
@@ -40,42 +33,67 @@ import { UserRole } from '@/enums'
 import { Checkbox } from '@/components/ui/checkbox'
 import QrCodeScanner from '@/components/qrcode/QrCodeScanner'
 import { parseDateFromString } from '@/utils/ExtractTime'
+import { useCreateUserMutation } from '@/features/user/userSlice'
+import { useState } from 'react'
+import { toast } from 'sonner'
+import { Loader } from 'lucide-react'
+import { zodResolver } from '@hookform/resolvers/zod'
 
 const UserForm = () => {
+  const [open, setOpen] = useState<boolean>(false)
+  const [createUser, { isLoading }] = useCreateUserMutation()
   const form = useForm<z.infer<typeof UserSchema>>({
     mode: 'onSubmit',
     defaultValues: {
-      full_name: '',
-      nation_id: '',
+      fullName: '',
+      nationId: '',
       gender: undefined,
-      date_of_birth: undefined,
+      dateOfBirth: undefined,
       username: '',
-      password: '',
       email: '',
       phone: '',
-      user_type: [],
+      userType: 'RESIDENT',
     },
+		resolver: zodResolver(UserSchema),
   })
 
   const onSubmit = async (data: z.infer<typeof UserSchema>) => {
     console.log(data)
+    try {
+      await createUser(data)
+        .unwrap()
+        .then((payload) => {
+          console.log(payload)
+          toast.success('User created successfully')
+					form.reset()
+          setOpen(false)
+        })
+        .catch((error) => {
+          throw new Error(error)
+        })
+    } catch (error) {
+      console.error(error)
+      toast.error('Failed to create user')
+    } finally {
+      setOpen(false)
+    }
     // Handle form submission logic here
   }
 
   const handleQrScanSuccess = (data: any) => {
     // Assuming the scanned data is an object with keys: name, nationId, gender, and dob
-    form.setValue('full_name', data.name)
-    form.setValue('nation_id', data.nationID)
+    form.setValue('fullName', data.name)
+    form.setValue('nationId', data.nationID)
     form.setValue('gender', data.gender == 'Nam' ? 'MALE' : 'FEMALE')
     console.log(form.getValues('gender'))
     form.setValue(
-      'date_of_birth',
+      'dateOfBirth',
       (data.dob && parseDateFromString(data.dob)) ?? undefined,
     ) // Adjust as necessary
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="w-full sm:w-fit" variant={'default'} size={'lg'}>
           New User
@@ -84,6 +102,11 @@ const UserForm = () => {
       <DialogContent
         className="max-w-sm min-[450px]:max-w-md lg:max-w-2xl"
         aria-describedby={undefined}>
+        {isLoading && (
+          <div className="absolute inset-0 size-full rounded-md flex justify-center items-center bg-white/50 backdrop-blur-md">
+            <Loader className="animate-spin text-primary" size={52} />
+          </div>
+        )}
         <DialogHeader>
           <DialogTitle className="text-2xl">New User</DialogTitle>
         </DialogHeader>
@@ -93,10 +116,12 @@ const UserForm = () => {
           <QrCodeScanner handleQrScanSuccess={handleQrScanSuccess} />
         </div>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 lg:space-y-4">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-2 lg:space-y-4">
             <FormField
               control={form.control}
-              name="full_name"
+              name="fullName"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Full name</FormLabel>
@@ -107,13 +132,14 @@ const UserForm = () => {
                       className="focus-visible:ring-primary"
                     />
                   </FormControl>
+									<FormMessage />
                 </FormItem>
               )}
             />
             <div className="w-full flex flex-wrap md:flex-nowrap gap-2">
               <FormField
                 control={form.control}
-                name="nation_id"
+                name="nationId"
                 render={({ field }) => (
                   <FormItem className="w-full flex-[1_1_140px]">
                     <FormLabel>National ID</FormLabel>
@@ -127,6 +153,7 @@ const UserForm = () => {
                         className="focus-visible:ring-primary"
                       />
                     </FormControl>
+										<FormMessage />
                   </FormItem>
                 )}
               />
@@ -150,24 +177,26 @@ const UserForm = () => {
                         </SelectContent>
                       </Select>
                     </FormControl>
+										<FormMessage />
                   </FormItem>
                 )}
               />
               <FormField
                 control={form.control}
-                name="date_of_birth"
+                name="dateOfBirth"
                 render={({ field }) => (
                   <FormItem className="w-full flex-[1_1_140px]">
                     <FormLabel>Date Of Birth</FormLabel>
                     <FormControl>
                       <DateTimePicker
                         granularity="day"
-												displayFormat={{ hour24: 'MMM, dd, yyyy' }}
-												placeholder='Pick a date'
+                        displayFormat={{ hour24: 'MMM, dd, yyyy' }}
+                        placeholder="Pick a date"
                         value={field.value}
                         onChange={field.onChange}
                       />
                     </FormControl>
+										<FormMessage />
                   </FormItem>
                 )}
               />
@@ -187,6 +216,7 @@ const UserForm = () => {
                         className="focus-visible:ring-primary"
                       />
                     </FormControl>
+										<FormMessage />
                   </FormItem>
                 )}
               />
@@ -204,6 +234,7 @@ const UserForm = () => {
                         className="focus-visible:ring-primary read-only:bg-muted"
                       />
                     </FormControl>
+										<FormMessage />
                   </FormItem>
                 )}
               />
@@ -223,31 +254,14 @@ const UserForm = () => {
                         className="focus-visible:ring-primary"
                       />
                     </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="The password is auto-generated"
-                        readOnly
-                        {...field}
-                        type="password"
-                        className="focus-visible:ring-primary read-only:bg-muted"
-                      />
-                    </FormControl>
+										<FormMessage />
                   </FormItem>
                 )}
               />
             </div>
             <FormField
               control={form.control}
-              name="user_type"
+              name="userType"
               render={() => (
                 <FormItem>
                   <div className="">
@@ -258,7 +272,7 @@ const UserForm = () => {
                       <FormField
                         key={index}
                         control={form.control}
-                        name="user_type"
+                        name="userType"
                         render={({ field }) => {
                           return (
                             <FormItem
@@ -266,18 +280,8 @@ const UserForm = () => {
                               className="flex flex-row items-center space-x-2 space-y-0">
                               <FormControl>
                                 <Checkbox
-                                  checked={field.value?.includes(
-                                    role as UserRole,
-                                  )}
-                                  onCheckedChange={(checked) => {
-                                    return checked
-                                      ? field.onChange([...field.value, role])
-                                      : field.onChange(
-                                          field.value?.filter(
-                                            (value) => value !== role,
-                                          ),
-                                        )
-                                  }}
+                                  {...field}
+                                  checked={field.value == (role as UserRole)}
                                 />
                               </FormControl>
                               <FormLabel className="text-sm font-normal">
@@ -289,12 +293,17 @@ const UserForm = () => {
                       />
                     ))}
                   </div>
+									<FormMessage />
                 </FormItem>
               )}
             />
             <div className="w-full flex justify-end gap-4">
               <DialogClose asChild>
-                <Button type="button" size={'lg'} variant={'ghost'}>
+                <Button
+                  onClick={() => setOpen(false)}
+                  type="button"
+                  size={'lg'}
+                  variant={'ghost'}>
                   Cancel
                 </Button>
               </DialogClose>

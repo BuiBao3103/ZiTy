@@ -1,40 +1,18 @@
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from '@/components/ui/pagination'
 import BreadCrumb from '@/components/breadcrumb'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { UserPartialSchema } from '@/schema/user.validate'
 import { Filter, Search } from 'lucide-react'
 import UserList from './components/user-list'
 import { useDocumentTitle } from 'usehooks-ts'
 import UserForm from './components/user-form'
-import { z } from 'zod'
+import { useGetUserQuery } from '@/features/user/userSlice'
+import { useState } from 'react'
+import PaginationCustom from '@/components/pagination/PaginationCustom'
 
 const Index = () => {
   useDocumentTitle('User')
-  const users: z.infer<typeof UserPartialSchema>[] = [
-    {
-      id: 1,
-      full_name: 'John Doe',
-      phone: '0123456789',
-      user_type: ['RESIDENT'],
-      is_staying: true,
-      avatar: 'https://picsum.photos/id/2/200/300',
-      nation_id: '123456789012',
-      date_of_birth: new Date(),
-      is_first_login: true,
-      email: 'user1@gmail.com',
-      gender: 'MALE',
-      password: 'password',
-      username: 'user1',
-    },
-  ]
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const { data: users, isLoading, isFetching } = useGetUserQuery(currentPage)
   return (
     <>
       <div className="w-full sm:h-screen flex flex-col bg-zinc-100">
@@ -50,7 +28,10 @@ const Index = () => {
                 />
               </div>
               <div className="w-full flex gap-4 lg:justify-between items-center">
-                <Button className="w-full lg:w-fit gap-1" size={'lg'} variant={'secondary'}>
+                <Button
+                  className="w-full lg:w-fit gap-1"
+                  size={'lg'}
+                  variant={'secondary'}>
                   <Filter size={20} />
                   Filter
                 </Button>
@@ -58,25 +39,17 @@ const Index = () => {
               </div>
             </div>
             <div className="size-full">
-              <UserList users={users} />
+              <UserList
+                users={users?.contents}
+                isFetching={isFetching}
+                isLoading={isLoading}
+              />
             </div>
-            <Pagination className="mt-2">
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious to="#" />
-                </PaginationItem>
-                {[1, 2, 3, 4, 5].map((page) => (
-                  <PaginationItem
-                    key={page}
-                    className={`${page === 1 ? 'bg-primary rounded-md' : ''}`}>
-                    <PaginationLink to="#">{page}</PaginationLink>
-                  </PaginationItem>
-                ))}
-                <PaginationItem>
-                  <PaginationNext to="#" />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
+            <PaginationCustom
+              currentPage={currentPage}
+              onPageChange={setCurrentPage}
+              totalPages={users?.totalPages}
+            />
           </div>
         </div>
       </div>
