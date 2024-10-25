@@ -7,7 +7,7 @@ namespace zity.Repositories.Interfaces
     public interface IBillRepository
     {
         Task<PaginatedResult<Bill>> GetAllAsync(BillQueryDTO queryParam);
-        Task<Bill?> GetByIdAsync(int id, string? includes);
+        Task<Bill?> GetByIdAsync(int id, string? includes = null);
         Task<Bill> CreateAsync(Bill bill);
         Task<Bill> UpdateAsync(Bill bill);
         Task DeleteAsync(int id);
