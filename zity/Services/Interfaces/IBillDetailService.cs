@@ -7,7 +7,7 @@ namespace zity.Services.Interfaces
     {
         Task<PaginatedResult<BillDetailDTO>> GetAllAsync(BillDetailQueryDTO queryParam);
 
-        Task<BillDetailDTO> GetByIdAsync(int id, string? includes);
+        Task<BillDetailDTO> GetByIdAsync(int id, string? includes = null);
 
         Task<BillDetailDTO> CreateAsync(BillDetailCreateDTO createDTO);
 

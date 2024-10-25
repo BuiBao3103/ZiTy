@@ -7,7 +7,7 @@ namespace zity.Services.Interfaces
     public interface IUserAnswerService
     {
         Task<PaginatedResult<UserAnswerDTO>> GetAllAsync(UserAnswerQueryDTO query);
-        Task<UserAnswerDTO> GetByIdAsync(int id, string? includes);
+        Task<UserAnswerDTO> GetByIdAsync(int id, string? includes = null);
         Task<UserAnswerDTO> CreateAsync(UserAnswerCreateDTO userAnswerCreateDTO);
         Task<UserAnswerDTO> UpdateAsync(int id, UserAnswerUpdateDTO userAnswerUpdateDTO);
         Task<UserAnswerDTO> PatchAsync(int id, UserAnswerPatchDTO userAnswerPatchDTO);
