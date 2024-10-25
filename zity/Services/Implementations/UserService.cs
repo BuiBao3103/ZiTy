@@ -76,5 +76,11 @@ namespace zity.Services.Implementations
             //string message = "Cam on quy khach da su dung dich vu cua chung toi. Chuc quy khach mot ngay tot lanh!";
             await _smsService.SendSMSAsync(phoneNumber, message);
         }
+
+        public async Task<MeDto?> GetMeAsync(int userId, string? includes = null)
+        {
+            var user = await _userRepository.GetByIdAsync(userId, includes);
+            return user != null ? _mapper.Map<MeDto>(user) : null;
+        }
     }
 }

@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using zity.DTOs.Users;
 using zity.Models;
 using zity.Services.Interfaces;
@@ -42,6 +45,30 @@ namespace zity.Controllers
         {
             await _userService.NotifyReceivedPackage(id);
             return Ok();
+        }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet("me")]
+        public async Task<IActionResult> GetMe([FromQuery] string? includes)
+        {
+            try
+            {
+                // Get user ID from JWT token claims
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim == null)
+                    return Unauthorized(new { message = "Invalid token" });
+
+                var userId = int.Parse(userIdClaim.Value);
+                var me = await _userService.GetMeAsync(userId, includes);
+
+                if (me == null)
+                    return NotFound(new { message = "User not found" });
+
+                return Ok(me);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
     }
 
