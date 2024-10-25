@@ -102,6 +102,12 @@ export const route = createBrowserRouter([
           {
             path: '/admin/survey',
             element: <SurveyAdmin />,
+            children: [
+              {
+                path: ':id',
+                element: <SurveyAdmin />,
+              },
+            ],
           },
           {
             path: '/survey',

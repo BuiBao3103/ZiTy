@@ -37,7 +37,11 @@ const ServiceItem = ({ service }: IServiceItemProps) => {
       <TableCell>
         {service.updatedAt === null
           ? 'N/A'
-          : new Date(service.updatedAt).toLocaleDateString()}
+          : new Date(service.updatedAt).toLocaleDateString('vi-VN', {
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric',
+            })}
       </TableCell>
       <TableCell className="uppercase">{service.description}</TableCell>
       <TableCell className="uppercase">

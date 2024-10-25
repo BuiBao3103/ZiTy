@@ -64,7 +64,7 @@ const QuestionItem = ({
         <div className="flex flex-col gap-1.5">
           <FormField
             control={control}
-            name={`questions.${questionIndex}.question`}
+            name={`questions.${questionIndex}.content`}
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-base">
@@ -75,26 +75,6 @@ const QuestionItem = ({
                     {...field}
                     className="text-base h-10"
                     placeholder="Type here"
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="flex flex-col gap-1.5">
-          <FormField
-            control={control}
-            name={`questions.${questionIndex}.description`}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-base">
-                  Description (optional)
-                </FormLabel>
-                <FormControl>
-                  <Textarea
-                    {...field}
-                    placeholder="Type here"
-                    className="text-base"
                   />
                 </FormControl>
               </FormItem>
