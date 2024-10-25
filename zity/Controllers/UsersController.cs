@@ -23,8 +23,7 @@ namespace zity.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get([FromRoute] int id, [FromQuery] string? includes)
         {
-            var user = await _userService.GetByIdAsync(id, includes);
-            return user == null ? NotFound() : Ok(user);
+            return Ok(await _userService.GetByIdAsync(id, includes));
         }
 
         [HttpPost]
@@ -71,6 +70,4 @@ namespace zity.Controllers
             }
         }
     }
-
-
 }

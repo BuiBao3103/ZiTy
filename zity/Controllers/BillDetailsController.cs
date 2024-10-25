@@ -20,8 +20,7 @@ namespace zity.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get([FromRoute] int id, [FromQuery] string? includes)
         {
-            var billDetail = await _billDetailService.GetByIdAsync(id, includes);
-            return billDetail == null ? NotFound() : Ok(billDetail);
+            return Ok(await _billDetailService.GetByIdAsync(id, includes));
         }
 
         [HttpPost]
@@ -34,22 +33,20 @@ namespace zity.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] BillDetailUpdateDTO billDetailUpdateDTO)
         {
-            var updatedBillDetail = await _billDetailService.UpdateAsync(id, billDetailUpdateDTO);
-            return updatedBillDetail == null ? NotFound() : Ok(updatedBillDetail);
+            return Ok(await _billDetailService.UpdateAsync(id, billDetailUpdateDTO));
         }
 
         [HttpPatch("{id}")]
         public async Task<IActionResult> Patch([FromRoute] int id, [FromBody] BillDetailPatchDTO billDetailPatchDTO)
         {
-            var patchedBillDetail = await _billDetailService.PatchAsync(id, billDetailPatchDTO);
-            return patchedBillDetail == null ? NotFound() : Ok(patchedBillDetail);
+            return Ok(await _billDetailService.PatchAsync(id, billDetailPatchDTO));
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var result = await _billDetailService.DeleteAsync(id);
-            return !result ? NotFound() : NoContent();
+            await _billDetailService.DeleteAsync(id);
+            return NoContent();
         }
     }
 }
