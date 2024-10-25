@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using System.Threading.Tasks;
 using zity.DTOs.BillDetails;
+using zity.ExceptionHandling.Exceptions;
 using zity.Mappers;
 using zity.Models;
 using zity.Repositories.Interfaces;
@@ -25,10 +26,11 @@ namespace zity.Services.Implementations
                 pageBillDetails.PageSize);
         }
 
-        public async Task<BillDetailDTO?> GetByIdAsync(int id, string? includes)
+        public async Task<BillDetailDTO> GetByIdAsync(int id, string? includes)
         {
-            var billDetail = await _billDetailRepository.GetByIdAsync(id, includes);
-            return billDetail != null ? _mapper.Map<BillDetailDTO>(billDetail) : null;
+            var billDetail = await _billDetailRepository.GetByIdAsync(id, includes)
+                    ?? throw new EntityNotFoundException(nameof(BillDetail), id);
+            return _mapper.Map<BillDetailDTO>(billDetail);
         }
 
         public async Task<BillDetailDTO> CreateAsync(BillDetailCreateDTO createDTO)
@@ -37,35 +39,27 @@ namespace zity.Services.Implementations
             return _mapper.Map<BillDetailDTO>(await _billDetailRepository.CreateAsync(billDetail));
         }
 
-        public async Task<BillDetailDTO?> UpdateAsync(int id, BillDetailUpdateDTO updateDTO)
+        public async Task<BillDetailDTO> UpdateAsync(int id, BillDetailUpdateDTO updateDTO)
         {
-            var existingBillDetail = await _billDetailRepository.GetByIdAsync(id, null);
-            if (existingBillDetail == null)
-            {
-                return null;
-            }
-
+            var existingBillDetail = await _billDetailRepository.GetByIdAsync(id, null)
+                    ?? throw new EntityNotFoundException(nameof(BillDetail), id);
             _mapper.Map(updateDTO, existingBillDetail);
             var updatedBillDetail = await _billDetailRepository.UpdateAsync(existingBillDetail);
             return _mapper.Map<BillDetailDTO>(updatedBillDetail);
         }
 
-        public async Task<BillDetailDTO?> PatchAsync(int id, BillDetailPatchDTO patchDTO)
+        public async Task<BillDetailDTO> PatchAsync(int id, BillDetailPatchDTO patchDTO)
         {
-            var existingBillDetail = await _billDetailRepository.GetByIdAsync(id, null);
-            if (existingBillDetail == null)
-            {
-                return null;
-            }
-
+            var existingBillDetail = await _billDetailRepository.GetByIdAsync(id, null) 
+                    ?? throw new EntityNotFoundException(nameof(BillDetail), id);
             _mapper.Map(patchDTO, existingBillDetail);
             var patchedBillDetail = await _billDetailRepository.UpdateAsync(existingBillDetail);
             return _mapper.Map<BillDetailDTO>(patchedBillDetail);
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
-            return await _billDetailRepository.DeleteAsync(id);
+            await _billDetailRepository.DeleteAsync(id);
         }
     }
 }

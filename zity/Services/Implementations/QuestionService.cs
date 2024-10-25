@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using System.Threading.Tasks;
 using zity.DTOs.Questions;
+using zity.ExceptionHandling.Exceptions;
 using zity.Mappers;
 using zity.Models;
 using zity.Repositories.Interfaces;
@@ -25,45 +26,38 @@ namespace zity.Services.Implementations
         }
 
 
-        public async Task<QuestionDTO?> GetByIdAsync(int id, string? includes)
+        public async Task<QuestionDTO> GetByIdAsync(int id, string? includes)
         {
-            var question = await _questionRepository.GetByIdAsync(id, includes);
-            return question != null ? _mapper.Map<QuestionDTO> (question) : null;
+            var question = await _questionRepository.GetByIdAsync(id, includes)
+                    ?? throw new EntityNotFoundException(nameof(Question), id);
+            return _mapper.Map<QuestionDTO> (question);
         }
         public async Task<QuestionDTO> CreateAsync(QuestionCreateDTO createDTO)
         {
             var question = _mapper.Map<Question>(createDTO);
             return _mapper.Map<QuestionDTO>(await _questionRepository.CreateAsync(question));
         }
-        public async Task<QuestionDTO?> UpdateAsync(int id, QuestionUpdateDTO updateDTO)
+        public async Task<QuestionDTO> UpdateAsync(int id, QuestionUpdateDTO updateDTO)
         {
-            var existingQuestion = await _questionRepository.GetByIdAsync(id, null);
-            if (existingQuestion == null)
-            {
-                return null;
-            }
-
+            var existingQuestion = await _questionRepository.GetByIdAsync(id, null)
+                    ?? throw new EntityNotFoundException(nameof(Question), id);
             _mapper.Map(updateDTO, existingQuestion);
             var updatedQuestion = await _questionRepository.UpdateAsync(existingQuestion);
             return _mapper.Map<QuestionDTO>(updatedQuestion);
         }
 
-        public async Task<QuestionDTO?> PatchAsync(int id, QuestionPatchDTO patchDTO)
+        public async Task<QuestionDTO> PatchAsync(int id, QuestionPatchDTO patchDTO)
         {
-            var existingQuestion = await _questionRepository.GetByIdAsync(id, null);
-            if (existingQuestion == null)
-            {
-                return null;
-            }
-
+            var existingQuestion = await _questionRepository.GetByIdAsync(id, null)
+                    ?? throw new EntityNotFoundException(nameof(Question), id);
             _mapper.Map(patchDTO, existingQuestion);
             var patchedQuestion = await _questionRepository.UpdateAsync(existingQuestion);
             return _mapper.Map<QuestionDTO>(patchedQuestion);
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
-            return await _questionRepository.DeleteAsync(id);
+            await _questionRepository.DeleteAsync(id);
         }
 
     }

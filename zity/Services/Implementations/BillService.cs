@@ -30,10 +30,11 @@ namespace zity.Services.Implementations
                 pageBills.PageSize);
         }
 
-        public async Task<BillDTO?> GetByIdAsync(int id, string? includes)
+        public async Task<BillDTO> GetByIdAsync(int id, string? includes)
         {
-            var bill = await _billRepository.GetByIdAsync(id, includes);
-            return bill != null ? _mapper.Map<BillDTO>(bill) : null;
+            var bill = await _billRepository.GetByIdAsync(id, includes)
+                    ?? throw new EntityNotFoundException(nameof(Bill), id);
+            return _mapper.Map<BillDTO>(bill);
         }
 
         public async Task<BillDTO> CreateAsync(BillCreateDTO createDTO)
@@ -42,55 +43,41 @@ namespace zity.Services.Implementations
             return _mapper.Map<BillDTO>(await _billRepository.CreateAsync(bill));
         }
 
-        public async Task<BillDTO?> UpdateAsync(int id, BillUpdateDTO updateDTO)
+        public async Task<BillDTO> UpdateAsync(int id, BillUpdateDTO updateDTO)
         {
-            var existingBill = await _billRepository.GetByIdAsync(id, null);
-            if (existingBill == null)
-            {
-                return null;
-            }
-
+            var existingBill = await _billRepository.GetByIdAsync(id, null)
+                    ?? throw new EntityNotFoundException(nameof(Bill), id);
             _mapper.Map(updateDTO, existingBill);
             var updatedBill = await _billRepository.UpdateAsync(existingBill);
             return _mapper.Map<BillDTO>(updatedBill);
         }
 
-        public async Task<BillDTO?> PatchAsync(int id, BillPatchDTO patchDTO)
+        public async Task<BillDTO> PatchAsync(int id, BillPatchDTO patchDTO)
         {
-            var existingBill = await _billRepository.GetByIdAsync(id, null);
-            if (existingBill == null)
-            {
-                return null;
-            }
-
+            var existingBill = await _billRepository.GetByIdAsync(id, null)
+                    ?? throw new EntityNotFoundException(nameof(Bill), id);
             _mapper.Map(patchDTO, existingBill);
             var patchedBill = await _billRepository.UpdateAsync(existingBill);
             return _mapper.Map<BillDTO>(patchedBill);
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
-            return await _billRepository.DeleteAsync(id);
+            await _billRepository.DeleteAsync(id);
         }
 
         public async Task<string> CreatePaymentVNPayAsync(int id)
         {
-            var bill = await _billRepository.GetByIdAsync(id, null);
-            if (bill == null)
-            {
-                throw new EntityNotFoundException(nameof(Bill), id);
-            }
+            var bill = await _billRepository.GetByIdAsync(id, null)
+                    ?? throw new EntityNotFoundException(nameof(Bill), id);
             var paymentUrl = _vnpayService.CreatePaymentUrl(bill);
             return paymentUrl;
         }
 
         public async Task<MomoCreatePaymentDto> CreatePaymentMomoAsync(int id, MomoRequestCreatePaymentDto request)
         {
-            var bill = await _billRepository.GetByIdAsync(id, null);
-            if (bill == null)
-            {
-                throw new EntityNotFoundException(nameof(Bill), id);
-            }
+            var bill = await _billRepository.GetByIdAsync(id, null)
+                    ?? throw new EntityNotFoundException(nameof(Bill), id);
             var momoCreatePaymentDto = await _momoService.CreatePaymentAsync(bill, request);
             return momoCreatePaymentDto;
         }
@@ -101,7 +88,9 @@ namespace zity.Services.Implementations
             {
                 Bill bill = await _billRepository.GetByIdAsync(id, null);
                 if (bill == null)
+                {
                     return;
+                }
                 bill.Status = "Paid";
                 await _billRepository.UpdateAsync(bill);
             }

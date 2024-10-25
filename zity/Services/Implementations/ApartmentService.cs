@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using zity.DTOs.Apartments;
+using zity.ExceptionHandling.Exceptions;
 using zity.Mappers;
 using zity.Models;
 using zity.Repositories.Interfaces;
@@ -8,16 +9,10 @@ using zity.Utilities;
 
 namespace zity.Services.Implementations
 {
-    public class ApartmentService : IApartmentService
+    public class ApartmentService(IApartmentRepository apartmentRepository, IMapper mapper) : IApartmentService
     {
-        private readonly IApartmentRepository _apartmentRepository;
-        private readonly IMapper _mapper;
-
-        public ApartmentService(IApartmentRepository apartmentRepository, IMapper mapper)
-        {
-            _apartmentRepository = apartmentRepository;
-            _mapper = mapper;
-        }
+        private readonly IApartmentRepository _apartmentRepository = apartmentRepository;
+        private readonly IMapper _mapper = mapper;
 
         public async Task<ApartmentDTO> CreateAsync(ApartmentCreateDTO apartmentCreateDTO)
         {
@@ -26,9 +21,9 @@ namespace zity.Services.Implementations
             return _mapper.Map<ApartmentDTO>(createdApartment);
         }
 
-        public async Task<bool> DeleteAsync(string id)
+        public async Task DeleteAsync(string id)
         {
-            return await _apartmentRepository.DeleteAsync(id);
+            await _apartmentRepository.DeleteAsync(id);
         }
 
         public async Task<PaginatedResult<ApartmentDTO>> GetAllAsync(ApartmentQueryDTO query)
@@ -42,33 +37,26 @@ namespace zity.Services.Implementations
                 pageApartments.PageSize);
         }
 
-        public async Task<ApartmentDTO?> GetByIdAsync(string id, string? includes)
+        public async Task<ApartmentDTO> GetByIdAsync(string id, string? includes)
         {
-            var apartment = await _apartmentRepository.GetByIdAsync(id, includes);
-            return apartment != null ? _mapper.Map<ApartmentDTO>(apartment) : null;
+            var apartment = await _apartmentRepository.GetByIdAsync(id, includes)
+                ?? throw new EntityNotFoundException(nameof(Apartment), id);
+            return _mapper.Map<ApartmentDTO>(apartment);
         }
 
-        public async Task<ApartmentDTO?> PatchAsync(string id, ApartmentPatchDTO apartmentPatchDTO)
+        public async Task<ApartmentDTO> PatchAsync(string id, ApartmentPatchDTO apartmentPatchDTO)
         {
-            var existingApartment = await _apartmentRepository.GetByIdAsync(id, null);
-            if (existingApartment == null)
-            {
-                return null;
-            }
-
+            var existingApartment = await _apartmentRepository.GetByIdAsync(id, null)
+                ?? throw new EntityNotFoundException(nameof(Apartment), id);
             _mapper.Map(apartmentPatchDTO, existingApartment);
             var patchedApartment = await _apartmentRepository.UpdateAsync(existingApartment);
             return _mapper.Map<ApartmentDTO>(patchedApartment);
         }
 
-        public async Task<ApartmentDTO?> UpdateAsync(string id, ApartmentUpdateDTO apartmentUpdateDTO)
+        public async Task<ApartmentDTO> UpdateAsync(string id, ApartmentUpdateDTO apartmentUpdateDTO)
         {
-            var existingApartment = await _apartmentRepository.GetByIdAsync(id, null);
-            if (existingApartment == null)
-            {
-                return null;
-            }
-
+            var existingApartment = await _apartmentRepository.GetByIdAsync(id, null) 
+                ?? throw new EntityNotFoundException(nameof(Apartment), id);
             _mapper.Map(apartmentUpdateDTO, existingApartment);
             var updatedApartment = await _apartmentRepository.UpdateAsync(existingApartment);
             return _mapper.Map<ApartmentDTO>(updatedApartment);

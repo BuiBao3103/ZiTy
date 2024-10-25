@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using zity.DTOs.Items;
+using zity.ExceptionHandling.Exceptions;
 using zity.Mappers;
 using zity.Models;
 using zity.Repositories.Interfaces;
@@ -30,48 +31,40 @@ namespace zity.Services.Implementations
                 pageItems.PageSize);
         }
 
-        public async Task<ItemDTO?> GetByIdAsync(int id, string? includes)
+        public async Task<ItemDTO> GetByIdAsync(int id, string? includes)
         {
-            var item = await _itemRepository.GetByIdAsync(id, includes);
-            return item != null ? _mapper.Map<ItemDTO>(item) : null;
+            var item = await _itemRepository.GetByIdAsync(id, includes)
+                    ?? throw new EntityNotFoundException(nameof(Item), id);
+            return _mapper.Map<ItemDTO>(item);
         }
 
         public async Task<ItemDTO> CreateAsync(ItemCreateDTO createDTO)
         {
             var item = _mapper.Map<Item>(createDTO);
-            var createdItem = await _itemRepository.CreateAsync(item);
-            return _mapper.Map<ItemDTO>(createdItem);
+            return _mapper.Map<ItemDTO>(await _itemRepository.CreateAsync(item));
         }
 
-        public async Task<ItemDTO?> UpdateAsync(int id, ItemUpdateDTO updateDTO)
+        public async Task<ItemDTO> UpdateAsync(int id, ItemUpdateDTO updateDTO)
         {
-            var existingItem = await _itemRepository.GetByIdAsync(id, null);
-            if (existingItem == null)
-            {
-                return null;
-            }
-
+            var existingItem = await _itemRepository.GetByIdAsync(id, null)
+                    ?? throw new EntityNotFoundException(nameof(Item), id);
             _mapper.Map(updateDTO, existingItem);
             var updatedItem = await _itemRepository.UpdateAsync(existingItem);
             return _mapper.Map<ItemDTO>(updatedItem);
         }
 
-        public async Task<ItemDTO?> PatchAsync(int id, ItemPatchDTO patchDTO)
+        public async Task<ItemDTO> PatchAsync(int id, ItemPatchDTO patchDTO)
         {
-            var existingItem = await _itemRepository.GetByIdAsync(id, null);
-            if (existingItem == null)
-            {
-                return null;
-            }
-
+            var existingItem = await _itemRepository.GetByIdAsync(id, null)
+                    ?? throw new EntityNotFoundException(nameof(Item), id);
             _mapper.Map(patchDTO, existingItem);
             var patchedItem = await _itemRepository.UpdateAsync(existingItem);
             return _mapper.Map<ItemDTO>(patchedItem);
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
-            return await _itemRepository.DeleteAsync(id);
+            await _itemRepository.DeleteAsync(id);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using System.Threading.Tasks;
 using zity.DTOs.UserAnswers;
+using zity.ExceptionHandling.Exceptions;
 using zity.Mappers;
 using zity.Models;
 using zity.Repositories.Interfaces;
@@ -23,47 +24,37 @@ namespace zity.Services.Implementations
                 pageUserAnswers.Page,
                 pageUserAnswers.PageSize);
         }
-
-
-        public async Task<UserAnswerDTO?> GetByIdAsync(int id, string? includes)
+        public async Task<UserAnswerDTO> GetByIdAsync(int id, string? includes)
         {
-            var userAnswer = await _userAnswerRepository.GetByIdAsync(id, includes);
-            return userAnswer != null ? _mapper.Map<UserAnswerDTO>(userAnswer) : null;
+            var userAnswer = await _userAnswerRepository.GetByIdAsync(id, includes)
+                    ?? throw new EntityNotFoundException(nameof(UserAnswer), id);
+            return _mapper.Map<UserAnswerDTO>(userAnswer);
         }
         public async Task<UserAnswerDTO> CreateAsync(UserAnswerCreateDTO createDTO)
         {
             var userAnswer = _mapper.Map<UserAnswer>(createDTO);
             return _mapper.Map<UserAnswerDTO>(await _userAnswerRepository.CreateAsync(userAnswer));
         }
-        public async Task<UserAnswerDTO?> UpdateAsync(int id, UserAnswerUpdateDTO updateDTO)
+        public async Task<UserAnswerDTO> UpdateAsync(int id, UserAnswerUpdateDTO updateDTO)
         {
-            var existingUserAnswer = await _userAnswerRepository.GetByIdAsync(id, null);
-            if (existingUserAnswer == null)
-            {
-                return null;
-            }
-
+            var existingUserAnswer = await _userAnswerRepository.GetByIdAsync(id, null)
+                    ?? throw new EntityNotFoundException(nameof(UserAnswer), id);
             _mapper.Map(updateDTO, existingUserAnswer);
             var updatedUserAnswer = await _userAnswerRepository.UpdateAsync(existingUserAnswer);
             return _mapper.Map<UserAnswerDTO>(updatedUserAnswer);
         }
 
-        public async Task<UserAnswerDTO?> PatchAsync(int id, UserAnswerPatchDTO patchDTO)
+        public async Task<UserAnswerDTO> PatchAsync(int id, UserAnswerPatchDTO patchDTO)
         {
-            var existingUserAnswer = await _userAnswerRepository.GetByIdAsync(id, null);
-            if (existingUserAnswer == null)
-            {
-                return null;
-            }
-
+            var existingUserAnswer = await _userAnswerRepository.GetByIdAsync(id, null)
+                    ?? throw new EntityNotFoundException(nameof(UserAnswer), id);
             _mapper.Map(patchDTO, existingUserAnswer);
             var patchedUserAnswer = await _userAnswerRepository.UpdateAsync(existingUserAnswer);
             return _mapper.Map<UserAnswerDTO>(patchedUserAnswer);
         }
-
-        public async Task<bool> DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
-            return await _userAnswerRepository.DeleteAsync(id);
+            await _userAnswerRepository.DeleteAsync(id);
         }
 
     }
