@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using zity.DTOs.Reports;
+using zity.ExceptionHandling.Exceptions;
 using zity.Models;
 using zity.Repositories.Interfaces;
 using zity.Services.Interfaces;
@@ -24,10 +25,11 @@ namespace zity.Services.Implementations
                 pageReports.PageSize);
         }
 
-        public async Task<ReportDTO?> GetByIdAsync(int id, string? includes)
+        public async Task<ReportDTO> GetByIdAsync(int id, string? includes)
         {
-            var report = await _reportRepository.GetByIdAsync(id, includes);
-            return report != null ? _mapper.Map<ReportDTO>(report) : null;
+            var report = await _reportRepository.GetByIdAsync(id, includes)
+                    ?? throw new EntityNotFoundException(nameof(Report), id);
+            return _mapper.Map<ReportDTO>(report);
         }
 
         public async Task<ReportDTO> CreateAsync(ReportCreateDTO createDTO)
@@ -36,35 +38,27 @@ namespace zity.Services.Implementations
             return _mapper.Map<ReportDTO>(await _reportRepository.CreateAsync(report));
         }
 
-        public async Task<ReportDTO?> UpdateAsync(int id, ReportUpdateDTO updateDTO)
+        public async Task<ReportDTO> UpdateAsync(int id, ReportUpdateDTO updateDTO)
         {
-            var existingReport = await _reportRepository.GetByIdAsync(id, null);
-            if (existingReport == null)
-            {
-                return null;
-            }
-
+            var existingReport = await _reportRepository.GetByIdAsync(id, null)
+                    ?? throw new EntityNotFoundException(nameof(Report), id);
             _mapper.Map(updateDTO, existingReport);
             var updatedReport = await _reportRepository.UpdateAsync(existingReport);
             return _mapper.Map<ReportDTO>(updatedReport);
         }
 
-        public async Task<ReportDTO?> PatchAsync(int id, ReportPatchDTO patchDTO)
+        public async Task<ReportDTO> PatchAsync(int id, ReportPatchDTO patchDTO)
         {
-            var existingReport = await _reportRepository.GetByIdAsync(id, null);
-            if (existingReport == null)
-            {
-                return null;
-            }
-
+            var existingReport = await _reportRepository.GetByIdAsync(id, null)
+                    ?? throw new EntityNotFoundException(nameof(Report), id);
             _mapper.Map(patchDTO, existingReport);
             var patchedReport = await _reportRepository.UpdateAsync(existingReport);
             return _mapper.Map<ReportDTO>(patchedReport);
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
-            return await _reportRepository.DeleteAsync(id);
+            await _reportRepository.DeleteAsync(id);
         }
     }
 }

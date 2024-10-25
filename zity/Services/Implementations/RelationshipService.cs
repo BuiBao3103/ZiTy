@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using zity.DTOs.Relationships;
+using zity.ExceptionHandling.Exceptions;
 using zity.Models;
 using zity.Repositories.Interfaces;
 using zity.Services.Interfaces;
@@ -24,10 +25,11 @@ namespace zity.Services.Implementations
                 pageRelationships.PageSize);
         }
 
-        public async Task<RelationshipDTO?> GetByIdAsync(int id, string? includes)
+        public async Task<RelationshipDTO> GetByIdAsync(int id, string? includes)
         {
-            var relationship = await _relationshipRepository.GetByIdAsync(id, includes);
-            return relationship != null ? _mapper.Map<RelationshipDTO>(relationship) : null;
+            var relationship = await _relationshipRepository.GetByIdAsync(id, includes)
+                    ?? throw new EntityNotFoundException(nameof(Relationship), id);
+            return _mapper.Map<RelationshipDTO>(relationship);
         }
 
         public async Task<RelationshipDTO> CreateAsync(RelationshipCreateDTO createDTO)
@@ -36,35 +38,27 @@ namespace zity.Services.Implementations
             return _mapper.Map<RelationshipDTO>(await _relationshipRepository.CreateAsync(relationship));
         }
 
-        public async Task<RelationshipDTO?> UpdateAsync(int id, RelationshipUpdateDTO updateDTO)
+        public async Task<RelationshipDTO> UpdateAsync(int id, RelationshipUpdateDTO updateDTO)
         {
-            var existingRelationship = await _relationshipRepository.GetByIdAsync(id, null);
-            if (existingRelationship == null)
-            {
-                return null;
-            }
-
+            var existingRelationship = await _relationshipRepository.GetByIdAsync(id, null)
+                    ?? throw new EntityNotFoundException(nameof(Relationship), id);
             _mapper.Map(updateDTO, existingRelationship);
             var updatedRelationship = await _relationshipRepository.UpdateAsync(existingRelationship);
             return _mapper.Map<RelationshipDTO>(updatedRelationship);
         }
 
-        public async Task<RelationshipDTO?> PatchAsync(int id, RelationshipPatchDTO patchDTO)
+        public async Task<RelationshipDTO> PatchAsync(int id, RelationshipPatchDTO patchDTO)
         {
-            var existingRelationship = await _relationshipRepository.GetByIdAsync(id, null);
-            if (existingRelationship == null)
-            {
-                return null;
-            }
-
+            var existingRelationship = await _relationshipRepository.GetByIdAsync(id, null)
+                    ?? throw new EntityNotFoundException(nameof(Relationship), id);
             _mapper.Map(patchDTO, existingRelationship);
             var patchedRelationship = await _relationshipRepository.UpdateAsync(existingRelationship);
             return _mapper.Map<RelationshipDTO>(patchedRelationship);
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
-            return await _relationshipRepository.DeleteAsync(id);
+            await _relationshipRepository.DeleteAsync(id);
         }
     }
 }

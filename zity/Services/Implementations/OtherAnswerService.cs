@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using zity.DTOs.OtherAnswers;
+using zity.ExceptionHandling.Exceptions;
 using zity.Mappers;
 using zity.Models;
 using zity.Repositories.Interfaces;
@@ -25,44 +26,38 @@ namespace zity.Services.Implementations
         }
 
 
-        public async Task<OtherAnswerDTO?> GetByIdAsync(int id, string? includes)
+        public async Task<OtherAnswerDTO> GetByIdAsync(int id, string? includes)
         {
-            var otherAnswer = await _otherAnswerRepository.GetByIdAsync(id, includes);
-            return otherAnswer != null ? _mapper.Map<OtherAnswerDTO> (otherAnswer) : null;
+            var otherAnswer = await _otherAnswerRepository.GetByIdAsync(id, includes)
+                    ?? throw new EntityNotFoundException(nameof(OtherAnswer), id);
+            return _mapper.Map<OtherAnswerDTO>(otherAnswer);
         }
         public async Task<OtherAnswerDTO> CreateAsync(OtherAnswerCreateDTO createDTO)
         {
             var otherAnswer = _mapper.Map<OtherAnswer>(createDTO);
             return _mapper.Map<OtherAnswerDTO>(await _otherAnswerRepository.CreateAsync(otherAnswer));
         }
-        public async Task<OtherAnswerDTO?> UpdateAsync(int id, OtherAnswerUpdateDTO updateDTO)
+        public async Task<OtherAnswerDTO> UpdateAsync(int id, OtherAnswerUpdateDTO updateDTO)
         {
-            var existingOtherAnswer = await _otherAnswerRepository.GetByIdAsync(id, null);
-            if (existingOtherAnswer == null)
-            {
-                return null;
-            }
+            var existingOtherAnswer = await _otherAnswerRepository.GetByIdAsync(id, null)
+                    ?? throw new EntityNotFoundException(nameof(OtherAnswer), id);
             _mapper.Map(updateDTO, existingOtherAnswer);
             var updatedOtherAnswer = await _otherAnswerRepository.UpdateAsync(existingOtherAnswer);
             return _mapper.Map<OtherAnswerDTO>(updatedOtherAnswer) ;
         }
 
-        public async Task<OtherAnswerDTO?> PatchAsync(int id, OtherAnswerPatchDTO patchDTO)
+        public async Task<OtherAnswerDTO> PatchAsync(int id, OtherAnswerPatchDTO patchDTO)
         {
-            var existingOtherAnswer = await _otherAnswerRepository.GetByIdAsync(id, null);
-            if (existingOtherAnswer == null)
-            {
-                return null;
-            }
-
+            var existingOtherAnswer = await _otherAnswerRepository.GetByIdAsync(id, null)
+                    ?? throw new EntityNotFoundException(nameof(OtherAnswer), id);
             _mapper.Map(patchDTO, existingOtherAnswer);
             var patchedOtherAnswer = await _otherAnswerRepository.UpdateAsync(existingOtherAnswer);
             return _mapper.Map<OtherAnswerDTO>(patchedOtherAnswer);
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
-            return await _otherAnswerRepository.DeleteAsync(id);
+           await _otherAnswerRepository.DeleteAsync(id);
         }
 
     }

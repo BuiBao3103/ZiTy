@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using System.Threading.Tasks;
 using zity.DTOs.RejectionReasons;
+using zity.ExceptionHandling.Exceptions;
 using zity.Mappers;
 using zity.Models;
 using zity.Repositories.Interfaces;
@@ -25,45 +26,38 @@ namespace zity.Services.Implementations
         }
 
 
-        public async Task<RejectionReasonDTO?> GetByIdAsync(int id, string? includes)
+        public async Task<RejectionReasonDTO> GetByIdAsync(int id, string? includes)
         {
-            var rejectionReason = await _rejectionReasonRepository.GetByIdAsync(id, includes);
-            return rejectionReason != null ? _mapper.Map<RejectionReasonDTO> (rejectionReason) : null;
+            var rejectionReason = await _rejectionReasonRepository.GetByIdAsync(id, includes)
+                    ?? throw new EntityNotFoundException(nameof(RejectionReason), id);
+            return _mapper.Map<RejectionReasonDTO> (rejectionReason);
         }
         public async Task<RejectionReasonDTO> CreateAsync(RejectionReasonCreateDTO createDTO)
         {
             var rejectionReason = _mapper.Map<RejectionReason>(createDTO);
             return _mapper.Map<RejectionReasonDTO>(await _rejectionReasonRepository.CreateAsync(rejectionReason));
         }
-        public async Task<RejectionReasonDTO?> UpdateAsync(int id, RejectionReasonUpdateDTO updateDTO)
+        public async Task<RejectionReasonDTO> UpdateAsync(int id, RejectionReasonUpdateDTO updateDTO)
         {
-            var existingRejectionReason = await _rejectionReasonRepository.GetByIdAsync(id, null);
-            if (existingRejectionReason == null)
-            {
-                return null;
-            }
-
+            var existingRejectionReason = await _rejectionReasonRepository.GetByIdAsync(id, null)
+                    ?? throw new EntityNotFoundException(nameof(RejectionReason), id);
             _mapper.Map(updateDTO, existingRejectionReason);
             var updatedRejectionReason = await _rejectionReasonRepository.UpdateAsync(existingRejectionReason);
             return _mapper.Map<RejectionReasonDTO>(updatedRejectionReason);
         }
 
-        public async Task<RejectionReasonDTO?> PatchAsync(int id, RejectionReasonPatchDTO patchDTO)
+        public async Task<RejectionReasonDTO> PatchAsync(int id, RejectionReasonPatchDTO patchDTO)
         {
-            var existingRejectionReason = await _rejectionReasonRepository.GetByIdAsync(id, null);
-            if (existingRejectionReason == null)
-            {
-                return null;
-            }
-
+            var existingRejectionReason = await _rejectionReasonRepository.GetByIdAsync(id, null)
+                    ?? throw new EntityNotFoundException(nameof(RejectionReason), id);
             _mapper.Map(patchDTO, existingRejectionReason);
             var patchedRejectionReason = await _rejectionReasonRepository.UpdateAsync(existingRejectionReason);
             return _mapper.Map<RejectionReasonDTO>(patchedRejectionReason);
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
-            return await _rejectionReasonRepository.DeleteAsync(id);
+            await _rejectionReasonRepository.DeleteAsync(id);
         }
 
     }

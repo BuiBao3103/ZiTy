@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using zity.DTOs.Services;
+using zity.ExceptionHandling.Exceptions;
 using zity.Models;
 using zity.Repositories.Interfaces;
 using zity.Services.Interfaces;
@@ -24,10 +25,11 @@ namespace zity.Services.Implementations
                 pageServices.PageSize);
         }
 
-        public async Task<ServiceDTO?> GetByIdAsync(int id, string? includes)
+        public async Task<ServiceDTO> GetByIdAsync(int id, string? includes)
         {
-            var service = await _serviceRepository.GetByIdAsync(id, includes);
-            return service != null ? _mapper.Map<ServiceDTO>(service) : null;
+            var service = await _serviceRepository.GetByIdAsync(id, includes)
+                    ?? throw new EntityNotFoundException(nameof(Service), id);
+            return _mapper.Map<ServiceDTO>(service);
         }
 
         public async Task<ServiceDTO> CreateAsync(ServiceCreateDTO createDTO)
@@ -36,35 +38,27 @@ namespace zity.Services.Implementations
             return _mapper.Map<ServiceDTO>(await _serviceRepository.CreateAsync(service));
         }
 
-        public async Task<ServiceDTO?> UpdateAsync(int id, ServiceUpdateDTO updateDTO)
+        public async Task<ServiceDTO> UpdateAsync(int id, ServiceUpdateDTO updateDTO)
         {
-            var existingService = await _serviceRepository.GetByIdAsync(id, null);
-            if (existingService == null)
-            {
-                return null;
-            }
-
+            var existingService = await _serviceRepository.GetByIdAsync(id, null)
+                    ?? throw new EntityNotFoundException(nameof(Report), id);
             _mapper.Map(updateDTO, existingService);
             var updatedService = await _serviceRepository.UpdateAsync(existingService);
             return _mapper.Map<ServiceDTO>(updatedService);
         }
 
-        public async Task<ServiceDTO?> PatchAsync(int id, ServicePatchDTO patchDTO)
+        public async Task<ServiceDTO> PatchAsync(int id, ServicePatchDTO patchDTO)
         {
-            var existingService = await _serviceRepository.GetByIdAsync(id, null);
-            if (existingService == null)
-            {
-                return null;
-            }
-
+            var existingService = await _serviceRepository.GetByIdAsync(id, null)
+                    ?? throw new EntityNotFoundException(nameof(Report), id);
             _mapper.Map(patchDTO, existingService);
             var patchedService = await _serviceRepository.UpdateAsync(existingService);
             return _mapper.Map<ServiceDTO>(patchedService);
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
-            return await _serviceRepository.DeleteAsync(id);
+            await _serviceRepository.DeleteAsync(id);
         }
     }
 }

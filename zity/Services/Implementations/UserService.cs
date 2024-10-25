@@ -30,10 +30,11 @@ namespace zity.Services.Implementations
                 pageUsers.PageSize);
         }
 
-        public async Task<UserDTO?> GetByIdAsync(int id, string? includes = null)
+        public async Task<UserDTO> GetByIdAsync(int id, string? includes = null)
         {
-            var user = await _userRepository.GetByIdAsync(id, includes);
-            return user != null ? _mapper.Map<UserDTO>(user) : null;
+            var user = await _userRepository.GetByIdAsync(id, includes)
+                    ?? throw new EntityNotFoundException(nameof(User), id);
+            return _mapper.Map<UserDTO>(user);
         }
 
         public async Task<UserDTO> CreateAsync(UserCreateDTO userCreateDTO)
@@ -49,11 +50,10 @@ namespace zity.Services.Implementations
             return _mapper.Map<UserDTO>(createdUser);
         }
 
-        public async Task<UserDTO?> UploadAvatarAsync(int id, IFormFile file)
+        public async Task<UserDTO> UploadAvatarAsync(int id, IFormFile file)
         {
-            var user = await _userRepository.GetByIdAsync(id, null);
-            if (user == null)
-                return null;
+            var user = await _userRepository.GetByIdAsync(id, null)
+                    ?? throw new EntityNotFoundException(nameof(UserAnswer), id);
             if (!string.IsNullOrEmpty(user.Avatar))
             {
                 await _mediaService.DeleteImageAsync(user.Avatar, CloudinaryConstants.USER_AVATARS_FOLDER);
@@ -67,21 +67,19 @@ namespace zity.Services.Implementations
 
         public async Task NotifyReceivedPackage(int userId)
         {
-            var user = await _userRepository.GetByIdAsync(userId, null);
-            if (user == null)
-            {
-                throw new EntityNotFoundException(nameof(User), userId);
-            }
+            var user = await _userRepository.GetByIdAsync(userId, null)
+                    ?? throw new EntityNotFoundException(nameof(User), userId);
             string phoneNumber = user.Phone;
             string message = "You have received a package!";
             //string message = "Cam on quy khach da su dung dich vu cua chung toi. Chuc quy khach mot ngay tot lanh!";
             await _smsService.SendSMSAsync(phoneNumber, message);
         }
 
-        public async Task<MeDto?> GetMeAsync(int userId, string? includes = null)
+        public async Task<UserDTO> GetMeAsync(int userId, string? includes = null)
         {
-            var user = await _userRepository.GetByIdAsync(userId, includes);
-            return user != null ? _mapper.Map<MeDto>(user) : null;
+            var user = await _userRepository.GetByIdAsync(userId, includes)
+                    ?? throw new EntityNotFoundException(nameof(User), userId);
+            return _mapper.Map<UserDTO>(user);
         }
     }
 }
