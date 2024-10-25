@@ -30,7 +30,7 @@ namespace zity.Repositories.Implementations
             return await relationshipsQuery;
         }
 
-        public async Task<Relationship?> GetByIdAsync(int id, string? includes)
+        public async Task<Relationship?> GetByIdAsync(int id, string? includes = null)
         {
             var relationshipsQuery = _dbContext.Relationships.Where(u => u.DeletedAt == null)
                 .ApplyIncludes(includes);

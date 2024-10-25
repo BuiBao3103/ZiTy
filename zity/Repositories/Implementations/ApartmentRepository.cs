@@ -30,7 +30,7 @@ namespace zity.Repositories.Implementations
             return await apartmentsQuery;
         }
 
-        public async Task<Apartment?> GetByIdAsync(string id, string? includes)
+        public async Task<Apartment?> GetByIdAsync(string id, string? includes = null)
         {
             var apartmentsQuery = _dbContext.Apartments.Where(u => u.DeletedAt == null)
                 .ApplyIncludes(includes);

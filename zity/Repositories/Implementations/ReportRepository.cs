@@ -29,7 +29,7 @@ namespace zity.Repositories.Implementations
             return await reportsQuery;
         }
 
-        public async Task<Report?> GetByIdAsync(int id, string? includes)
+        public async Task<Report?> GetByIdAsync(int id, string? includes = null)
         {
             var reportsQuery = _dbContext.Reports.Where(u => u.DeletedAt == null)
                 .ApplyIncludes(includes);

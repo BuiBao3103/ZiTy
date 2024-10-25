@@ -31,7 +31,7 @@ namespace zity.Repositories.Implementations
             return await rejectionReasonsQuery;
         }
 
-        public async Task<RejectionReason?> GetByIdAsync(int id, string? includes)
+        public async Task<RejectionReason?> GetByIdAsync(int id, string? includes = null)
         {
             var rejectionReasonsQuery = _dbContext.RejectionReasons.Where(u => u.DeletedAt == null)
                 .ApplyIncludes(includes);

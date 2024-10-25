@@ -30,7 +30,7 @@ namespace zity.Repositories.Implementations
             return await surveysQuery;
         }
 
-        public async Task<Survey?> GetByIdAsync(int id, string? includes)
+        public async Task<Survey?> GetByIdAsync(int id, string? includes = null)
         {
             var surveysQuery = _dbContext.Surveys.Where(u => u.DeletedAt == null)
                 .ApplyIncludes(includes);

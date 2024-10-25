@@ -31,7 +31,7 @@ namespace zity.Repositories.Implementations
             return await questionsQuery;
         }
 
-        public async Task<Question?> GetByIdAsync(int id, string? includes)
+        public async Task<Question?> GetByIdAsync(int id, string? includes = null)
         {
             var questionsQuery = _dbContext.Questions.Where(u => u.DeletedAt == null)
                 .ApplyIncludes(includes);

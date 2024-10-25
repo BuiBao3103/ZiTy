@@ -28,7 +28,7 @@ namespace zity.Services.Implementations
             return await userQuery;
         }
 
-        public async Task<User?> GetByIdAsync(int id, string? includes)
+        public async Task<User?> GetByIdAsync(int id, string? includes = null)
         {
             var usersQuery = _dbContext.Users.Where(u => u.DeletedAt == null)
                 .ApplyIncludes(includes);

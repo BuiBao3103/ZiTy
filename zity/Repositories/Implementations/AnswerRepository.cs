@@ -30,7 +30,7 @@ namespace zity.Repositories.Implementations
             return await answersQuery;
         }
 
-        public async Task<Answer?> GetByIdAsync(int id, string? includes)
+        public async Task<Answer?> GetByIdAsync(int id, string? includes = null)
         {
             var answersQuery = _dbContext.Answers.Where(u => u.DeletedAt == null)
                 .ApplyIncludes(includes);
@@ -55,7 +55,7 @@ namespace zity.Repositories.Implementations
         public async Task DeleteAsync(int id)
         {
             var answer = await _dbContext.Answers
-                .FirstOrDefaultAsync(u => u.Id == id && u.DeletedAt == null) 
+                .FirstOrDefaultAsync(u => u.Id == id && u.DeletedAt == null)
                 ?? throw new EntityNotFoundException(nameof(Answer), id);
             answer.DeletedAt = DateTime.Now;
             _dbContext.Answers.Update(answer);
