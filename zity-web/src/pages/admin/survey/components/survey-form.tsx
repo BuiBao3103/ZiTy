@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -19,29 +20,53 @@ import { ChevronLeft } from 'lucide-react'
 import { useAppDispath } from '@/store'
 import { createNewSurvey } from '@/features/survey/surveySlice'
 import { DateTimePicker } from '@/components/ui/datetime-picker'
-const CreateSurveyForm = () => {
+import { SurveySchema } from '@/schema/survey.validate'
+import { useNavigate } from 'react-router-dom'
+
+// Define prop types for the component
+interface SurveyFormProps {
+  mode: 'create' | 'edit'
+  initialData?: z.infer<typeof SurveySchema>
+  onSubmit?: (data: z.infer<typeof SurveySchema>) => void
+}
+
+const SurveyForm = ({
+  mode = 'create',
+  initialData,
+  onSubmit: propOnSubmit,
+}: SurveyFormProps) => {
   const dispatch = useAppDispath()
-  const form = useForm<z.infer<typeof QuestionFormSchema>>({
-    defaultValues: {
-      title: '',
-      description: '',
-      questions: [
-        {
-          question: '',
-          description: '',
-          answers: [
-            { answer: '' },
-            { answer: '' },
-            { answer: '' },
-            { answer: '' },
-          ],
-        },
-      ],
-      startDate: new Date(),
-      endDate: new Date(),
-    },
-    resolver: zodResolver(QuestionFormSchema),
+  const navigate = useNavigate()
+  const defaultValues = {
+    title: '',
+    description: '',
+    questions: [
+      {
+        question: '',
+        description: '',
+        answers: [
+          { answer: '' },
+          { answer: '' },
+          { answer: '' },
+          { answer: '' },
+        ],
+      },
+    ],
+    startDate: new Date(),
+    endDate: new Date(),
+  }
+
+  const form = useForm<z.infer<typeof SurveySchema>>({
+    defaultValues: initialData || defaultValues,
+    resolver: zodResolver(SurveySchema),
   })
+
+  // Initialize form with initial data when in edit mode
+  useEffect(() => {
+    if (mode === 'edit' && initialData) {
+      form.reset(initialData)
+    }
+  }, [initialData, mode, form])
 
   const { fields, append, remove } = useFieldArray({
     name: 'questions',
@@ -50,16 +75,23 @@ const CreateSurveyForm = () => {
 
   const appendQuestion = () => {
     append({
-      question: '',
-      description: '',
+      content: '',
       answers: [{ answer: '' }, { answer: '' }, { answer: '' }, { answer: '' }],
     })
   }
 
-  const onSubmit = (data: z.infer<typeof QuestionFormSchema>) => {
-    console.log(data)
-    toast.success('Survey created successfully')
-    form.reset()
+  const onSubmit = (data: z.infer<typeof SurveySchema>) => {
+    if (propOnSubmit) {
+      propOnSubmit(data)
+    } else {
+      console.log(data)
+      toast.success(
+        `Survey ${mode === 'create' ? 'created' : 'updated'} successfully`,
+      )
+      if (mode === 'create') {
+        form.reset()
+      }
+    }
   }
 
   const onError = (error: any) => {
@@ -68,7 +100,7 @@ const CreateSurveyForm = () => {
       return
     }
     if (error['description']) {
-      toast.error(error['title']?.message)
+      toast.error(error['description']?.message)
       return
     }
     if (error['startDate']) {
@@ -84,16 +116,22 @@ const CreateSurveyForm = () => {
   return (
     <>
       <Button
-        variant={'ghost'}
+        variant="ghost"
         type="button"
-        onClick={() => dispatch(createNewSurvey({ isCreateNewSurvey: false }))}
-        className="w-fit px-0 ">
+        onClick={() => {
+					if(mode == "create") {
+						dispatch(createNewSurvey({ isCreateNewSurvey: false }))
+					}else {
+						navigate('/admin/survey')
+					}
+        }}
+        className="w-fit px-0">
         <ChevronLeft /> Back to survey
       </Button>
-      <Card className="h-full">
+      <Card className="h-full relative">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit, onError)}>
-            <CardHeader className="space-y-2">
+          <form onSubmit={form.handleSubmit(onSubmit, onError)} className='size-full'>
+            <CardHeader className="space-y-2 sticky top-0">
               <div className="w-full flex lg:flex-row flex-col gap-4 justify-between items-center">
                 <div className="w-full flex flex-col space-y-2">
                   <FormField
@@ -113,22 +151,6 @@ const CreateSurveyForm = () => {
                       </FormItem>
                     )}
                   />
-                  <FormField
-                    control={form.control}
-                    name="description"
-                    render={({ field }) => (
-                      <FormItem className="space-y-0">
-                        <FormLabel className="text-base">Description</FormLabel>
-                        <FormControl>
-                          <Input
-                            {...field}
-                            className="border-none shadow-none focus-visible:ring-0 p-0 text-base text-muted-foreground"
-                            placeholder="+ Add Description"
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
                 </div>
                 <div className="w-full flex gap-4 md:flex-row flex-col lg:justify-end">
                   <FormField
@@ -137,7 +159,6 @@ const CreateSurveyForm = () => {
                     render={({ field }) => (
                       <FormItem className="flex flex-col">
                         <FormLabel>Start Date</FormLabel>
-
                         <FormControl>
                           <DateTimePicker
                             value={field.value}
@@ -171,7 +192,7 @@ const CreateSurveyForm = () => {
             </CardHeader>
             <Separator />
             <CardContent className="pt-6 flex flex-col space-y-4">
-              <div className={`w-full grid grid-cols-1 lg:grid-cols-2 gap-4`}>
+              <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {fields.map((field, index) => (
                   <QuestionItem
                     key={field.id}
@@ -184,13 +205,13 @@ const CreateSurveyForm = () => {
               <div className="w-full flex justify-between items-center">
                 <Button
                   type="button"
-                  variant={'default'}
+                  variant="default"
                   className="w-fit"
                   onClick={() => appendQuestion()}>
                   + Add new question
                 </Button>
-                <Button type="submit" variant={'destructive'} className="w-fit">
-                  Save survey
+                <Button type="submit" variant="destructive" className="w-fit">
+                  {mode === 'create' ? 'Save survey' : 'Update survey'}
                 </Button>
               </div>
             </CardContent>
@@ -201,4 +222,4 @@ const CreateSurveyForm = () => {
   )
 }
 
-export default CreateSurveyForm
+export default SurveyForm

@@ -1,11 +1,20 @@
-import { Outlet } from 'react-router-dom'
+import { Outlet, Navigate, useLocation } from 'react-router-dom'
 import Cookies from 'universal-cookie'
 import { Toaster } from '@components/ui/toaster'
 import { Toaster as Sonner } from '@components/ui/sonner'
+import { toast } from 'sonner'
 const PrivateRoute = () => {
+  const cookies = new Cookies(null, { path: '/' })
+  const token = cookies.get('token')
+  const location = useLocation()
+
   return (
     <>
-      <Outlet />
+      {!token ? (
+        <Navigate to="/login" state={{ from: location.pathname }} />
+      ) : (
+        <Outlet />
+      )}
       <Toaster />
       <Sonner
         richColors
@@ -19,11 +28,3 @@ const PrivateRoute = () => {
 }
 
 export default PrivateRoute
-
-export const loader = () => {
-  // const cookie = new Cookies(null, { path: '/' })
-  // if (!cookie.get('accessToken')) {
-  //   return redirect('/login')
-  // }
-  return null
-}

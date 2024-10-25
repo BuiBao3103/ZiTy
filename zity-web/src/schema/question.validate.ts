@@ -6,15 +6,24 @@ export const AnswerItemSchema = z.object({
     .min(1, 'Answer is required'),
 })
 
-export const QuestionItemSchema = z.object({
-  question: z
-    .string({ required_error: 'This field is required' })
-    .min(1, 'Question is required'),
-  description: z
-    .string({ required_error: 'This field is required' })
-    .min(1, 'Description is required'),
+export const QuestionSchema = z.object({
+  id: z.number(),
+  content: z.string(),
+  surveyId: z.number(),
   answers: z.array(AnswerItemSchema),
+  otherAnswers: z.array(z.any()),
+  survey: z.any().nullable(), // Adjust the structure of 'survey' if needed
 })
+
+// Example usage:
+type QuestionFormSchema = z.infer<typeof QuestionSchema>
+
+export const QuestionItem = QuestionSchema.pick({
+	content: true,
+	answers: true,
+}) 
+
+export interface IQuestion extends QuestionFormSchema, BaseEntity {}
 
 export const QuestionFormSchema = z
   .object({
@@ -22,7 +31,7 @@ export const QuestionFormSchema = z
       .string({ required_error: 'This field is required' })
       .min(1, 'Title is required'),
     description: z.string(),
-    questions: z.array(QuestionItemSchema),
+    questions: z.array(z.any()),
     startDate: z.date({ required_error: 'This field is required' }),
     endDate: z.date({ required_error: 'This field is required' }),
   })

@@ -2,31 +2,38 @@ import AlertDelete from '@/components/alert/AlertDelete'
 import BreadCrumb from '@/components/breadcrumb'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { createNewSurvey } from '@/features/survey/surveySlice'
+import { createNewSurvey, useGetSurverysQuery } from '@/features/survey/surveySlice'
 import { RootState, useAppDispath } from '@/store'
-import { Clock, Filter, Search, AlarmClock } from 'lucide-react'
+import { Filter, Search } from 'lucide-react'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { useDocumentTitle } from 'usehooks-ts'
 import SurveyForm from './components/survey-form'
+import { useState } from 'react'
+import SurveyItem from './components/survey-item'
+import { Skeleton } from '@/components/ui/skeleton'
+import PaginationCustom from '@/components/pagination/PaginationCustom'
+import SurveyDetail from './components/survey-detail'
 
 const Index = () => {
   useDocumentTitle('Survey')
   const params = useParams()
+	const dispatch = useAppDispath()
   const isCreateNewSurvey = useSelector(
     (state: RootState) => state.surveyReducer.isCreateNewSurvey,
   )
-  const dispatch = useAppDispath()
-
-  const setAction = () => {
-    console.log('delete')
-  }
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const {
+    data: surveys,
+    isLoading,
+    isFetching,
+  } = useGetSurverysQuery(currentPage)
 
   return (
     <div
       className={`w-full ${
-        isCreateNewSurvey ? 'h-full' : 'sm:h-screen'
-      } flex flex-col bg-zinc-100`}>
+        isCreateNewSurvey || params.id ? 'h-full' : 'h-full sm:h-screen'
+      } flex flex-col bg-zinc-100 `}>
       <BreadCrumb
         paths={[
           { label: 'survey', to: '/admin/survey' },
@@ -37,7 +44,9 @@ const Index = () => {
       <div className="w-full h-full p-4 overflow-hidden">
         <div className="w-full h-full bg-white rounded-md p-4 flex flex-col	space-y-4">
           {isCreateNewSurvey ? (
-            <SurveyForm />
+            <SurveyForm mode='create' />
+          ) : params?.id ? (
+            <SurveyDetail surveyID={params?.id} />
           ) : (
             <>
               <div className="w-full h-auto flex justify-between items-center">
@@ -63,57 +72,21 @@ const Index = () => {
                   Create Survey
                 </Button>
               </div>
-              <div className="w-full h-full overflow-y-auto grid grid-cols-2 gap-4">
-                {Array.from({ length: 10 }).map((_, index) => (
-                  <div
-                    key={index}
-                    className="w-full p-4 rounded-md border flex flex-col gap-4">
-                    <div className="w-full flex justify-between items-center">
-                      <div className="w-full space-y-0.5 font-medium">
-                        <h1 className="text-xl">Title</h1>
-                        <p className="text-sm text-zinc-500">
-                          Enim commodo eu ullamco aliqua.Esse esse magna Lorem
-                          id ad irure nisi velit.
-                        </p>
-                        <p>
-                          Total Questions: <span>5</span>
-                        </p>
-                      </div>
-                      <div className="w-full flex gap-4 justify-end items-center">
-                        <section className="flex gap-2">
-                          <span className="w-16 inline-flex rounded-sm bg-zinc-100 justify-center items-center">
-                            <Clock />
-                          </span>
-                          <div className="w-full flex flex-col">
-                            <p className="text-sm font-medium text-zinc-500">
-                              Start Date
-                            </p>
-                            <p className="text-sm font-medium">12/12/2021</p>
-                          </div>
-                        </section>
-                        <section className="flex gap-2">
-                          <span className="w-16 inline-flex rounded-sm bg-zinc-100 justify-center items-center">
-                            <AlarmClock />
-                          </span>
-                          <div className="w-full flex flex-col">
-                            <p className="text-sm font-medium text-zinc-500">
-                              Due Date
-                            </p>
-                            <p className="text-sm font-medium">12/12/2021</p>
-                          </div>
-                        </section>
-                      </div>
-                    </div>
-                    <div className="w-full flex gap-4">
-                      <Button variant={'warning'}>Edit</Button>
-                      <AlertDelete
-                        description="survey"
-                        setAction={setAction}
-                        variants="error"
-                      />
-                    </div>
-                  </div>
-                ))}
+              <div className="size-full flex flex-col overflow-hidden">
+                <div className="w-full h-full overflow-y-auto grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  {isLoading || isFetching
+                    ? Array.from({ length: 10 }).map((_, index) => (
+                        <Skeleton key={index} className="w-full h-[150px]" />
+                      ))
+                    : surveys?.contents.map((survey) => (
+                        <SurveyItem key={survey.id} survey={survey} />
+                      ))}
+                </div>
+                <PaginationCustom
+                  currentPage={currentPage}
+                  onPageChange={setCurrentPage}
+                  totalPages={surveys?.totalPages}
+                />
               </div>
             </>
           )}
