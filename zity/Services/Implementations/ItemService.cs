@@ -46,7 +46,7 @@ namespace zity.Services.Implementations
 
         public async Task<ItemDTO> UpdateAsync(int id, ItemUpdateDTO updateDTO)
         {
-            var existingItem = await _itemRepository.GetByIdAsync(id, null)
+            var existingItem = await _itemRepository.GetByIdAsync(id)
                     ?? throw new EntityNotFoundException(nameof(Item), id);
             _mapper.Map(updateDTO, existingItem);
             var updatedItem = await _itemRepository.UpdateAsync(existingItem);
@@ -55,7 +55,7 @@ namespace zity.Services.Implementations
 
         public async Task<ItemDTO> PatchAsync(int id, ItemPatchDTO patchDTO)
         {
-            var existingItem = await _itemRepository.GetByIdAsync(id, null)
+            var existingItem = await _itemRepository.GetByIdAsync(id)
                     ?? throw new EntityNotFoundException(nameof(Item), id);
             _mapper.Map(patchDTO, existingItem);
             var patchedItem = await _itemRepository.UpdateAsync(existingItem);
