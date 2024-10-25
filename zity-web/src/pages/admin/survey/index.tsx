@@ -73,7 +73,7 @@ const Index = () => {
                 </Button>
               </div>
               <div className="size-full flex flex-col overflow-hidden">
-                <div className="w-full h-full overflow-y-auto grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div className="w-full h-full overflow-y-auto grid grid-cols-1 xl:grid-cols-2 gap-4">
                   {isLoading || isFetching
                     ? Array.from({ length: 10 }).map((_, index) => (
                         <Skeleton key={index} className="w-full h-[150px]" />

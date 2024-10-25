@@ -24,21 +24,21 @@ const SurveyItem = ({ survey }: SurveyItemProps) => {
 
   return (
     <div className="w-full p-4 rounded-md border flex flex-col gap-4">
-      <div className="w-full flex justify-between items-center">
+      <div className="w-full grid grid-cols-3">
         <section className="w-full space-y-0.5 font-medium">
           <h1>{survey.title}</h1>
           <p className="text-sm text-muted-foreground">
             Total Questions: <span>{survey.totalQuestions}</span>
           </p>
         </section>
-        <div className="w-full flex gap-4 justify-end items-center">
+        <div className="w-full grid grid-cols-2 gap-4 col-span-2">
           <section className="w-full flex gap-2">
             <span className="w-16 inline-flex rounded-sm bg-zinc-100 justify-center items-center">
               <Clock />
             </span>
             <div className="w-full flex flex-col">
               <p className="text-sm font-medium text-zinc-500">Start Date</p>
-              <p className="w-full text-sm font-medium">
+              <p className="whitespace-nowrap text-sm font-medium">
                 {new Date(survey.startDate).toLocaleDateString('vi-VN', {
                   day: '2-digit',
                   month: '2-digit',
@@ -57,7 +57,7 @@ const SurveyItem = ({ survey }: SurveyItemProps) => {
             </span>
             <div className="w-full flex flex-col">
               <p className="text-sm font-medium text-zinc-500">Due Date</p>
-              <p className="w-full text-sm font-medium">
+              <p className="whitespace-nowrap text-sm font-medium">
                 {new Date(survey.endDate).toLocaleDateString('vi-VN', {
                   day: '2-digit',
                   month: '2-digit',
