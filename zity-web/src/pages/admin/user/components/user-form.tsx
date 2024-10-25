@@ -14,6 +14,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
+	FormMessage,
 } from '@/components/ui/form'
 import {
   Select,
@@ -32,8 +33,15 @@ import { UserRole } from '@/enums'
 import { Checkbox } from '@/components/ui/checkbox'
 import QrCodeScanner from '@/components/qrcode/QrCodeScanner'
 import { parseDateFromString } from '@/utils/ExtractTime'
+import { useCreateUserMutation } from '@/features/user/userSlice'
+import { useState } from 'react'
+import { toast } from 'sonner'
+import { Loader } from 'lucide-react'
+import { zodResolver } from '@hookform/resolvers/zod'
 
 const UserForm = () => {
+  const [open, setOpen] = useState<boolean>(false)
+  const [createUser, { isLoading }] = useCreateUserMutation()
   const form = useForm<z.infer<typeof UserSchema>>({
     mode: 'onSubmit',
     defaultValues: {
@@ -46,10 +54,29 @@ const UserForm = () => {
       phone: '',
       userType: 'RESIDENT',
     },
+		resolver: zodResolver(UserSchema),
   })
 
   const onSubmit = async (data: z.infer<typeof UserSchema>) => {
     console.log(data)
+    try {
+      await createUser(data)
+        .unwrap()
+        .then((payload) => {
+          console.log(payload)
+          toast.success('User created successfully')
+					form.reset()
+          setOpen(false)
+        })
+        .catch((error) => {
+          throw new Error(error)
+        })
+    } catch (error) {
+      console.error(error)
+      toast.error('Failed to create user')
+    } finally {
+      setOpen(false)
+    }
     // Handle form submission logic here
   }
 
@@ -66,7 +93,7 @@ const UserForm = () => {
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="w-full sm:w-fit" variant={'default'} size={'lg'}>
           New User
@@ -75,6 +102,11 @@ const UserForm = () => {
       <DialogContent
         className="max-w-sm min-[450px]:max-w-md lg:max-w-2xl"
         aria-describedby={undefined}>
+        {isLoading && (
+          <div className="absolute inset-0 size-full rounded-md flex justify-center items-center bg-white/50 backdrop-blur-md">
+            <Loader className="animate-spin text-primary" size={52} />
+          </div>
+        )}
         <DialogHeader>
           <DialogTitle className="text-2xl">New User</DialogTitle>
         </DialogHeader>
@@ -100,6 +132,7 @@ const UserForm = () => {
                       className="focus-visible:ring-primary"
                     />
                   </FormControl>
+									<FormMessage />
                 </FormItem>
               )}
             />
@@ -120,6 +153,7 @@ const UserForm = () => {
                         className="focus-visible:ring-primary"
                       />
                     </FormControl>
+										<FormMessage />
                   </FormItem>
                 )}
               />
@@ -143,6 +177,7 @@ const UserForm = () => {
                         </SelectContent>
                       </Select>
                     </FormControl>
+										<FormMessage />
                   </FormItem>
                 )}
               />
@@ -161,6 +196,7 @@ const UserForm = () => {
                         onChange={field.onChange}
                       />
                     </FormControl>
+										<FormMessage />
                   </FormItem>
                 )}
               />
@@ -180,6 +216,7 @@ const UserForm = () => {
                         className="focus-visible:ring-primary"
                       />
                     </FormControl>
+										<FormMessage />
                   </FormItem>
                 )}
               />
@@ -197,6 +234,7 @@ const UserForm = () => {
                         className="focus-visible:ring-primary read-only:bg-muted"
                       />
                     </FormControl>
+										<FormMessage />
                   </FormItem>
                 )}
               />
@@ -216,6 +254,7 @@ const UserForm = () => {
                         className="focus-visible:ring-primary"
                       />
                     </FormControl>
+										<FormMessage />
                   </FormItem>
                 )}
               />
@@ -240,7 +279,10 @@ const UserForm = () => {
                               key={index}
                               className="flex flex-row items-center space-x-2 space-y-0">
                               <FormControl>
-                                <Checkbox {...field} />
+                                <Checkbox
+                                  {...field}
+                                  checked={field.value == (role as UserRole)}
+                                />
                               </FormControl>
                               <FormLabel className="text-sm font-normal">
                                 {role}
@@ -251,12 +293,17 @@ const UserForm = () => {
                       />
                     ))}
                   </div>
+									<FormMessage />
                 </FormItem>
               )}
             />
             <div className="w-full flex justify-end gap-4">
               <DialogClose asChild>
-                <Button type="button" size={'lg'} variant={'ghost'}>
+                <Button
+                  onClick={() => setOpen(false)}
+                  type="button"
+                  size={'lg'}
+                  variant={'ghost'}>
                   Cancel
                 </Button>
               </DialogClose>

@@ -1,7 +1,5 @@
 import DefaultLayout from '@/components/layouts/DefaultLayout'
-import PrivateLayout, {
-  loader as PrivateLoader,
-} from '@/components/layouts/PrivateLayout'
+import PrivateLayout from '@/components/layouts/PrivateLayout'
 import { createBrowserRouter } from 'react-router-dom'
 
 //Auth Pages
@@ -36,7 +34,6 @@ export const route = createBrowserRouter([
   {
     path: '/',
     element: <PrivateLayout />,
-    loader: PrivateLoader,
     errorElement: <NotFound />,
     children: [
       {
@@ -124,7 +121,7 @@ export const route = createBrowserRouter([
               },
             ],
           },
-					{
+          {
             path: '/admin/setting',
             element: <SettingAdmin />,
             children: [
@@ -148,10 +145,10 @@ export const route = createBrowserRouter([
       },
     ],
   },
-	{
-		path: '/payment',
-		element: <MomoPaymentSuccess />,
-	},
+  {
+    path: '/payment',
+    element: <MomoPaymentSuccess />,
+  },
 
   {
     path: '*',

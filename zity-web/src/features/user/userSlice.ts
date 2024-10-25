@@ -12,11 +12,13 @@ interface QrScanInformation {
 interface UserState {
   isEditingUser: boolean
   qrScanInformation?: Partial<QrScanInformation>
+  user?: User
 }
 
 const initialState: UserState = {
   isEditingUser: false,
   qrScanInformation: undefined,
+  user: undefined,
 }
 
 const userSlice = createSlice({
@@ -29,6 +31,9 @@ const userSlice = createSlice({
     ) => {
       state.qrScanInformation = action.payload
     },
+    getUserInformation: (state, action: PayloadAction<User>) => {
+      state.user = action.payload
+    },
   },
 })
 
@@ -39,6 +44,9 @@ const userApiSlice = apiSlice.injectEndpoints({
     }),
     getUserById: builder.query<User, string | number>({
       query: (id) => `/users/${id}`,
+    }),
+    getCurrentUser: builder.query<User, void>({
+      query: () => '/users/me',
     }),
     createUser: builder.mutation<
       void,
@@ -95,11 +103,12 @@ const userApiSlice = apiSlice.injectEndpoints({
 })
 
 export default userSlice.reducer
-export const { getQrScanInformation } = userSlice.actions
+export const { getQrScanInformation,getUserInformation } = userSlice.actions
 export const {
   useGetUserQuery,
   useGetUserByIdQuery,
   useCreateUserMutation,
   useUpdateUserMutation,
   useDeleteUserMutation,
+  useGetCurrentUserQuery,
 } = userApiSlice

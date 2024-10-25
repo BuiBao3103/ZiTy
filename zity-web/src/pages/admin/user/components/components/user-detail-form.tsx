@@ -31,6 +31,7 @@ import {
 } from '@/features/user/userSlice'
 import { toast } from 'sonner'
 import { Checkbox } from '@/components/ui/checkbox'
+import { UserRole } from '@/enums'
 
 interface UserDetailFormProps {
   user?: User
@@ -91,8 +92,9 @@ const UserDetailForm = ({ user, setShowDetail }: UserDetailFormProps) => {
         setShowDetail('')
       }
     } catch (error: any) {
-      console.log(error)
-      toast.error(error.message)
+      if(error.status === 405){
+				toast.error("Method not allowed")
+			}
     }
   }
 
@@ -321,7 +323,7 @@ const UserDetailForm = ({ user, setShowDetail }: UserDetailFormProps) => {
                             key={index}
                             className="flex flex-row items-center space-x-2 space-y-0">
                             <FormControl>
-                              <Checkbox {...field} />
+                              <Checkbox {...field} checked={field.value === role as UserRole} />
                             </FormControl>
                             <FormLabel className="text-sm font-normal">
                               {role}
