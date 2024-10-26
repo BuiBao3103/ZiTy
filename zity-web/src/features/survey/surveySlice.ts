@@ -30,37 +30,43 @@ const surveyApiSlice = apiSlice.injectEndpoints({
     getSurveyById: builder.query<ISurvey, string | number>({
       async queryFn(_arg, _queryApi, _extraOptions, fetchWithBQ) {
         // Fetch survey details
-        const surveyResult = await fetchWithBQ(`/surveys/${_arg}`);
+        const surveyResult = await fetchWithBQ(`/surveys/${_arg}`)
         if (surveyResult.error)
-          return { error: surveyResult.error as FetchBaseQueryError };
-        const survey = surveyResult.data as ISurvey;
+          return { error: surveyResult.error as FetchBaseQueryError }
+        const survey = surveyResult.data as ISurvey
         // Fetch questions using the survey ID
-        const questionsResult = await fetchWithBQ(`/questions?SurveyId=eq:${survey.id}&Include=answers`);
+        const questionsResult = await fetchWithBQ(
+          `/questions?SurveyId=eq:${survey.id}&Include=answers`,
+        )
         if (questionsResult.error)
-          return { error: questionsResult.error as FetchBaseQueryError };
-        const questions = (questionsResult.data as ResponseDataType<IQuestion>).contents;
+          return { error: questionsResult.error as FetchBaseQueryError }
+        const questions = (questionsResult.data as ResponseDataType<IQuestion>)
+          .contents
         // Combine survey data with questions and return the combined result
         return {
           data: {
             ...survey,
             questions, // Attach questions to the survey
           },
-        };
+        }
       },
-		}),
-		
-    createSurvey: builder.mutation<void, void>({
+    }),
+
+    createSurvey: builder.mutation<ISurvey, Partial<ISurvey>>({
       query: (data) => ({
         url: 'surveys',
         method: 'POST',
         body: data,
       }),
     }),
-    updateSurvery: builder.mutation<void, { id: string; data: void }>({
+    updateSurvery: builder.mutation<
+      void,
+      { id: number | undefined; body: Partial<ISurvey> }
+    >({
       query: (data) => ({
         url: `surveys/${data.id}`,
         method: 'PUT',
-        body: data,
+        body: data.body,
       }),
     }),
     deleteSurvey: builder.mutation<void, string | number>({
