@@ -6,7 +6,6 @@ export const serviceApiSlice = apiSlice.injectEndpoints({
     getServices: builder.query<ResponseDataType<Service>, number | void>({
       query: (page = 1) => ({
         url: `services?page${page}`,
-        method: 'GET',
       }),
       providesTags: (results) =>
         results
