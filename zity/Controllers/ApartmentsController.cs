@@ -47,8 +47,8 @@ namespace zity.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] string id)
         {
-            var result = await _apartmentService.DeleteAsync(id);
-            return !result ? NotFound() : NoContent();
+            await _apartmentService.DeleteAsync(id);
+            return NoContent();
         }
     }
 }
