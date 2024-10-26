@@ -1,17 +1,27 @@
 import { z } from 'zod'
 
-export const AnswerItemSchema = z.object({
-  answer: z
-    .string({ required_error: 'This field is required' })
-    .min(1, 'Answer is required'),
+
+const BaseEntitySchema = z.object({
+  createdAt: z.union([z.date(), z.string()]).optional(),
+  updatedAt: z.union([z.date(), z.string()]).optional(),
+  deletedAt: z.union([z.date(), z.string()]).optional(),
 })
 
+export const AnswerItemSchema = z
+  .object({
+    id: z.number().nullable(),
+    content: z.string(),
+    question: z.string().nullable(),
+    questionId: z.number(),
+  })
+  .partial()
+
 export const QuestionSchema = z.object({
-  id: z.number(),
+  id: z.number().optional(),
   content: z.string(),
-  surveyId: z.number(),
+  surveyId: z.number().optional(),
   answers: z.array(AnswerItemSchema),
-  otherAnswers: z.array(z.any()),
+  otherAnswers: z.array(z.any()).optional(),
   survey: z.any().nullable(), // Adjust the structure of 'survey' if needed
 })
 
@@ -19,9 +29,9 @@ export const QuestionSchema = z.object({
 type QuestionFormSchema = z.infer<typeof QuestionSchema>
 
 export const QuestionItem = QuestionSchema.pick({
-	content: true,
-	answers: true,
-}) 
+  content: true,
+  answers: true,
+})
 
 export interface IQuestion extends QuestionFormSchema, BaseEntity {}
 

@@ -2,11 +2,11 @@ import { useGetSurveyByIdQuery } from '@/features/survey/surveySlice'
 import SurveyForm from './survey-form'
 import { Loader } from 'lucide-react'
 
-interface SurveyDetailProps {
+interface ISurveyDetailProps {
   surveyID: string | number
 }
 
-const SurveyDetail = ({ surveyID }: SurveyDetailProps) => {
+const SurveyDetail = ({ surveyID }: ISurveyDetailProps) => {
   const {
     data: detailSurvey,
     isLoading,
