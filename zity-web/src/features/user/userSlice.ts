@@ -40,13 +40,13 @@ const userSlice = createSlice({
 const userApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getUser: builder.query<ResponseDataType<User>, number | void>({
-      query: (page = 1) => `/users?page=${page}`,
+      query: (page = 1) => `users?page=${page}`,
     }),
     getUserById: builder.query<User, string | number>({
-      query: (id) => `/users/${id}`,
+      query: (id) => `users/${id}`,
     }),
     getCurrentUser: builder.query<User, void>({
-      query: () => '/users/me',
+      query: () => 'users/me',
     }),
     createUser: builder.mutation<
       void,
@@ -111,4 +111,5 @@ export const {
   useUpdateUserMutation,
   useDeleteUserMutation,
   useGetCurrentUserQuery,
+	useLazyGetCurrentUserQuery
 } = userApiSlice

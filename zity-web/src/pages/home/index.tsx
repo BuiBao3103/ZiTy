@@ -17,10 +17,11 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { useAppSelector } from '@/store'
 const Index = () => {
   useDocumentTitle('Home')
   const date = new Date() // Current date
-
+  const user = useAppSelector((state) => state.userReducer.user)
   const options: Intl.DateTimeFormatOptions = {
     weekday: 'short',
     month: 'long',
@@ -54,7 +55,7 @@ const Index = () => {
   return (
     <div className="w-full h-full min-h-screen md:h-screen p-4 bg-zinc-100 flex flex-col space-y-4 overflow-hidden">
       <p className="font-medium">{formattedDate}</p>
-      <p className="text-3xl font-bold">Hello, {`{{user}}`}</p>
+      <p className="text-3xl font-bold">Hello, {`${user ? user?.fullName : "loading..."}`}</p>
       <div className="size-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="w-full lg:col-span-1 lg:row-span-3 lg:row-start-1 lg:col-start-1 bg-white rounded-md border border-zinc-200 p-4 flex flex-col space-y-2">
           <p className="flex items-center gap-2 text-lg font-medium uppercase">

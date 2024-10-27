@@ -2,33 +2,36 @@ import DefaultLayout from '@/components/layouts/DefaultLayout'
 import PrivateLayout from '@/components/layouts/PrivateLayout'
 import { createBrowserRouter } from 'react-router-dom'
 
-//Auth Pages
+// Auth Pages
 import AuthLayout from '@pages/auth'
 import Login from '@pages/auth/login'
 
-//Home Page
+// Home Page
 import Home from '@pages/home'
 
-//Admin Page
+// Admin Pages
+import HomeAdmin from '@admin/home'
 import Apartment from '@admin/apartment'
-import User from '@admin/user'
-import Service from '@admin/service'
+import UserAdmin from '@admin/user'
+import ServiceAdmin from '@admin/service'
 import PackageAdmin from '@admin/package'
 import BillAdmin from '@admin/bill'
 import SurveyAdmin from '@admin/survey'
 import ReportAdmin from '@admin/report'
 import SettingAdmin from '@admin/setting'
 
-//User Page
+// User Pages
 import Package from '@user/package'
 import Report from '@user/report'
 import Bill from '@user/bill'
 import Survey from '@user/survey'
 import Chat from '@user/chat'
 
-//Error page
+// Error and Payment pages
 import NotFound from '@pages/404'
 import MomoPaymentSuccess from '@/pages/notify-payment/MomoPaymentSuccess'
+import AdminLayout from '@/components/layouts/AdminLayout'
+import UserLayout from '@/components/layouts/UserLayout'
 
 export const route = createBrowserRouter([
   {
@@ -36,128 +39,61 @@ export const route = createBrowserRouter([
     element: <PrivateLayout />,
     errorElement: <NotFound />,
     children: [
+      // User Layout
       {
         element: <DefaultLayout />,
         children: [
           {
-            index: true,
-            element: <Home />,
-          },
-          {
-            path: '/apartment',
-            element: <Apartment />,
+            element: <UserLayout />,
             children: [
+              { index: true, element: <Home /> },
               {
-                path: ':id',
+                path: '/apartments/:id?',
                 element: <Apartment />,
               },
-            ],
-          },
-          {
-            path: '/package',
-            element: <Package />,
-            children: [
               {
-                path: ':id',
+                path: '/packages/:id?',
                 element: <Package />,
               },
-            ],
-          },
-          {
-            path: '/report',
-            element: <Report />,
-            children: [
               {
-                path: ':id',
+                path: '/reports/:id?',
                 element: <Report />,
               },
-            ],
-          },
-          {
-            path: '/user',
-            element: <User />,
-          },
-          {
-            path: '/bills',
-            element: <Bill />,
-            children: [
               {
-                path: ':id',
+                path: '/bills/:id?',
                 element: <Bill />,
               },
+              { path: '/surveys', element: <Survey /> },
+              { path: '/chat', element: <Chat /> },
             ],
           },
+          // Admin Layout
           {
-            path: '/service',
-            element: <Service />,
-          },
-          {
-            path: '/admin/package',
-            element: <PackageAdmin />,
-          },
-          {
-            path: '/admin/bill',
-            element: <BillAdmin />,
-          },
-          {
-            path: '/admin/survey',
-            element: <SurveyAdmin />,
+            path: '/admin',
+            element: <AdminLayout />,
             children: [
-              {
-                path: ':id',
-                element: <SurveyAdmin />,
-              },
-            ],
-          },
-          {
-            path: '/survey',
-            element: <Survey />,
-          },
-          {
-            path: '/chat',
-            element: <Chat />,
-          },
-          {
-            path: '/admin/report',
-            element: <ReportAdmin />,
-            children: [
-              {
-                path: ':id',
-                element: <ReportAdmin />,
-              },
-            ],
-          },
-          {
-            path: '/admin/setting',
-            element: <SettingAdmin />,
-            children: [
-              {
-                path: ':id',
-                element: <SettingAdmin />,
-              },
+              { index: true, element: <HomeAdmin /> },
+              { path: 'packages', element: <PackageAdmin /> },
+              { path: 'bills', element: <BillAdmin /> },
+              { path: 'services', element: <ServiceAdmin /> },
+              { path: 'users', element: <UserAdmin /> },
+              { path: 'surveys/:id?', element: <SurveyAdmin /> },
+              { path: 'reports/:id?', element: <ReportAdmin /> },
+              { path: 'settings/:id?', element: <SettingAdmin /> },
             ],
           },
         ],
       },
     ],
   },
+  // Auth Route
   {
     path: '/login',
     element: <AuthLayout />,
-    children: [
-      {
-        index: true,
-        element: <Login />,
-      },
-    ],
+    children: [{ index: true, element: <Login /> }],
   },
-  {
-    path: '/payment',
-    element: <MomoPaymentSuccess />,
-  },
-
-  {
-    path: '*',
-    element: <NotFound />,
-  },
+  // Payment Route
+  { path: '/payment', element: <MomoPaymentSuccess /> },
+  // Catch-all NotFound Route
+  { path: '*', element: <NotFound /> },
 ])

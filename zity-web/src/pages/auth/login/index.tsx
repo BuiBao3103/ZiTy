@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -15,21 +15,34 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
-import { useLoginMutation } from '@/features/auth/authSlice'
+import { useLoginMutation, userLoggedIn } from '@/features/auth/authSlice'
 import { useDocumentTitle } from 'usehooks-ts'
 import Logo from '@/assets/logo.svg'
 import Overlay from '@components/overlay/Overlay'
 import { UserLoginSchema } from '@/schema/user.validate'
+import Cookies from 'universal-cookie'
+import { useAppDispath } from '@/store'
+import {
+  getUserInformation,
+  useLazyGetCurrentUserQuery,
+} from '@/features/user/userSlice'
 
 export default function Index() {
   useDocumentTitle('Login')
-
+  const navigate = useNavigate()
+  const cookie = new Cookies(null, { path: '/' })
   const [isShowing, setIsShowing] = useState<boolean>(false)
+
+  const dispatch = useAppDispath()
   const [Login, { isLoading }] = useLoginMutation()
+
   const handleShowPassword = () => {
     setIsShowing(!isShowing)
   }
-
+  const [
+    getCurrentUser,
+    { data: currentUser, isLoading: isLoadingCurrentUser },
+  ] = useLazyGetCurrentUserQuery()
   const form = useForm<z.infer<typeof UserLoginSchema>>({
     resolver: zodResolver(UserLoginSchema),
     defaultValues: {
@@ -39,14 +52,23 @@ export default function Index() {
   })
 
   const onSubmit = async (data: z.infer<typeof UserLoginSchema>) => {
-    console.log(data)
-    // await Login(data)
-    //   .unwrap()
-    //   .then((res) => {
-    // 		console.log(res)
-    // 	}).catch((error) => {
-    // 		toast.error(error.message)
-    // 	})
+    await Login({ body: data })
+      .unwrap()
+      .then(async (res) => {
+        toast.success('Login successful')
+        dispatch(userLoggedIn(res))
+        await getCurrentUser().unwrap().then((payload) => {
+					dispatch(getUserInformation(payload))
+				}).catch((error) => {
+					throw new Error("Can't get user information")
+				})
+        cookie.set('accessToken', res.token, { path: '/' })
+        cookie.set('refreshToken', res.refreshToken, { path: '/' })
+        navigate('/')
+      })
+      .catch((error) => {
+        // toast.error(error.message)
+      })
   }
 
   const onError = (error: any) => {
@@ -110,7 +132,7 @@ export default function Index() {
               )}
             />
             <Button disabled={isLoading} type="submit" className="w-full">
-              {isLoading ? 'Loading...' : 'Login'}
+              {isLoading || isLoadingCurrentUser ? 'Loading...' : 'Login'}
             </Button>
           </form>
         </Form>
