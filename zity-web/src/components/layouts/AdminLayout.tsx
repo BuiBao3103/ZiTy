@@ -1,6 +1,7 @@
 import { useAppSelector } from '@/store'
 import { useEffect } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
+import { toast } from 'sonner'
 
 const AdminLayout = () => {
   const token = useAppSelector((state) => state.authReducer.token)
@@ -8,11 +9,13 @@ const AdminLayout = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (token && !token) {
-      navigate('/login', { replace: true })
-    }
     if (user && user?.userType !== 'ADMIN') {
-      navigate(-1)
+      if (user?.userType === 'RESIDENT') {
+        navigate('/')
+      } else {
+        navigate('/admin')
+      }
+      toast.error('You are not authorized to access this page')
     }
   }, [navigate, token, user])
 

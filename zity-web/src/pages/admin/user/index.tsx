@@ -15,10 +15,10 @@ const Index = () => {
   const { data: users, isLoading, isFetching } = useGetUserQuery(currentPage)
   return (
     <>
-      <div className="w-full sm:h-screen flex flex-col bg-zinc-100">
+      <div className="w-full h-full lg:h-screen flex flex-col bg-zinc-100">
         <BreadCrumb paths={[{ label: 'user', to: '/user' }]} />
         <div className="size-full p-4">
-          <div className="size-full p-4 bg-white rounded-md flex flex-col">
+          <div className="size-full p-4 bg-white rounded-md flex flex-col	">
             <div className="w-full h-auto flex lg:flex-row flex-col gap-4 justify-between items-center">
               <div className="w-full lg:w-1/4 flex items-center border px-3 py-0.5 relative rounded-md focus-within:border-primary transition-all">
                 <Search size={20} />

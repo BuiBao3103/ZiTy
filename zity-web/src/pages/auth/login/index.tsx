@@ -30,6 +30,7 @@ import {
 export default function Index() {
   useDocumentTitle('Login')
   const navigate = useNavigate()
+  const [isResident, setIsResident] = useState<boolean>(false)
   const cookie = new Cookies(null, { path: '/' })
   const [isShowing, setIsShowing] = useState<boolean>(false)
 
@@ -55,17 +56,25 @@ export default function Index() {
     await Login({ body: data })
       .unwrap()
       .then(async (res) => {
-        toast.success('Login successful')
         dispatch(userLoggedIn(res))
-        await getCurrentUser().unwrap().then((payload) => {
-					dispatch(getUserInformation(payload))
-				}).catch((error) => {
-					throw new Error("Can't get user information")
+        await getCurrentUser()
+          .unwrap()
+          .then((payload) => {
+            dispatch(getUserInformation(payload))
+            if (payload.userType === 'ADMIN') {
+              navigate('/admin')
+							toast.success('Login successful')
+            } else {
+							setIsResident(true)
+            }
+          })
+          .catch((error) => {
+						console.log(error)
+            throw new Error("Can't get user information")
+          })
+					cookie.set('accessToken', res.token, { path: '/' })
+					cookie.set('refreshToken', res.refreshToken, { path: '/' })
 				})
-        cookie.set('accessToken', res.token, { path: '/' })
-        cookie.set('refreshToken', res.refreshToken, { path: '/' })
-        navigate('/')
-      })
       .catch((error) => {
         // toast.error(error.message)
       })
@@ -137,21 +146,29 @@ export default function Index() {
           </form>
         </Form>
       </div>
-      {/* <Overlay>
-        <div className="w-[500px] h-[400px] bg-white rounded-md p-4 flex flex-col justify-center items-center gap-2.5">
-          <img src={Logo} alt="logo" className="size-24" />
-          <p className="text-2xl font-medium">Welcome back, {'{ name }'}</p>
-          <p className="font-medium">Select your account</p>
-          <div className="w-full flex justify-center items-center gap-6 mt-4">
-            <Button className="size-32 border-2 text-lg" variant={'ghost'}>
-              Owner
-            </Button>
-            <Button className="size-32 border-2 text-lg" variant={'ghost'}>
-              Resident
-            </Button>
+      {isResident && (
+        <Overlay>
+          <div className="w-[500px] h-[400px] bg-white rounded-md p-4 flex flex-col justify-center items-center gap-2.5">
+            <img src={Logo} alt="logo" className="size-24" />
+            <p className="text-2xl font-medium">Welcome back, {'{ name }'}</p>
+            <p className="font-medium">Select your account</p>
+            <div className="w-full flex justify-center items-center gap-6 mt-4">
+              <Button
+                className="size-32 border-2 text-lg"
+                type="button"
+                variant={'ghost'}>
+                Owner
+              </Button>
+              <Button
+                className="size-32 border-2 text-lg"
+                type="button"
+                variant={'ghost'}>
+                Resident
+              </Button>
+            </div>
           </div>
-        </div>
-      </Overlay> */}
+        </Overlay>
+      )}
     </>
   )
 }
