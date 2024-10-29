@@ -63,18 +63,25 @@ export default function Index() {
             dispatch(getUserInformation(payload))
             if (payload.userType === 'ADMIN') {
               navigate('/admin')
-							toast.success('Login successful')
             } else {
-							setIsResident(true)
+              navigate('/')
+              // setIsResident(true)
             }
+            toast.success('Login successful')
+            cookie.set('accessToken', res.token, {
+              path: '/',
+              expires: new Date(new Date().getTime() + 30 * 60 * 1000),
+            })
+            cookie.set('refreshToken', res.refreshToken, {
+              path: '/',
+              expires: new Date(new Date().setDate(new Date().getDate() + 7)),
+            })
           })
           .catch((error) => {
-						console.log(error)
+            console.log(error)
             throw new Error("Can't get user information")
           })
-					cookie.set('accessToken', res.token, { path: '/' })
-					cookie.set('refreshToken', res.refreshToken, { path: '/' })
-				})
+      })
       .catch((error) => {
         // toast.error(error.message)
       })
@@ -148,7 +155,7 @@ export default function Index() {
       </div>
       {isResident && (
         <Overlay>
-          <div className="w-[500px] h-[400px] bg-white rounded-md p-4 flex flex-col justify-center items-center gap-2.5">
+          <div className="w-[500px] h-[400px] animate-in delay-150 fade-in bg-white rounded-md p-4 flex flex-col justify-center items-center gap-2.5">
             <img src={Logo} alt="logo" className="size-24" />
             <p className="text-2xl font-medium">Welcome back, {'{ name }'}</p>
             <p className="font-medium">Select your account</p>

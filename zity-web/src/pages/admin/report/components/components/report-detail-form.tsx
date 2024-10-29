@@ -1,8 +1,8 @@
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import AlertDelete from '@/components/alert/AlertDelete'
-import { Report, ReportSchema } from '@/schema/report.validate'
-import { FieldErrors, useForm } from 'react-hook-form'
+import { IReport, ReportSchema } from '@/schema/report.validate'
+import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
@@ -13,8 +13,8 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import DefaultAvatar from '@/assets/default-avatar.jpeg'
+// import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+// import DefaultAvatar from '@/assets/default-avatar.jpeg'
 import { Textarea } from '@/components/ui/textarea'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import {
@@ -23,14 +23,21 @@ import {
 } from '@/features/reports/reportSlice'
 import { toast } from 'sonner'
 import { Loader } from 'lucide-react'
+import { useCreateRejectionReasonMutation } from '@/features/rejectedreasons/rejectedReasonsSlice'
+import { useState } from 'react'
+import { useDebounceCallback } from 'usehooks-ts'
 
 interface ReportFormDetailProps {
-  report?: Report
+  report?: IReport
   setShowDetail: (value: number | string) => void
 }
 
 const ReportFormDetail = ({ report, setShowDetail }: ReportFormDetailProps) => {
+  const [rejectionReason, setRejectionReason] = useState<string>('')
+  const debounced = useDebounceCallback(setRejectionReason, 500)
   const [updateReport, { isLoading }] = useUpdateReportMutation()
+  const [createRejection, { isLoading: isLoadingRejection }] =
+    useCreateRejectionReasonMutation()
   const [deleteReport, { isLoading: isLoadingDelete }] =
     useDeleteReportMutation()
 
@@ -57,12 +64,34 @@ const ReportFormDetail = ({ report, setShowDetail }: ReportFormDetailProps) => {
 
   const onSubmit = async (data: z.infer<typeof ReportSchema>) => {
     try {
-      const result = await updateReport({ id: data.id, body: data })
-      if (result.error) {
-        throw new Error('Something went wrong')
+      if (data.status === 'REJECTED' && rejectionReason === '') {
+        toast.error('Please provide a reason for rejection')
+        return
       } else {
-        toast.success('Report updated successfully')
-        setShowDetail('')
+        const result = await updateReport({
+          id: data.id,
+          body: { status: data.status },
+        })
+        if (result.error) {
+          throw new Error('Something went wrong')
+        } else {
+          if (data.status === 'REJECTED') {
+            await createRejection({
+              content: rejectionReason,
+              reportId: data.id,
+            })
+              .unwrap()
+              .then((payload) => {
+                console.log(payload)
+              })
+              .catch((error) => {
+                console.log(error)
+                toast.error(error.message)
+              })
+          }
+          toast.success('Report updated successfully')
+          setShowDetail('')
+        }
       }
     } catch (error: any) {
       console.log(error)
@@ -70,16 +99,19 @@ const ReportFormDetail = ({ report, setShowDetail }: ReportFormDetailProps) => {
     }
   }
 
+  console.log(rejectionReason)
+
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="max-w-sm min-[550px]:max-w-lg w-full h-fit bg-white rounded-md relative z-[51] animate-in fade-in-95 zoom-in-95 shadow-lg">
-        {isLoading && (
-          <div className="absolute inset-0 size-full rounded-md flex justify-center items-center bg-white/50 backdrop-blur-md">
-            <Loader className="animate-spin text-primary" size={52} />
-          </div>
-        )}
+        {isLoading ||
+          (isLoadingRejection && (
+            <div className="absolute inset-0 size-full rounded-md flex justify-center items-center bg-white/50 backdrop-blur-md">
+              <Loader className="animate-spin text-primary" size={52} />
+            </div>
+          ))}
         <div className="w-full flex justify-start items-center px-4 py-3 text-xl font-medium uppercase">
           Report #<span className="text-primary">{report?.id}</span>{' '}
         </div>
@@ -106,19 +138,7 @@ const ReportFormDetail = ({ report, setShowDetail }: ReportFormDetailProps) => {
             </div>
           </div>
           {form.getValues('status') === 'REJECTED' && (
-            <FormField
-              control={form.control}
-              name="content"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea {...field} rows={5} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <Textarea rows={5} onChange={(e) => debounced(e.target.value)} />
           )}
           <FormField
             control={form.control}

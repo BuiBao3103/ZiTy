@@ -60,17 +60,20 @@ const surveyApiSlice = apiSlice.injectEndpoints({
           },
         }
       },
-			providesTags: (result, error, id) =>
+      providesTags: (result, error, id) =>
         result ? [{ type: 'Surveys', id }] : [],
     }),
 
-    createSurvey: builder.mutation<ISurvey, Partial<ISurvey>>({
+    createSurvey: builder.mutation<
+      ISurvey,
+      Partial<ISurvey> & Omit<ISurvey, 'id'>
+    >({
       query: (data) => ({
         url: 'surveys',
         method: 'POST',
         body: data,
       }),
-			invalidatesTags: [{ type: 'Surveys', id: 'LIST' }],
+      invalidatesTags: [{ type: 'Surveys', id: 'LIST' }],
     }),
     updateSurvery: builder.mutation<
       void,
@@ -81,16 +84,16 @@ const surveyApiSlice = apiSlice.injectEndpoints({
         method: 'PUT',
         body: data.body,
       }),
-			invalidatesTags: (result, error, arg) => [
-				{ type: 'Surveys', id: arg.id },
-			],
+      invalidatesTags: (result, error, arg) => [
+        { type: 'Surveys', id: arg.id },
+      ],
     }),
     deleteSurvey: builder.mutation<void, string | number | undefined>({
       query: (id) => ({
         url: `surveys/${id}`,
         method: 'DELETE',
       }),
-			invalidatesTags: (result, error, id) => [{ type: 'Surveys', id }],
+      invalidatesTags: (result, error, id) => [{ type: 'Surveys', id }],
     }),
   }),
 })

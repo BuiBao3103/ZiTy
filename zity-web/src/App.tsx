@@ -1,5 +1,5 @@
 import { RouterProvider } from 'react-router-dom'
-import { route } from './routes/route'
+import route from './routes/route'
 import 'react-day-picker/dist/style.css'
 import { useEffect } from 'react'
 import Cookies from 'universal-cookie'

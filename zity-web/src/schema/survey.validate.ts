@@ -3,7 +3,7 @@ import { QuestionSchema } from './question.validate'
 
 export const SurveySchema = z
   .object({
-    id: z.number().optional(),
+    id: z.number(),
     title: z.string(),
     startDate: z.coerce.date(),
     endDate: z.coerce.date(),

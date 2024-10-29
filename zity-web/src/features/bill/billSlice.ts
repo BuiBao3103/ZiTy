@@ -1,22 +1,22 @@
-import { Bill } from '@/schema/bill.validate'
+import { IBill } from '@/schema/bill.validate'
 import { apiSlice } from '../api/apiSlice'
 
 export const billSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getBills: builder.query<ResponseDataType<Bill>, number | void>({
+    getBills: builder.query<ResponseDataType<IBill>, number | void>({
       query: (page = 1) => {
         return {
           url: `bills?page=${page}`,
         };
       },
     }),
-    getBill: builder.query<Bill, string>({
+    getBill: builder.query<IBill, string>({
       query: (id: string) => ({
         url: `bills/${id}`,
         method: 'GET',
       }),
     }),
-    updateBill: builder.mutation<void, { id: string; body: Partial<Bill> }>({
+    updateBill: builder.mutation<void, { id: string; body: Partial<IBill> }>({
       query: (data) => ({
         url: `bills/${data.id}`,
         method: 'PUT',

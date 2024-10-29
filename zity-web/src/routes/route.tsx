@@ -1,6 +1,6 @@
 import DefaultLayout from '@/components/layouts/DefaultLayout'
 import PrivateLayout from '@/components/layouts/PrivateLayout'
-import { createBrowserRouter } from 'react-router-dom'
+import { createBrowserRouter, RouteObject } from 'react-router-dom'
 
 // Auth Pages
 import AuthLayout from '@pages/auth'
@@ -30,70 +30,65 @@ import Chat from '@user/chat'
 // Error and Payment pages
 import NotFound from '@pages/404'
 import MomoPaymentSuccess from '@/pages/notify-payment/MomoPaymentSuccess'
-import AdminLayout from '@/components/layouts/AdminLayout'
-import UserLayout from '@/components/layouts/UserLayout'
+import ProtectedLayout from '@/components/layouts/ProtectedLayout'
+import { ROUTES } from '@/configs/endpoint'
 
-export const route = createBrowserRouter([
+const userRoutes: RouteObject[] = [
+  { index: true, element: <Home /> },
+  { path: ROUTES.APARTMENTS + '/:id?', element: <Apartment /> },
+  { path: ROUTES.PACKAGES + '/:id?', element: <Package /> },
+  { path: ROUTES.REPORTS + '/:id?', element: <Report /> },
+  { path: ROUTES.BILLS + '/:id?', element: <Bill /> },
+  { path: ROUTES.SURVEYS + '/:id?', element: <Survey /> },
+  { path: ROUTES.CHAT, element: <Chat /> },
+]
+
+const adminRoutes: RouteObject[] = [
+  { index: true, element: <HomeAdmin /> },
+  { path: ROUTES.ADMIN.PACKAGES, element: <PackageAdmin /> },
+  { path: ROUTES.ADMIN.BILLS, element: <BillAdmin /> },
+  { path: ROUTES.ADMIN.SERVICES, element: <ServiceAdmin /> },
+  { path: ROUTES.ADMIN.USERS, element: <UserAdmin /> },
+  { path: ROUTES.ADMIN.SURVEYS + '/:id?', element: <SurveyAdmin /> },
+  { path: ROUTES.ADMIN.REPORTS + '/:id?', element: <ReportAdmin /> },
+  { path: ROUTES.ADMIN.SETTINGS + '/:id?', element: <SettingAdmin /> },
+]
+
+const route = createBrowserRouter([
   {
-    path: '/',
+    path: ROUTES.HOME,
     element: <PrivateLayout />,
     errorElement: <NotFound />,
     children: [
-      // User Layout
       {
         element: <DefaultLayout />,
         children: [
           {
-            element: <UserLayout />,
-            children: [
-              { index: true, element: <Home /> },
-              {
-                path: '/apartments/:id?',
-                element: <Apartment />,
-              },
-              {
-                path: '/packages/:id?',
-                element: <Package />,
-              },
-              {
-                path: '/reports/:id?',
-                element: <Report />,
-              },
-              {
-                path: '/bills/:id?',
-                element: <Bill />,
-              },
-              { path: '/surveys/:id?', element: <Survey /> },
-              { path: '/chat', element: <Chat /> },
-            ],
+            element: <ProtectedLayout userType="RESIDENT" />,
+            children: userRoutes,
           },
-          // Admin Layout
           {
-            path: '/admin',
-            element: <AdminLayout />,
-            children: [
-              { index: true, element: <HomeAdmin /> },
-              { path: 'packages', element: <PackageAdmin /> },
-              { path: 'bills', element: <BillAdmin /> },
-              { path: 'services', element: <ServiceAdmin /> },
-              { path: 'users', element: <UserAdmin /> },
-              { path: 'surveys/:id?', element: <SurveyAdmin /> },
-              { path: 'reports/:id?', element: <ReportAdmin /> },
-              { path: 'settings/:id?', element: <SettingAdmin /> },
-            ],
+            path: ROUTES.ADMIN.HOME,
+            element: <ProtectedLayout userType="ADMIN" />,
+            children: adminRoutes,
           },
         ],
       },
     ],
   },
-  // Auth Route
   {
-    path: '/login',
+    path: ROUTES.LOGIN,
     element: <AuthLayout />,
     children: [{ index: true, element: <Login /> }],
   },
-  // Payment Route
-  { path: '/payment', element: <MomoPaymentSuccess /> },
-  // Catch-all NotFound Route
-  { path: '*', element: <NotFound /> },
-])
+  {
+    path: ROUTES.PAYMENT,
+    element: <MomoPaymentSuccess />,
+  },
+  {
+    path: '*',
+    element: <NotFound />,
+  },
+]);
+
+export default route;

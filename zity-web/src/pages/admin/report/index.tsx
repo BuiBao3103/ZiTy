@@ -7,13 +7,13 @@ import { useGetReportsQuery } from '@/features/reports/reportSlice'
 import { useState } from 'react'
 import PaginationCustom from '@/components/pagination/PaginationCustom'
 const Index = () => {
+	useDocumentTitle('Report')
   const [currentPage, setCurrentPage] = useState<number>(1)
   const {
     data: reports,
     isLoading,
     isFetching,
   } = useGetReportsQuery(currentPage)
-  useDocumentTitle('Report')
 
   return (
     <div className="w-full h-full flex flex-col bg-zinc-100">
