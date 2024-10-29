@@ -16,7 +16,7 @@ import { useDocumentTitle } from 'usehooks-ts'
 import { Setting } from '@/schema/setting.validate'
 
 const Index = () => {
-  useDocumentTitle('Service')
+  useDocumentTitle('Setting')
   const settings: Setting[] = [
     {
       id: 1,

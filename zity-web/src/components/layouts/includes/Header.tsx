@@ -175,7 +175,7 @@ const Header = () => {
           className={`md:w-full h-full md:h-[150px] md:p-3 md:order-none order-2 relative`}>
           <img
             src={panelRightOpen ? LogoMobile : Logo}
-            onClick={() => navigate('/')}
+            onClick={() => navigate(`${user?.userType === 'ADMIN' ? '/admin' : '/'}`)}
             loading="lazy"
             alt="Logo website"
             className={`w-full h-full object-contain aspect-square cursor-pointer ${
@@ -199,7 +199,7 @@ const Header = () => {
             </Button>
           )}
         </div>
-        {width <= 768 && <MobileMenu sidebar={filteredSidebars} />}
+        {width <= 768 && <MobileMenu sidebar={filteredSidebars} handleLogout={handleLogOut} />}
         {width > 768 && <Separator />}
         <div
           className={`sidebar w-full h-full hidden md:flex flex-col overflow-y-auto ${

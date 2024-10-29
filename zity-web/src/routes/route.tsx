@@ -63,7 +63,7 @@ export const route = createBrowserRouter([
                 path: '/bills/:id?',
                 element: <Bill />,
               },
-              { path: '/surveys', element: <Survey /> },
+              { path: '/surveys/:id?', element: <Survey /> },
               { path: '/chat', element: <Chat /> },
             ],
           },
