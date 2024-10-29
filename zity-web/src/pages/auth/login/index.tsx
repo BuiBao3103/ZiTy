@@ -148,7 +148,7 @@ export default function Index() {
       </div>
       {isResident && (
         <Overlay>
-          <div className="w-[500px] h-[400px] bg-white rounded-md p-4 flex flex-col justify-center items-center gap-2.5">
+          <div className="w-[500px] h-[400px] animate-in delay-150 fade-in bg-white rounded-md p-4 flex flex-col justify-center items-center gap-2.5">
             <img src={Logo} alt="logo" className="size-24" />
             <p className="text-2xl font-medium">Welcome back, {'{ name }'}</p>
             <p className="font-medium">Select your account</p>

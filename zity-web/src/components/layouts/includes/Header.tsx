@@ -58,25 +58,25 @@ const Header = () => {
     {
       label: 'Package',
       icon: <Package />,
-      to: ROUTES.PACKAGE,
+      to: ROUTES.PACKAGES,
       role: 'RESIDENT',
     },
     {
       label: 'Survey',
       icon: <NotebookText />,
-      to: ROUTES.SURVEY,
+      to: ROUTES.SURVEYS,
       role: 'RESIDENT',
     },
     {
       label: 'Apartments',
       icon: <TableCellsMerge />,
-      to: ROUTES.APARTMENT,
+      to: ROUTES.APARTMENTS,
       role: 'RESIDENT',
     },
     {
       label: 'Report',
       icon: <Flag />,
-      to: ROUTES.REPORT,
+      to: ROUTES.REPORTS,
       role: 'RESIDENT',
     },
     {
@@ -88,37 +88,37 @@ const Header = () => {
     {
       label: 'User Admin',
       icon: <UsersRound />,
-      to: ROUTES.ADMIN.USER,
+      to: ROUTES.ADMIN.USERS,
       role: ['ADMIN'],
     },
     {
       label: 'Service Admin',
       icon: <HandPlatter />,
-      to: ROUTES.ADMIN.SERVICE,
+      to: ROUTES.ADMIN.SERVICES,
       role: ['ADMIN'],
     },
     {
       label: 'Package Admin',
       icon: <Package />,
-      to: ROUTES.ADMIN.PACKAGE,
+      to: ROUTES.ADMIN.PACKAGES,
       role: ['ADMIN'],
     },
     {
       label: 'Bill Admin',
       icon: <Receipt />,
-      to: ROUTES.ADMIN.BILL,
+      to: ROUTES.ADMIN.BILLS,
       role: ['ADMIN'],
     },
     {
       label: 'Survey Admin',
       icon: <NotebookText />,
-      to: ROUTES.ADMIN.SURVEY,
+      to: ROUTES.ADMIN.SURVEYS,
       role: ['ADMIN'],
     },
     {
       label: 'Report Admin',
       icon: <Flag />,
-      to: ROUTES.ADMIN.REPORT,
+      to: ROUTES.ADMIN.REPORTS,
       role: ['ADMIN'],
     },
     {
@@ -130,7 +130,7 @@ const Header = () => {
     {
       label: 'Setting Admin',
       icon: <Cog />,
-      to: ROUTES.ADMIN.SETTING,
+      to: ROUTES.ADMIN.SETTINGS,
       role: ['ADMIN'],
     },
   ]
