@@ -13,11 +13,10 @@ export const BillSchema = z.object({
   newWater: z.number().nullable(),
   status: BillStatusSchema,
   relationshipId: z.number(),
-  createdAt: z.string(),
-  updatedAt: z.string().nullable(),
+	relationship: z.string().nullable(),
   waterReadingDate: z.string().nullable(),
 })
-export type Bill = z.infer<typeof BillSchema>
+export interface IBill extends z.infer<typeof BillSchema>,BaseEntity {}
 
 export const PaymentMethodSchema = z
   .object({

@@ -18,6 +18,6 @@ export const RejectionReasonsSchema = z.object({
 
 type RejectionReasons = z.infer<typeof RejectionReasonsSchema>
 
-export interface Report extends BaseEntity, ReportFormSchema {
+export interface IReport extends BaseEntity, ReportFormSchema {
   rejectionReasons: RejectionReasons[]
 }
