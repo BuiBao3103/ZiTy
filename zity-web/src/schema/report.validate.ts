@@ -13,11 +13,11 @@ export type ReportFormSchema = z.infer<typeof ReportSchema>
 export const RejectionReasonsSchema = z.object({
   id: z.number(),
   content: z.string(),
-  report_id: z.number().nullable(),
+  reportId: z.number().nullable(),
 })
 
-type RejectionReasons = z.infer<typeof RejectionReasonsSchema>
+export interface IRejectionReasons extends z.infer<typeof RejectionReasonsSchema> {}
 
 export interface IReport extends BaseEntity, ReportFormSchema {
-  rejectionReasons: RejectionReasons[]
+  rejectionReasons: IRejectionReasons[]
 }

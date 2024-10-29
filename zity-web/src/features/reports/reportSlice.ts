@@ -45,7 +45,7 @@ export const reportsSlice = apiSlice.injectEndpoints({
     >({
       query: (data) => ({
         url: `reports/${data.id}`,
-        method: 'PUT',
+        method: 'PATCH',
         body: data.body,
       }),
       invalidatesTags: (result, error, arg) => [

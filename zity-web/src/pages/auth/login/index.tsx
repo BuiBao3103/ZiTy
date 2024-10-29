@@ -63,18 +63,24 @@ export default function Index() {
             dispatch(getUserInformation(payload))
             if (payload.userType === 'ADMIN') {
               navigate('/admin')
-							toast.success('Login successful')
+              toast.success('Login successful')
             } else {
-							setIsResident(true)
+              setIsResident(true)
             }
           })
           .catch((error) => {
-						console.log(error)
+            console.log(error)
             throw new Error("Can't get user information")
           })
-					cookie.set('accessToken', res.token, { path: '/' })
-					cookie.set('refreshToken', res.refreshToken, { path: '/' })
-				})
+        cookie.set('accessToken', res.token, {
+          path: '/',
+          expires: new Date(new Date().getTime() + 30 * 60 * 1000),
+        })
+        cookie.set('refreshToken', res.refreshToken, {
+          path: '/',
+          expires: new Date(new Date().setDate(new Date().getDate() + 7)),
+        })
+      })
       .catch((error) => {
         // toast.error(error.message)
       })
