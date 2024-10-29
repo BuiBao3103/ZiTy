@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import AlertDelete from '@/components/alert/AlertDelete'
 import { IReport, ReportSchema } from '@/schema/report.validate'
-import { FieldErrors, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
@@ -13,8 +13,8 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import DefaultAvatar from '@/assets/default-avatar.jpeg'
+// import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+// import DefaultAvatar from '@/assets/default-avatar.jpeg'
 import { Textarea } from '@/components/ui/textarea'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import {

@@ -2,7 +2,10 @@ import AlertDelete from '@/components/alert/AlertDelete'
 import BreadCrumb from '@/components/breadcrumb'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { createNewSurvey, useGetSurverysQuery } from '@/features/survey/surveySlice'
+import {
+  createNewSurvey,
+  useGetSurverysQuery,
+} from '@/features/survey/surveySlice'
 import { RootState, useAppDispath } from '@/store'
 import { Filter, Search } from 'lucide-react'
 import { useSelector } from 'react-redux'
@@ -14,11 +17,12 @@ import SurveyItem from './components/survey-item'
 import { Skeleton } from '@/components/ui/skeleton'
 import PaginationCustom from '@/components/pagination/PaginationCustom'
 import SurveyDetail from './components/survey-detail'
+import SurveyList from './components/survey-list'
 
 const Index = () => {
   useDocumentTitle('Survey')
   const params = useParams()
-	const dispatch = useAppDispath()
+  const dispatch = useAppDispath()
   const isCreateNewSurvey = useSelector(
     (state: RootState) => state.surveyReducer.isCreateNewSurvey,
   )
@@ -44,7 +48,7 @@ const Index = () => {
       <div className="w-full h-full p-4 overflow-hidden">
         <div className="w-full h-full bg-white rounded-md p-4 flex flex-col	space-y-4">
           {isCreateNewSurvey ? (
-            <SurveyForm mode='create' />
+            <SurveyForm mode="create" />
           ) : params?.id ? (
             <SurveyDetail surveyID={params?.id} />
           ) : (
@@ -73,15 +77,11 @@ const Index = () => {
                 </Button>
               </div>
               <div className="size-full flex flex-col overflow-hidden">
-                <div className="w-full h-full overflow-y-auto grid grid-cols-1 xl:grid-cols-2 gap-4">
-                  {isLoading || isFetching
-                    ? Array.from({ length: 10 }).map((_, index) => (
-                        <Skeleton key={index} className="w-full h-[150px]" />
-                      ))
-                    : surveys?.contents.map((survey) => (
-                        <SurveyItem key={survey.id} survey={survey} />
-                      ))}
-                </div>
+                <SurveyList
+                  surveys={surveys?.contents}
+                  isFetching={isFetching}
+                  isLoading={isLoading}
+                />
                 <PaginationCustom
                   currentPage={currentPage}
                   onPageChange={setCurrentPage}
