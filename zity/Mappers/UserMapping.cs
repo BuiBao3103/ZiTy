@@ -25,9 +25,6 @@ namespace zity.Mappers
 
             CreateMap<UserPatchDTO, User>()
                 .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => DateTime.Now));
-
-            CreateMap<User, MeDto>()
-                .ForMember(dest => dest.Relationships, opt => opt.MapFrom(src => src.Relationships));
         }
     }
 }
