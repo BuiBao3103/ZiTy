@@ -89,7 +89,8 @@ const SurveyForm = ({ mode = 'create', initialData }: SurveyFormProps) => {
   const onSubmit = async (data: z.infer<typeof SurveySchema>) => {
     let result
     if (mode === 'create') {
-      result = await createSurvey(data)
+      const { id, ...rest } = data
+      result = await createSurvey(rest)
     } else {
       result = await updateSurvey({ id: initialData?.id, body: data })
     }
@@ -120,7 +121,7 @@ const SurveyForm = ({ mode = 'create', initialData }: SurveyFormProps) => {
           if (mode == 'create') {
             dispatch(createNewSurvey({ isCreateNewSurvey: false }))
           } else {
-            navigate('/admin/survey')
+            navigate('/admin/surveys')
           }
         }}
         className="w-fit px-0">

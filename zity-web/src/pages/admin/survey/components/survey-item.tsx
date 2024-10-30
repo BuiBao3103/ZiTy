@@ -77,7 +77,7 @@ const SurveyItem = ({ survey }: SurveyItemProps) => {
       </div>
       <div className="w-full flex gap-4">
         <Button
-          onClick={() => navigate(`/admin/survey/${survey.id}`)}
+          onClick={() => navigate(`/admin/surveys/${survey.id}`)}
           type="button"
           variant={'warning'}>
           Edit

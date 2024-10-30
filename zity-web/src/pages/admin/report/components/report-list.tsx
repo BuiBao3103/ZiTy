@@ -9,14 +9,14 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Report } from '@/schema/report.validate'
+import { IReport } from '@/schema/report.validate'
 import { AvatarFallback } from '@radix-ui/react-avatar'
 import { useState } from 'react'
 import ReportDetail from './report-detail'
 import { Skeleton } from '@/components/ui/skeleton'
 
 interface ReportListProps {
-  reports?: Report[]
+  reports?: IReport[]
   isLoading?: boolean
   isFetching?: boolean
 }
