@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 
-const BaseEntitySchema = z.object({
+export const BaseEntitySchema = z.object({
   createdAt: z.union([z.date(), z.string()]).optional(),
   updatedAt: z.union([z.date(), z.string()]).optional(),
   deletedAt: z.union([z.date(), z.string()]).optional(),

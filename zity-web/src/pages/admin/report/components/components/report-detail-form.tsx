@@ -138,7 +138,12 @@ const ReportFormDetail = ({ report, setShowDetail }: ReportFormDetailProps) => {
             </div>
           </div>
           {form.getValues('status') === 'REJECTED' && (
-            <Textarea rows={5} onChange={(e) => debounced(e.target.value)} />
+            <Textarea 
+						rows={5} 
+						defaultValue={report?.rejectionReason.content} 
+						className='disabled:bg-zinc-200 text-black'
+						disabled={!report?.rejectionReason.content ? false : true} 
+						onChange={(e) => debounced(e.target.value)} />
           )}
           <FormField
             control={form.control}
@@ -150,7 +155,8 @@ const ReportFormDetail = ({ report, setShowDetail }: ReportFormDetailProps) => {
                   <RadioGroup
                     onValueChange={field.onChange}
                     defaultValue={field.value}
-                    className="flex space-x-2">
+										disabled={(report?.status === 'REJECTED' || report?.status === 'RESOLVED') ? true : false}
+                    className="flex space-x-2 disabled:cursor-not-allowed">
                     {['PENDING', 'IN_PROGRESS', 'REJECTED', 'RESOLVED'].map(
                       (status) => (
                         <FormItem

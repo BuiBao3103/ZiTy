@@ -26,7 +26,7 @@ import { useWindowSize } from 'usehooks-ts'
 import MobileMenu from './components/MobileMenu'
 import Logo from '@/assets/logo.svg'
 import LogoMobile from '@/assets/logoMobile.svg'
-import { UserRole } from '@/enums'
+import { ApartmentUserRole, UserRole } from '@/enums'
 import { useEffect, useMemo, useState } from 'react'
 import { useAppDispath, useAppSelector } from '@/store'
 import { ROUTES } from '@/configs/endpoint'
@@ -36,7 +36,7 @@ export interface SideBarProps {
   label: string
   icon: React.ReactNode
   to: string
-  role?: UserRole[] | UserRole
+  role?: UserRole[] | UserRole | ApartmentUserRole
 }
 
 const Header = () => {
@@ -56,13 +56,13 @@ const Header = () => {
       role: 'RESIDENT',
     },
     {
-      label: 'Package',
+      label: 'Packages',
       icon: <Package />,
       to: ROUTES.PACKAGES,
       role: 'RESIDENT',
     },
     {
-      label: 'Survey',
+      label: 'Surveys',
       icon: <NotebookText />,
       to: ROUTES.SURVEYS,
       role: 'RESIDENT',
@@ -74,49 +74,49 @@ const Header = () => {
       role: 'RESIDENT',
     },
     {
-      label: 'Report',
+      label: 'Reports',
       icon: <Flag />,
       to: ROUTES.REPORTS,
       role: 'RESIDENT',
     },
     {
-      label: 'Bill',
+      label: 'Bills',
       icon: <Receipt />,
       to: ROUTES.BILLS,
       role: ['RESIDENT'],
     },
     {
-      label: 'User Admin',
+      label: 'Users Management',
       icon: <UsersRound />,
       to: ROUTES.ADMIN.USERS,
       role: ['ADMIN'],
     },
     {
-      label: 'Service Admin',
+      label: 'Services Management',
       icon: <HandPlatter />,
       to: ROUTES.ADMIN.SERVICES,
       role: ['ADMIN'],
     },
     {
-      label: 'Package Admin',
+      label: 'Packages Management',
       icon: <Package />,
       to: ROUTES.ADMIN.PACKAGES,
       role: ['ADMIN'],
     },
     {
-      label: 'Bill Admin',
+      label: 'Bills Management',
       icon: <Receipt />,
       to: ROUTES.ADMIN.BILLS,
       role: ['ADMIN'],
     },
     {
-      label: 'Survey Admin',
+      label: 'Surveys Management',
       icon: <NotebookText />,
       to: ROUTES.ADMIN.SURVEYS,
       role: ['ADMIN'],
     },
     {
-      label: 'Report Admin',
+      label: 'Reports Management',
       icon: <Flag />,
       to: ROUTES.ADMIN.REPORTS,
       role: ['ADMIN'],
@@ -139,21 +139,36 @@ const Header = () => {
     if (!user?.userType) return []
 
     return userSideBars.filter((sidebar) => {
-      if (!sidebar.role) return true
-
+      // If the user is a RESIDENT and has an OWNER role in relationships
+      if (
+        user.userType === 'RESIDENT' &&
+        user.relationships?.role === 'OWNER'
+      ) {
+        return (
+          sidebar.role === 'RESIDENT' ||
+          (Array.isArray(sidebar.role) && sidebar.role.includes('RESIDENT'))
+        )
+      }
+      // If the user is a RESIDENT but not an OWNER, only return the 'Bill' element
+      if (
+        user.userType === 'RESIDENT' &&
+        user.relationships?.role !== 'OWNER'
+      ) {
+        return sidebar.label === 'Bills'
+      }
+      // Otherwise, filter normally based on role matching
       if (Array.isArray(sidebar.role)) {
         return sidebar.role.includes(user.userType)
       }
-
       return sidebar.role === user.userType
     })
-  }, [user?.userType])
+  }, [user?.userType, user?.relationships?.role])
 
   const handleLogOut = () => {
     cookies.remove('accessToken')
     cookies.remove('refreshToken')
     dispatch(userLoggedOut())
-		navigate('/login', { replace: true })
+    navigate('/login', { replace: true })
   }
 
   useEffect(() => {
@@ -175,7 +190,9 @@ const Header = () => {
           className={`md:w-full h-full md:h-[150px] md:p-3 md:order-none order-2 relative`}>
           <img
             src={panelRightOpen ? LogoMobile : Logo}
-            onClick={() => navigate(`${user?.userType === 'ADMIN' ? '/admin' : '/'}`)}
+            onClick={() =>
+              navigate(`${user?.userType === 'ADMIN' ? '/admin' : '/'}`)
+            }
             loading="lazy"
             alt="Logo website"
             className={`w-full h-full object-contain aspect-square cursor-pointer ${
@@ -199,7 +216,9 @@ const Header = () => {
             </Button>
           )}
         </div>
-        {width <= 768 && <MobileMenu sidebar={filteredSidebars} handleLogout={handleLogOut} />}
+        {width <= 768 && (
+          <MobileMenu sidebar={filteredSidebars} handleLogout={handleLogOut} />
+        )}
         {width > 768 && <Separator />}
         <div
           className={`sidebar w-full h-full hidden md:flex flex-col overflow-y-auto ${

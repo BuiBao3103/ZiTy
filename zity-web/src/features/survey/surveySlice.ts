@@ -66,7 +66,7 @@ const surveyApiSlice = apiSlice.injectEndpoints({
 
     createSurvey: builder.mutation<
       ISurvey,
-      Partial<ISurvey> & Omit<ISurvey, 'id'>
+      Partial<ISurvey> & Omit<ISurvey, 'id' | 'createdAt' | 'updatedAt'>
     >({
       query: (data) => ({
         url: 'surveys',

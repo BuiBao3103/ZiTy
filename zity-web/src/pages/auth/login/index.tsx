@@ -18,7 +18,6 @@ import { toast } from 'sonner'
 import { useLoginMutation, userLoggedIn } from '@/features/auth/authSlice'
 import { useDocumentTitle } from 'usehooks-ts'
 import Logo from '@/assets/logo.svg'
-import Overlay from '@components/overlay/Overlay'
 import { UserLoginSchema } from '@/schema/user.validate'
 import Cookies from 'universal-cookie'
 import { useAppDispath } from '@/store'
@@ -30,7 +29,6 @@ import {
 export default function Index() {
   useDocumentTitle('Login')
   const navigate = useNavigate()
-  const [isResident, setIsResident] = useState<boolean>(false)
   const cookie = new Cookies(null, { path: '/' })
   const [isShowing, setIsShowing] = useState<boolean>(false)
 
@@ -40,10 +38,8 @@ export default function Index() {
   const handleShowPassword = () => {
     setIsShowing(!isShowing)
   }
-  const [
-    getCurrentUser,
-    { data: currentUser, isLoading: isLoadingCurrentUser },
-  ] = useLazyGetCurrentUserQuery()
+  const [getCurrentUser, { isLoading: isLoadingCurrentUser }] =
+    useLazyGetCurrentUserQuery()
   const form = useForm<z.infer<typeof UserLoginSchema>>({
     resolver: zodResolver(UserLoginSchema),
     defaultValues: {
@@ -64,8 +60,11 @@ export default function Index() {
             if (payload.userType === 'ADMIN') {
               navigate('/admin')
             } else {
-              navigate('/')
-              // setIsResident(true)
+              if (payload.relationships?.role === 'OWNER') {
+                navigate('/')
+              } else {
+                navigate('/bills')
+              }
             }
             toast.success('Login successful')
             cookie.set('accessToken', res.token, {
@@ -83,7 +82,7 @@ export default function Index() {
           })
       })
       .catch((error) => {
-        // toast.error(error.message)
+        toast.error(error.message)
       })
   }
 
@@ -153,29 +152,6 @@ export default function Index() {
           </form>
         </Form>
       </div>
-      {isResident && (
-        <Overlay>
-          <div className="w-[500px] h-[400px] animate-in delay-150 fade-in bg-white rounded-md p-4 flex flex-col justify-center items-center gap-2.5">
-            <img src={Logo} alt="logo" className="size-24" />
-            <p className="text-2xl font-medium">Welcome back, {'{ name }'}</p>
-            <p className="font-medium">Select your account</p>
-            <div className="w-full flex justify-center items-center gap-6 mt-4">
-              <Button
-                className="size-32 border-2 text-lg"
-                type="button"
-                variant={'ghost'}>
-                Owner
-              </Button>
-              <Button
-                className="size-32 border-2 text-lg"
-                type="button"
-                variant={'ghost'}>
-                Resident
-              </Button>
-            </div>
-          </div>
-        </Overlay>
-      )}
     </>
   )
 }

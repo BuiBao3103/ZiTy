@@ -21,7 +21,7 @@ public partial class Report
 
     public int? RelationshipId { get; set; }
 
-    public virtual ICollection<RejectionReason> RejectionReasons { get; set; } = new List<RejectionReason>();
+    public virtual RejectionReason? RejectionReason { get; set; }
 
     public virtual Relationship? Relationship { get; set; }
 }

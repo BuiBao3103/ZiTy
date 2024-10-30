@@ -3,10 +3,19 @@ import { apiSlice } from '../api/apiSlice'
 
 export const serviceApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getServices: builder.query<ResponseDataType<Service>, number | void>({
-      query: (page = 1) => ({
-        url: `services?page${page}`,
-      }),
+    getServices: builder.query<
+      ResponseDataType<Service>,
+      { page?: number; name?: string }
+    >({
+      query: (params = { page: 1, name: '' }) => {
+        let baseUrl = `services?page=${params.page}`
+        if (params.name && params.name != '') {
+          baseUrl += `&name=like:${params.name}`
+        }
+        return {
+          url: baseUrl,
+        }
+      },
       providesTags: (results) =>
         results
           ? [

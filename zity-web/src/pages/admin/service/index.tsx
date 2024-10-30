@@ -3,7 +3,7 @@ import { Filter, Search } from 'lucide-react'
 import { Button } from '@components/ui/button'
 import ServiceList from './components/service-list'
 import BreadCrumb from '@/components/breadcrumb'
-import { useDocumentTitle } from 'usehooks-ts'
+import { useDebounceCallback, useDocumentTitle } from 'usehooks-ts'
 import { useGetServicesQuery } from '@/features/service/serviceSlice'
 import { useState } from 'react'
 import PaginationCustom from '@/components/pagination/PaginationCustom'
@@ -11,11 +11,18 @@ import ServiceDetail from './components/service-detail'
 
 const Index = () => {
   const [currentPage, setCurrentPage] = useState<number>(1)
+  const [searchByName, setSearchByName] = useState<string>('')
+  const handleSearch = useDebounceCallback((value: string) => {
+    setSearchByName(value)
+    if (value) {
+      setCurrentPage(1)
+    }
+  }, 500)
   const {
     data: services,
     isLoading,
     isFetching,
-  } = useGetServicesQuery(currentPage)
+  } = useGetServicesQuery({ page: currentPage, name: searchByName })
   useDocumentTitle('Service')
 
   return (
@@ -31,6 +38,7 @@ const Index = () => {
                   <Input
                     placeholder="Search something"
                     className="border-none shadow-none focus-visible:ring-0"
+										onChange={(e) => handleSearch(e.target.value)}
                   />
                 </div>
                 <Button className="gap-1" size={'lg'} variant={'secondary'}>

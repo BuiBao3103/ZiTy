@@ -36,6 +36,8 @@ const PaginationCustom = ({
           <PaginationItem>
             <PaginationPrevious
               to="#"
+							aria-disabled={currentPage === 1}
+							className='cursor-pointer'
               onClick={() => handlePageClick(currentPage - 1)}
             />
           </PaginationItem>
@@ -59,6 +61,7 @@ const PaginationCustom = ({
           <PaginationItem>
             <PaginationNext
               to="#"
+							className='cursor-pointer'
               onClick={() => handlePageClick(currentPage + 1)}
             />
           </PaginationItem>
