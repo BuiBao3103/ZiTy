@@ -1,20 +1,16 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { apiSlice } from '../api/apiSlice'
-import { UserLogin } from '@/schema/user.validate'
+import { UserFormSchema } from '@/schema/user.validate'
 
 interface AuthState {
-  user: UserLogin,
-  accessToken: string,
-	refreshToken: string,
+  user?: UserFormSchema
+  token: string
+  refreshToken: string
 }
 
 const initialState: AuthState = {
-  user: {
-    username: '',
-    password: '',
-  },
-  accessToken: '',
-	refreshToken: '',
+  token: '',
+  refreshToken: '',
 }
 
 const authSlice = createSlice({
@@ -22,31 +18,26 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     userLoggedIn(state, action: PayloadAction<AuthState>) {
-      state.user = action.payload.user
-      state.accessToken = action.payload.accessToken
-			state.refreshToken = action.payload.refreshToken
+      state.token = action.payload.token
+      state.refreshToken = action.payload.refreshToken
     },
     userLoggedOut(state) {
       state.user = initialState.user
-      state.accessToken = initialState.accessToken
+      state.token = initialState.token
     },
   },
 })
 export const authApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    login: builder.mutation<AuthState, Omit<AuthState, 'accessToken' | 'refreshToken'>>({
-      query: (body) => ({
-        url: 'login',
+    login: builder.mutation<
+      Pick<AuthState, 'token' | 'refreshToken'>,
+      { body: { username: string; password: string } }
+    >({
+      query: (data) => ({
+        url: 'auth/login',
         method: 'POST',
-        body,
+        body: data.body,
       }),
-      transformErrorResponse: (error) => {
-        if (error.status === 'FETCH_ERROR') {
-          return { message: 'Network error' }
-        }
-        console.log(error)
-        return error
-      },
     }),
   }),
 })

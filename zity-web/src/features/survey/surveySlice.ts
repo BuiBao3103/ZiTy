@@ -25,7 +25,17 @@ const surveySlice = createSlice({
 const surveyApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getSurverys: builder.query<ResponseDataType<ISurvey>, number | void>({
-      query: (page = 1) => `surveys?page=${page}`,
+      query: (page = 1) => ({ url: `surveys?page=${page}` }),
+      providesTags: (results) =>
+        results
+          ? [
+              ...results.contents.map(({ id }) => ({
+                type: 'Surveys' as const,
+                id,
+              })),
+              { type: 'Surveys', id: 'LIST' },
+            ]
+          : [{ type: 'Surveys', id: 'LIST' }],
     }),
     getSurveyById: builder.query<ISurvey, string | number>({
       async queryFn(_arg, _queryApi, _extraOptions, fetchWithBQ) {
@@ -36,7 +46,7 @@ const surveyApiSlice = apiSlice.injectEndpoints({
         const survey = surveyResult.data as ISurvey
         // Fetch questions using the survey ID
         const questionsResult = await fetchWithBQ(
-          `/questions?SurveyId=eq:${survey.id}&Include=answers`,
+          `/questions?SurveyId=eq:${survey.id}&Includes=answers`,
         )
         if (questionsResult.error)
           return { error: questionsResult.error as FetchBaseQueryError }
@@ -50,14 +60,20 @@ const surveyApiSlice = apiSlice.injectEndpoints({
           },
         }
       },
+      providesTags: (result, error, id) =>
+        result ? [{ type: 'Surveys', id }] : [],
     }),
 
-    createSurvey: builder.mutation<ISurvey, Partial<ISurvey>>({
+    createSurvey: builder.mutation<
+      ISurvey,
+      Partial<ISurvey> & Omit<ISurvey, 'id' | 'createdAt' | 'updatedAt'>
+    >({
       query: (data) => ({
         url: 'surveys',
         method: 'POST',
         body: data,
       }),
+      invalidatesTags: [{ type: 'Surveys', id: 'LIST' }],
     }),
     updateSurvery: builder.mutation<
       void,
@@ -68,12 +84,16 @@ const surveyApiSlice = apiSlice.injectEndpoints({
         method: 'PUT',
         body: data.body,
       }),
+      invalidatesTags: (result, error, arg) => [
+        { type: 'Surveys', id: arg.id },
+      ],
     }),
-    deleteSurvey: builder.mutation<void, string | number>({
+    deleteSurvey: builder.mutation<void, string | number | undefined>({
       query: (id) => ({
         url: `surveys/${id}`,
         method: 'DELETE',
       }),
+      invalidatesTags: (result, error, id) => [{ type: 'Surveys', id }],
     }),
   }),
 })

@@ -39,14 +39,36 @@ const userSlice = createSlice({
 
 const userApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getUser: builder.query<ResponseDataType<User>, number | void>({
-      query: (page = 1) => `/users?page=${page}`,
+    getUser: builder.query<
+      ResponseDataType<User>,
+      { page?: number; username?: string }
+    >({
+      query: (params = { page: 1, username: '' }) => {
+        let baseUrl = `users?page=${params.page}`
+        if (params.username && params.username != '') {
+          baseUrl += `&username=like:${params.username}`
+        }
+        return {
+          url: baseUrl,
+        }
+      },
+      providesTags: (results) =>
+        results
+          ? [
+              ...results.contents.map(({ id }) => ({
+                type: 'Users' as const,
+                id,
+              })),
+              { type: 'Users', id: 'LIST' },
+            ]
+          : [{ type: 'Users', id: 'LIST' }],
     }),
     getUserById: builder.query<User, string | number>({
-      query: (id) => `/users/${id}`,
+      query: (id) => `users/${id}`,
+      providesTags: (result, error, id) => [{ type: 'Users', id }],
     }),
     getCurrentUser: builder.query<User, void>({
-      query: () => '/users/me',
+      query: () => 'users/me',
     }),
     createUser: builder.mutation<
       void,
@@ -92,18 +114,20 @@ const userApiSlice = apiSlice.injectEndpoints({
         method: 'PUT',
         body: data.body,
       }),
+      invalidatesTags: (result, error, { id }) => [{ type: 'Users', id }],
     }),
     deleteUser: builder.mutation<void, string | number | undefined>({
       query: (id) => ({
         url: `/users/${id}`,
         method: 'DELETE',
       }),
+      invalidatesTags: (result, error, id) => [{ type: 'Users', id }],
     }),
   }),
 })
 
 export default userSlice.reducer
-export const { getQrScanInformation,getUserInformation } = userSlice.actions
+export const { getQrScanInformation, getUserInformation } = userSlice.actions
 export const {
   useGetUserQuery,
   useGetUserByIdQuery,
@@ -111,4 +135,5 @@ export const {
   useUpdateUserMutation,
   useDeleteUserMutation,
   useGetCurrentUserQuery,
+  useLazyGetCurrentUserQuery,
 } = userApiSlice

@@ -27,7 +27,11 @@ import MobileMenu from './components/MobileMenu'
 import Logo from '@/assets/logo.svg'
 import LogoMobile from '@/assets/logoMobile.svg'
 import { UserRole } from '@/enums'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useAppDispath, useAppSelector } from '@/store'
+import { ROUTES } from '@/configs/endpoint'
+import Cookies from 'universal-cookie'
+import { userLoggedOut } from '@/features/auth/authSlice'
 export interface SideBarProps {
   label: string
   icon: React.ReactNode
@@ -39,94 +43,118 @@ const Header = () => {
   const { width = 0 } = useWindowSize()
   const location = useLocation()
   const navigate = useNavigate()
+  const cookies = new Cookies(null, { path: '/' })
+  const user = useAppSelector((state) => state.userReducer.user)
+  const dispatch = useAppDispath()
   const [panelRightOpen, setPanelRightOpen] = useState<boolean>(false)
 
   const userSideBars: SideBarProps[] = [
     {
       label: 'Home',
       icon: <House />,
-      to: '/',
+      to: ROUTES.HOME,
       role: 'RESIDENT',
     },
     {
       label: 'Package',
       icon: <Package />,
-      to: '/package',
+      to: ROUTES.PACKAGES,
       role: 'RESIDENT',
     },
     {
       label: 'Survey',
       icon: <NotebookText />,
-      to: '/survey',
+      to: ROUTES.SURVEYS,
       role: 'RESIDENT',
     },
     {
       label: 'Apartments',
       icon: <TableCellsMerge />,
-      to: '/apartment',
+      to: ROUTES.APARTMENTS,
       role: 'RESIDENT',
     },
     {
       label: 'Report',
       icon: <Flag />,
-      to: '/report',
+      to: ROUTES.REPORTS,
       role: 'RESIDENT',
     },
     {
       label: 'Bill',
       icon: <Receipt />,
-      to: '/bills',
-      role: ['ADMIN', 'RESIDENT'],
+      to: ROUTES.BILLS,
+      role: ['RESIDENT'],
     },
     {
       label: 'User Admin',
       icon: <UsersRound />,
-      to: '/user',
+      to: ROUTES.ADMIN.USERS,
       role: ['ADMIN'],
     },
     {
       label: 'Service Admin',
       icon: <HandPlatter />,
-      to: '/service',
+      to: ROUTES.ADMIN.SERVICES,
       role: ['ADMIN'],
     },
     {
       label: 'Package Admin',
       icon: <Package />,
-      to: '/admin/package',
+      to: ROUTES.ADMIN.PACKAGES,
       role: ['ADMIN'],
     },
     {
       label: 'Bill Admin',
       icon: <Receipt />,
-      to: '/admin/bill',
+      to: ROUTES.ADMIN.BILLS,
       role: ['ADMIN'],
     },
     {
       label: 'Survey Admin',
       icon: <NotebookText />,
-      to: '/admin/survey',
+      to: ROUTES.ADMIN.SURVEYS,
       role: ['ADMIN'],
     },
     {
       label: 'Report Admin',
       icon: <Flag />,
-      to: '/admin/report',
+      to: ROUTES.ADMIN.REPORTS,
       role: ['ADMIN'],
     },
     {
       label: 'Ask For Support',
       icon: <MessageCircleQuestion />,
-      to: '/chat',
+      to: ROUTES.CHAT,
       role: ['RESIDENT'],
     },
     {
       label: 'Setting Admin',
       icon: <Cog />,
-      to: '/admin/setting',
-      role: ['RESIDENT'],
+      to: ROUTES.ADMIN.SETTINGS,
+      role: ['ADMIN'],
     },
   ]
+
+  const filteredSidebars = useMemo(() => {
+    if (!user?.userType) return []
+
+    return userSideBars.filter((sidebar) => {
+      if (!sidebar.role) return true
+
+      if (Array.isArray(sidebar.role)) {
+        return sidebar.role.includes(user.userType)
+      }
+
+      return sidebar.role === user.userType
+    })
+  }, [user?.userType])
+
+  const handleLogOut = () => {
+    cookies.remove('accessToken')
+    cookies.remove('refreshToken')
+    dispatch(userLoggedOut())
+		navigate('/login', { replace: true })
+  }
 
   useEffect(() => {
     if (width >= 1024) {
@@ -147,7 +175,7 @@ const Header = () => {
           className={`md:w-full h-full md:h-[150px] md:p-3 md:order-none order-2 relative`}>
           <img
             src={panelRightOpen ? LogoMobile : Logo}
-            onClick={() => navigate('/')}
+            onClick={() => navigate(`${user?.userType === 'ADMIN' ? '/admin' : '/'}`)}
             loading="lazy"
             alt="Logo website"
             className={`w-full h-full object-contain aspect-square cursor-pointer ${
@@ -171,13 +199,13 @@ const Header = () => {
             </Button>
           )}
         </div>
-        {width <= 768 && <MobileMenu sidebar={userSideBars} />}
+        {width <= 768 && <MobileMenu sidebar={filteredSidebars} handleLogout={handleLogOut} />}
         {width > 768 && <Separator />}
         <div
           className={`sidebar w-full h-full hidden md:flex flex-col overflow-y-auto ${
             panelRightOpen ? 'gap-2 p-2' : 'gap-2 p-4'
           }`}>
-          {userSideBars.map((sideBar, index) => (
+          {filteredSidebars.map((sideBar, index) => (
             <Button
               asChild
               type="button"
@@ -222,19 +250,19 @@ const Header = () => {
             panelRightOpen ? 'flex-col' : 'flex-row'
           } md:flex items-center gap-2`}>
           <Avatar>
-            <AvatarImage src="" />
+            <AvatarImage src={user?.avatar} />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           <div
             className={`w-full ${panelRightOpen ? 'hidden' : 'flex'} flex-col`}>
-            <span className="text-sm font-bold">User Name</span>
-            <span className="text-xs">Role</span>
+            <span className="text-sm font-bold">{user?.fullName}</span>
+            <span className="text-xs">{user?.userType}</span>
           </div>
-          <div className={`w-full flex justify-end`}>
+          <div className={`flex justify-end`}>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  onClick={() => navigate('/login', { replace: true })}
+                  onClick={() => handleLogOut()}
                   size={'icon'}
                   variant={'ghost'}>
                   <LogOut />

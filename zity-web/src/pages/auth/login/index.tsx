@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -15,21 +15,35 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
-import { useLoginMutation } from '@/features/auth/authSlice'
+import { useLoginMutation, userLoggedIn } from '@/features/auth/authSlice'
 import { useDocumentTitle } from 'usehooks-ts'
 import Logo from '@/assets/logo.svg'
 import Overlay from '@components/overlay/Overlay'
 import { UserLoginSchema } from '@/schema/user.validate'
+import Cookies from 'universal-cookie'
+import { useAppDispath } from '@/store'
+import {
+  getUserInformation,
+  useLazyGetCurrentUserQuery,
+} from '@/features/user/userSlice'
 
 export default function Index() {
   useDocumentTitle('Login')
-
+  const navigate = useNavigate()
+  const [isResident, setIsResident] = useState<boolean>(false)
+  const cookie = new Cookies(null, { path: '/' })
   const [isShowing, setIsShowing] = useState<boolean>(false)
+
+  const dispatch = useAppDispath()
   const [Login, { isLoading }] = useLoginMutation()
+
   const handleShowPassword = () => {
     setIsShowing(!isShowing)
   }
-
+  const [
+    getCurrentUser,
+    { data: currentUser, isLoading: isLoadingCurrentUser },
+  ] = useLazyGetCurrentUserQuery()
   const form = useForm<z.infer<typeof UserLoginSchema>>({
     resolver: zodResolver(UserLoginSchema),
     defaultValues: {
@@ -39,14 +53,38 @@ export default function Index() {
   })
 
   const onSubmit = async (data: z.infer<typeof UserLoginSchema>) => {
-    console.log(data)
-    // await Login(data)
-    //   .unwrap()
-    //   .then((res) => {
-    // 		console.log(res)
-    // 	}).catch((error) => {
-    // 		toast.error(error.message)
-    // 	})
+    await Login({ body: data })
+      .unwrap()
+      .then(async (res) => {
+        dispatch(userLoggedIn(res))
+        await getCurrentUser()
+          .unwrap()
+          .then((payload) => {
+            dispatch(getUserInformation(payload))
+            if (payload.userType === 'ADMIN') {
+              navigate('/admin')
+            } else {
+              navigate('/')
+              // setIsResident(true)
+            }
+            toast.success('Login successful')
+            cookie.set('accessToken', res.token, {
+              path: '/',
+              expires: new Date(new Date().getTime() + 30 * 60 * 1000),
+            })
+            cookie.set('refreshToken', res.refreshToken, {
+              path: '/',
+              expires: new Date(new Date().setDate(new Date().getDate() + 7)),
+            })
+          })
+          .catch((error) => {
+            console.log(error)
+            throw new Error("Can't get user information")
+          })
+      })
+      .catch((error) => {
+        // toast.error(error.message)
+      })
   }
 
   const onError = (error: any) => {
@@ -110,26 +148,34 @@ export default function Index() {
               )}
             />
             <Button disabled={isLoading} type="submit" className="w-full">
-              {isLoading ? 'Loading...' : 'Login'}
+              {isLoading || isLoadingCurrentUser ? 'Loading...' : 'Login'}
             </Button>
           </form>
         </Form>
       </div>
-      {/* <Overlay>
-        <div className="w-[500px] h-[400px] bg-white rounded-md p-4 flex flex-col justify-center items-center gap-2.5">
-          <img src={Logo} alt="logo" className="size-24" />
-          <p className="text-2xl font-medium">Welcome back, {'{ name }'}</p>
-          <p className="font-medium">Select your account</p>
-          <div className="w-full flex justify-center items-center gap-6 mt-4">
-            <Button className="size-32 border-2 text-lg" variant={'ghost'}>
-              Owner
-            </Button>
-            <Button className="size-32 border-2 text-lg" variant={'ghost'}>
-              Resident
-            </Button>
+      {isResident && (
+        <Overlay>
+          <div className="w-[500px] h-[400px] animate-in delay-150 fade-in bg-white rounded-md p-4 flex flex-col justify-center items-center gap-2.5">
+            <img src={Logo} alt="logo" className="size-24" />
+            <p className="text-2xl font-medium">Welcome back, {'{ name }'}</p>
+            <p className="font-medium">Select your account</p>
+            <div className="w-full flex justify-center items-center gap-6 mt-4">
+              <Button
+                className="size-32 border-2 text-lg"
+                type="button"
+                variant={'ghost'}>
+                Owner
+              </Button>
+              <Button
+                className="size-32 border-2 text-lg"
+                type="button"
+                variant={'ghost'}>
+                Resident
+              </Button>
+            </div>
           </div>
-        </div>
-      </Overlay> */}
+        </Overlay>
+      )}
     </>
   )
 }

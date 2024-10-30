@@ -1,38 +1,62 @@
 import DefaultLayout from '@/components/layouts/DefaultLayout'
 import PrivateLayout from '@/components/layouts/PrivateLayout'
-import { createBrowserRouter } from 'react-router-dom'
+import { createBrowserRouter, RouteObject } from 'react-router-dom'
 
-//Auth Pages
+// Auth Pages
 import AuthLayout from '@pages/auth'
 import Login from '@pages/auth/login'
 
-//Home Page
+// Home Page
 import Home from '@pages/home'
 
-//Admin Page
+// Admin Pages
+import HomeAdmin from '@admin/home'
 import Apartment from '@admin/apartment'
-import User from '@admin/user'
-import Service from '@admin/service'
+import UserAdmin from '@admin/user'
+import ServiceAdmin from '@admin/service'
 import PackageAdmin from '@admin/package'
 import BillAdmin from '@admin/bill'
 import SurveyAdmin from '@admin/survey'
 import ReportAdmin from '@admin/report'
 import SettingAdmin from '@admin/setting'
 
-//User Page
+// User Pages
 import Package from '@user/package'
 import Report from '@user/report'
 import Bill from '@user/bill'
 import Survey from '@user/survey'
 import Chat from '@user/chat'
 
-//Error page
+// Error and Payment pages
 import NotFound from '@pages/404'
 import MomoPaymentSuccess from '@/pages/notify-payment/MomoPaymentSuccess'
+import ProtectedLayout from '@/components/layouts/ProtectedLayout'
+import { ROUTES } from '@/configs/endpoint'
 
-export const route = createBrowserRouter([
+const userRoutes: RouteObject[] = [
+  { index: true, element: <Home /> },
+  { path: ROUTES.APARTMENTS + '/:id?', element: <Apartment /> },
+  { path: ROUTES.PACKAGES + '/:id?', element: <Package /> },
+  { path: ROUTES.REPORTS + '/:id?', element: <Report /> },
+  { path: ROUTES.BILLS + '/:id?', element: <Bill /> },
+  { path: ROUTES.SURVEYS + '/:id?', element: <Survey /> },
+  { path: ROUTES.CHAT, element: <Chat /> },
+]
+
+const adminRoutes: RouteObject[] = [
+  { index: true, element: <HomeAdmin /> },
+  { path: ROUTES.ADMIN.PACKAGES, element: <PackageAdmin /> },
+  { path: ROUTES.ADMIN.BILLS, element: <BillAdmin /> },
+  { path: ROUTES.ADMIN.SERVICES, element: <ServiceAdmin /> },
+  { path: ROUTES.ADMIN.USERS, element: <UserAdmin /> },
+  { path: ROUTES.ADMIN.SURVEYS + '/:id?', element: <SurveyAdmin /> },
+  { path: ROUTES.ADMIN.REPORTS + '/:id?', element: <ReportAdmin /> },
+  { path: ROUTES.ADMIN.SETTINGS + '/:id?', element: <SettingAdmin /> },
+]
+
+const route = createBrowserRouter([
   {
-    path: '/',
+    path: ROUTES.HOME,
     element: <PrivateLayout />,
     errorElement: <NotFound />,
     children: [
@@ -40,124 +64,31 @@ export const route = createBrowserRouter([
         element: <DefaultLayout />,
         children: [
           {
-            index: true,
-            element: <Home />,
+            element: <ProtectedLayout userType="RESIDENT" />,
+            children: userRoutes,
           },
           {
-            path: '/apartment',
-            element: <Apartment />,
-            children: [
-              {
-                path: ':id',
-                element: <Apartment />,
-              },
-            ],
-          },
-          {
-            path: '/package',
-            element: <Package />,
-            children: [
-              {
-                path: ':id',
-                element: <Package />,
-              },
-            ],
-          },
-          {
-            path: '/report',
-            element: <Report />,
-            children: [
-              {
-                path: ':id',
-                element: <Report />,
-              },
-            ],
-          },
-          {
-            path: '/user',
-            element: <User />,
-          },
-          {
-            path: '/bills',
-            element: <Bill />,
-            children: [
-              {
-                path: ':id',
-                element: <Bill />,
-              },
-            ],
-          },
-          {
-            path: '/service',
-            element: <Service />,
-          },
-          {
-            path: '/admin/package',
-            element: <PackageAdmin />,
-          },
-          {
-            path: '/admin/bill',
-            element: <BillAdmin />,
-          },
-          {
-            path: '/admin/survey',
-            element: <SurveyAdmin />,
-            children: [
-              {
-                path: ':id',
-                element: <SurveyAdmin />,
-              },
-            ],
-          },
-          {
-            path: '/survey',
-            element: <Survey />,
-          },
-          {
-            path: '/chat',
-            element: <Chat />,
-          },
-          {
-            path: '/admin/report',
-            element: <ReportAdmin />,
-            children: [
-              {
-                path: ':id',
-                element: <ReportAdmin />,
-              },
-            ],
-          },
-          {
-            path: '/admin/setting',
-            element: <SettingAdmin />,
-            children: [
-              {
-                path: ':id',
-                element: <SettingAdmin />,
-              },
-            ],
+            path: ROUTES.ADMIN.HOME,
+            element: <ProtectedLayout userType="ADMIN" />,
+            children: adminRoutes,
           },
         ],
       },
     ],
   },
   {
-    path: '/login',
+    path: ROUTES.LOGIN,
     element: <AuthLayout />,
-    children: [
-      {
-        index: true,
-        element: <Login />,
-      },
-    ],
+    children: [{ index: true, element: <Login /> }],
   },
   {
-    path: '/payment',
+    path: ROUTES.PAYMENT,
     element: <MomoPaymentSuccess />,
   },
-
   {
     path: '*',
     element: <NotFound />,
   },
-])
+]);
+
+export default route;

@@ -16,12 +16,15 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import Logo from '@/assets/logo.svg'
+import { useAppSelector } from '@/store'
 
 interface MobileMenuProps {
   sidebar: SideBarProps[]
+  handleLogout: () => void
 }
 
-export default function MobileMenu({ sidebar }: MobileMenuProps) {
+export default function MobileMenu({ sidebar, handleLogout }: MobileMenuProps) {
+  const user = useAppSelector((state) => state.userReducer.user)
   const navigate = useNavigate()
 
   return (
@@ -37,6 +40,7 @@ export default function MobileMenu({ sidebar }: MobileMenuProps) {
             <div className="w-fit md:w-full h-[120px] sm:p-3 sm:order-none order-2">
               <img
                 src={Logo}
+                loading="lazy"
                 alt="Logo website"
                 className="w-full h-full object-contain aspect-square"
               />
@@ -66,18 +70,18 @@ export default function MobileMenu({ sidebar }: MobileMenuProps) {
           </div>
           <div className="w-full mt-5 flex items-center gap-2">
             <Avatar>
-              <AvatarImage src="" />
+              <AvatarImage src={user?.avatar} />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
             <div className="w-full flex flex-col">
-              <span className="text-sm font-bold">User Name</span>
-              <span className="text-xs">Role</span>
+              <span className="text-sm font-bold">{user?.fullName}</span>
+              <span className="text-xs">{user?.userType}</span>
             </div>
             <div className="flex justify-end">
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
-                    onClick={() => navigate('/login', { replace: true })}
+                    onClick={() => handleLogout()}
                     size={'icon'}
                     variant={'ghost'}>
                     <LogOut />

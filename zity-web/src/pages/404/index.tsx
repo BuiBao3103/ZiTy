@@ -1,7 +1,12 @@
 import { Link } from 'react-router-dom'
 import NotFoundImage from '@/assets/404.png'
 import { Button } from '@/components/ui/button'
+import { useAppSelector } from '@/store'
+import { ROUTES } from '@/configs/endpoint'
 export default function Index() {
+
+	const user = useAppSelector(state => state.userReducer.user)
+
   return (
     <>
       <div className="flex items-center justify-center h-screen">
@@ -19,7 +24,7 @@ export default function Index() {
               variant={'default'}
               size={'lg'}
               className="mt-5 text-white">
-              <Link to="/">Go home</Link>
+              <Link to={`${user?.userType === "ADMIN" ? ROUTES.ADMIN.HOME : ROUTES.HOME}`}>Go home</Link>
             </Button>
           </div>
         </div>

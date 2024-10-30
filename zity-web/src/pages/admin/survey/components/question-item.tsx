@@ -87,7 +87,7 @@ const QuestionItem = ({
             <FormField
               key={answerField.id}
               control={control}
-              name={`questions.${questionIndex}.answers.${answersIndex}.answer`}
+              name={`questions.${questionIndex}.answers.${answersIndex}.content`}
               render={({ field }) => (
                 <FormItem className="border bg-[#f8fafc] p-2 rounded-md flex items-center gap-2 space-y-0">
                   <FormLabel className="inline-flex size-10 rounded-md justify-center items-center p-1.5 border bg-white text-blue-500 font-semibold">
