@@ -68,7 +68,7 @@ const userApiSlice = apiSlice.injectEndpoints({
       providesTags: (result, error, id) => [{ type: 'Users', id }],
     }),
     getCurrentUser: builder.query<User, void>({
-      query: () => 'users/me',
+      query: () => 'users/me?includes=relationships',
     }),
     createUser: builder.mutation<
       void,
