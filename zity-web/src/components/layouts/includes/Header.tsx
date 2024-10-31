@@ -142,7 +142,7 @@ const Header = () => {
       // If the user is a RESIDENT and has an OWNER role in relationships
       if (
         user.userType === 'RESIDENT' &&
-        user.relationships?.role === 'OWNER'
+        user?.relationships?.[0]?.role === 'OWNER'
       ) {
         return (
           sidebar.role === 'RESIDENT' ||
@@ -152,7 +152,7 @@ const Header = () => {
       // If the user is a RESIDENT but not an OWNER, only return the 'Bill' element
       if (
         user.userType === 'RESIDENT' &&
-        user.relationships?.role !== 'OWNER'
+        user?.relationships?.[0]?.role !== 'OWNER'
       ) {
         return sidebar.label === 'Bills'
       }
@@ -162,7 +162,7 @@ const Header = () => {
       }
       return sidebar.role === user.userType
     })
-  }, [user?.userType, user?.relationships?.role])
+  }, [user?.userType, user?.relationships?.[0]?.role])
 
   const handleLogOut = () => {
     cookies.remove('accessToken')

@@ -4,6 +4,7 @@ import {
   SheetClose,
   SheetContent,
   SheetHeader,
+  SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { AlignLeft, LogOut } from 'lucide-react'
@@ -34,9 +35,12 @@ export default function MobileMenu({ sidebar, handleLogout }: MobileMenuProps) {
           <AlignLeft />
         </Button>
       </SheetTrigger>
-      <SheetContent side={'left'}>
+      <SheetContent aria-describedby={undefined} side={'left'}>
         <div className="w-full h-full flex flex-col gap-2">
           <SheetHeader>
+            <SheetTitle aria-hidden="true">
+							<span className="text-lg font-bold sr-only">Zity</span>
+						</SheetTitle>
             <div className="w-fit md:w-full h-[120px] sm:p-3 sm:order-none order-2">
               <img
                 src={Logo}

@@ -13,6 +13,7 @@ import { useGetBillsQuery } from '@/features/bill/billSlice'
 import UserBillSkeleton from '@/components/skeleton/UserBillSkeleton'
 import PaginationCustom from '@/components/pagination/PaginationCustom'
 import { useState } from 'react'
+
 const Index = () => {
   useDocumentTitle('Bill')
   const params = useParams()

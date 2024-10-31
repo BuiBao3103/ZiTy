@@ -15,4 +15,4 @@ export const relationshipsSchema = z
   })
 export type RelationshipsTypeSchema = z.infer<typeof relationshipsSchema>
 
-export interface Relationships extends RelationshipsTypeSchema, BaseEntity {}
+export interface IRelationships extends RelationshipsTypeSchema, BaseEntity {}

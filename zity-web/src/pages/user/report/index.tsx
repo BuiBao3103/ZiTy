@@ -3,8 +3,18 @@ import { Search } from 'lucide-react'
 import { useDocumentTitle } from 'usehooks-ts'
 import BreadCrumb from '@/components/breadcrumb'
 import ReportList from './components/report-list'
+import { useState } from 'react'
+import { useGetReportsQuery } from '@/features/reports/reportSlice'
+import { useAppSelector } from '@/store'
 const Index = () => {
   useDocumentTitle('Report')
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const user = useAppSelector((state) => state.userReducer.user)
+  const { data, isLoading } = useGetReportsQuery({
+    page: currentPage,
+    includes: ['relationship'],
+    relationshipId: user?.relationships?.[0]?.id,
+  })
   return (
     <div className="w-full sm:h-screen flex flex-col bg-zinc-100">
       <BreadCrumb paths={[{ label: 'report', to: '/report' }]} />
@@ -17,7 +27,7 @@ const Index = () => {
               className="border-none shadow-none focus-visible:ring-0"
             />
           </div>
-          <ReportList />
+          <ReportList reports={data?.contents} />
         </div>
       </div>
     </div>
