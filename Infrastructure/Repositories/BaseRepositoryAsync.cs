@@ -14,7 +14,7 @@ public class BaseRepositoryAsync<T> : IBaseRepositoryAsync<T> where T : BaseEnti
         _dbContext = dbContext;
     }
 
-    public virtual async Task<T?> GetByIdAsync(Guid id)
+    public virtual async Task<T?> GetByIdAsync(object id)
     {
         return await _dbContext.Set<T>().FindAsync(id);
     }

@@ -16,7 +16,7 @@ namespace Application.Services
 
         public async Task<PaginatedResult<AnswerDTO>> GetAllAsync(AnswerQueryDTO queryParam)
         {
-            var answerSpec = new BaseSpecification<Answer>(a => a.DeletedAt != null);
+            var answerSpec = new BaseSpecification<Answer>(a => a.DeletedAt == null);
             var data = await _unitOfWork.Repository<Answer>().ListAsync(answerSpec);
             var totalCount = await _unitOfWork.Repository<Answer>().CountAsync(answerSpec);
             return new PaginatedResult<AnswerDTO>(
@@ -27,39 +27,51 @@ namespace Application.Services
         }
 
 
-        //public async Task<AnswerDTO> GetByIdAsync(int id, string? includes = null)
-        //{
-        //    var answer = await _answerRepository.GetByIdAsync(id, includes)
-        //        ?? throw new EntityNotFoundException(nameof(Answer), id);
-        //    return _mapper.Map<AnswerDTO>(answer);
-        //}
-        //public async Task<AnswerDTO> CreateAsync(AnswerCreateDTO createDTO)
-        //{
-        //    var answer = _mapper.Map<Answer>(createDTO);
-        //    return _mapper.Map<AnswerDTO>(await _answerRepository.CreateAsync(answer));
-        //}
-        //public async Task<AnswerDTO> UpdateAsync(int id, AnswerUpdateDTO updateDTO)
-        //{
-        //    var existingAnswer = await _answerRepository.GetByIdAsync(id)
-        //        ?? throw new EntityNotFoundException(nameof(Answer), id);
-        //    _mapper.Map(updateDTO, existingAnswer);
-        //    var updatedAnswer = await _answerRepository.UpdateAsync(existingAnswer);
-        //    return _mapper.Map<AnswerDTO>(updatedAnswer);
-        //}
+        public async Task<AnswerDTO> GetByIdAsync(int id, string? includes = null)
+        {
+            var answer = await _unitOfWork.Repository<Answer>().GetByIdAsync(id)
+                //?? throw new EntityNotFoundException(nameof(Answer), id);
+                ?? throw new Exception(nameof(Answer));
+            return _mapper.Map<AnswerDTO>(answer);
+        }
+        public async Task<AnswerDTO> CreateAsync(AnswerCreateDTO createDTO)
+        {
+            var answer = await _unitOfWork.Repository<Answer>().AddAsync(_mapper.Map<Answer>(createDTO));
+            await _unitOfWork.SaveChangesAsync();
+            return _mapper.Map<AnswerDTO>(answer);
+        }
+        public async Task<AnswerDTO> UpdateAsync(int id, AnswerUpdateDTO updateDTO)
+        {
+            var existingAnswer = await _unitOfWork.Repository<Answer>().GetByIdAsync(id)
+                //?? throw new EntityNotFoundException(nameof(Answer), id);
+                ?? throw new Exception(nameof(Answer));
+            _mapper.Map(updateDTO, existingAnswer);
+            _unitOfWork.Repository<Answer>().Update(existingAnswer);
+            await _unitOfWork.SaveChangesAsync();
+            return _mapper.Map<AnswerDTO>(existingAnswer);
+        }
 
-        //public async Task<AnswerDTO> PatchAsync(int id, AnswerPatchDTO patchDTO)
-        //{
-        //    var existingAnswer = await _answerRepository.GetByIdAsync(id)
-        //        ?? throw new EntityNotFoundException(nameof(Answer), id);
-        //    _mapper.Map(patchDTO, existingAnswer);
-        //    var patchedAnswer = await _answerRepository.UpdateAsync(existingAnswer);
-        //    return _mapper.Map<AnswerDTO>(patchedAnswer);
-        //}
+        public async Task<AnswerDTO> PatchAsync(int id, AnswerPatchDTO patchDTO)
+        {
+            var existingAnswer = await _unitOfWork.Repository<Answer>().GetByIdAsync(id)
+                //?? throw new EntityNotFoundException(nameof(Answer), id);
+                ?? throw new Exception(nameof(Answer));
+            _mapper.Map(patchDTO, existingAnswer);
+            Console.WriteLine("Content: " + existingAnswer.Content);
+            Console.WriteLine("QuestionId: " + existingAnswer.QuestionId);
+            _unitOfWork.Repository<Answer>().Update(existingAnswer);
+            await _unitOfWork.SaveChangesAsync();
+            return _mapper.Map<AnswerDTO>(existingAnswer);
+        }
 
-        //public async Task DeleteAsync(int id)
-        //{
-        //    await _answerRepository.DeleteAsync(id);
-        //}
+        public async Task DeleteAsync(int id)
+        {
+            var existingAnswer = await _unitOfWork.Repository<Answer>().GetByIdAsync(id)
+                //?? throw new EntityNotFoundException(nameof(Answer), id);
+                ?? throw new Exception(nameof(Answer));
+            _unitOfWork.Repository<Answer>().Delete(existingAnswer);
+            await _unitOfWork.SaveChangesAsync();
+        }
 
     }
 }
