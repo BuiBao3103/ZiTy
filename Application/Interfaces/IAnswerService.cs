@@ -1,5 +1,5 @@
 ﻿using Application.DTOs.Answers;
-using Application.Core.Utilities;
+using Application.DTOs;
 
 namespace Application.Interfaces
 {
