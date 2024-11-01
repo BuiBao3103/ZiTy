@@ -38,6 +38,7 @@ public class AnswersController(IAnswerService answerService) : ControllerBase
     [HttpPatch("{id}")]
     public async Task<IActionResult> Patch([FromRoute] int id, [FromBody] AnswerPatchDTO answerPatchDTO)
     {
+        Console.WriteLine(answerPatchDTO.QuestionId == null);
         return Ok(await _answerService.PatchAsync(id, answerPatchDTO));
     }
 

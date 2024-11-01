@@ -56,9 +56,10 @@ namespace Application.Services
             var existingAnswer = await _unitOfWork.Repository<Answer>().GetByIdAsync(id)
                 //?? throw new EntityNotFoundException(nameof(Answer), id);
                 ?? throw new Exception(nameof(Answer));
+            Console.WriteLine(patchDTO.QuestionId == null);
+            Console.WriteLine(existingAnswer.QuestionId);
             _mapper.Map(patchDTO, existingAnswer);
-            Console.WriteLine("Content: " + existingAnswer.Content);
-            Console.WriteLine("QuestionId: " + existingAnswer.QuestionId);
+            Console.WriteLine(existingAnswer.QuestionId);
             _unitOfWork.Repository<Answer>().Update(existingAnswer);
             await _unitOfWork.SaveChangesAsync();
             return _mapper.Map<AnswerDTO>(existingAnswer);
