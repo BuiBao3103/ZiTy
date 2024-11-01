@@ -1,0 +1,171 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome Email</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Helvetica, sans-serif;
+            font-weight: 600;
+            /* Added font-weight 500 */
+            margin: 0;
+            padding: 0 15px 0 15px;
+            background-color: #f0f4f8;
+            color: #333;
+            text-align: center;
+        }
+
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            color: #777;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo img {
+            width: calc(15vw + 20px);
+        }
+
+        .header img {
+            width: 75px;
+        }
+
+        .welcome-message {
+            font-size: calc(18px + 0.5vw);
+            font-weight: bold;
+        }
+
+        .message-text {
+            font-size: calc(10px + 0.5vw);
+            line-height: 1.5;
+        }
+
+        .login-button {
+            background-color: #19c6ee;
+            color: #ffffff;
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 20px;
+            font-size: calc(10px + 0.5vw);
+        }
+
+        .credentials {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .credentials-left,
+        .credentials-right {
+            display: flex;
+            gap: 4px;
+            /* Sắp xếp theo chiều dọc */
+        }
+
+        .credentials p {
+            font-size: calc(10px + 0.5vw);
+        }
+
+        .credentials p strong {
+            display: inline;
+            /* Hiển thị inline để giữ nhãn cùng dòng với giá trị */
+        }
+
+        .support {
+            margin-top: 30px;
+            font-size: 14px;
+            color: #777;
+        }
+
+        .support p {
+            margin: 5px 0;
+        }
+
+        .support a {
+            color: #19c6ee;
+            text-decoration: none;
+        }
+
+        .footer {
+            margin-top: 20px;
+        }
+
+        .footer img {
+            width: 50px;
+            filter: grayscale(100%);
+        }
+
+        .orange {
+            color: #F0762B;
+        }
+
+        .blue {
+            color: #19c6ee;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="logo">
+        <img src="https://res.cloudinary.com/dloeqfbwm/image/upload/v1728571538/zity/assets/Zity-logo-256x256px.svg"
+            alt="Company Logo" />
+    </div>
+    <div class="container">
+
+        <div class="header">
+            <img src="https://res.cloudinary.com/dloeqfbwm/image/upload/v1728571542/zity/assets/Firework.svg"
+                alt="Party Popper">
+        </div>
+        <div class="welcome-message orange">
+            Welcome to ZiTy!
+        </div>
+        <div class="message-text">
+            Hi {{FullName}}! A new account for <span class="orange bold">ZiTy</span> by <span
+                class="blue bold">ZTech</span> has been created for you. Please log in and change your password
+            immediately.
+        </div>
+        <a href="{{LoginUrl}}" class="login-button">Login to Your Account</a>
+        <div class="credentials">
+            <div class="credentials-left">
+                <p><strong class="orange">Username:</strong></p>
+                <p>{{Username}}</p>
+            </div>
+            <div class="credentials-right">
+                <p><strong class="orange">Password:</strong></p>
+                <p>{{Password}}</p>
+            </div>
+        </div>
+    </div>
+    <div class="support">
+        <p>Support</p>
+        <p>Text or Call: xxx.xxx.xxx | Email: <a href="mailto:techsupport@zity.com">techsupport@zity.com</a></p>
+    </div>
+    <div class="footer">
+        <img src="https://res.cloudinary.com/dloeqfbwm/image/upload/v1728571536/zity/assets/Zity-logo-128x128px.svg"
+            alt="Company Logo">
+    </div>
+</body>
+
+</html>
