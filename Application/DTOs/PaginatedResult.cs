@@ -1,5 +1,4 @@
-﻿
-namespace Application.Core.Utilities;
+﻿namespace Application.DTOs;
 public class PaginatedResult<T>
 {
     public List<T> Contents { get; set; } = [];

@@ -1,4 +1,4 @@
-﻿using Application.Core.Utilities;
+﻿using Application.DTOs;
 using Application.DTOs.Apartments;
 using Application.Interfaces;
 using AutoMapper;
