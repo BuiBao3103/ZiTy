@@ -1,34 +1,48 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Application.Core.Services;
+//using Application.Core.Services;
 using Domain.Core.Repositories;
-using MyApp.Infrastructure.Data;
-using MyApp.Infrastructure.Repositories;
-using MyApp.Infrastructure.Services;
+using Infrastructure.Data;
+using Infrastructure.Repositories;
+using MyApp.Domain.Configurations;
+//using Infrastructure.Services;
 
 namespace Infrastructure;
 public static class ServiceExtensions
 {
-    //public static void ConfigureInfrastructure(this IServiceCollection services)
-    //{
-    //    services.AddDbContext<MyAppDbContext>(options =>
-    //        options.UseSqlServer("name=ConnectionStrings:MyAppDatabase",
-    //        x => x.MigrationsAssembly("MyApp.Infrastructure")));
+    public static void ConfigureInfrastructure(this IServiceCollection services)
+    {
+        DotNetEnv.Env.Load();
+        var appSettings = new AppSettings
+        {
+            mySqlSettings = new MySqlSettings
+            {
+                Server = Environment.GetEnvironmentVariable("MYSQL_SERVER") ?? throw new ArgumentException("MYSQL_SERVER is missing."),
+                Port = int.Parse(Environment.GetEnvironmentVariable("MYSQL_PORT") ?? throw new ArgumentException("MYSQL_PORT is missing.")),
+                Database = Environment.GetEnvironmentVariable("MYSQL_DATABASE") ?? throw new ArgumentException("MYSQL_DATABASE is missing."),
+                User = Environment.GetEnvironmentVariable("MYSQL_USER") ?? throw new ArgumentException("MYSQL_USER is missing."),
+                Password = Environment.GetEnvironmentVariable("MYSQL_PASSWORD") ?? throw new ArgumentException("MYSQL_PASSWORD is missing.")
+            }
+        };
 
-    //    services.AddScoped(typeof(IBaseRepositoryAsync<>), typeof(BaseRepositoryAsync<>));
-    //    services.AddScoped<IUnitOfWork, UnitOfWork>();
+        var connectionString = appSettings.mySqlSettings.GetConnectionString();
+        services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
-    //    services.AddScoped<IEmailService, EmailService>();
-    //    services.AddScoped<ILoggerService, LoggerService>();
-    //}
+        services.AddScoped(typeof(IBaseRepositoryAsync<>), typeof(BaseRepositoryAsync<>));
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-    //public static void MigrateDatabase(this IServiceProvider serviceProvider)
-    //{
-    //    var dbContextOptions = serviceProvider.GetRequiredService<DbContextOptions<MyAppDbContext>>();
+        //services.AddScoped<IEmailService, EmailService>();
+        //services.AddScoped<ILoggerService, LoggerService>();
+    }
 
-    //    using (var dbContext = new MyAppDbContext(dbContextOptions))
-    //    {
-    //        dbContext.Database.Migrate();
-    //    }
-    //}
+    public static void MigrateDatabase(this IServiceProvider serviceProvider)
+    {
+        var dbContextOptions = serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>();
+
+        using (var dbContext = new ApplicationDbContext(dbContextOptions))
+        {
+            dbContext.Database.Migrate();
+        }
+    }
 }

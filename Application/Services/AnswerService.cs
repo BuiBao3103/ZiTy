@@ -7,7 +7,7 @@ using Domain.Core.Repositories;
 using Domain.Core.Specifications;
 
 
-namespace Application.Services.Implementations
+namespace Application.Services
 {
     public class AnswerService(IUnitOfWork unitOfWork, IMapper mapper) : IAnswerService
     {

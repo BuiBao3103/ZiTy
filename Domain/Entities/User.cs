@@ -24,9 +24,4 @@ public partial class User : BaseEntity
     public virtual ICollection<Relationship> Relationships { get; set; } = new List<Relationship>();
     public virtual ICollection<Survey> Surveys { get; set; } = new List<Survey>();
     public virtual ICollection<UserAnswer> UserAnswers { get; set; } = new List<UserAnswer>();
-
-    public static implicit operator User?(UserDTO? v)
-    {
-        throw new NotImplementedException();
-    }
 }
