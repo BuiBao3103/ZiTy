@@ -14,16 +14,16 @@ namespace Application.Services
         private readonly IMapper _mapper = mapper;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-        public async Task<PaginatedResult<AnswerDTO>> GetAllAsync(AnswerQueryDTO queryParam)
+        public async Task<PaginatedResult<AnswerDTO>> GetAllAsync(AnswerQueryDTO query)
         {
-            var answerSpec = new BaseSpecification<Answer>(a => a.DeletedAt == null);
-            var data = await _unitOfWork.Repository<Answer>().ListAsync(answerSpec);
-            var totalCount = await _unitOfWork.Repository<Answer>().CountAsync(answerSpec);
+            var spec = new BaseSpecification<Answer>(a => a.DeletedAt == null);
+            var data = await _unitOfWork.Repository<Answer>().ListAsync(spec);
+            var totalCount = await _unitOfWork.Repository<Answer>().CountAsync(spec);
             return new PaginatedResult<AnswerDTO>(
                 data.Select(_mapper.Map<AnswerDTO>).ToList(),
                 totalCount,
-                queryParam.Page,
-                queryParam.PageSize);
+                query.Page,
+                query.PageSize);
         }
 
 
@@ -56,10 +56,7 @@ namespace Application.Services
             var existingAnswer = await _unitOfWork.Repository<Answer>().GetByIdAsync(id)
                 //?? throw new EntityNotFoundException(nameof(Answer), id);
                 ?? throw new Exception(nameof(Answer));
-            Console.WriteLine(patchDTO.QuestionId == null);
-            Console.WriteLine(existingAnswer.QuestionId);
             _mapper.Map(patchDTO, existingAnswer);
-            Console.WriteLine(existingAnswer.QuestionId);
             _unitOfWork.Repository<Answer>().Update(existingAnswer);
             await _unitOfWork.SaveChangesAsync();
             return _mapper.Map<AnswerDTO>(existingAnswer);

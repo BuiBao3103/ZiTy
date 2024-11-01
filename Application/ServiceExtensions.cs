@@ -9,6 +9,10 @@ public static class ServiceExtensions
     public static void ConfigureApplication(this IServiceCollection services)
     {
         services.AddScoped<IAnswerService, AnswerService>();
-        services.AddAutoMapper(typeof(AnswerMapping));
+        services.AddScoped<IApartmentService, ApartmentService>();
+        services.AddAutoMapper(
+            typeof(AnswerMapping),
+            typeof(ApartmentMapping)
+        );
     }
 }
