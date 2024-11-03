@@ -2,7 +2,6 @@
 using Application.Interfaces;
 using Application.Services;
 using Application.Mappers;
-using Application.Implementations;
 
 namespace Application;
 public static class ServiceExtensions
@@ -13,7 +12,7 @@ public static class ServiceExtensions
         services.AddScoped<IApartmentService, ApartmentService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<ISettingService, SettingService>();
-        services.AddScoped<IBillDetailService, BillDetailService>();
+        services.AddScoped<IRejectionReasonService, RejectionReasonService>();
         services.AddAutoMapper(
             typeof(AnswerMapping),
             typeof(ApartmentMapping)
