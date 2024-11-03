@@ -1,5 +1,8 @@
 ﻿
 
+using Application.DTOs.Answers;
+using Application.DTOs.Surveys;
+
 namespace Application.DTOs.Questions;
 
 public class QuestionDTO
@@ -16,9 +19,9 @@ public class QuestionDTO
 
     public int? SurveyId { get; set; }
 
-    //public ICollection<AnswerDTO> Answers { get; set; } = [];
+    public ICollection<AnswerDTO> Answers { get; set; } = [];
 
     //public ICollection<OtherAnswerDTO> OtherAnswers { get; set; } = [];
 
-    //public SurveyDTO? Survey { get; set; }
+    public SurveyDTO? Survey { get; set; }
 }

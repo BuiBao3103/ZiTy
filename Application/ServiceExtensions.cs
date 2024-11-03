@@ -2,6 +2,7 @@
 using Application.Interfaces;
 using Application.Services;
 using Application.Mappers;
+using Application.DTOs;
 
 
 namespace Application;
@@ -13,6 +14,7 @@ public static class ServiceExtensions
         services.AddScoped<IReportService, ReportService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IQuestionService, QuestionService>();
+        services.AddScoped<ISurveyService, SurveyService>();
         services.AddScoped<IApartmentService, ApartmentService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<ISettingService, SettingService>();
@@ -21,7 +23,8 @@ public static class ServiceExtensions
             typeof(ApartmentMapping),
             typeof(UserMapping),
             typeof(ReportMapping),
-            typeof(QuestionMapping)
+            typeof(QuestionMapping),
+            typeof(SurveyMapping)
         );
     }
 }
