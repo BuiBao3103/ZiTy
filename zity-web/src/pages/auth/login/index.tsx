@@ -60,7 +60,7 @@ export default function Index() {
             if (payload.userType === 'ADMIN') {
               navigate('/admin')
             } else {
-              if (payload.relationships?.role === 'OWNER') {
+              if (payload.relationships && payload?.relationships[0]?.role === 'OWNER') {
                 navigate('/')
               } else {
                 navigate('/bills')

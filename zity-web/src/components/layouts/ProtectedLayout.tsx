@@ -7,10 +7,8 @@ import { toast } from 'sonner'
 
 const ProtectedLayout: React.FC<{ userType: UserRole }> = ({ userType }) => {
   const navigate = useNavigate()
-  const token = useAppSelector((state) => state.authReducer.token)
   const user = useAppSelector((state) => state.userReducer.user)
   const location = useLocation()
-  console.log(location.pathname)
   useEffect(() => {
     if (user && user.userType !== userType) {
       const redirectPath =
@@ -19,14 +17,14 @@ const ProtectedLayout: React.FC<{ userType: UserRole }> = ({ userType }) => {
       toast.error('You are not authorized to access this page')
     } else {
       if (
-        user?.relationships?.role !== 'OWNER' &&
+        user?.relationships && user.relationships[0]?.role !== 'OWNER' &&
         location.pathname !== ROUTES.BILLS
       ) {
         navigate(ROUTES.BILLS)
         toast.error('You are not authorized to access this page')
       }
     }
-  }, [navigate, token, user, userType])
+  }, [navigate, user, userType])
 
   return <Outlet />
 }

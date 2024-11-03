@@ -1,5 +1,6 @@
 import { ReportStatusSchema } from '@/enums'
 import { z } from 'zod'
+import { IRelationships } from './relationship.validate'
 
 export const ReportSchema = z.object({
   id: z.number(),
@@ -19,5 +20,6 @@ export const RejectionReasonSchema = z.object({
 export interface IRejectionReason extends z.infer<typeof RejectionReasonSchema> {}
 
 export interface IReport extends BaseEntity, ReportFormSchema {
-  rejectionReason: IRejectionReason
+  rejectionReason: IRejectionReason,
+	relationship?: IRelationships
 }

@@ -3,10 +3,21 @@ import { apiSlice } from '../api/apiSlice'
 
 export const reportsSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getReports: builder.query<ResponseDataType<IReport>, number | void>({
-      query: (page = 1) => {
+    getReports: builder.query<
+      ResponseDataType<IReport>,
+      { page?: number; includes?: string[]; relationshipId?: number }
+    >({
+      query: (params = { page: 1, includes: [], relationshipId: -1 }) => {
+        let url = `reports?page=${params.page}`
+        if (params.includes && params?.includes.length > 0) {
+          url += `&includes=${params.includes.join(',')}`
+        }
+        if (params.relationshipId && params.relationshipId !== -1) {
+          url += `&relationshipId=eq:${params.relationshipId}`
+        }
+
         return {
-          url: `reports?page=${page}`,
+          url: url,
         }
       },
       providesTags: (result) =>
@@ -21,7 +32,7 @@ export const reportsSlice = apiSlice.injectEndpoints({
           : [{ type: 'Reports', id: 'LIST' }],
     }),
     getReport: builder.query<IReport, string | number>({
-      query: (id: string) => ({
+      query: (id) => ({
         url: `reports/${id}?includes=rejectionReason`,
         method: 'GET',
       }),
@@ -30,7 +41,8 @@ export const reportsSlice = apiSlice.injectEndpoints({
     }),
     createReport: builder.mutation<
       IReport,
-      Partial<IReport> & Omit<IReport, 'id' | 'createdAt' | 'updatedAt'>
+      | Partial<IReport>
+      | Pick<IReport, 'title' | 'content' | 'relationshipId' | 'status'>
     >({
       query: (data) => ({
         url: 'reports',
@@ -41,7 +53,7 @@ export const reportsSlice = apiSlice.injectEndpoints({
     }),
     updateReport: builder.mutation<
       void,
-      { id: string | number | undefined; body: Partial<IReport> }
+      { id: number | undefined; body: Partial<IReport> }
     >({
       query: (data) => ({
         url: `reports/${data.id}`,

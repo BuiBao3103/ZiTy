@@ -88,5 +88,5 @@ export interface User
   extends UserFormSchema,
     BaseEntity,
     z.infer<typeof AddtionalSchema> {
-  relationships?: Relationships
+  relationships?: Relationships[]
 }
