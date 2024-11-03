@@ -26,9 +26,9 @@ This web application was built to help residents in apartment
     * React
     * Typescript
     * Redux Toolkit
-	* Firebase
-	* Zod
-	* React-hook-form
+    * Firebase
+    * Zod
+    * React-hook-form
     ---------------
     * Shadcn/ui
     * Lucide-react icons
