@@ -1,39 +1,59 @@
-# Zity (Apartment Management)
+# Zity Apartment Management
 
-## Description
+## Team Members:
+
+```bash
+Saigon University ,Faculty of Information Technology ,Major in Software Engineering
+
+ID          | Full Name
+3121410379    Nguyen Tien Phat
+3121410066    Bui Hong Bao
+3121410070    Hoang Gia Bao
+3121410087    Mai Trung Chinh
+3121410401    Tran Nhu Phu Quang
+3121410491    Bui Ngoc Thuc
+
+```
+
+## Project Description:
+
+This web application was built to help residents in apartment
+
+## Tech Stack Used:
+
+### Front-end
+```bash
+    * React
+    * Typescript
+    * Redux Toolkit
+	* Firebase
+	* Zod
+	* React-hook-form
+    ---------------
+    * Shadcn/ui
+    * Lucide-react icons
+    * Radix icons
+```
+### Backend
+```bash
+    * .NET
+```
+
+## Website Functions:
+
+```bash
+#USER
+   * Login / Log out / Forgot password
+   * Allows users to pay electric & water bills (integrate payment method with Momo, VNPay),
+   * Allows users to create/edit/delete a report,
+   * Send notifications to the user if there are any packages sent to them.
+   * Allows users to create/edit/delete a survey 
 
 
-## UI Page
-- Login 
-- Profile Page
-- 
+#ADMIN
+    
+```
 
+### Make sure to star the repository if you find it helpful!
 
-## Prerequisites
-
-Before you begin, ensure you have met the following requirements:
-
-- You have installed [Node.js](https://nodejs.org/) (>=14.x)
-- You have a package manager like npm or yarn
-
-## Getting Started
-
-To get a local copy up and running follow these simple steps.
-
-### Installation
-
-1. **Clone the repository**
-
-   ```sh
-   git clone https://github.com/PhatJack/apartment-management.git
-   ```
-
-2. Run the client
-
-   ```sh
-   npm i
-   ```
-
-   ```sh
-   npm run dev
-   ```
+<a href="https://github.com/BuiBao3103/ZiTy/graphs/contributors"><img src="https://img.shields.io/github/stars/BuiBao3103/Zity?color=yellow" alt="Stars Badge"/></a>

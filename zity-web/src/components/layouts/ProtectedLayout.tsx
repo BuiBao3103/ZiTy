@@ -11,7 +11,6 @@ const ProtectedLayout: React.FC<{ userType: UserRole }> = ({ userType }) => {
   const location = useLocation()
   useEffect(() => {
     if (user && user.userType !== userType) {
-			console.log(user.userType)
       const redirectPath =
         user.userType === 'ADMIN' ? ROUTES.ADMIN.HOME : ROUTES.HOME
       navigate(redirectPath)
