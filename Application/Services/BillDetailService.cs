@@ -6,7 +6,7 @@ using Domain.Core.Repositories;
 using Application.DTOs.BillDetails;
 using Domain.Core.Specifications;
 
-namespace Application.Implementations;
+namespace Application.Services;
 
 public class BillDetailService(IUnitOfWork unitOfWork, IMapper mapper) : IBillDetailService
 {
