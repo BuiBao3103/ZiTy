@@ -15,6 +15,7 @@ public static class ServiceExtensions
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IQuestionService, QuestionService>();
         services.AddScoped<ISurveyService, SurveyService>();
+        services.AddScoped<IUserAnswerService, UserAnswerService>();
         services.AddScoped<IApartmentService, ApartmentService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<ISettingService, SettingService>();
@@ -24,7 +25,8 @@ public static class ServiceExtensions
             typeof(UserMapping),
             typeof(ReportMapping),
             typeof(QuestionMapping),
-            typeof(SurveyMapping)
+            typeof(SurveyMapping),
+            typeof(UserAnswerMapping)
         );
     }
 }
