@@ -10,6 +10,7 @@ public static class ServiceExtensions
     public static void ConfigureApplication(this IServiceCollection services)
     {
         services.AddScoped<IAnswerService, AnswerService>();
+        services.AddScoped<IReportService, ReportService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IApartmentService, ApartmentService>();
         services.AddScoped<IAuthService, AuthService>();
@@ -17,7 +18,8 @@ public static class ServiceExtensions
         services.AddAutoMapper(
             typeof(AnswerMapping),
             typeof(ApartmentMapping),
-            typeof(UserMapping)
+            typeof(UserMapping),
+            typeof(ReportMapping)
         );
     }
 }
