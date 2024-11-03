@@ -12,6 +12,7 @@ public static class ServiceExtensions
         services.AddScoped<IAnswerService, AnswerService>();
         services.AddScoped<IReportService, ReportService>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IQuestionService, QuestionService>();
         services.AddScoped<IApartmentService, ApartmentService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<ISettingService, SettingService>();
@@ -19,7 +20,8 @@ public static class ServiceExtensions
             typeof(AnswerMapping),
             typeof(ApartmentMapping),
             typeof(UserMapping),
-            typeof(ReportMapping)
+            typeof(ReportMapping),
+            typeof(QuestionMapping)
         );
     }
 }
