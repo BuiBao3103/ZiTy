@@ -16,6 +16,7 @@ public static class ServiceExtensions
         services.AddScoped<IRejectionReasonService, RejectionReasonService>();
         services.AddScoped<IServiceService, ServiceService>();
         services.AddScoped<IRelationshipService, RelationshipService>();
+        services.AddScoped<IItemService, ItemService>();
         services.AddAutoMapper(
             typeof(AnswerMapping),
             typeof(ApartmentMapping)
