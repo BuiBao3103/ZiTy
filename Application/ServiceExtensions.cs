@@ -12,6 +12,12 @@ public static class ServiceExtensions
         services.AddScoped<IApartmentService, ApartmentService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<ISettingService, SettingService>();
+        services.AddScoped<IBillService, BillService>();
+        services.AddScoped<IBillDetailService, BillDetailService>();
+        services.AddScoped<IRejectionReasonService, RejectionReasonService>();
+        services.AddScoped<IServiceService, ServiceService>();
+        services.AddScoped<IRelationshipService, RelationshipService>();
+        services.AddScoped<IItemService, ItemService>();
         services.AddAutoMapper(
             typeof(AnswerMapping),
             typeof(ApartmentMapping)
