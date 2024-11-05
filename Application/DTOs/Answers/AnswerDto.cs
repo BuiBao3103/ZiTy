@@ -1,5 +1,5 @@
-﻿//using zity.DTOs.Questions;
-//using zity.DTOs.UserAnswers;
+﻿using Application.DTOs.Questions;
+using Application.DTOs.UserAnswers;
 
 namespace Application.DTOs.Answers;
 
@@ -15,7 +15,7 @@ public class AnswerDTO
 
     public int QuestionId { get; set; }
 
-    //public QuestionDTO Question { get; set; } = null!;
+    public QuestionDTO Question { get; set; } = null!;
 
-    //public ICollection<UserAnswerDTO> UserAnswers { get; set; } = [];
+    public ICollection<UserAnswerDTO> UserAnswers { get; set; } = [];
 }

@@ -1,4 +1,6 @@
 ﻿
+using Application.DTOs.Reports;
+
 namespace Application.DTOs.RejectionReasons;
 
 public class RejectionReasonDTO
@@ -13,5 +15,5 @@ public class RejectionReasonDTO
 
     public int? ReportId { get; set; }
 
-    // public ReportDTO? Report { get; set; }
+    public ReportDTO? Report { get; set; }
 }

@@ -11,10 +11,13 @@ using Application.Core.Services;
 
 namespace Application.Services;
 
-public class BillService(IUnitOfWork unitOfWork, IMapper mapper) : IBillService
+public class BillService(IUnitOfWork unitOfWork, IMapper mapper, IVNPayService vnpayService, IMomoService momoService) : IBillService
 {
     private readonly IMapper _mapper = mapper;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+
+    private readonly IVNPayService _vnpayService = vnpayService;
+    private readonly IMomoService _momoService = momoService;
 
     public async Task<PaginatedResult<BillDTO>> GetAllAsync(BillQueryDTO queryParam)
     {
@@ -75,23 +78,23 @@ public class BillService(IUnitOfWork unitOfWork, IMapper mapper) : IBillService
         await _unitOfWork.SaveChangesAsync();
     }
 
-    // public async Task<string> CreatePaymentVNPayAsync(int id)
-    // {
-    //     var existingBill = await _unitOfWork.Repository<Bill>().GetByIdAsync(id)
-    //                             // ?? throw new EntityNotFoundException(nameof(Bill), id);
-    //                             ?? throw new Exception(nameof(Bill));
-    //     var paymentUrl = IVNPayService.CreatePaymentUrl(existingBill);
-    //     return paymentUrl;
-    // }
+    public async Task<string> CreatePaymentVNPayAsync(int id)
+    {
+        var existingBill = await _unitOfWork.Repository<Bill>().GetByIdAsync(id)
+                                // ?? throw new EntityNotFoundException(nameof(Bill), id);
+                                ?? throw new Exception(nameof(Bill));
+        var paymentUrl = _vnpayService.CreatePaymentUrl(existingBill);
+        return paymentUrl;
+    }
 
-    // public async Task<MomoCreatePaymentDto> CreatePaymentMomoAsync(int id, MomoRequestCreatePaymentDto request)
-    // {
-    //     var existingBill = await _unitOfWork.Repository<Bill>().GetByIdAsync(id)
-    //     // ?? throw new EntityNotFoundException(nameof(Bill), id);
-    //                                     ?? throw new Exception(nameof(Bill));
-    //     var momoCreatePaymentDto = await IMomoService.CreatePaymentAsync(existingBill, request);
-    //     return momoCreatePaymentDto;
-    // }
+    public async Task<MomoCreatePaymentDto> CreatePaymentMomoAsync(int id, MomoRequestCreatePaymentDto request)
+    {
+        var existingBill = await _unitOfWork.Repository<Bill>().GetByIdAsync(id)
+                                        // ?? throw new EntityNotFoundException(nameof(Bill), id);
+                                        ?? throw new Exception(nameof(Bill));
+        var momoCreatePaymentDto = await _momoService.CreatePaymentAsync(existingBill, request);
+        return momoCreatePaymentDto;
+    }
 
     public async Task HandleMoMoCallBackAsync(int id, MomoCallBackDto callbackDto)
     {

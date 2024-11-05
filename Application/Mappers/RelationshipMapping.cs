@@ -8,11 +8,11 @@ public class RelationshipMapping : Profile
 {
     public RelationshipMapping()
     {
-        CreateMap<Relationship, RelationshipDTO>();
-        // .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.User))
-        // .ForMember(dest => dest.Apartment, opt => opt.MapFrom(src => src.Apartment))
-        // .ForMember(dest => dest.Bills, opt => opt.MapFrom(src => src.Bills))
-        // .ForMember(dest => dest.Reports, opt => opt.MapFrom(src => src.Reports));
+        CreateMap<Relationship, RelationshipDTO>()
+         .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.User))
+         .ForMember(dest => dest.Apartment, opt => opt.MapFrom(src => src.Apartment))
+         .ForMember(dest => dest.Bills, opt => opt.MapFrom(src => src.Bills))
+         .ForMember(dest => dest.Reports, opt => opt.MapFrom(src => src.Reports));
 
         CreateMap<RelationshipCreateDTO, Relationship>()
             .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.Now));

@@ -11,7 +11,7 @@ public class MediaService : IMediaService
     private Cloudinary _cloudinary;
     private readonly AppSettings _appSettings;
 
-    MediaService(AppSettings appSettings)
+    public MediaService(AppSettings appSettings)
     {
         _appSettings = appSettings;
         var account = new Account(

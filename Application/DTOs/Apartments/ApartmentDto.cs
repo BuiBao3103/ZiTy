@@ -1,4 +1,6 @@
 ﻿
+using Application.DTOs.Relationships;
+
 namespace Application.DTOs.Apartments;
 public class ApartmentDTO
 {
@@ -17,5 +19,5 @@ public class ApartmentDTO
     public DateTime CreatedAt { get; set; }
 
     public DateTime? UpdatedAt { get; set; }
-    //public ICollection<RelationshipDTO> Relationships { get; set; } = [];
+    public ICollection<RelationshipDTO> Relationships { get; set; } = [];
 }

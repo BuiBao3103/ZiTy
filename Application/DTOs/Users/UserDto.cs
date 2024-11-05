@@ -1,5 +1,11 @@
 ﻿
 
+using Application.DTOs.Items;
+using Application.DTOs.OtherAnswers;
+using Application.DTOs.Relationships;
+using Application.DTOs.Surveys;
+using Application.DTOs.UserAnswers;
+
 namespace Application.DTOs.Users;
 
 public class UserDTO
@@ -17,10 +23,10 @@ public class UserDTO
     public bool? IsStaying { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
-    //public ICollection<ItemDTO> Items { get; set; } = [];
-    //public ICollection<OtherAnswerDTO> OtherAnswers { get; set; } = [];
-    //public ICollection<RelationshipDTO> Relationships { get; set; } = [];
-    //public ICollection<SurveyDTO> Surveys { get; set; } = [];
-    //public ICollection<UserAnswerDTO> UserAnswers { get; set; } = [];
+    public ICollection<ItemDTO> Items { get; set; } = [];
+    public ICollection<OtherAnswerDTO> OtherAnswers { get; set; } = [];
+    public ICollection<RelationshipDTO> Relationships { get; set; } = [];
+    public ICollection<SurveyDTO> Surveys { get; set; } = [];
+    public ICollection<UserAnswerDTO> UserAnswers { get; set; } = [];
 
 }

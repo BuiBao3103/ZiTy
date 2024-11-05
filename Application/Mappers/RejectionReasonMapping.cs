@@ -8,8 +8,8 @@ public class RejectionReasonMapping : Profile
 {
     public RejectionReasonMapping()
     {
-        CreateMap<RejectionReason, RejectionReasonDTO>();
-        //    .ForMember(dest => dest.Report, opt => opt.MapFrom(src => src.Report));
+        CreateMap<RejectionReason, RejectionReasonDTO>()
+            .ForMember(dest => dest.Report, opt => opt.MapFrom(src => src.Report));
 
         CreateMap<RejectionReasonCreateDTO, RejectionReason>()
             .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.Now));

@@ -1,3 +1,5 @@
+using Application.DTOs.Users;
+
 namespace Application.DTOs.Items;
 
 public class ItemDTO
@@ -16,6 +18,6 @@ public class ItemDTO
 
     public int? UserId { get; set; }
 
-    // public UserDTO? User { get; set; }
+    public UserDTO? User { get; set; }
 }
 

@@ -5,6 +5,8 @@ using Domain.Core.Repositories;
 using Infrastructure.Data;
 using Infrastructure.Repositories;
 using MyApp.Domain.Configurations;
+using Infrastructure.Services;
+using Application.Core.Services;
 //using Infrastructure.Services;
 
 namespace Infrastructure;
@@ -81,7 +83,11 @@ public static class ServiceExtensions
         services.AddScoped(typeof(IBaseRepositoryAsync<>), typeof(BaseRepositoryAsync<>));
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-        //services.AddScoped<IEmailService, EmailService>();
+        services.AddScoped<IMediaService, MediaService>();
+        services.AddScoped<IEmailService, EmailService>();
+        services.AddScoped<IVNPayService, VNPayService>();
+        services.AddScoped<IMomoService, MomoService>();
+        services.AddScoped<ISmsService, SmsService>();
         //services.AddScoped<ILoggerService, LoggerService>();
     }
 

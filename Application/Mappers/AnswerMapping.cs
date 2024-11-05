@@ -8,9 +8,9 @@ namespace Application.Mappers
     {
         public AnswerMapping()
         {
-            CreateMap<Answer, AnswerDTO>();
-                //.ForMember(dest => dest.Question, opt => opt.MapFrom(src => src.Question))
-                //.ForMember(dest => dest.UserAnswers, opt => opt.MapFrom(src => src.UserAnswers));
+            CreateMap<Answer, AnswerDTO>()
+                .ForMember(dest => dest.Question, opt => opt.MapFrom(src => src.Question))
+                .ForMember(dest => dest.UserAnswers, opt => opt.MapFrom(src => src.UserAnswers));
 
             CreateMap<AnswerCreateDTO, Answer>()
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.Now));

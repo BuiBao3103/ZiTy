@@ -13,6 +13,7 @@ public class ServiceDTO
     public DateTime CreatedAt { get; set; }
 
     public DateTime? UpdatedAt { get; set; }
+    public object BillDetails { get; internal set; }
 
     // public ICollection<BillDetailDTO> BillDetails { get; set; } = [];
 }

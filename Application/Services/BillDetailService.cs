@@ -64,10 +64,10 @@ public class BillDetailService(IUnitOfWork unitOfWork, IMapper mapper) : IBillDe
 
     public async Task DeleteAsync(int id)
     {
-        var existingAnswer = await _unitOfWork.Repository<Answer>().GetByIdAsync(id)
-                  //?? throw new EntityNotFoundException(nameof(Answer), id);
-                  ?? throw new Exception(nameof(Answer));
-        _unitOfWork.Repository<Answer>().Delete(existingAnswer);
+        var existingBillDetail = await _unitOfWork.Repository<BillDetail>().GetByIdAsync(id)
+                  //?? throw new EntityNotFoundException(nameof(BillDetail), id);
+                  ?? throw new Exception(nameof(BillDetail));
+        _unitOfWork.Repository<BillDetail>().Delete(existingBillDetail);
         await _unitOfWork.SaveChangesAsync();
     }
 }

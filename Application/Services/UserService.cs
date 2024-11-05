@@ -1,4 +1,6 @@
-﻿using Application.DTOs;
+﻿using Application.Core.Constraints;
+using Application.Core.Services;
+using Application.DTOs;
 using Application.DTOs.Users;
 using Application.Interfaces;
 using AutoMapper;
@@ -6,6 +8,7 @@ using Domain.Core.Repositories;
 using Domain.Core.Specifications;
 using Domain.Entities;
 using Microsoft.AspNetCore.Http;
+using zity.Utilities;
 
 
 
@@ -34,51 +37,48 @@ public class UserService(IUnitOfWork unitOfWork, IMediaService mediaService, IEm
 
     public async Task<UserDTO> GetByIdAsync(int id, string? includes = null)
     {
-        //var user = await _userRepository.GetByIdAsync(id, includes)
-        //        ?? throw new EntityNotFoundException(nameof(User), id);
-        //return _mapper.Map<UserDTO>(user);
-        var answer = await _unitOfWork.Repository<Answer>().GetByIdAsync(id)
-       //?? throw new EntityNotFoundException(nameof(Answer), id);
-       ?? throw new Exception(nameof(Answer));
-        return _mapper.Map<UserDTO>(answer);
+        var user = await _unitOfWork.Repository<User>().GetByIdAsync(id)
+                //?? throw new EntityNotFoundException(nameof(User), id);
+                ?? throw new Exception(nameof(User));
+        return _mapper.Map<UserDTO>(user);
+      
     }
 
     public async Task<UserDTO> CreateAsync(UserCreateDTO createDTO)
     {
-        //var user = _mapper.Map<User>(createDTO);
+        var user = _mapper.Map<User>(createDTO);
 
-        //var password = PasswordGenerator.GeneratePassword(12);
-        //user.Password = BCrypt.Net.BCrypt.HashPassword(password);
+        var password = PasswordGenerator.GeneratePassword(12);
+        user.Password = BCrypt.Net.BCrypt.HashPassword(password);
 
-        //var createdUser = await _userRepository.CreateAsync(user);
+        var createdUser = await _unitOfWork.Repository<User>().AddAsync(user);
 
-        //await _emailService.SendAccountCreationEmail(createdUser, password);
-        //return _mapper.Map<UserDTO>(createdUser);
+        await _emailService.SendAccountCreationEmail(createdUser, password);
+        return _mapper.Map<UserDTO>(createdUser);
 
-        var answer = await _unitOfWork.Repository<Answer>().AddAsync(_mapper.Map<Answer>(createDTO));
-        await _unitOfWork.SaveChangesAsync();
-        return _mapper.Map<UserDTO>(answer);
     }
 
     public async Task<UserDTO> UploadAvatarAsync(int id, IFormFile file)
     {
-        var user = await _userRepository.GetByIdAsync(id)
-                ?? throw new EntityNotFoundException(nameof(UserAnswer), id);
+        var user = await _unitOfWork.Repository<User>().GetByIdAsync(id)
+                //?? throw new EntityNotFoundException(nameof(User), id);
+                ?? throw new Exception(nameof(User));
         if (!string.IsNullOrEmpty(user.Avatar))
         {
             await _mediaService.DeleteImageAsync(user.Avatar, CloudinaryConstants.USER_AVATARS_FOLDER);
         }
         var avatarUrl = await _mediaService.UploadImageAsync(file, CloudinaryConstants.USER_AVATARS_FOLDER);
         user.Avatar = avatarUrl;
-        await _userRepository.UpdateAsync(user);
+        _unitOfWork.Repository<User>().Update(user);
 
         return _mapper.Map<UserDTO>(user);
     }
 
     public async Task NotifyReceivedPackage(int userId)
     {
-        var user = await _userRepository.GetByIdAsync(userId, null)
-                ?? throw new EntityNotFoundException(nameof(User), userId);
+        var user = await _unitOfWork.Repository<User>().GetByIdAsync(userId)
+                 //?? throw new EntityNotFoundException(nameof(User), id);
+                 ?? throw new Exception(nameof(User));
         string phoneNumber = user.Phone;
         string message = "You have received a package!";
         //string message = "Cam on quy khach da su dung dich vu cua chung toi. Chuc quy khach mot ngay tot lanh!";
@@ -87,8 +87,9 @@ public class UserService(IUnitOfWork unitOfWork, IMediaService mediaService, IEm
 
     public async Task<UserDTO> GetMeAsync(int userId, string? includes = null)
     {
-        var user = await _userRepository.GetByIdAsync(userId, includes)
-                ?? throw new EntityNotFoundException(nameof(User), userId);
+        var user = await _unitOfWork.Repository<User>().GetByIdAsync(userId)
+               //?? throw new EntityNotFoundException(nameof(User), id);
+               ?? throw new Exception(nameof(User));
         return _mapper.Map<UserDTO>(user);
     }
 }

@@ -1,5 +1,10 @@
 ﻿
 
+using Application.DTOs.Apartments;
+using Application.DTOs.Bills;
+using Application.DTOs.Reports;
+using Application.DTOs.Users;
+
 namespace Application.DTOs.Relationships;
 
 public class RelationshipDTO
@@ -16,12 +21,12 @@ public class RelationshipDTO
 
     public string ApartmentId { get; set; } = null!;
 
-    // public UserDTO? User { get; set; } = null;
+    public UserDTO? User { get; set; } = null;
 
-    // public ApartmentDTO? Apartment { get; set; } = null;
+    public ApartmentDTO? Apartment { get; set; } = null;
 
-    // public ICollection<BillDTO>? Bills { get; set; } = [];
+    public ICollection<BillDTO>? Bills { get; set; } = [];
 
-    // public ICollection<ReportDTO>? Reports { get; set; } = [];
+    public ICollection<ReportDTO>? Reports { get; set; } = [];
 }
 

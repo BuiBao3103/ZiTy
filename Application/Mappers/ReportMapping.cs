@@ -8,9 +8,9 @@ public class ReportMapping : Profile
 {
     public ReportMapping()
     {
-        CreateMap<Report, ReportDTO>();
-            //.ForMember(dest => dest.RejectionReasons, opt => opt.MapFrom(src => src.RejectionReasons))
-            //.ForMember(dest => dest.Relationship, opt => opt.MapFrom(src => src.Relationship));
+        CreateMap<Report, ReportDTO>()
+            .ForMember(dest => dest.RejectionReasons, opt => opt.MapFrom(src => src.RejectionReasons))
+            .ForMember(dest => dest.Relationship, opt => opt.MapFrom(src => src.Relationship));
 
         CreateMap<ReportCreateDTO, Report>()
             .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.Now));

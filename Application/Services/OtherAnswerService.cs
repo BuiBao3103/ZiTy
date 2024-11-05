@@ -41,32 +41,32 @@ public class OtherAnswerService(IUnitOfWork unitOfWork, IMapper mapper) : IOther
     }
     public async Task<OtherAnswerDTO> UpdateAsync(int id, OtherAnswerUpdateDTO updateDTO)
     {
-        var existingAnswer = await _unitOfWork.Repository<OtherAnswer>().GetByIdAsync(id)
+        var existingOtherAnswer = await _unitOfWork.Repository<OtherAnswer>().GetByIdAsync(id)
        //?? throw new EntityNotFoundException(nameof(OtherAnswer), id);
        ?? throw new Exception(nameof(OtherAnswer));
-        _mapper.Map(updateDTO, existingAnswer);
-        _unitOfWork.Repository<OtherAnswer>().Update(existingAnswer);
+        _mapper.Map(updateDTO, existingOtherAnswer);
+        _unitOfWork.Repository<OtherAnswer>().Update(existingOtherAnswer);
         await _unitOfWork.SaveChangesAsync();
-        return _mapper.Map<OtherAnswerDTO>(existingAnswer);
+        return _mapper.Map<OtherAnswerDTO>(existingOtherAnswer);
     }
 
     public async Task<OtherAnswerDTO> PatchAsync(int id, OtherAnswerPatchDTO patchDTO)
     {
-        var existingAnswer = await _unitOfWork.Repository<OtherAnswer>().GetByIdAsync(id)
-     //?? throw new EntityNotFoundException(nameof(OtherAnswer), id);
-     ?? throw new Exception(nameof(OtherAnswer));
-        _mapper.Map(patchDTO, existingAnswer);
-        _unitOfWork.Repository<OtherAnswer>().Update(existingAnswer);
+        var existingOtherAnswer = await _unitOfWork.Repository<OtherAnswer>().GetByIdAsync(id)
+                     //?? throw new EntityNotFoundException(nameof(OtherAnswer), id);
+                     ?? throw new Exception(nameof(OtherAnswer));
+        _mapper.Map(patchDTO, existingOtherAnswer);
+        _unitOfWork.Repository<OtherAnswer>().Update(existingOtherAnswer);
         await _unitOfWork.SaveChangesAsync();
-        return _mapper.Map<OtherAnswerDTO>(existingAnswer);
+        return _mapper.Map<OtherAnswerDTO>(existingOtherAnswer);
     }
 
     public async Task DeleteAsync(int id)
     {
-        var existingAnswer = await _unitOfWork.Repository<OtherAnswer>().GetByIdAsync(id)
-    //?? throw new EntityNotFoundException(nameof(OtherAnswer), id);
-    ?? throw new Exception(nameof(OtherAnswer));
-        _unitOfWork.Repository<OtherAnswer>().Delete(existingAnswer);
+        var existingOtherAnswer = await _unitOfWork.Repository<OtherAnswer>().GetByIdAsync(id)
+                //?? throw new EntityNotFoundException(nameof(OtherAnswer), id);
+                ?? throw new Exception(nameof(OtherAnswer));
+        _unitOfWork.Repository<OtherAnswer>().Delete(existingOtherAnswer);
         await _unitOfWork.SaveChangesAsync();
     }
 

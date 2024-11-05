@@ -34,7 +34,13 @@ public static class ServiceExtensions
             typeof(QuestionMapping),
             typeof(SurveyMapping),
             typeof(UserAnswerMapping),
-            typeof(OtherAnswerMapping)
+            typeof(OtherAnswerMapping),
+            typeof(BillDetailMapping),
+            typeof(BillMapping),
+            typeof(ItemMapping),
+            typeof(RejectionReasonMapping),
+            typeof(ServiceMapping),
+            typeof(RelationshipMapping)
         );
     }
 }

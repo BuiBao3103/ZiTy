@@ -15,9 +15,9 @@ public class ApartmentService(IUnitOfWork unitOfWork, IMapper mapper) : IApartme
 
     public async Task<ApartmentDTO> CreateAsync(ApartmentCreateDTO createDTO)
     {
-        var answer = await _unitOfWork.Repository<Apartment>().AddAsync(_mapper.Map<Apartment>(createDTO));
+        var apartment = await _unitOfWork.Repository<Apartment>().AddAsync(_mapper.Map<Apartment>(createDTO));
         await _unitOfWork.SaveChangesAsync();
-        return _mapper.Map<ApartmentDTO>(answer);
+        return _mapper.Map<ApartmentDTO>(apartment);
     }
 
     public async Task DeleteAsync(string id)
@@ -43,10 +43,10 @@ public class ApartmentService(IUnitOfWork unitOfWork, IMapper mapper) : IApartme
 
     public async Task<ApartmentDTO> GetByIdAsync(string id, string? includes = null)
     {
-        var answer = await _unitOfWork.Repository<Apartment>().GetByIdAsync(id)
+        var apartment = await _unitOfWork.Repository<Apartment>().GetByIdAsync(id)
                 //?? throw new EntityNotFoundException(nameof(Apartment), id);
                 ?? throw new Exception(nameof(Apartment));
-        return _mapper.Map<ApartmentDTO>(answer);
+        return _mapper.Map<ApartmentDTO>(apartment);
     }
 
     public async Task<ApartmentDTO> PatchAsync(string id, ApartmentPatchDTO patchDTO)

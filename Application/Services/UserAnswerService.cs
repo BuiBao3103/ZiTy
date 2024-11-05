@@ -39,31 +39,31 @@ public class UserAnswerService(IUnitOfWork unitOfWork, IMapper mapper) : IUserAn
     }
     public async Task<UserAnswerDTO> UpdateAsync(int id, UserAnswerUpdateDTO updateDTO)
     {
-        var existingAnswer = await _unitOfWork.Repository<UserAnswer>().GetByIdAsync(id)
+        var existingUserAnswer = await _unitOfWork.Repository<UserAnswer>().GetByIdAsync(id)
         //?? throw new EntityNotFoundException(nameof(UserAnswer), id);
         ?? throw new Exception(nameof(UserAnswer));
-        _mapper.Map(updateDTO, existingAnswer);
-        _unitOfWork.Repository<UserAnswer>().Update(existingAnswer);
+        _mapper.Map(updateDTO, existingUserAnswer);
+        _unitOfWork.Repository<UserAnswer>().Update(existingUserAnswer);
         await _unitOfWork.SaveChangesAsync();
-        return _mapper.Map<UserAnswerDTO>(existingAnswer);
+        return _mapper.Map<UserAnswerDTO>(existingUserAnswer);
     }
 
     public async Task<UserAnswerDTO> PatchAsync(int id, UserAnswerPatchDTO patchDTO)
     {
-        var existingAnswer = await _unitOfWork.Repository<UserAnswer>().GetByIdAsync(id)
+        var existingUserAnswer = await _unitOfWork.Repository<UserAnswer>().GetByIdAsync(id)
         //?? throw new EntityNotFoundException(nameof(UserAnswer), id);
         ?? throw new Exception(nameof(UserAnswer));
-        _mapper.Map(patchDTO, existingAnswer);
-        _unitOfWork.Repository<UserAnswer>().Update(existingAnswer);
+        _mapper.Map(patchDTO, existingUserAnswer);
+        _unitOfWork.Repository<UserAnswer>().Update(existingUserAnswer);
         await _unitOfWork.SaveChangesAsync();
-        return _mapper.Map<UserAnswerDTO>(existingAnswer);
+        return _mapper.Map<UserAnswerDTO>(existingUserAnswer);
     }
     public async Task DeleteAsync(int id)
     {
-        var existingAnswer = await _unitOfWork.Repository<UserAnswer>().GetByIdAsync(id)
-       //?? throw new EntityNotFoundException(nameof(UserAnswer), id);
-       ?? throw new Exception(nameof(UserAnswer));
-        _unitOfWork.Repository<UserAnswer>().Delete(existingAnswer);
+        var existingUserAnswer = await _unitOfWork.Repository<UserAnswer>().GetByIdAsync(id)
+                   //?? throw new EntityNotFoundException(nameof(UserAnswer), id);
+                   ?? throw new Exception(nameof(UserAnswer));
+        _unitOfWork.Repository<UserAnswer>().Delete(existingUserAnswer);
         await _unitOfWork.SaveChangesAsync();
     }
 }

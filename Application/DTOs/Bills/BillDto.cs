@@ -1,5 +1,8 @@
 ﻿
 
+using Application.DTOs.BillDetails;
+using Application.DTOs.Relationships;
+
 namespace Application.DTOs.Bills;
 
 public class BillDTO
@@ -23,8 +26,8 @@ public class BillDTO
     public DateTime? UpdatedAt { get; set; }
 
     public int RelationshipId { get; set; }
-    // public RelationshipDTO? Relationship { get; set; } = null!;
-    // public ICollection<BillDetailDTO> BillDetails { get; set; } = [];
+    public RelationshipDTO? Relationship { get; set; } = null!;
+    public ICollection<BillDetailDTO> BillDetails { get; set; } = [];
 
 }
 
