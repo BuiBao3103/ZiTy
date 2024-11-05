@@ -3,12 +3,22 @@ import { ISurvey } from '@/schema/survey.validate'
 import { AlarmClock, Clock } from 'lucide-react'
 import { memo } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'sonner'
 interface SurveyItemProps {
   survey: ISurvey
 }
 
 const SurveyItem = ({ survey }: SurveyItemProps) => {
   const navigate = useNavigate()
+
+  const handleChooseSurvey = () => {
+    //if end date is less than current date => show toast
+    if (new Date(survey.endDate) < new Date()) {
+      toast.error('This survey has ended')
+      return
+    }
+    navigate(`/surveys/${survey.id}`)
+  }
 
   return (
     <div className="w-full p-4 rounded-md border flex flex-col gap-4">
@@ -61,9 +71,7 @@ const SurveyItem = ({ survey }: SurveyItemProps) => {
         </div>
       </div>
       <div className="w-full flex gap-4">
-        <Button
-          onClick={() => navigate(`/surveys/${survey.id}`)}
-          type="button">
+        <Button onClick={() => handleChooseSurvey()} type="button">
           Start
         </Button>
       </div>

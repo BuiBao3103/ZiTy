@@ -13,7 +13,7 @@ const Index = () => {
     data: reports,
     isLoading,
     isFetching,
-  } = useGetReportsQuery(currentPage)
+  } = useGetReportsQuery({page: currentPage})
 
   return (
     <div className="w-full h-full flex flex-col bg-zinc-100">

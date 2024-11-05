@@ -53,6 +53,7 @@ export default function Index() {
       .unwrap()
       .then(async (res) => {
         dispatch(userLoggedIn(res))
+				console.log(res)
         await getCurrentUser()
           .unwrap()
           .then((payload) => {

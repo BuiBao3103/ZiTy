@@ -1,10 +1,10 @@
 import { Badge } from '@/components/ui/badge'
 import { TableCell, TableRow } from '@/components/ui/table'
-import { Bill } from '@/schema/bill.validate'
+import { IBill } from '@/schema/bill.validate'
 import { memo } from 'react'
 
 interface BillItemProps {
-  bill: Bill
+  bill: IBill
   setShowDetail: (value: number | null) => void
 }
 
@@ -15,10 +15,15 @@ const BillItem = ({ bill, setShowDetail }: BillItemProps) => {
       className="font-medium cursor-pointer">
       <TableCell className="py-3">{bill.id}</TableCell>
       <TableCell className="">
-        <p className="">123</p>
+        <Badge variant={"info"}>{bill.relationship?.apartmentId}</Badge>
       </TableCell>
-      <TableCell>{bill.total_price}</TableCell>
-      <TableCell>{new Date().toLocaleDateString()}</TableCell>
+      <TableCell>{bill.totalPrice.toLocaleString()}</TableCell>
+      <TableCell>{bill.oldWater}</TableCell>
+      <TableCell>{bill.newWater}</TableCell>
+      <TableCell>
+        {bill.waterReadingDate &&
+          new Date(bill.waterReadingDate).toLocaleDateString()}
+      </TableCell>
       <TableCell className="uppercase">
         <Badge
           variant={`${

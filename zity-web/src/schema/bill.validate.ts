@@ -4,6 +4,7 @@ import {
   RequestTypeForMomoSchema,
 } from '@/enums'
 import { z } from 'zod'
+import { IRelationships } from './relationship.validate'
 
 export const BillSchema = z.object({
   id: z.number(),
@@ -13,10 +14,11 @@ export const BillSchema = z.object({
   newWater: z.number().nullable(),
   status: BillStatusSchema,
   relationshipId: z.number(),
-	relationship: z.string().nullable(),
-  waterReadingDate: z.string().nullable(),
+  waterReadingDate: z.coerce.date().nullable(),
 })
-export interface IBill extends z.infer<typeof BillSchema>,BaseEntity {}
+export interface IBill extends z.infer<typeof BillSchema>,BaseEntity {
+	relationship?: IRelationships
+}
 
 export const PaymentMethodSchema = z
   .object({

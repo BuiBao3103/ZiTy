@@ -3,31 +3,53 @@ import { apiSlice } from '../api/apiSlice'
 
 export const billSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getBills: builder.query<ResponseDataType<IBill>, number | void>({
-      query: (page = 1) => {
+    getBills: builder.query<
+      ResponseDataType<IBill>,
+      { page?: number; id?: number; includes?: string[] }
+    >({
+      query: (params = { page: 1, id: 1, includes: [] }) => {
+        let url = `bills?page=${params.page}`
+        if (params.id) {
+          url += `&id=eq:${params.id}`
+        }
+        if (params.includes && params.includes.length > 0) {
+          url += `&includes=${params.includes.join(',')}`
+        }
         return {
-          url: `bills?page=${page}`,
-        };
+          url: url,
+        }
       },
+      providesTags: (results) =>
+        results
+          ? [
+              ...results.contents.map(({ id }) => ({
+                type: 'Bills' as const,
+                id,
+              })),
+              { type: 'Bills', id: 'LIST' },
+            ]
+          : [{ type: 'Bills', id: 'LIST' }],
     }),
-    getBill: builder.query<IBill, string>({
-      query: (id: string) => ({
-        url: `bills/${id}`,
-        method: 'GET',
+    getBill: builder.query<IBill, number | undefined | string>({
+      query: (id) => ({
+        url: `bills/${id}?includes=relationship`,
       }),
+      providesTags: (result, error, id) => [{ type: 'Bills', id }],
     }),
-    updateBill: builder.mutation<void, { id: string; body: Partial<IBill> }>({
+    updateBill: builder.mutation<void, { id?: number; body: Partial<IBill> }>({
       query: (data) => ({
         url: `bills/${data.id}`,
-        method: 'PUT',
+        method: 'PATCH',
         body: data.body,
       }),
+      invalidatesTags: (result, error, { id }) => [{ type: 'Bills', id }],
     }),
-    deleteBill: builder.mutation<void, string>({
-      query: (id: string) => ({
+    deleteBill: builder.mutation<void, number | undefined>({
+      query: (id) => ({
         url: `bills/${id}`,
         method: 'DELETE',
       }),
+      invalidatesTags: (result, error, id) => [{ type: 'Bills', id }],
     }),
     paidByMomo: builder.mutation<
       void,
@@ -56,4 +78,6 @@ export const {
   usePaidByVnpayMutation,
   useGetBillsQuery,
   useGetBillQuery,
+  useUpdateBillMutation,
+  useDeleteBillMutation,
 } = billSlice

@@ -19,7 +19,7 @@ const Index = () => {
   const params = useParams()
   const { width = 0 } = useWindowSize()
   const [currentPage, setCurrentPage] = useState<number>(1)
-  const { data: bills, isLoading, isFetching } = useGetBillsQuery(currentPage)
+  const { data: bills, isLoading, isFetching } = useGetBillsQuery({page: currentPage})
   const handlePageChange = (page: number) => {
     setCurrentPage(page)
   }
