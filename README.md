@@ -51,8 +51,11 @@ This web application was built to help residents in apartment
 
 
 #ADMIN
-    
 ```
+
+### Screens
+
+Home Page
 
 ### Make sure to star the repository if you find it helpful!
 

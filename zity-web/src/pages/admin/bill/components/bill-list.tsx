@@ -1,23 +1,23 @@
-import { Badge } from '@/components/ui/badge'
-
 import {
   Table,
   TableBody,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Bill } from '@/schema/bill.validate'
+import { IBill } from '@/schema/bill.validate'
 import BillItem from './bill-item'
 import BillForm from './bill-form'
 import { useState } from 'react'
+import TableRowSkeleton from '@/components/skeleton/TableRowSkeleton'
 
 interface BillListProps {
-  bills: Bill[]
+  bills?: IBill[]
+  isLoading?: boolean
+  isFetching?: boolean
 }
 
-const BillList = ({ bills }: BillListProps) => {
+const BillList = ({ bills, isFetching, isLoading }: BillListProps) => {
   const [showDetail, setShowDetail] = useState<number | null>(null)
 
   return (
@@ -25,20 +25,37 @@ const BillList = ({ bills }: BillListProps) => {
       <Table className="mt-4 h-full">
         <TableHeader>
           <TableRow>
-            <TableHead>ID</TableHead>
-            <TableHead>Fullname - Apartment</TableHead>
+            <TableHead className='w-[5%]'>ID</TableHead>
+            <TableHead>Apartment</TableHead>
             <TableHead>Total</TableHead>
-            <TableHead>Date</TableHead>
+            <TableHead>Old Water</TableHead>
+            <TableHead>New Water</TableHead>
+            <TableHead>Water Read Date</TableHead>
             <TableHead>Status</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {bills.map((bill, index) => (
-            <BillItem bill={bill} key={index} setShowDetail={setShowDetail} />
-          ))}
+          {isLoading || isFetching
+            ? Array.from({ length: 10 }).map((_, index) => (
+                <TableRow key={index} className="">
+                  <TableRowSkeleton />
+                  <TableRowSkeleton />
+                  <TableRowSkeleton />
+                  <TableRowSkeleton />
+                  <TableRowSkeleton />
+                </TableRow>
+              ))
+            : bills &&
+              bills.map((bill, index) => (
+                <BillItem
+                  bill={bill}
+                  key={index}
+                  setShowDetail={setShowDetail}
+                />
+              ))}
         </TableBody>
       </Table>
-      {showDetail && <BillForm setShowDetail={setShowDetail} />}
+      {showDetail && <BillForm setShowDetail={setShowDetail} id={showDetail} />}
     </>
   )
 }
