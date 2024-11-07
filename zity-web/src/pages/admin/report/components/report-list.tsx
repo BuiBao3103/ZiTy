@@ -26,7 +26,7 @@ const ReportList = ({ reports, isFetching, isLoading }: ReportListProps) => {
 	console.log(reports)
   return (
     <>
-      <Table className="mt-4 h-full">
+      <Table className="h-full">
         <TableHeader className='sticky top-0'>
           <TableRow>
             <TableHead>ID</TableHead>

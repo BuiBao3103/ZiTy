@@ -32,16 +32,16 @@ const PaginationCustom = ({
   return (
     <Pagination className="mt-2">
       <PaginationContent>
-        {currentPage > 1 && (
-          <PaginationItem>
-            <PaginationPrevious
-              to="#"
-							aria-disabled={currentPage === 1}
-							className='cursor-pointer'
-              onClick={() => handlePageClick(currentPage - 1)}
-            />
-          </PaginationItem>
-        )}
+        <PaginationItem>
+          <PaginationPrevious
+            to="#"
+            aria-disabled={currentPage === 1}
+            className={`cursor-pointer ${
+              currentPage === 1 ? 'opacity-50 pointer-events-none' : ''
+            }`}
+            onClick={() => currentPage > 1 && handlePageClick(currentPage - 1)}
+          />
+        </PaginationItem>
 
         {[...Array(totalPages)].map((_, index) => {
           const page = index + 1
@@ -57,15 +57,18 @@ const PaginationCustom = ({
             </PaginationItem>
           )
         })}
-        {currentPage < totalPages && (
-          <PaginationItem>
-            <PaginationNext
-              to="#"
-							className='cursor-pointer'
-              onClick={() => handlePageClick(currentPage + 1)}
-            />
-          </PaginationItem>
-        )}
+        <PaginationItem>
+          <PaginationNext
+            to="#"
+            aria-disabled={currentPage === totalPages}
+            className={`cursor-pointer ${
+              currentPage === totalPages ? 'opacity-50 pointer-events-none' : ''
+            }`}
+            onClick={() =>
+              currentPage < totalPages && handlePageClick(currentPage + 1)
+            }
+          />
+        </PaginationItem>
       </PaginationContent>
     </Pagination>
   )

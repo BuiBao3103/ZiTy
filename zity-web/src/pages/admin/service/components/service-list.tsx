@@ -22,11 +22,11 @@ const ServiceList = ({ services, isFetching, isLoading }: ServiceListProps) => {
       <Table className="mt-4 h-full">
         <TableHeader>
           <TableRow>
-            <TableHead>ID</TableHead>
-            <TableHead>Name</TableHead>
-            <TableHead>Price</TableHead>
-            <TableHead>Last Update</TableHead>
-            <TableHead>Description</TableHead>
+            <TableHead className='w-[5%]'>ID</TableHead>
+            <TableHead className='w-[25%]'>Name</TableHead>
+            <TableHead className='w-[15%]'>Price</TableHead>
+            <TableHead className='w-[15%]'>Last Update</TableHead>
+            <TableHead className='w-[25%]'>Description</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

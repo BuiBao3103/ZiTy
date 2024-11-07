@@ -33,7 +33,7 @@ const Index = () => {
           <div className="size-full p-4 bg-white rounded-md flex flex-col">
             <div className="w-full h-auto flex justify-between items-center">
               <div className="w-full flex gap-4 items-center">
-                <div className="lg:w-1/4 flex items-center border px-3 py-0.5 relative rounded-md focus-within:border-primary transition-all">
+                <div className="lg:w-1/4 w-full flex items-center border px-3 py-0.5 relative rounded-md focus-within:border-primary transition-all">
                   <Search size={20} />
                   <Input
                     placeholder="Search something"

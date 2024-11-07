@@ -25,11 +25,11 @@ const UserList = ({ users, isLoading, isFetching }: UserListProps) => {
       <Table className="mt-4">
         <TableHeader>
           <TableRow>
-            <TableHead className="">ID</TableHead>
-            <TableHead className="sm:w-1/2">Username - Apartment</TableHead>
-            <TableHead>Phone</TableHead>
-            <TableHead>Account Type</TableHead>
-            <TableHead>Is Staying</TableHead>
+            <TableHead className="w-[5%]">ID</TableHead>
+            <TableHead className="w-[50%]">Username - Apartment</TableHead>
+            <TableHead className='w-[15%]'>Phone</TableHead>
+            <TableHead className='w-[15%]'>Account Type</TableHead>
+            <TableHead className='w-[15%]'>Is Staying</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

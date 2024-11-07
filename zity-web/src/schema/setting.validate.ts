@@ -3,12 +3,12 @@ import {z} from 'zod'
 
 export const SettingSchema = z.object({
 	id: z.number(),
-	current_monthly: z.string(),
-	system_status: SystemStatusSchema,
-	room_price_per_m2: z.number(),
-	water_price_per_m3: z.number(),
-	water_vat: z.number(),
-	env_protection_tax: z.number()
-})
+	currentMonthly: z.string(),
+	systemStatus: SystemStatusSchema,
+	roomPricePerM2: z.number(),
+	waterPricePerM3: z.number(),
+	waterVat: z.number(),
+	envProtectionTax: z.number()
+}).partial()
 
-export type Setting = z.infer<typeof SettingSchema>
+export interface ISetting extends z.infer<typeof SettingSchema> {}

@@ -19,7 +19,7 @@ const UserItem = ({ user, setShowDetail }: UserItemProps) => {
           <img
             src={user?.avatar}
             alt="user avatar"
-            className="size-12 rounded-full object-cover hidden sm:inline-block"
+            className="size-9 rounded-full object-cover hidden sm:inline-block"
           />
           <div className="flex flex-col">
             <p className="">{user?.fullName}</p>
