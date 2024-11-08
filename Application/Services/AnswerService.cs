@@ -17,8 +17,9 @@ public class AnswerService(IUnitOfWork unitOfWork, IMapper mapper) : IAnswerServ
     public async Task<PaginatedResult<AnswerDTO>> GetAllAsync(AnswerQueryDTO query)
     {
         var spec = new BaseSpecification<Answer>(a => a.DeletedAt == null);
-        var data = await _unitOfWork.Repository<Answer>().ListAsync(spec);
         var totalCount = await _unitOfWork.Repository<Answer>().CountAsync(spec);
+        spec.ApplyPaging(query.PageSize * (query.Page - 1), query.PageSize);
+        var data = await _unitOfWork.Repository<Answer>().ListAsync(spec);
         return new PaginatedResult<AnswerDTO>(
             data.Select(_mapper.Map<AnswerDTO>).ToList(),
             totalCount,
