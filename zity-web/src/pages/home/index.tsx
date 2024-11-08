@@ -18,9 +18,17 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { useAppSelector } from '@/store'
+import { ROUTES } from '@/configs/endpoint'
+import { useLazyGetApartmentQuery } from '@/features/apartment/apartmentSlice'
+import { useEffect, useState } from 'react'
+import { IApartment } from '@/schema/apartment.validate'
 const Index = () => {
   useDocumentTitle('Home')
   const date = new Date() // Current date
+  const [getApartment, { isLoading }] = useLazyGetApartmentQuery()
+  const [apartmentData, setApartmentData] = useState<IApartment | undefined>(
+    undefined,
+  )
   const user = useAppSelector((state) => state.userReducer.user)
   const options: Intl.DateTimeFormatOptions = {
     weekday: 'short',
@@ -32,53 +40,80 @@ const Index = () => {
   const functionLists: FunctionBoxProps[] = [
     {
       icon: <Package size={50} className="text-primary" />,
+      to: ROUTES.PACKAGES,
       title: 'Packages',
       description: 'Manage your packages',
     },
     {
       icon: <NotebookText size={50} className="text-primary" />,
+      to: ROUTES.SURVEYS,
       title: 'Survey',
       description: 'Take a survey',
     },
     {
       icon: <Flag size={50} className="text-primary" />,
+      to: ROUTES.REPORTS,
       title: 'Report',
       description: 'Report an issue',
     },
     {
       icon: <Receipt size={50} className="text-primary" />,
-      title: 'Payment',
+      to: ROUTES.BILLS,
+      title: 'Bills',
       description: 'Manage your payment',
     },
   ]
 
+  useEffect(() => {
+    const handleGetApartment = async () => {
+      if (user) {
+        await getApartment(user?.relationships?.[0].apartmentId)
+          .unwrap()
+          .then((payload) => {
+            setApartmentData(payload)
+            console.log('get apartment success')
+          })
+          .catch(() => {
+            console.log('get apartment failed')
+          })
+      }
+    }
+    handleGetApartment()
+  }, [user])
+
   return (
     <div className="w-full h-full min-h-screen md:h-screen p-4 bg-zinc-100 flex flex-col space-y-4 overflow-hidden">
       <p className="font-medium">{formattedDate}</p>
-      <p className="text-3xl font-bold">Hello, {`${user ? user?.fullName : "loading..."}`}</p>
+      <p className="text-3xl font-bold">
+        Hello, {`${user ? user?.fullName : 'loading...'}`}
+      </p>
       <div className="size-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="w-full lg:col-span-1 lg:row-span-3 lg:row-start-1 lg:col-start-1 bg-white rounded-md border border-zinc-200 p-4 flex flex-col space-y-2">
           <p className="flex items-center gap-2 text-lg font-medium uppercase">
             <span>
               <LayoutPanelTop />
             </span>
-            Apartment <span className="text-primary">A.001</span>
+            Apartment{' '}
+            <span className="text-primary">
+              {user?.relationships?.[0].apartmentId}
+            </span>
           </p>
           <Separator />
           <p>
-            <span className="font-medium">Floor:</span> 1
+            <span className="font-medium">Floor:</span>{' '}
+            {apartmentData?.floorNumber}
           </p>
           <p>
-            <span className="font-medium">Owner:</span> Bui Hong Bao
+            <span className="font-medium">Owner:</span>{' '}
+            {user ? user?.fullName : 'loading...'}
           </p>
           <p>
-            <span className="font-medium">Area:</span> 25x25 (m<sup>2</sup>)
+            <span className="font-medium">Area:</span> {apartmentData?.area}x
+            {apartmentData?.area} (m<sup>2</sup>)
           </p>
           <p>
             <span className="font-medium">Description: </span>
-            Sint nulla velit deserunt et magna nulla velit voluptate non ad.Qui
-            sunt proident minim ipsum culpa amet reprehenderit mollit duis
-            laborum Lorem ex minim cupidatat.
+            {apartmentData?.description}
           </p>
         </div>
         <div className="w-full lg:col-span-3 lg:row-span-3 lg:row-start-1 lg:col-start-2 bg-white rounded-md border border-zinc-200 p-4 flex flex-col space-y-2">
@@ -121,6 +156,7 @@ const Index = () => {
                 description={item.description}
                 icon={item.icon}
                 title={item.title}
+                to={item.to}
               />
             </div>
           ))}

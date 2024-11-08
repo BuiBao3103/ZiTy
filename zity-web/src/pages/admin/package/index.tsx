@@ -9,49 +9,58 @@ import {
 } from '@/components/ui/pagination'
 import { Filter, Search } from 'lucide-react'
 import { Button } from '@components/ui/button'
-import { Package } from '@/schema/package.validate'
+import { IPackage } from '@/schema/package.validate'
 import PackageForm from './components/package-form'
 import PackageList from './components/package-list'
 import BreadCrumb from '@/components/breadcrumb'
 import { useDocumentTitle } from 'usehooks-ts'
 const Index = () => {
-
-	useDocumentTitle('Package')
-  const packages: Package[] = [
+  useDocumentTitle('Package')
+  const packages: IPackage[] = [
     {
       id: 1,
       image: 'Image 1',
       description: 'Description 1',
-      is_received: true,
-      user_id: 1,
+      isReceived: true,
+      userId: 1,
+			createdAt: new Date(),
+			updatedAt: new Date()
     },
     {
       id: 2,
       image: 'Image 2',
       description: 'Description 2',
-      is_received: true,
-      user_id: 2,
+      isReceived: true,
+      userId: 2,
+			createdAt: new Date(),
+			updatedAt: new Date()
     },
     {
       id: 3,
       image: 'Image 3',
       description: 'Description 3',
-      is_received: true,
-      user_id: 3,
+      isReceived: true,
+      userId: 3,
+			createdAt: new Date(),
+			updatedAt: new Date()
     },
     {
       id: 4,
       image: 'Image 4',
       description: 'Description 4',
-      is_received: true,
-      user_id: 4,
+      isReceived: true,
+      userId: 4,
+			createdAt: new Date(),
+			updatedAt: new Date()
     },
     {
       id: 5,
       image: 'Image 5',
       description: 'Description 5',
-      is_received: false,
-      user_id: 5,
+      isReceived: false,
+      userId: 5,
+			createdAt: new Date(),
+			updatedAt: new Date()
     },
   ]
 
@@ -61,9 +70,9 @@ const Index = () => {
         <BreadCrumb paths={[{ label: 'package', to: '/package' }]} />
         <div className="size-full p-4">
           <div className="size-full p-4 bg-white rounded-md flex flex-col">
-            <div className="w-full h-auto flex justify-between items-center">
+            <div className="w-full h-auto flex lg:flex-row flex-col gap-4 justify-between items-center">
               <div className="w-full flex gap-4 items-center">
-                <div className="lg:w-1/4 flex items-center border px-3 py-0.5 relative rounded-md focus-within:border-primary transition-all">
+                <div className="lg:w-1/4 w-full flex items-center border px-3 py-0.5 relative rounded-md focus-within:border-primary transition-all">
                   <Search size={20} />
                   <Input
                     placeholder="Search something"
@@ -77,7 +86,7 @@ const Index = () => {
               </div>
               <PackageForm>
                 <Button
-                  className="w-full sm:w-fit"
+                  className="w-full sm:w-[160px]"
                   variant={'default'}
                   size={'lg'}>
                   New Package

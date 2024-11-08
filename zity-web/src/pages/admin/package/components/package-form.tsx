@@ -39,7 +39,7 @@ const PackageForm = ({ children, id }: PackageFormProps) => {
     defaultValues: {
       description: '',
       image: '',
-      is_received: false,
+      isReceived: false,
     },
     resolver: zodResolver(PackageSchema),
   })
@@ -127,7 +127,7 @@ const PackageForm = ({ children, id }: PackageFormProps) => {
                 />
                 <FormField
                   control={form.control}
-                  name="is_received"
+                  name="isReceived"
                   render={({ field }) => (
                     <FormItem className="w-full">
                       <FormLabel>Status</FormLabel>

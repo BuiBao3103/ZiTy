@@ -20,7 +20,7 @@ export const apartmentSlice = apiSlice.injectEndpoints({
             ]
           : [{ type: 'Apartments', id: 'LIST' }],
     }),
-    getApartment: builder.query<Apartment, string>({
+    getApartment: builder.query<Apartment, string | undefined>({
       query: (id: string) => ({
         url: `apartments/${id}`,
         method: 'GET',
@@ -56,4 +56,5 @@ export const {
   useGetApartmentQuery,
   useUpdateApartmentMutation,
   useDeleteApartmentMutation,
+	useLazyGetApartmentQuery
 } = apartmentSlice

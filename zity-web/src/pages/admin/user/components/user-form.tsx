@@ -95,7 +95,7 @@ const UserForm = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="w-full sm:w-fit" variant={'default'} size={'lg'}>
+        <Button className="w-full sm:w-[160px]" variant={'default'} size={'lg'}>
           New User
         </Button>
       </DialogTrigger>

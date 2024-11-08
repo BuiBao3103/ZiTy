@@ -27,7 +27,7 @@ import MobileMenu from './components/MobileMenu'
 import Logo from '@/assets/logo.svg'
 import LogoMobile from '@/assets/logoMobile.svg'
 import { ApartmentUserRole, UserRole } from '@/enums'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useAppDispath, useAppSelector } from '@/store'
 import { ROUTES } from '@/configs/endpoint'
 import Cookies from 'universal-cookie'
@@ -68,12 +68,6 @@ const Header = () => {
       role: 'RESIDENT',
     },
     {
-      label: 'Apartments',
-      icon: <TableCellsMerge />,
-      to: ROUTES.APARTMENTS,
-      role: 'RESIDENT',
-    },
-    {
       label: 'Reports',
       icon: <Flag />,
       to: ROUTES.REPORTS,
@@ -84,6 +78,18 @@ const Header = () => {
       icon: <Receipt />,
       to: ROUTES.BILLS,
       role: ['RESIDENT'],
+    },
+    {
+      label: 'Home',
+      icon: <House />,
+      to: ROUTES.ADMIN.HOME,
+      role: ['ADMIN'],
+    },
+    {
+      label: 'Apartments',
+      icon: <TableCellsMerge />,
+      to: ROUTES.ADMIN.APARTMENTS,
+      role: ['ADMIN'],
     },
     {
       label: 'Users Management',
@@ -164,21 +170,26 @@ const Header = () => {
     })
   }, [user?.userType, user?.relationships?.[0]?.role])
 
-  const handleLogOut = () => {
+  const handleLogout = useCallback(() => {
     cookies.remove('accessToken')
     cookies.remove('refreshToken')
     dispatch(userLoggedOut())
     navigate('/login', { replace: true })
-  }
+  }, [cookies, dispatch, navigate])
 
-  useEffect(() => {
-    if (width >= 1024) {
-      setPanelRightOpen(false)
+  const isActiveRoute = (route: string) => {
+    if (route === ROUTES.ADMIN.HOME) {
+      return location.pathname === ROUTES.ADMIN.HOME
     }
-    if (width <= 768) {
-      setPanelRightOpen(false)
+    if (route === ROUTES.HOME) {
+      return location.pathname === ROUTES.HOME
     }
-  }, [width])
+    return (
+      location.pathname.startsWith(route) &&
+      route !== ROUTES.ADMIN.HOME &&
+      route !== ROUTES.HOME
+    )
+  }
 
   return (
     <header
@@ -187,16 +198,16 @@ const Header = () => {
       } transition-all duration-300 w-full h-20 md:h-screen sticky top-0 z-40 flex md:flex-row flex-col bg-white`}>
       <div className="w-full h-full flex md:flex-col flex-row md:items-stretch items-center md:justify-start justify-between md:p-0 p-4">
         <div
-          className={`md:w-full h-full md:h-[150px] md:p-3 md:order-none order-2 relative`}>
+          className={`md:w-full h-full md:h-[150px] p-1 md:p-3 md:order-none order-2 relative`}>
           <img
-            src={panelRightOpen ? LogoMobile : Logo}
+            src={(panelRightOpen && width > 768) ? LogoMobile : Logo}
             onClick={() =>
               navigate(`${user?.userType === 'ADMIN' ? '/admin' : '/'}`)
             }
             loading="lazy"
             alt="Logo website"
-            className={`w-full h-full object-contain aspect-square cursor-pointer ${
-              panelRightOpen && 'mt-5'
+            className={`size-full object-contain aspect-square cursor-pointer ${
+              (panelRightOpen && width > 768) ? 'mt-5' : ""
             }`}
           />
           {width > 768 && (
@@ -217,7 +228,7 @@ const Header = () => {
           )}
         </div>
         {width <= 768 && (
-          <MobileMenu sidebar={filteredSidebars} handleLogout={handleLogOut} />
+          <MobileMenu sidebar={filteredSidebars} handleLogout={handleLogout} />
         )}
         {width > 768 && <Separator />}
         <div
@@ -233,21 +244,14 @@ const Header = () => {
               size={`${panelRightOpen ? 'icon' : 'lg'}`}
               className={`${
                 !panelRightOpen ? 'gap-2 justify-start px-2' : 'justify-center'
-              } ${
-                (sideBar.to === '/'
-                  ? location.pathname === '/'
-                  : location.pathname.startsWith(sideBar.to)) && 'bg-primary'
-              }`}>
+              } ${isActiveRoute(sideBar.to) ? 'bg-primary' : ''}`}>
               {panelRightOpen ? (
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Link
                       to={sideBar.to}
                       className={`w-full p-2 flex justify-center items-center rounded-md hover:bg-zinc-100 transition-all ${
-                        (sideBar.to === '/'
-                          ? location.pathname === '/'
-                          : location.pathname.startsWith(sideBar.to)) &&
-                        'bg-primary'
+                        isActiveRoute(sideBar.to) ? 'bg-primary' : ''
                       }`}>
                       {sideBar.icon}
                     </Link>
@@ -281,7 +285,7 @@ const Header = () => {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  onClick={() => handleLogOut()}
+                  onClick={() => handleLogout()}
                   size={'icon'}
                   variant={'ghost'}>
                   <LogOut />

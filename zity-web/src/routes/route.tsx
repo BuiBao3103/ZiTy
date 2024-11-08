@@ -11,7 +11,7 @@ import Home from '@pages/home'
 
 // Admin Pages
 import HomeAdmin from '@admin/home'
-import Apartment from '@admin/apartment'
+import ApartmentAdmin from '@admin/apartment'
 import UserAdmin from '@admin/user'
 import ServiceAdmin from '@admin/service'
 import PackageAdmin from '@admin/package'
@@ -35,7 +35,6 @@ import { ROUTES } from '@/configs/endpoint'
 
 const userRoutes: RouteObject[] = [
   { index: true, element: <Home /> },
-  { path: ROUTES.APARTMENTS + '/:id?', element: <Apartment /> },
   { path: ROUTES.PACKAGES + '/:id?', element: <Package /> },
   { path: ROUTES.REPORTS + '/:id?', element: <Report /> },
   { path: ROUTES.BILLS + '/:id?', element: <Bill /> },
@@ -46,6 +45,7 @@ const userRoutes: RouteObject[] = [
 const adminRoutes: RouteObject[] = [
   { index: true, element: <HomeAdmin /> },
   { path: ROUTES.ADMIN.PACKAGES, element: <PackageAdmin /> },
+  { path: ROUTES.ADMIN.APARTMENTS + '/:id?', element: <ApartmentAdmin /> },
   { path: ROUTES.ADMIN.BILLS, element: <BillAdmin /> },
   { path: ROUTES.ADMIN.SERVICES, element: <ServiceAdmin /> },
   { path: ROUTES.ADMIN.USERS, element: <UserAdmin /> },
@@ -89,6 +89,6 @@ const route = createBrowserRouter([
     path: '*',
     element: <NotFound />,
   },
-]);
+])
 
-export default route;
+export default route

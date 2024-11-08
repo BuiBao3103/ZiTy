@@ -11,4 +11,4 @@ export const ApartmentSchema = z.object({
 })
 export type ApartmentFromSchema = z.infer<typeof ApartmentSchema>
 
-export interface Apartment extends BaseEntity, ApartmentFromSchema {}
+export interface IApartment extends BaseEntity, ApartmentFromSchema {}

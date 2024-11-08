@@ -1,6 +1,6 @@
 import { GenderSchema, UserRoleSchema } from '@/enums'
 import { z } from 'zod'
-import { Relationships } from './relationship.validate'
+import { IRelationships } from './relationship.validate'
 
 // Zod schema for the User interface
 export const UserSchema = z.object({
@@ -88,5 +88,5 @@ export interface User
   extends UserFormSchema,
     BaseEntity,
     z.infer<typeof AddtionalSchema> {
-  relationships?: Relationships[]
+  relationships?: IRelationships[]
 }

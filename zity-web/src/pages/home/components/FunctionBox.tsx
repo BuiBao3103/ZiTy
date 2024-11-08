@@ -1,10 +1,12 @@
 import { cn } from '@/lib/utils'
+import { useNavigate } from 'react-router-dom'
 
 export interface FunctionBoxProps {
   className?: string
   icon: React.ReactNode
   title: string
   description: string
+  to: string
 }
 
 const FunctionBox = ({
@@ -12,9 +14,13 @@ const FunctionBox = ({
   icon,
   title,
   description,
+  to,
 }: FunctionBoxProps) => {
+  const navigate = useNavigate()
+
   return (
     <div
+      onClick={() => navigate(to)}
       className={cn(
         className,
         'size-full bg-white rounded-md border border-zinc-200 p-4 flex flex-col justify-center items-center space-y-4 transition-all hover:bg-primary/10 hover:border-primary cursor-pointer',

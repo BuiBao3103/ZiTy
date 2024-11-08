@@ -4,12 +4,12 @@ export const ROUTES = {
   HOME: '/',
   PACKAGES: '/packages',
   SURVEYS: '/surveys',
-  APARTMENTS: '/apartments',
   REPORTS: '/reports',
   BILLS: '/bills',
   CHAT: '/chat',
   ADMIN: {
 		HOME: '/admin',
+		APARTMENTS: '/admin/apartments',
     SERVICES: '/admin/services',
     USERS: '/admin/users',
     PACKAGES: '/admin/packages',

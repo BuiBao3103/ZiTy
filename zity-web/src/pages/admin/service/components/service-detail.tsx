@@ -28,7 +28,7 @@ const ServiceDetail = ({ mode, service }: IServiceDetailProps) => {
         <Eye />
       </Button>
     ) : (
-      <Button className="w-full sm:w-fit" variant="default" size="lg">
+      <Button className="w-full sm:w-[160px]" variant="default" size="lg">
         New Service
       </Button>
     )

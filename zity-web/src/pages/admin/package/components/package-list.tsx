@@ -7,14 +7,14 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Package } from '@/schema/package.validate'
+import { IPackage } from '@/schema/package.validate'
 import { Eye } from 'lucide-react'
 import PackageForm from './package-form'
 import AlertDelete from '@/components/alert/AlertDelete'
 import { Button } from '@/components/ui/button'
 
 interface PackageListProps {
-  packages: Package[]
+  packages?: IPackage[]
 }
 
 const PackageList = ({ packages }: PackageListProps) => {
@@ -32,7 +32,7 @@ const PackageList = ({ packages }: PackageListProps) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {packages.map((packagee) => (
+          {packages && packages.map((packagee) => (
             <TableRow key={packagee.id} className="font-medium cursor-pointer">
               <TableCell className="py-3">{packagee.id}</TableCell>
               <TableCell className="">
@@ -44,8 +44,8 @@ const PackageList = ({ packages }: PackageListProps) => {
               <TableCell>123</TableCell>
               <TableCell className={`uppercase`}>
                 <Badge
-                  variant={`${packagee.is_received ? 'success' : 'error'}`}>
-                  {packagee.is_received ? 'Collected' : 'Not Collected'}
+                  variant={`${packagee.isReceived ? 'success' : 'error'}`}>
+                  {packagee.isReceived ? 'Collected' : 'Not Collected'}
                 </Badge>
               </TableCell>
               <TableCell>
@@ -58,7 +58,7 @@ const PackageList = ({ packages }: PackageListProps) => {
               <TableCell>
                 <AlertDelete
                   description="package"
-                  setAction={() => {}}
+                  setAction={async () => {}}
                   type="icon"
                   variants="ghost"
                 />
