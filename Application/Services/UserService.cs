@@ -83,9 +83,11 @@ public class UserService(IUnitOfWork unitOfWork, IMediaService mediaService, IEm
         await _smsService.SendSMSAsync(phoneNumber, message);
     }
 
-    public async Task<UserDTO> GetMeAsync(int userId, string? includes = null)
+    public async Task<UserDTO> GetMeAsync(int userId)
     {
-        var user = await _unitOfWork.Repository<User>().GetByIdAsync(userId)
+        var spec = new BaseSpecification<User>(a => a.DeletedAt == null && a.Id == userId);
+        spec.AddInclude(a => a.Relationships);
+        var user = await _unitOfWork.Repository<User>().FirstOrDefaultAsync(spec)
                ?? throw new EntityNotFoundException(nameof(User), userId);
         return _mapper.Map<UserDTO>(user);
     }

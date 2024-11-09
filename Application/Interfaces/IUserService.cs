@@ -12,5 +12,5 @@ public interface IUserService
     Task<UserDTO> CreateAsync(UserCreateDTO userCreateDTO);
     Task<UserDTO> UploadAvatarAsync(int id, IFormFile file);
     Task NotifyReceivedPackage(int userId);
-    Task<UserDTO> GetMeAsync(int userId, string? includes = null);
+    Task<UserDTO> GetMeAsync(int userId);
 }

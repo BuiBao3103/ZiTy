@@ -48,7 +48,7 @@ namespace WebApi.Controllers;
         }
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("me")]
-        public async Task<IActionResult> GetMe([FromQuery] string? includes)
+        public async Task<IActionResult> GetMe()
         {
             try
             {
@@ -58,7 +58,7 @@ namespace WebApi.Controllers;
                     return Unauthorized(new { message = "Invalid token" });
 
                 var userId = int.Parse(userIdClaim.Value);
-                var me = await _userService.GetMeAsync(userId, includes);
+                var me = await _userService.GetMeAsync(userId);
 
                 if (me == null)
                     return NotFound(new { message = "User not found" });
