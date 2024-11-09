@@ -5,6 +5,7 @@ using Application.Interfaces;
 using Domain.Core.Repositories;
 using Domain.Core.Specifications;
 using Application.DTOs;
+using Domain.Exceptions;
 
 
 namespace Application.Services;
@@ -37,8 +38,7 @@ public class AnswerService(IUnitOfWork unitOfWork, IMapper mapper) : IAnswerServ
     public async Task<AnswerDTO> GetByIdAsync(int id, string? includes = null)
     {
         var answer = await _unitOfWork.Repository<Answer>().GetByIdAsync(id)
-            //?? throw new EntityNotFoundException(nameof(Answer), id);
-            ?? throw new Exception(nameof(Answer));
+            ?? throw new EntityNotFoundException(nameof(Answer), id);
         return _mapper.Map<AnswerDTO>(answer);
     }
     public async Task<AnswerDTO> CreateAsync(AnswerCreateDTO createDTO)
@@ -50,8 +50,7 @@ public class AnswerService(IUnitOfWork unitOfWork, IMapper mapper) : IAnswerServ
     public async Task<AnswerDTO> UpdateAsync(int id, AnswerUpdateDTO updateDTO)
     {
         var existingAnswer = await _unitOfWork.Repository<Answer>().GetByIdAsync(id)
-            //?? throw new EntityNotFoundException(nameof(Answer), id);
-            ?? throw new Exception(nameof(Answer));
+            ?? throw new EntityNotFoundException(nameof(Answer), id);
         _mapper.Map(updateDTO, existingAnswer);
         _unitOfWork.Repository<Answer>().Update(existingAnswer);
         await _unitOfWork.SaveChangesAsync();
@@ -61,8 +60,7 @@ public class AnswerService(IUnitOfWork unitOfWork, IMapper mapper) : IAnswerServ
     public async Task<AnswerDTO> PatchAsync(int id, AnswerPatchDTO patchDTO)
     {
         var existingAnswer = await _unitOfWork.Repository<Answer>().GetByIdAsync(id)
-            //?? throw new EntityNotFoundException(nameof(Answer), id);
-            ?? throw new Exception(nameof(Answer));
+            ?? throw new EntityNotFoundException(nameof(Answer), id);
         _mapper.Map(patchDTO, existingAnswer);
         _unitOfWork.Repository<Answer>().Update(existingAnswer);
         await _unitOfWork.SaveChangesAsync();
@@ -72,8 +70,7 @@ public class AnswerService(IUnitOfWork unitOfWork, IMapper mapper) : IAnswerServ
     public async Task DeleteAsync(int id)
     {
         var existingAnswer = await _unitOfWork.Repository<Answer>().GetByIdAsync(id)
-            //?? throw new EntityNotFoundException(nameof(Answer), id);
-            ?? throw new Exception(nameof(Answer));
+            ?? throw new EntityNotFoundException(nameof(Answer), id);
         _unitOfWork.Repository<Answer>().Delete(existingAnswer);
         await _unitOfWork.SaveChangesAsync();
     }
