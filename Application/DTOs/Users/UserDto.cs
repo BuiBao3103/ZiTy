@@ -13,6 +13,7 @@ public class UserDTO
     public int Id { get; set; }
     public string Username { get; set; } = null!;
     public string? Avatar { get; set; }
+    public bool? IsFirstLogin { get; set; }
     public string Email { get; set; } = null!;
     public string Phone { get; set; } = null!;
     public string Gender { get; set; } = null!;
