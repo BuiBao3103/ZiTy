@@ -3,11 +3,11 @@ using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers;
-
+[ApiController]
+[Route("api/items")]
 public class ItemsController(IItemService itemService) : ControllerBase
 {
     private readonly IItemService _itemService = itemService;
-
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] ItemQueryDTO query)
     {
@@ -23,8 +23,8 @@ public class ItemsController(IItemService itemService) : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] ItemCreateDTO itemCreateDTO)
     {
-        var createdItem = await _itemService.CreateAsync(itemCreateDTO);
-        return CreatedAtAction(nameof(Get), new { id = createdItem.Id }, createdItem);
+        var createdAnswer = await _itemService.CreateAsync(itemCreateDTO);
+        return CreatedAtAction(nameof(Get), new { id = createdAnswer.Id }, createdAnswer);
     }
 
     [HttpPut("{id}")]
