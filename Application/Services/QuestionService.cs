@@ -17,8 +17,15 @@ public class QuestionService(IUnitOfWork unitOfWork, IMapper mapper) : IQuestion
     public async Task<PaginatedResult<QuestionDTO>> GetAllAsync(QuestionQueryDTO query)
     {
         var spec = new BaseSpecification<Question>(a => a.DeletedAt == null);
-        var data = await _unitOfWork.Repository<Question>().ListAsync(spec);
         var totalCount = await _unitOfWork.Repository<Question>().CountAsync(spec);
+        query.Includes?.Split(',').ToList().ForEach(spec.AddInclude);
+        if (!string.IsNullOrEmpty(query.Sort))
+            if (query.Sort.StartsWith("-"))
+                spec.ApplyOrderByDescending(query.Sort[1..]);
+            else
+                spec.ApplyOrderBy(query.Sort);
+        spec.ApplyPaging(query.PageSize * (query.Page - 1), query.PageSize);
+        var data = await _unitOfWork.Repository<Question>().ListAsync(spec);
         return new PaginatedResult<QuestionDTO>(
             data.Select(_mapper.Map<QuestionDTO>).ToList(),
             totalCount,

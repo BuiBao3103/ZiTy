@@ -17,8 +17,15 @@ public class SurveyService(IUnitOfWork unitOfWork, IMapper mapper) : ISurveyServ
     public async Task<PaginatedResult<SurveyDTO>> GetAllAsync(SurveyQueryDTO query)
     {
         var spec = new BaseSpecification<Survey>(a => a.DeletedAt == null);
-        var data = await _unitOfWork.Repository<Survey>().ListAsync(spec);
         var totalCount = await _unitOfWork.Repository<Survey>().CountAsync(spec);
+        query.Includes?.Split(',').ToList().ForEach(spec.AddInclude);
+        if (!string.IsNullOrEmpty(query.Sort))
+            if (query.Sort.StartsWith("-"))
+                spec.ApplyOrderByDescending(query.Sort[1..]);
+            else
+                spec.ApplyOrderBy(query.Sort);
+        spec.ApplyPaging(query.PageSize * (query.Page - 1), query.PageSize);
+        var data = await _unitOfWork.Repository<Survey>().ListAsync(spec);
         return new PaginatedResult<SurveyDTO>(
             data.Select(_mapper.Map<SurveyDTO>).ToList(),
             totalCount,

@@ -20,18 +20,23 @@ public class BillService(IUnitOfWork unitOfWork, IMapper mapper, IVNPayService v
     private readonly IVNPayService _vnpayService = vnpayService;
     private readonly IMomoService _momoService = momoService;
 
-    public async Task<PaginatedResult<BillDTO>> GetAllAsync(BillQueryDTO queryParam)
+    public async Task<PaginatedResult<BillDTO>> GetAllAsync(BillQueryDTO query)
     {
-        var spec = new BaseSpecification<Bill>(b => b.DeletedAt == null);
-        var data = await _unitOfWork.Repository<Bill>().ListAsync(spec);
+        var spec = new BaseSpecification<Bill>(a => a.DeletedAt == null);
         var totalCount = await _unitOfWork.Repository<Bill>().CountAsync(spec);
-
-        var bills = data.Select(_mapper.Map<BillDTO>).ToList();
+        query.Includes?.Split(',').ToList().ForEach(spec.AddInclude);
+        if (!string.IsNullOrEmpty(query.Sort))
+            if (query.Sort.StartsWith("-"))
+                spec.ApplyOrderByDescending(query.Sort[1..]);
+            else
+                spec.ApplyOrderBy(query.Sort);
+        spec.ApplyPaging(query.PageSize * (query.Page - 1), query.PageSize);
+        var data = await _unitOfWork.Repository<Bill>().ListAsync(spec);
         return new PaginatedResult<BillDTO>(
-            bills,
+            data.Select(_mapper.Map<BillDTO>).ToList(),
             totalCount,
-            queryParam.Page,
-            queryParam.PageSize);
+            query.Page,
+            query.PageSize);
     }
 
     public async Task<BillDTO> GetByIdAsync(int id, string? includes = null)

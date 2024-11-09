@@ -17,8 +17,15 @@ public class UserAnswerService(IUnitOfWork unitOfWork, IMapper mapper) : IUserAn
     public async Task<PaginatedResult<UserAnswerDTO>> GetAllAsync(UserAnswerQueryDTO query)
     {
         var spec = new BaseSpecification<UserAnswer>(a => a.DeletedAt == null);
-        var data = await _unitOfWork.Repository<UserAnswer>().ListAsync(spec);
         var totalCount = await _unitOfWork.Repository<UserAnswer>().CountAsync(spec);
+        query.Includes?.Split(',').ToList().ForEach(spec.AddInclude);
+        if (!string.IsNullOrEmpty(query.Sort))
+            if (query.Sort.StartsWith("-"))
+                spec.ApplyOrderByDescending(query.Sort[1..]);
+            else
+                spec.ApplyOrderBy(query.Sort);
+        spec.ApplyPaging(query.PageSize * (query.Page - 1), query.PageSize);
+        var data = await _unitOfWork.Repository<UserAnswer>().ListAsync(spec);
         return new PaginatedResult<UserAnswerDTO>(
             data.Select(_mapper.Map<UserAnswerDTO>).ToList(),
             totalCount,

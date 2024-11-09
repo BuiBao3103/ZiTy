@@ -17,8 +17,15 @@ public class RelationshipService(IUnitOfWork unitOfWork, IMapper mapper) : IRela
     public async Task<PaginatedResult<RelationshipDTO>> GetAllAsync(RelationshipQueryDTO query)
     {
         var spec = new BaseSpecification<Relationship>(a => a.DeletedAt == null);
-        var data = await _unitOfWork.Repository<Relationship>().ListAsync(spec);
         var totalCount = await _unitOfWork.Repository<Relationship>().CountAsync(spec);
+        query.Includes?.Split(',').ToList().ForEach(spec.AddInclude);
+        if (!string.IsNullOrEmpty(query.Sort))
+            if (query.Sort.StartsWith("-"))
+                spec.ApplyOrderByDescending(query.Sort[1..]);
+            else
+                spec.ApplyOrderBy(query.Sort);
+        spec.ApplyPaging(query.PageSize * (query.Page - 1), query.PageSize);
+        var data = await _unitOfWork.Repository<Relationship>().ListAsync(spec);
         return new PaginatedResult<RelationshipDTO>(
             data.Select(_mapper.Map<RelationshipDTO>).ToList(),
             totalCount,

@@ -27,8 +27,15 @@ public class UserService(IUnitOfWork unitOfWork, IMediaService mediaService, IEm
     public async Task<PaginatedResult<UserDTO>> GetAllAsync(UserQueryDTO query)
     {
         var spec = new BaseSpecification<User>(a => a.DeletedAt == null);
-        var data = await _unitOfWork.Repository<User>().ListAsync(spec);
         var totalCount = await _unitOfWork.Repository<User>().CountAsync(spec);
+        query.Includes?.Split(',').ToList().ForEach(spec.AddInclude);
+        if (!string.IsNullOrEmpty(query.Sort))
+            if (query.Sort.StartsWith("-"))
+                spec.ApplyOrderByDescending(query.Sort[1..]);
+            else
+                spec.ApplyOrderBy(query.Sort);
+        spec.ApplyPaging(query.PageSize * (query.Page - 1), query.PageSize);
+        var data = await _unitOfWork.Repository<User>().ListAsync(spec);
         return new PaginatedResult<UserDTO>(
             data.Select(_mapper.Map<UserDTO>).ToList(),
             totalCount,

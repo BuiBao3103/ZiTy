@@ -32,8 +32,15 @@ public class ApartmentService(IUnitOfWork unitOfWork, IMapper mapper) : IApartme
     public async Task<PaginatedResult<ApartmentDTO>> GetAllAsync(ApartmentQueryDTO query)
     {
         var spec = new BaseSpecification<Apartment>(a => a.DeletedAt == null);
-        var data = await _unitOfWork.Repository<Apartment>().ListAsync(spec);
         var totalCount = await _unitOfWork.Repository<Apartment>().CountAsync(spec);
+        query.Includes?.Split(',').ToList().ForEach(spec.AddInclude);
+        if (!string.IsNullOrEmpty(query.Sort))
+            if (query.Sort.StartsWith("-"))
+                spec.ApplyOrderByDescending(query.Sort[1..]);
+            else
+                spec.ApplyOrderBy(query.Sort);
+        spec.ApplyPaging(query.PageSize * (query.Page - 1), query.PageSize);
+        var data = await _unitOfWork.Repository<Apartment>().ListAsync(spec);
         return new PaginatedResult<ApartmentDTO>(
             data.Select(_mapper.Map<ApartmentDTO>).ToList(),
             totalCount,

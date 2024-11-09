@@ -18,13 +18,20 @@ public class ReportService(IUnitOfWork unitOfWork, IMapper mapper) : IReportServ
     public async Task<PaginatedResult<ReportDTO>> GetAllAsync(ReportQueryDTO query)
     {
         var spec = new BaseSpecification<Report>(a => a.DeletedAt == null);
-        var data = await _unitOfWork.Repository<Report>().ListAsync(spec);
         var totalCount = await _unitOfWork.Repository<Report>().CountAsync(spec);
+        query.Includes?.Split(',').ToList().ForEach(spec.AddInclude);
+        if (!string.IsNullOrEmpty(query.Sort))
+            if (query.Sort.StartsWith("-"))
+                spec.ApplyOrderByDescending(query.Sort[1..]);
+            else
+                spec.ApplyOrderBy(query.Sort);
+        spec.ApplyPaging(query.PageSize * (query.Page - 1), query.PageSize);
+        var data = await _unitOfWork.Repository<Report>().ListAsync(spec);
         return new PaginatedResult<ReportDTO>(
             data.Select(_mapper.Map<ReportDTO>).ToList(),
             totalCount,
             query.Page,
-            query.PageSize);
+            query.PageSize); ;
     }
 
     public async Task<ReportDTO> GetByIdAsync(int id, string? includes = null)

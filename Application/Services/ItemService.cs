@@ -17,8 +17,15 @@ public class ItemService(IUnitOfWork unitOfWork, IMapper mapper) : IItemService
     public async Task<PaginatedResult<ItemDTO>> GetAllAsync(ItemQueryDTO query)
     {
         var spec = new BaseSpecification<Item>(a => a.DeletedAt == null);
-        var data = await _unitOfWork.Repository<Item>().ListAsync(spec);
         var totalCount = await _unitOfWork.Repository<Item>().CountAsync(spec);
+        query.Includes?.Split(',').ToList().ForEach(spec.AddInclude);
+        if (!string.IsNullOrEmpty(query.Sort))
+            if (query.Sort.StartsWith("-"))
+                spec.ApplyOrderByDescending(query.Sort[1..]);
+            else
+                spec.ApplyOrderBy(query.Sort);
+        spec.ApplyPaging(query.PageSize * (query.Page - 1), query.PageSize);
+        var data = await _unitOfWork.Repository<Item>().ListAsync(spec);
         return new PaginatedResult<ItemDTO>(
             data.Select(_mapper.Map<ItemDTO>).ToList(),
             totalCount,
