@@ -48,7 +48,7 @@ public class UserService(IUnitOfWork unitOfWork, IMediaService mediaService, IEm
         var user = await _unitOfWork.Repository<User>().GetByIdAsync(id)
                 ?? throw new EntityNotFoundException(nameof(User), id);
         return _mapper.Map<UserDTO>(user);
-      
+
     }
 
     public async Task<UserDTO> CreateAsync(UserCreateDTO createDTO)
@@ -97,5 +97,18 @@ public class UserService(IUnitOfWork unitOfWork, IMediaService mediaService, IEm
         var user = await _unitOfWork.Repository<User>().FirstOrDefaultAsync(spec)
                ?? throw new EntityNotFoundException(nameof(User), userId);
         return _mapper.Map<UserDTO>(user);
+    }
+
+    public async Task UpdateCurrentPassword(int userId, UpdatePasswordDTO updatePasswordDTO)
+    {
+        var user = await _unitOfWork.Repository<User>().GetByIdAsync(userId)
+                ?? throw new EntityNotFoundException(nameof(User), userId);
+        if (!BCrypt.Net.BCrypt.Verify(updatePasswordDTO.CurrentPassword, user.Password))
+            throw new BusinessRuleException("Current password is incorrect");
+        if (updatePasswordDTO.NewPassword != updatePasswordDTO.ConfirmPassword)
+            throw new BusinessRuleException("New password and confirm password do not match");
+        user.Password = BCrypt.Net.BCrypt.HashPassword(updatePasswordDTO.NewPassword);
+        _unitOfWork.Repository<User>().Update(user);
+        await _unitOfWork.SaveChangesAsync();
     }
 }

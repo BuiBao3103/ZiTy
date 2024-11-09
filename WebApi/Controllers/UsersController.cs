@@ -70,5 +70,25 @@ namespace WebApi.Controllers;
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPatch("me/update-password")]
+        public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordDTO updatePasswordDTO)
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim == null)
+                    return Unauthorized(new { message = "Invalid token" });
+
+                var userId = int.Parse(userIdClaim.Value);
+                await _userService.UpdateCurrentPassword(userId, updatePasswordDTO);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
     }
 

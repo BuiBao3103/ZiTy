@@ -13,4 +13,5 @@ public interface IUserService
     Task<UserDTO> UploadAvatarAsync(int id, IFormFile file);
     Task NotifyReceivedPackage(int userId);
     Task<UserDTO> GetMeAsync(int userId);
+    Task UpdateCurrentPassword(int userId, UpdatePasswordDTO updatePasswordDTO);
 }
