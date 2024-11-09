@@ -13,6 +13,8 @@ public class BaseSpecification<T> : ISpecification<T>
     public List<string> IncludeStrings { get; } = new List<string>();
     public Expression<Func<T, object>> OrderBy { get; private set; }
     public Expression<Func<T, object>> OrderByDescending { get; private set; }
+    public string OrderByString { get; private set; }
+    public string OrderByDescendingString { get; private set; }
     public Expression<Func<T, object>> GroupBy { get; private set; }
     public int Take { get; private set; }
     public int Skip { get; private set; }
@@ -43,6 +45,16 @@ public class BaseSpecification<T> : ISpecification<T>
     public virtual void ApplyOrderByDescending(Expression<Func<T, object>> orderByDescendingExpression)
     {
         OrderByDescending = orderByDescendingExpression;
+    }
+
+    public virtual void ApplyOrderBy(string orderByString)
+    {
+        OrderByString  = orderByString;
+    }
+
+    public virtual void ApplyOrderByDescending(string orderByDescendingString)
+    {
+        OrderByDescendingString = orderByDescendingString;
     }
 
     public virtual void ApplyGroupBy(Expression<Func<T, object>> groupByExpression)
