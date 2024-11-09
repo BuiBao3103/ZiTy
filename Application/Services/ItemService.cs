@@ -5,6 +5,7 @@ using AutoMapper;
 using Domain.Core.Repositories;
 using Domain.Core.Specifications;
 using Domain.Entities;
+using Domain.Exceptions;
 
 namespace Application.Services;
 
@@ -28,8 +29,7 @@ public class ItemService(IUnitOfWork unitOfWork, IMapper mapper) : IItemService
     public async Task<ItemDTO> GetByIdAsync(int id, string? includes = null)
     {
         var item = await _unitOfWork.Repository<Item>().GetByIdAsync(id)
-            //?? throw new EntityNotFoundException(nameof(Item), id);
-            ?? throw new Exception(nameof(Item));
+            ?? throw new EntityNotFoundException(nameof(Item), id);
         return _mapper.Map<ItemDTO>(item);
     }
 
@@ -43,8 +43,7 @@ public class ItemService(IUnitOfWork unitOfWork, IMapper mapper) : IItemService
     public async Task<ItemDTO> UpdateAsync(int id, ItemUpdateDTO updateDTO)
     {
         var existingItem = await _unitOfWork.Repository<Item>().GetByIdAsync(id)
-           //?? throw new EntityNotFoundException(nameof(Item), id);
-           ?? throw new Exception(nameof(Item));
+           ?? throw new EntityNotFoundException(nameof(Item), id);
         _mapper.Map(updateDTO, existingItem);
         _unitOfWork.Repository<Item>().Update(existingItem);
         await _unitOfWork.SaveChangesAsync();
@@ -54,8 +53,7 @@ public class ItemService(IUnitOfWork unitOfWork, IMapper mapper) : IItemService
     public async Task<ItemDTO> PatchAsync(int id, ItemPatchDTO patchDTO)
     {
         var existingItem = await _unitOfWork.Repository<Item>().GetByIdAsync(id)
-           //?? throw new EntityNotFoundException(nameof(Item), id);
-           ?? throw new Exception(nameof(Item));
+           ?? throw new EntityNotFoundException(nameof(Item), id);
         _mapper.Map(patchDTO, existingItem);
         _unitOfWork.Repository<Item>().Update(existingItem);
         await _unitOfWork.SaveChangesAsync();
@@ -65,8 +63,7 @@ public class ItemService(IUnitOfWork unitOfWork, IMapper mapper) : IItemService
     public async Task DeleteAsync(int id)
     {
         var existingItem = await _unitOfWork.Repository<Item>().GetByIdAsync(id)
-            //?? throw new EntityNotFoundException(nameof(Item), id);
-            ?? throw new Exception(nameof(Item));
+            ?? throw new EntityNotFoundException(nameof(Item), id);
         _unitOfWork.Repository<Item>().Delete(existingItem);
         await _unitOfWork.SaveChangesAsync();
     }

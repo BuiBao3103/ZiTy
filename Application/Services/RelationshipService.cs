@@ -5,6 +5,7 @@ using AutoMapper;
 using Domain.Core.Repositories;
 using Domain.Core.Specifications;
 using Domain.Entities;
+using Domain.Exceptions;
 
 namespace Application.Services;
 
@@ -28,8 +29,7 @@ public class RelationshipService(IUnitOfWork unitOfWork, IMapper mapper) : IRela
     public async Task<RelationshipDTO> GetByIdAsync(int id, string? includes = null)
     {
         var relationship = await _unitOfWork.Repository<Relationship>().GetByIdAsync(id)
-           //?? throw new EntityNotFoundException(nameof(Relationship), id);
-           ?? throw new Exception(nameof(Relationship));
+            ?? throw new EntityNotFoundException(nameof(Relationship), id);
         return _mapper.Map<RelationshipDTO>(relationship);
     }
 
@@ -43,8 +43,7 @@ public class RelationshipService(IUnitOfWork unitOfWork, IMapper mapper) : IRela
     public async Task<RelationshipDTO> UpdateAsync(int id, RelationshipUpdateDTO updateDTO)
     {
         var existingRelationship = await _unitOfWork.Repository<Relationship>().GetByIdAsync(id)
-          //?? throw new EntityNotFoundException(nameof(Relationship), id);
-          ?? throw new Exception(nameof(Relationship));
+            ?? throw new EntityNotFoundException(nameof(Relationship), id);
         _mapper.Map(updateDTO, existingRelationship);
         _unitOfWork.Repository<Relationship>().Update(existingRelationship);
         await _unitOfWork.SaveChangesAsync();
@@ -54,8 +53,7 @@ public class RelationshipService(IUnitOfWork unitOfWork, IMapper mapper) : IRela
     public async Task<RelationshipDTO> PatchAsync(int id, RelationshipPatchDTO patchDTO)
     {
         var existingRelationship = await _unitOfWork.Repository<Relationship>().GetByIdAsync(id)
-            //?? throw new EntityNotFoundException(nameof(Relationship), id);
-            ?? throw new Exception(nameof(Relationship));
+            ?? throw new EntityNotFoundException(nameof(Relationship), id);
         _mapper.Map(patchDTO, existingRelationship);
         _unitOfWork.Repository<Relationship>().Update(existingRelationship);
         await _unitOfWork.SaveChangesAsync();
@@ -65,8 +63,7 @@ public class RelationshipService(IUnitOfWork unitOfWork, IMapper mapper) : IRela
     public async Task DeleteAsync(int id)
     {
         var existingRelationship = await _unitOfWork.Repository<Relationship>().GetByIdAsync(id)
-                   //?? throw new EntityNotFoundException(nameof(Relationship), id);
-                   ?? throw new Exception(nameof(Relationship));
+            ?? throw new EntityNotFoundException(nameof(Relationship), id);
         _unitOfWork.Repository<Relationship>().Delete(existingRelationship);
         await _unitOfWork.SaveChangesAsync();
     }

@@ -7,6 +7,7 @@ using AutoMapper;
 using Domain.Core.Repositories;
 using Domain.Core.Specifications;
 using Domain.Entities;
+using Domain.Exceptions;
 using Microsoft.AspNetCore.Http;
 using zity.Utilities;
 
@@ -38,8 +39,7 @@ public class UserService(IUnitOfWork unitOfWork, IMediaService mediaService, IEm
     public async Task<UserDTO> GetByIdAsync(int id, string? includes = null)
     {
         var user = await _unitOfWork.Repository<User>().GetByIdAsync(id)
-                //?? throw new EntityNotFoundException(nameof(User), id);
-                ?? throw new Exception(nameof(User));
+                ?? throw new EntityNotFoundException(nameof(User), id);
         return _mapper.Map<UserDTO>(user);
       
     }
@@ -61,8 +61,7 @@ public class UserService(IUnitOfWork unitOfWork, IMediaService mediaService, IEm
     public async Task<UserDTO> UploadAvatarAsync(int id, IFormFile file)
     {
         var user = await _unitOfWork.Repository<User>().GetByIdAsync(id)
-                //?? throw new EntityNotFoundException(nameof(User), id);
-                ?? throw new Exception(nameof(User));
+                ?? throw new EntityNotFoundException(nameof(User), id);
         if (!string.IsNullOrEmpty(user.Avatar))
         {
             await _mediaService.DeleteImageAsync(user.Avatar, CloudinaryConstants.USER_AVATARS_FOLDER);
@@ -77,8 +76,7 @@ public class UserService(IUnitOfWork unitOfWork, IMediaService mediaService, IEm
     public async Task NotifyReceivedPackage(int userId)
     {
         var user = await _unitOfWork.Repository<User>().GetByIdAsync(userId)
-                 //?? throw new EntityNotFoundException(nameof(User), id);
-                 ?? throw new Exception(nameof(User));
+                 ?? throw new EntityNotFoundException(nameof(User), userId);
         string phoneNumber = user.Phone;
         string message = "You have received a package!";
         //string message = "Cam on quy khach da su dung dich vu cua chung toi. Chuc quy khach mot ngay tot lanh!";
@@ -88,8 +86,7 @@ public class UserService(IUnitOfWork unitOfWork, IMediaService mediaService, IEm
     public async Task<UserDTO> GetMeAsync(int userId, string? includes = null)
     {
         var user = await _unitOfWork.Repository<User>().GetByIdAsync(userId)
-               //?? throw new EntityNotFoundException(nameof(User), id);
-               ?? throw new Exception(nameof(User));
+               ?? throw new EntityNotFoundException(nameof(User), userId);
         return _mapper.Map<UserDTO>(user);
     }
 }

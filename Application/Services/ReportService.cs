@@ -5,6 +5,7 @@ using AutoMapper;
 using Domain.Core.Repositories;
 using Domain.Core.Specifications;
 using Domain.Entities;
+using Domain.Exceptions;
 
 namespace Application.Services;
 
@@ -29,8 +30,7 @@ public class ReportService(IUnitOfWork unitOfWork, IMapper mapper) : IReportServ
     public async Task<ReportDTO> GetByIdAsync(int id, string? includes = null)
     {
         var report = await _unitOfWork.Repository<Report>().GetByIdAsync(id)
-           //?? throw new EntityNotFoundException(nameof(Report), id);
-           ?? throw new Exception(nameof(Report));
+           ?? throw new EntityNotFoundException(nameof(Report), id);
         return _mapper.Map<ReportDTO>(report);
     }
 
@@ -44,8 +44,7 @@ public class ReportService(IUnitOfWork unitOfWork, IMapper mapper) : IReportServ
     public async Task<ReportDTO> UpdateAsync(int id, ReportUpdateDTO updateDTO)
     {
         var existingReport = await _unitOfWork.Repository<Report>().GetByIdAsync(id)
-           //?? throw new EntityNotFoundException(nameof(Report), id);
-           ?? throw new Exception(nameof(Report));
+           ?? throw new EntityNotFoundException(nameof(Report), id);
         _mapper.Map(updateDTO, existingReport);
         _unitOfWork.Repository<Report>().Update(existingReport);
         await _unitOfWork.SaveChangesAsync();
@@ -55,8 +54,7 @@ public class ReportService(IUnitOfWork unitOfWork, IMapper mapper) : IReportServ
     public async Task<ReportDTO> PatchAsync(int id, ReportPatchDTO patchDTO)
     {
         var existingReport = await _unitOfWork.Repository<Report>().GetByIdAsync(id)
-            //?? throw new EntityNotFoundException(nameof(Report), id);
-            ?? throw new Exception(nameof(Report));
+            ?? throw new EntityNotFoundException(nameof(Report), id);
         _mapper.Map(patchDTO, existingReport);
         _unitOfWork.Repository<Report>().Update(existingReport);
         await _unitOfWork.SaveChangesAsync();
@@ -66,8 +64,7 @@ public class ReportService(IUnitOfWork unitOfWork, IMapper mapper) : IReportServ
     public async Task DeleteAsync(int id)
     {
         var existingReport = await _unitOfWork.Repository<Report>().GetByIdAsync(id)
-            //?? throw new EntityNotFoundException(nameof(Report), id);
-            ?? throw new Exception(nameof(Report));
+            ?? throw new EntityNotFoundException(nameof(Report), id);
         _unitOfWork.Repository<Report>().Delete(existingReport);
         await _unitOfWork.SaveChangesAsync();
     }

@@ -4,6 +4,7 @@ using AutoMapper;
 using Domain.Core.Repositories;
 using Domain.Core.Specifications;
 using Domain.Entities;
+using Domain.Exceptions;
 
 
 namespace Application.Services;
@@ -28,8 +29,7 @@ public class SurveyService(IUnitOfWork unitOfWork, IMapper mapper) : ISurveyServ
     public async Task<SurveyDTO> GetByIdAsync(int id, string? includes = null)
     {
         var survey = await _unitOfWork.Repository<Survey>().GetByIdAsync(id)
-         //?? throw new EntityNotFoundException(nameof(Survey), id);
-         ?? throw new Exception(nameof(Survey));
+            ?? throw new EntityNotFoundException(nameof(Survey), id);
         return _mapper.Map<SurveyDTO>(survey);
     }
 
@@ -43,8 +43,7 @@ public class SurveyService(IUnitOfWork unitOfWork, IMapper mapper) : ISurveyServ
     public async Task<SurveyDTO> UpdateAsync(int id, SurveyUpdateDTO updateDTO)
     {
         var existingSurvey = await _unitOfWork.Repository<Survey>().GetByIdAsync(id)
-         //?? throw new EntityNotFoundException(nameof(Survey), id);
-         ?? throw new Exception(nameof(Survey));
+            ?? throw new EntityNotFoundException(nameof(Survey), id);
         _mapper.Map(updateDTO, existingSurvey);
         _unitOfWork.Repository<Survey>().Update(existingSurvey);
         await _unitOfWork.SaveChangesAsync();
@@ -54,8 +53,7 @@ public class SurveyService(IUnitOfWork unitOfWork, IMapper mapper) : ISurveyServ
     public async Task<SurveyDTO> PatchAsync(int id, SurveyPatchDTO patchDTO)
     {
         var existingSurvey = await _unitOfWork.Repository<Survey>().GetByIdAsync(id)
-         //?? throw new EntityNotFoundException(nameof(Survey), id);
-         ?? throw new Exception(nameof(Survey));
+            ?? throw new EntityNotFoundException(nameof(Survey), id);
         _mapper.Map(patchDTO, existingSurvey);
         _unitOfWork.Repository<Survey>().Update(existingSurvey);
         await _unitOfWork.SaveChangesAsync();
@@ -65,8 +63,7 @@ public class SurveyService(IUnitOfWork unitOfWork, IMapper mapper) : ISurveyServ
     public async Task DeleteAsync(int id)
     {
         var existingSurvey = await _unitOfWork.Repository<Survey>().GetByIdAsync(id)
-         //?? throw new EntityNotFoundException(nameof(Survey), id);
-         ?? throw new Exception(nameof(Survey));
+            ?? throw new EntityNotFoundException(nameof(Survey), id);
         _unitOfWork.Repository<Survey>().Delete(existingSurvey);
         await _unitOfWork.SaveChangesAsync();
     }

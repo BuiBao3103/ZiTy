@@ -4,6 +4,7 @@ using AutoMapper;
 using Domain.Core.Repositories;
 using Domain.Core.Specifications;
 using Domain.Entities;
+using Domain.Exceptions;
 
 
 namespace Application.Services;
@@ -28,8 +29,7 @@ public class ServiceService(IUnitOfWork unitOfWork, IMapper mapper) : IServiceSe
     public async Task<ServiceDTO> GetByIdAsync(int id, string? includes = null)
     {
         var service = await _unitOfWork.Repository<Service>().GetByIdAsync(id)
-            //?? throw new EntityNotFoundException(nameof(Service), id);
-            ?? throw new Exception(nameof(Service));
+            ?? throw new EntityNotFoundException(nameof(Service), id);
         return _mapper.Map<ServiceDTO>(service);
     }
 
@@ -43,8 +43,7 @@ public class ServiceService(IUnitOfWork unitOfWork, IMapper mapper) : IServiceSe
     public async Task<ServiceDTO> UpdateAsync(int id, ServiceUpdateDTO updateDTO)
     {
         var existingService = await _unitOfWork.Repository<Service>().GetByIdAsync(id)
-           //?? throw new EntityNotFoundException(nameof(Service), id);
-           ?? throw new Exception(nameof(Service));
+            ?? throw new EntityNotFoundException(nameof(Service), id);
         _mapper.Map(updateDTO, existingService);
         _unitOfWork.Repository<Service>().Update(existingService);
         await _unitOfWork.SaveChangesAsync();
@@ -54,8 +53,7 @@ public class ServiceService(IUnitOfWork unitOfWork, IMapper mapper) : IServiceSe
     public async Task<ServiceDTO> PatchAsync(int id, ServicePatchDTO patchDTO)
     {
         var existingService = await _unitOfWork.Repository<Service>().GetByIdAsync(id)
-          //?? throw new EntityNotFoundException(nameof(Service), id);
-          ?? throw new Exception(nameof(Service));
+            ?? throw new EntityNotFoundException(nameof(Service), id);
         _mapper.Map(patchDTO, existingService);
         _unitOfWork.Repository<Service>().Update(existingService);
         await _unitOfWork.SaveChangesAsync();
@@ -65,8 +63,7 @@ public class ServiceService(IUnitOfWork unitOfWork, IMapper mapper) : IServiceSe
     public async Task DeleteAsync(int id)
     {
         var existingService = await _unitOfWork.Repository<Service>().GetByIdAsync(id)
-           //?? throw new EntityNotFoundException(nameof(Service), id);
-           ?? throw new Exception(nameof(Service));
+            ?? throw new EntityNotFoundException(nameof(Service), id);
         _unitOfWork.Repository<Service>().Delete(existingService);
         await _unitOfWork.SaveChangesAsync();
     }

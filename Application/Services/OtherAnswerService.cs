@@ -5,6 +5,7 @@ using AutoMapper;
 using Domain.Core.Repositories;
 using Domain.Core.Specifications;
 using Domain.Entities;
+using Domain.Exceptions;
 
 namespace Application.Services;
 
@@ -29,8 +30,7 @@ public class OtherAnswerService(IUnitOfWork unitOfWork, IMapper mapper) : IOther
     public async Task<OtherAnswerDTO> GetByIdAsync(int id, string? includes = null)
     {
         var otherAnswer = await _unitOfWork.Repository<OtherAnswer>().GetByIdAsync(id)
-     //?? throw new EntityNotFoundException(nameof(OtherAnswer), id);
-     ?? throw new Exception(nameof(OtherAnswer));
+            ?? throw new EntityNotFoundException(nameof(OtherAnswer), id);
         return _mapper.Map<OtherAnswerDTO>(otherAnswer);
     }
     public async Task<OtherAnswerDTO> CreateAsync(OtherAnswerCreateDTO createDTO)
@@ -42,8 +42,7 @@ public class OtherAnswerService(IUnitOfWork unitOfWork, IMapper mapper) : IOther
     public async Task<OtherAnswerDTO> UpdateAsync(int id, OtherAnswerUpdateDTO updateDTO)
     {
         var existingOtherAnswer = await _unitOfWork.Repository<OtherAnswer>().GetByIdAsync(id)
-       //?? throw new EntityNotFoundException(nameof(OtherAnswer), id);
-       ?? throw new Exception(nameof(OtherAnswer));
+            ?? throw new EntityNotFoundException(nameof(OtherAnswer), id);
         _mapper.Map(updateDTO, existingOtherAnswer);
         _unitOfWork.Repository<OtherAnswer>().Update(existingOtherAnswer);
         await _unitOfWork.SaveChangesAsync();
@@ -53,8 +52,7 @@ public class OtherAnswerService(IUnitOfWork unitOfWork, IMapper mapper) : IOther
     public async Task<OtherAnswerDTO> PatchAsync(int id, OtherAnswerPatchDTO patchDTO)
     {
         var existingOtherAnswer = await _unitOfWork.Repository<OtherAnswer>().GetByIdAsync(id)
-                     //?? throw new EntityNotFoundException(nameof(OtherAnswer), id);
-                     ?? throw new Exception(nameof(OtherAnswer));
+            ?? throw new EntityNotFoundException(nameof(OtherAnswer), id);
         _mapper.Map(patchDTO, existingOtherAnswer);
         _unitOfWork.Repository<OtherAnswer>().Update(existingOtherAnswer);
         await _unitOfWork.SaveChangesAsync();
@@ -64,10 +62,8 @@ public class OtherAnswerService(IUnitOfWork unitOfWork, IMapper mapper) : IOther
     public async Task DeleteAsync(int id)
     {
         var existingOtherAnswer = await _unitOfWork.Repository<OtherAnswer>().GetByIdAsync(id)
-                //?? throw new EntityNotFoundException(nameof(OtherAnswer), id);
-                ?? throw new Exception(nameof(OtherAnswer));
+            ?? throw new EntityNotFoundException(nameof(OtherAnswer), id);
         _unitOfWork.Repository<OtherAnswer>().Delete(existingOtherAnswer);
         await _unitOfWork.SaveChangesAsync();
     }
-
 }

@@ -5,6 +5,7 @@ using Application.DTOs;
 using Domain.Core.Repositories;
 using Application.DTOs.BillDetails;
 using Domain.Core.Specifications;
+using Domain.Exceptions;
 
 namespace Application.Services;
 
@@ -28,8 +29,7 @@ public class BillDetailService(IUnitOfWork unitOfWork, IMapper mapper) : IBillDe
     public async Task<BillDetailDTO> GetByIdAsync(int id, string? includes = null)
     {
         var billDetail = await _unitOfWork.Repository<BillDetail>().GetByIdAsync(id)
-          //?? throw new EntityNotFoundException(nameof(BillDetail), id);
-          ?? throw new Exception(nameof(BillDetail));
+          ?? throw new EntityNotFoundException(nameof(BillDetail), id);
         return _mapper.Map<BillDetailDTO>(billDetail);
     }
 
@@ -43,8 +43,7 @@ public class BillDetailService(IUnitOfWork unitOfWork, IMapper mapper) : IBillDe
     public async Task<BillDetailDTO> UpdateAsync(int id, BillDetailUpdateDTO updateDTO)
     {
         var existingBillDetail = await _unitOfWork.Repository<BillDetail>().GetByIdAsync(id)
-            //?? throw new EntityNotFoundException(nameof(BillDetail), id);
-            ?? throw new Exception(nameof(BillDetail));
+            ?? throw new EntityNotFoundException(nameof(BillDetail), id);
         _mapper.Map(updateDTO, existingBillDetail);
         _unitOfWork.Repository<BillDetail>().Update(existingBillDetail);
         await _unitOfWork.SaveChangesAsync();
@@ -54,8 +53,7 @@ public class BillDetailService(IUnitOfWork unitOfWork, IMapper mapper) : IBillDe
     public async Task<BillDetailDTO> PatchAsync(int id, BillDetailPatchDTO patchDTO)
     {
         var existingBillDetail = await _unitOfWork.Repository<BillDetail>().GetByIdAsync(id)
-            //?? throw new EntityNotFoundException(nameof(BillDetail), id);
-            ?? throw new Exception(nameof(BillDetail));
+            ?? throw new EntityNotFoundException(nameof(BillDetail), id);
         _mapper.Map(patchDTO, existingBillDetail);
         _unitOfWork.Repository<BillDetail>().Update(existingBillDetail);
         await _unitOfWork.SaveChangesAsync();
@@ -65,8 +63,7 @@ public class BillDetailService(IUnitOfWork unitOfWork, IMapper mapper) : IBillDe
     public async Task DeleteAsync(int id)
     {
         var existingBillDetail = await _unitOfWork.Repository<BillDetail>().GetByIdAsync(id)
-                  //?? throw new EntityNotFoundException(nameof(BillDetail), id);
-                  ?? throw new Exception(nameof(BillDetail));
+                  ?? throw new EntityNotFoundException(nameof(BillDetail), id);
         _unitOfWork.Repository<BillDetail>().Delete(existingBillDetail);
         await _unitOfWork.SaveChangesAsync();
     }
