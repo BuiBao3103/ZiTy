@@ -40,7 +40,8 @@ public static class ServiceExtensions
             typeof(ItemMapping),
             typeof(RejectionReasonMapping),
             typeof(ServiceMapping),
-            typeof(RelationshipMapping)
+            typeof(RelationshipMapping),
+            typeof(SettingMapping)
         );
     }
 }
