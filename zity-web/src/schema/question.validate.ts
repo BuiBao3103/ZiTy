@@ -1,20 +1,19 @@
 import { z } from 'zod'
 
-
 export const BaseEntitySchema = z.object({
   createdAt: z.union([z.date(), z.string()]).optional(),
   updatedAt: z.union([z.date(), z.string()]).optional(),
   deletedAt: z.union([z.date(), z.string()]).optional(),
 })
 
-export const AnswerItemSchema = z
-  .object({
-    id: z.number().nullable(),
-    content: z.string(),
-    question: z.string().nullable(),
-    questionId: z.number(),
-  })
-  .partial()
+export const AnswerItemSchema = z.object({
+  id: z.number().nullable().optional(),
+  content: z.string().optional(),
+  question: z.string().nullable().optional(),
+  questionId: z.number().optional(),
+})
+
+export type AnswerItem = z.infer<typeof AnswerItemSchema>
 
 export const QuestionSchema = z.object({
   id: z.number().optional(),
