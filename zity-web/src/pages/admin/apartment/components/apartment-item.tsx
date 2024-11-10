@@ -1,10 +1,10 @@
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Apartment } from '@/schema/apartment.validate'
+import { IApartment } from '@/schema/apartment.validate'
 import { useNavigate } from 'react-router-dom'
 
 interface ApartmentItemProps {
-  apartment: Apartment
+  apartment: IApartment
 }
 
 const ApartmentItem = ({ apartment }: ApartmentItemProps) => {
@@ -18,7 +18,7 @@ const ApartmentItem = ({ apartment }: ApartmentItemProps) => {
           variant="default"
           size="sm"
           onClick={() => {
-            navigate(`/apartment/${apartment.id}`)
+            navigate(`${apartment.id}`)
           }}
           className="w-fit place-self-end">
           Details

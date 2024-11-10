@@ -22,7 +22,7 @@ const ApartmentDetail = ({ id }: IApartmentDetailProps) => {
         <>
           <div className="flex items-center">
             <Button
-              onClick={() => navigate('/apartment')}
+              onClick={() => navigate('/admin/apartments')}
               size={'icon'}
               variant={'ghost'}>
               <ChevronLeft />

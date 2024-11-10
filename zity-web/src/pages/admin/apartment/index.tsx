@@ -26,7 +26,7 @@ const Index = () => {
         paths={[
           {
             label: 'apartment',
-            to: '/apartment',
+            to: '/admin/apartments',
           },
           ...(params.id ? [{ label: params.id, to: '/#' }] : []),
         ]}
