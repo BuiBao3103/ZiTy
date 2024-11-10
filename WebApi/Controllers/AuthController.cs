@@ -1,7 +1,10 @@
 ﻿using Application.DTOs.Auth;
 using Application.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 
 namespace WebApi.Controllers;
 
@@ -52,6 +55,18 @@ public class AuthController : ControllerBase
             return StatusCode(500, new { message = "An error occurred while processing your request.", error = ex.Message });
         }
     }
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [HttpPatch("first-login/update-password")]
+    public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordFirstLoginDTO updatePasswordDto)
+    {
 
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        if (userIdClaim == null)
+            return Unauthorized(new { message = "Invalid token" });
+
+        var userId = int.Parse(userIdClaim.Value);
+        await _authService.UpdatePasswordFirstLoginAsync(userId, updatePasswordDto);
+        return Ok();
+    }
 
 }
