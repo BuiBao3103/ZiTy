@@ -54,4 +54,11 @@ public class SurveysController(ISurveyService surveyService) : ControllerBase
         await _surveyService.SubmitAsync(id, surveySubmitDTO);
         return NoContent();
     }
+
+    [HttpPost("full-create")]
+    public async Task<IActionResult> CreateFullSurvey([FromBody] SurveyCreateFullDTO surveyCreateFullDTO)
+    {
+        var createdSurvey = await _surveyService.CreateFullSurveyAsync(surveyCreateFullDTO);
+        return CreatedAtAction(nameof(Get), new { id = createdSurvey.Id }, createdSurvey);
+    }
 }

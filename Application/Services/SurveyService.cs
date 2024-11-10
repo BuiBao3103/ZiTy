@@ -79,30 +79,25 @@ public class SurveyService(IUnitOfWork unitOfWork, IMapper mapper) : ISurveyServ
 
     public async Task SubmitAsync(int id, SurveySubmitDTO surveySubmitDTO)
     {
-        User user = await _unitOfWork.Repository<User>().GetByIdAsync(surveySubmitDTO.UserId)
-            ?? throw new EntityNotFoundException(nameof(User), surveySubmitDTO.UserId);
 
-        foreach (var answer in surveySubmitDTO.AnswerIds)
+        foreach (var userAnswer in surveySubmitDTO.UserAnswers)
         {
-            UserAnswer userAnswer = new UserAnswer
-            {
-                UserId = user.Id,
-                AnswerId = answer,
-                CreatedAt = DateTime.Now
-            };
-            await _unitOfWork.Repository<UserAnswer>().AddAsync(userAnswer);
+            UserAnswer newUserAnswer = _mapper.Map<UserAnswer>(userAnswer);
+            await _unitOfWork.Repository<UserAnswer>().AddAsync(newUserAnswer);
         }
-        foreach (var question in surveySubmitDTO.OtherAnswers)
+        foreach (var orderAnswer in surveySubmitDTO.UserAnswers)
         {
-            OtherAnswer otherAnswer = new OtherAnswer
-            {
-                UserId = user.Id,
-                QuestionId = question.QuestionId,
-                Content = question.Content,
-                CreatedAt = DateTime.Now
-            };
-            await _unitOfWork.Repository<OtherAnswer>().AddAsync(otherAnswer);
+            OtherAnswer newOtherAnswer = _mapper.Map<OtherAnswer>(orderAnswer);
+            await _unitOfWork.Repository<OtherAnswer>().AddAsync(newOtherAnswer);
         }
         await _unitOfWork.SaveChangesAsync();
+    }
+
+    public async Task<SurveyDTO> CreateFullSurveyAsync(SurveyCreateFullDTO surveyCreateFullDTO)
+    {
+        Survey newSurvey = _mapper.Map<Survey>(surveyCreateFullDTO);
+        await _unitOfWork.Repository<Survey>().AddAsync(newSurvey);
+        await _unitOfWork.SaveChangesAsync();
+        return _mapper.Map<SurveyDTO>(newSurvey);
     }
 }

@@ -25,6 +25,19 @@ public class SurveyMapping : Profile
             .ForMember(dest => dest.EndDate, opt => opt.Condition((src, dest) => src.EndDate != null))
             .ForMember(dest => dest.TotalQuestions, opt => opt.Condition((src, dest) => src.TotalQuestions != null))
             .ForMember(dest => dest.UserCreateId, opt => opt.Condition((src, dest) => src.UserCreateId != null));
+
+        CreateMap<SurveyCreateFullDTO, Survey>()
+            .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.Now))
+            .ForMember(dest => dest.Questions, opt => opt.MapFrom(src => src.Questions.Select(q => new Question
+            {
+                CreatedAt = DateTime.Now,
+                Content = q.Content,
+                Answers = q.Answers.Select(a => new Answer
+                {
+                    CreatedAt = DateTime.Now,
+                    Content = a.Content
+                }).ToList()
+            }).ToList()));
     }
 }
 

@@ -13,4 +13,5 @@ public interface ISurveyService
     Task<SurveyDTO> PatchAsync(int id, SurveyPatchDTO surveyPatchDTO);
     Task DeleteAsync(int id);
     Task SubmitAsync(int id, SurveySubmitDTO surveySubmitDTO);
+    Task<SurveyDTO> CreateFullSurveyAsync(SurveyCreateFullDTO surveyCreateFullDTO);
 }
