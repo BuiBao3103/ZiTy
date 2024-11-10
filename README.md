@@ -69,11 +69,11 @@ This web application was built to help residents in apartment
 
 | User Page |  Apartment Page  |
 |---|---|
-| <img src="./screens/userAdmin.png"/>  |  <img src="./screens/apartmentAdmin.png" />  |
+| <img src="./screens/userAdmin.png"/>  |  <img src="./screens/settingAdmin.png" />  |
 
-| Setting Page |   |
+| Setting Page |  Survey Doing Page |
 |---|---|
-| <img src="./screens/settingAdmin.png"/>  |  |
+| <img src="./screens/settingAdmin.png"/>  |  <img src="./screens/settingAdmin.png"/> |
 
 
 ### Make sure to star the repository if you find it helpful!
