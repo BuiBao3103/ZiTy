@@ -18,7 +18,7 @@ public class ServiceService(IUnitOfWork unitOfWork, IMapper mapper) : IServiceSe
     {
         var spec = new BaseSpecification<Service>(a => a.DeletedAt == null);
         var totalCount = await _unitOfWork.Repository<Service>().CountAsync(spec);
-        query.Includes?.Split(',').ToList().ForEach(spec.AddInclude);
+        query.Includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);
         if (!string.IsNullOrEmpty(query.Sort))
             if (query.Sort.StartsWith("-"))
                 spec.ApplyOrderByDescending(query.Sort[1..]);
@@ -36,7 +36,7 @@ public class ServiceService(IUnitOfWork unitOfWork, IMapper mapper) : IServiceSe
     public async Task<ServiceDTO> GetByIdAsync(int id, string? includes = null)
     {
         var spec = new BaseSpecification<Service>(a => a.DeletedAt == null && a.Id == id);
-        includes?.Split(',').ToList().ForEach(spec.AddInclude);
+        includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);
         var service = await _unitOfWork.Repository<Service>().FirstOrDefaultAsync(spec)
             ?? throw new EntityNotFoundException(nameof(Service), id);
         return _mapper.Map<ServiceDTO>(service);

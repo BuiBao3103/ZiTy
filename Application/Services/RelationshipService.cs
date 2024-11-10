@@ -18,7 +18,7 @@ public class RelationshipService(IUnitOfWork unitOfWork, IMapper mapper) : IRela
     {
         var spec = new BaseSpecification<Relationship>(a => a.DeletedAt == null);
         var totalCount = await _unitOfWork.Repository<Relationship>().CountAsync(spec);
-        query.Includes?.Split(',').ToList().ForEach(spec.AddInclude);
+        query.Includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);
         if (!string.IsNullOrEmpty(query.Sort))
             if (query.Sort.StartsWith("-"))
                 spec.ApplyOrderByDescending(query.Sort[1..]);
@@ -36,7 +36,7 @@ public class RelationshipService(IUnitOfWork unitOfWork, IMapper mapper) : IRela
     public async Task<RelationshipDTO> GetByIdAsync(int id, string? includes = null)
     {
         var spec = new BaseSpecification<Relationship>(a => a.DeletedAt == null && a.Id == id);
-        includes?.Split(',').ToList().ForEach(spec.AddInclude);
+        includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);
         var relationship = await _unitOfWork.Repository<Relationship>().FirstOrDefaultAsync(spec)
             ?? throw new EntityNotFoundException(nameof(Relationship), id);
         return _mapper.Map<RelationshipDTO>(relationship);

@@ -33,7 +33,7 @@ public class ApartmentService(IUnitOfWork unitOfWork, IMapper mapper) : IApartme
     {
         var spec = new BaseSpecification<Apartment>(a => a.DeletedAt == null);
         var totalCount = await _unitOfWork.Repository<Apartment>().CountAsync(spec);
-        query.Includes?.Split(',').ToList().ForEach(spec.AddInclude);
+        query.Includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);
         if (!string.IsNullOrEmpty(query.Sort))
             if (query.Sort.StartsWith("-"))
                 spec.ApplyOrderByDescending(query.Sort[1..]);
@@ -51,7 +51,7 @@ public class ApartmentService(IUnitOfWork unitOfWork, IMapper mapper) : IApartme
     public async Task<ApartmentDTO> GetByIdAsync(string id, string? includes = null)
     {
         var spec = new BaseSpecification<Apartment>(a => a.DeletedAt == null && a.Id == id);
-        includes?.Split(',').ToList().ForEach(spec.AddInclude);
+        includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);
         var apartment = await _unitOfWork.Repository<Apartment>().FirstOrDefaultAsync(spec)
             ?? throw new EntityNotFoundException(nameof(Apartment), id);
         return _mapper.Map<ApartmentDTO>(apartment);

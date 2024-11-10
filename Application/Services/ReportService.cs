@@ -19,7 +19,7 @@ public class ReportService(IUnitOfWork unitOfWork, IMapper mapper) : IReportServ
     {
         var spec = new BaseSpecification<Report>(a => a.DeletedAt == null);
         var totalCount = await _unitOfWork.Repository<Report>().CountAsync(spec);
-        query.Includes?.Split(',').ToList().ForEach(spec.AddInclude);
+        query.Includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);
         if (!string.IsNullOrEmpty(query.Sort))
             if (query.Sort.StartsWith("-"))
                 spec.ApplyOrderByDescending(query.Sort[1..]);
@@ -37,7 +37,7 @@ public class ReportService(IUnitOfWork unitOfWork, IMapper mapper) : IReportServ
     public async Task<ReportDTO> GetByIdAsync(int id, string? includes = null)
     {
         var spec = new BaseSpecification<Report>(a => a.DeletedAt == null && a.Id == id);
-        includes?.Split(',').ToList().ForEach(spec.AddInclude);
+        includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);
         var report = await _unitOfWork.Repository<Report>().FirstOrDefaultAsync(spec)
             ?? throw new EntityNotFoundException(nameof(Report), id);
         return _mapper.Map<ReportDTO>(report);

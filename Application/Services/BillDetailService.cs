@@ -18,7 +18,7 @@ public class BillDetailService(IUnitOfWork unitOfWork, IMapper mapper) : IBillDe
     {
         var spec = new BaseSpecification<BillDetail>(a => a.DeletedAt == null);
         var totalCount = await _unitOfWork.Repository<BillDetail>().CountAsync(spec);
-        query.Includes?.Split(',').ToList().ForEach(spec.AddInclude);
+        query.Includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);
         if (!string.IsNullOrEmpty(query.Sort))
             if (query.Sort.StartsWith("-"))
                 spec.ApplyOrderByDescending(query.Sort[1..]);
@@ -36,7 +36,7 @@ public class BillDetailService(IUnitOfWork unitOfWork, IMapper mapper) : IBillDe
     public async Task<BillDetailDTO> GetByIdAsync(int id, string? includes = null)
     {
         var spec = new BaseSpecification<BillDetail>(a => a.DeletedAt == null && a.Id == id);
-        includes?.Split(',').ToList().ForEach(spec.AddInclude);
+        includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);
         var billDetail = await _unitOfWork.Repository<BillDetail>().FirstOrDefaultAsync(spec)
             ?? throw new EntityNotFoundException(nameof(BillDetail), id);
         return _mapper.Map<BillDetailDTO>(billDetail);

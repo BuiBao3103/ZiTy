@@ -24,7 +24,7 @@ public class BillService(IUnitOfWork unitOfWork, IMapper mapper, IVNPayService v
     {
         var spec = new BaseSpecification<Bill>(a => a.DeletedAt == null);
         var totalCount = await _unitOfWork.Repository<Bill>().CountAsync(spec);
-        query.Includes?.Split(',').ToList().ForEach(spec.AddInclude);
+        query.Includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);
         if (!string.IsNullOrEmpty(query.Sort))
             if (query.Sort.StartsWith("-"))
                 spec.ApplyOrderByDescending(query.Sort[1..]);
@@ -42,7 +42,7 @@ public class BillService(IUnitOfWork unitOfWork, IMapper mapper, IVNPayService v
     public async Task<BillDTO> GetByIdAsync(int id, string? includes = null)
     {
         var spec = new BaseSpecification<Bill>(a => a.DeletedAt == null && a.Id == id);
-        includes?.Split(',').ToList().ForEach(spec.AddInclude);
+        includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);
         var bill = await _unitOfWork.Repository<Bill>().FirstOrDefaultAsync(spec)
             ?? throw new EntityNotFoundException(nameof(Bill), id);
         return _mapper.Map<BillDTO>(bill);

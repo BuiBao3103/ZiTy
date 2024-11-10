@@ -28,7 +28,7 @@ public class UserService(IUnitOfWork unitOfWork, IMediaService mediaService, IEm
     {
         var spec = new BaseSpecification<User>(a => a.DeletedAt == null);
         var totalCount = await _unitOfWork.Repository<User>().CountAsync(spec);
-        query.Includes?.Split(',').ToList().ForEach(spec.AddInclude);
+        query.Includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);
         if (!string.IsNullOrEmpty(query.Sort))
             if (query.Sort.StartsWith("-"))
                 spec.ApplyOrderByDescending(query.Sort[1..]);
@@ -46,7 +46,7 @@ public class UserService(IUnitOfWork unitOfWork, IMediaService mediaService, IEm
     public async Task<UserDTO> GetByIdAsync(int id, string? includes = null)
     {
         var spec = new BaseSpecification<User>(a => a.DeletedAt == null && a.Id == id);
-        includes?.Split(',').ToList().ForEach(spec.AddInclude);
+        includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);
         var user = await _unitOfWork.Repository<User>().FirstOrDefaultAsync(spec)
             ?? throw new EntityNotFoundException(nameof(User), id);
         return _mapper.Map<UserDTO>(user);

@@ -18,7 +18,7 @@ public class OtherAnswerService(IUnitOfWork unitOfWork, IMapper mapper) : IOther
     {
         var spec = new BaseSpecification<OtherAnswer>(a => a.DeletedAt == null);
         var totalCount = await _unitOfWork.Repository<OtherAnswer>().CountAsync(spec);
-        query.Includes?.Split(',').ToList().ForEach(spec.AddInclude);
+        query.Includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);
         if (!string.IsNullOrEmpty(query.Sort))
             if (query.Sort.StartsWith("-"))
                 spec.ApplyOrderByDescending(query.Sort[1..]);
@@ -37,7 +37,7 @@ public class OtherAnswerService(IUnitOfWork unitOfWork, IMapper mapper) : IOther
     public async Task<OtherAnswerDTO> GetByIdAsync(int id, string? includes = null)
     {
         var spec = new BaseSpecification<OtherAnswer>(a => a.DeletedAt == null && a.Id == id);
-        includes?.Split(',').ToList().ForEach(spec.AddInclude);
+        includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);
         var otherAnswer = await _unitOfWork.Repository<OtherAnswer>().FirstOrDefaultAsync(spec)
             ?? throw new EntityNotFoundException(nameof(OtherAnswer), id);
         return _mapper.Map<OtherAnswerDTO>(otherAnswer);
