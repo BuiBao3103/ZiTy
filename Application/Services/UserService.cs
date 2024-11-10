@@ -76,7 +76,7 @@ public class UserService(IUnitOfWork unitOfWork, IMediaService mediaService, IEm
         var avatarUrl = await _mediaService.UploadImageAsync(file, CloudinaryConstants.USER_AVATARS_FOLDER);
         user.Avatar = avatarUrl;
         _unitOfWork.Repository<User>().Update(user);
-
+        await _unitOfWork.SaveChangesAsync();
         return _mapper.Map<UserDTO>(user);
     }
 

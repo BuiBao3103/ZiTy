@@ -1,4 +1,6 @@
-﻿using Application.DTOs;
+﻿using Application.Core.Constants;
+using Application.Core.Services;
+using Application.DTOs;
 using Application.DTOs.Items;
 using Application.Interfaces;
 using AutoMapper;
@@ -6,13 +8,15 @@ using Domain.Core.Repositories;
 using Domain.Core.Specifications;
 using Domain.Entities;
 using Domain.Exceptions;
+using Microsoft.AspNetCore.Http;
 
 namespace Application.Services;
 
-public class ItemService(IUnitOfWork unitOfWork, IMapper mapper) : IItemService
+public class ItemService(IUnitOfWork unitOfWork, IMapper mapper, IMediaService mediaService) : IItemService
 {
     private readonly IMapper _mapper = mapper;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IMediaService _mediaService = mediaService;
 
     public async Task<PaginatedResult<ItemDTO>> GetAllAsync(ItemQueryDTO query)
     {
@@ -73,5 +77,22 @@ public class ItemService(IUnitOfWork unitOfWork, IMapper mapper) : IItemService
             ?? throw new EntityNotFoundException(nameof(Item), id);
         _unitOfWork.Repository<Item>().Delete(existingItem);
         await _unitOfWork.SaveChangesAsync();
+    }
+
+    public async Task<ItemDTO> UploadImageAsync(int id, IFormFile file)
+    {
+        {
+            var item = await _unitOfWork.Repository<Item>().GetByIdAsync(id)
+                    ?? throw new EntityNotFoundException(nameof(Item), id);
+            if (!string.IsNullOrEmpty(item.Image))
+            {
+                await _mediaService.DeleteImageAsync(item.Image, CloudinaryConstants.ITEM_IMAGES_FOLDER);
+            }
+            var imageUrl = await _mediaService.UploadImageAsync(file, CloudinaryConstants.ITEM_IMAGES_FOLDER);
+            item.Image = imageUrl;
+            _unitOfWork.Repository<Item>().Update(item);
+            await _unitOfWork.SaveChangesAsync();
+            return _mapper.Map<ItemDTO>(item);
+        }
     }
 }

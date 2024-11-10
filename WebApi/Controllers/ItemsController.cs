@@ -45,5 +45,10 @@ public class ItemsController(IItemService itemService) : ControllerBase
         await _itemService.DeleteAsync(id);
         return NoContent();
     }
+    [HttpPost("{id}/image")]
+    public async Task<IActionResult> UploadAvatarAsync([FromRoute] int id, IFormFile file)
+    {
+        return Ok(await _itemService.UploadImageAsync(id, file));
+    }
 }
 
