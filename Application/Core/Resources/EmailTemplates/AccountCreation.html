@@ -1,63 +1,120 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Welcome Email</title>
-</head>
-<body style="font-family: Helvetica, Arial, sans-serif; font-weight: 600; margin: 0; padding: 15px; background-color: #f0f4f8; color: #333; text-align: center;">
-    <!-- Logo container -->
-    <div style="max-width: 150px; margin: 0 auto;">
-        <!-- Replace with your hosted image URL or base64 image -->
-        <img src="YOUR_HOSTED_LOGO_URL" alt="Company Logo" style="width: 100%; max-width: 150px;">
+  </head>
+  <body
+    style="
+      font-family: Helvetica, Arial, sans-serif;
+      font-weight: 600;
+      margin: 0;
+      padding: 15px;
+      background-color: #f0f4f8;
+      color: #333;
+      text-align: center;
+    "
+  >
+    <div style="max-width: 150px; margin: 0 auto">
+      <img
+        alt="Company Logo"
+        style="width: 100%; max-width: 150px"
+        src="https://res.cloudinary.com/dloeqfbwm/image/upload/v1731219524/zity/assets/Zity-logo-256x256px.png"
+      />
     </div>
 
-    <!-- Main container -->
-    <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); text-align: center; color: #777; margin-top: 20px;">
-        <!-- Header image -->
-        <div style="margin-bottom: 20px;">
-            <!-- Replace with your hosted image URL or base64 image -->
-            <img src="YOUR_HOSTED_FIREWORK_URL" alt="Party Popper" style="width: 75px;">
-        </div>
+    <div
+      style="
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        color: #777;
+        margin-top: 20px;
+      "
+    >
+      <div style="margin-bottom: 20px">
+        <img
+          alt="Party Popper"
+          style="width: 75px"
+          src="https://res.cloudinary.com/dloeqfbwm/image/upload/v1731219527/zity/assets/Firework.png"
+        />
+      </div>
 
-        <!-- Welcome message -->
-        <div style="font-size: 24px; font-weight: bold; color: #F0762B; margin-bottom: 20px;">
-            Welcome to ZiTy!
-        </div>
+      <div
+        style="
+          font-size: 24px;
+          font-weight: bold;
+          color: #f0762b;
+          margin-bottom: 20px;
+        "
+      >
+        Welcome to ZiTy!
+      </div>
 
-        <!-- Message text -->
-        <div style="font-size: 16px; line-height: 1.5; margin-bottom: 20px;">
-            Hi {{FullName}}! A new account for <span style="color: #F0762B; font-weight: bold;">ZiTy</span> by <span style="color: #19c6ee; font-weight: bold;">ZTech</span> has been created for you. Please log in and change your password immediately.
-        </div>
+      <div style="font-size: 16px; line-height: 1.5; margin-bottom: 20px">
+        Hi {{FullName}}! A new account for
+        <span style="color: #f0762b; font-weight: bold">ZiTy</span> by
+        <span style="color: #19c6ee; font-weight: bold">ZTech</span> has been
+        created for you. Please log in and change your password immediately.
+      </div>
 
-        <!-- Login button -->
-        <div style="margin-bottom: 20px;">
-            <a href="{{LoginUrl}}" style="background-color: #19c6ee; color: #ffffff; padding: 8px 16px; text-decoration: none; border-radius: 20px; font-size: 16px; display: inline-block;">Login to Your Account</a>
-        </div>
+      <div style="margin-bottom: 20px">
+        <a
+          href="{{LoginUrl}}"
+          style="
+            background-color: #19c6ee;
+            color: #ffffff;
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 20px;
+            font-size: 16px;
+            display: inline-block;
+          "
+          >Login to Your Account</a
+        >
+      </div>
 
-        <!-- Credentials -->
-        <table style="margin: 0 auto;">
-            <tr>
-                <td style="text-align: right; padding-right: 5px; color: #F0762B;"><strong>Username:</strong></td>
-                <td style="text-align: left; padding-left: 5px;">{{Username}}</td>
-            </tr>
-            <tr>
-                <td style="text-align: right; padding-right: 5px; color: #F0762B;"><strong>Password:</strong></td>
-                <td style="text-align: left; padding-left: 5px;">{{Password}}</td>
-            </tr>
-        </table>
+      <table style="margin: 0 auto">
+        <tr>
+          <td style="text-align: right; padding-right: 5px; color: #f0762b">
+            <strong>Username:</strong>
+          </td>
+          <td style="text-align: left; padding-left: 5px">{{Username}}</td>
+        </tr>
+        <tr>
+          <td style="text-align: right; padding-right: 5px; color: #f0762b">
+            <strong>Password:</strong>
+          </td>
+          <td style="text-align: left; padding-left: 5px">{{Password}}</td>
+        </tr>
+      </table>
     </div>
 
-    <!-- Support section -->
-    <div style="margin-top: 30px; font-size: 14px; color: #777; text-align: center;">
-        <p style="margin: 5px 0;">Support</p>
-        <p style="margin: 5px 0;">Text or Call: xxx.xxx.xxx | Email: <a href="mailto:techsupport@zity.com" style="color: #19c6ee; text-decoration: none;">techsupport@zity.com</a></p>
+    <div
+      style="margin-top: 30px; font-size: 14px; color: #777; text-align: center"
+    >
+      <p style="margin: 5px 0">Support</p>
+      <p style="margin: 5px 0">
+        Text or Call: xxx.xxx.xxx | Email:
+        <a
+          href="mailto:techsupport@zity.com"
+          style="color: #19c6ee; text-decoration: none"
+          >techsupport@zity.com</a
+        >
+      </p>
     </div>
 
-    <!-- Footer -->
-    <div style="margin-top: 20px; text-align: center;">
-        <!-- Replace with your hosted image URL or base64 image -->
-        <img src="YOUR_HOSTED_FOOTER_LOGO_URL" alt="Company Logo" style="width: 50px; filter: grayscale(100%);">
+    <div style="margin-top: 20px; text-align: center">
+      <img
+        alt="Company Logo"
+        style="width: 50px; filter: grayscale(100%)"
+        src="https://res.cloudinary.com/dloeqfbwm/image/upload/v1731219526/zity/assets/Zity-logo-128x128px.png"
+      />
     </div>
-</body>
+  </body>
 </html>

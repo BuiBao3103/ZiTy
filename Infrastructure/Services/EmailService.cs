@@ -22,14 +22,10 @@ public class EmailService(AppSettings appSettings) : IEmailService
         var bodyBuilder = new BodyBuilder();
         string bodyHtml = await LoadTemplateAsync("../Application/Core/Resources/EmailTemplates/AccountCreation.html");
 
-        // Replace placeholders with actual values including base64 images
         bodyHtml = bodyHtml.Replace("{{FullName}}", user.FullName)
                           .Replace("{{Username}}", user.Username)
                           .Replace("{{Password}}", password)
-                          .Replace("{{LoginUrl}}", _appSettings.EndpointSettings.LoginUrl)
-                          .Replace("YOUR_HOSTED_LOGO_URL", EmailImageResources.LogoBase64)
-                          .Replace("YOUR_HOSTED_FIREWORK_URL", EmailImageResources.FireworkBase64)
-                          .Replace("YOUR_HOSTED_FOOTER_LOGO_URL", EmailImageResources.FooterLogoBase64);
+                          .Replace("{{LoginUrl}}", _appSettings.EndpointSettings.LoginUrl);
 
         bodyBuilder.HtmlBody = bodyHtml;
         message.Body = bodyBuilder.ToMessageBody();
@@ -68,11 +64,4 @@ public class EmailService(AppSettings appSettings) : IEmailService
             throw new Exception("Failed to load email template");
         }
     }
-}
-
-public static class EmailImageResources
-{
-    public static readonly string LogoBase64 = "data:image/svg+xml;base64," + Convert.ToBase64String(File.ReadAllBytes("../Application/Core/Resources/Images/Zity-logo-256x256px.svg"));
-    public static readonly string FireworkBase64 = "data:image/svg+xml;base64," + Convert.ToBase64String(File.ReadAllBytes("../Application/Core/Resources/Images/Firework.svg"));
-    public static readonly string FooterLogoBase64 = "data:image/svg+xml;base64," + Convert.ToBase64String(File.ReadAllBytes("../Application/Core/Resources/Images/Zity-logo-128x128px.svg"));
 }
