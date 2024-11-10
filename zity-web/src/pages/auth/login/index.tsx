@@ -70,7 +70,7 @@ export default function Index() {
             toast.success('Login successful')
             cookie.set('accessToken', res.token, {
               path: '/',
-              expires: new Date(new Date().getTime() + 30 * 60 * 1000),
+              expires: new Date(new Date().setDate(new Date().getDate() + 7)),
             })
             cookie.set('refreshToken', res.refreshToken, {
               path: '/',

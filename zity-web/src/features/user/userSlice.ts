@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { apiSlice } from '../api/apiSlice'
-import { User } from '@/schema/user.validate'
+import { FirstLogin, User } from '@/schema/user.validate'
 
 interface QrScanInformation {
   nationID?: string
@@ -123,6 +123,13 @@ const userApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: (result, error, id) => [{ type: 'Users', id }],
     }),
+    updatePassord: builder.mutation<void, { body: FirstLogin }>({
+      query: (data) => ({
+        url: 'auth/first-login/update-password',
+        method: 'PATCH',
+        body: data.body,
+      })
+    }),
   }),
 })
 
@@ -136,4 +143,5 @@ export const {
   useDeleteUserMutation,
   useGetCurrentUserQuery,
   useLazyGetCurrentUserQuery,
+	useUpdatePassordMutation
 } = userApiSlice
