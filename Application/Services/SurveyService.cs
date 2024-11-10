@@ -79,12 +79,30 @@ public class SurveyService(IUnitOfWork unitOfWork, IMapper mapper) : ISurveyServ
 
     public async Task SubmitAsync(int id, SurveySubmitDTO surveySubmitDTO)
     {
-        Console.WriteLine("Survey submitted");
-        Console.WriteLine(surveySubmitDTO.UserId);
-        foreach (var answerId in surveySubmitDTO.AnswerIds)
-            Console.WriteLine(answerId);
-        foreach (var otherAnswer in surveySubmitDTO.OtherAnswers)
-            Console.WriteLine(otherAnswer);
+        User user = await _unitOfWork.Repository<User>().GetByIdAsync(surveySubmitDTO.UserId)
+            ?? throw new EntityNotFoundException(nameof(User), surveySubmitDTO.UserId);
 
+        foreach (var answer in surveySubmitDTO.AnswerIds)
+        {
+            UserAnswer userAnswer = new UserAnswer
+            {
+                UserId = user.Id,
+                AnswerId = answer,
+                CreatedAt = DateTime.Now
+            };
+            await _unitOfWork.Repository<UserAnswer>().AddAsync(userAnswer);
+        }
+        foreach (var question in surveySubmitDTO.OtherAnswers)
+        {
+            OtherAnswer otherAnswer = new OtherAnswer
+            {
+                UserId = user.Id,
+                QuestionId = question.QuestionId,
+                Content = question.Content,
+                CreatedAt = DateTime.Now
+            };
+            await _unitOfWork.Repository<OtherAnswer>().AddAsync(otherAnswer);
+        }
+        await _unitOfWork.SaveChangesAsync();
     }
 }
