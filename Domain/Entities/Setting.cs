@@ -1,4 +1,5 @@
 ﻿using Domain.Core.Models;
+using Domain.Enums;
 
 namespace Domain.Entities;
 public partial class Setting : BaseEntity
@@ -7,7 +8,7 @@ public partial class Setting : BaseEntity
 
     public string CurrentMonthly { get; set; } = null!;
 
-    public string SystemStatus { get; set; } = null!;
+    public SystemStatusEnum SystemStatus { get; set; }
 
     public float RoomPricePerM2 { get; set; }
 
