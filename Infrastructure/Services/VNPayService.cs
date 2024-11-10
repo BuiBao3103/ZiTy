@@ -1,4 +1,4 @@
-﻿using Application.Core.Constraints.Parameters;
+﻿using Application.Core.Constants.Parameters;
 using Application.Core.Services;
 using Application.Core.Utilities;
 using Domain.Entities;

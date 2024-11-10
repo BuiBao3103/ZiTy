@@ -1,4 +1,4 @@
-﻿namespace Application.Core.Constraints;
+﻿namespace Application.Core.Constants;
 
 public static class PaginationConstants
 {

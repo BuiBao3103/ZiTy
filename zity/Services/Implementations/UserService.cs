@@ -3,7 +3,7 @@ using zity.Repositories.Interfaces;
 using zity.Mappers;
 using zity.Services.Interfaces;
 using zity.Utilities;
-using zity.Constraints;
+using zity.Constants;
 using zity.ExceptionHandling;
 using AutoMapper;
 using zity.Models;

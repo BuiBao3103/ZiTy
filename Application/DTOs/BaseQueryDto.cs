@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Application.Core.Constraints;
+using Application.Core.Constants;
 namespace Application.DTOs
 {
     public class BaseQueryDTO
