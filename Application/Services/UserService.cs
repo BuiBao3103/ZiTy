@@ -113,4 +113,32 @@ public class UserService(IUnitOfWork unitOfWork, IMediaService mediaService, IEm
         _unitOfWork.Repository<User>().Update(user);
         await _unitOfWork.SaveChangesAsync();
     }
+
+    public async Task<UserDTO> UpdateAsync(int id, UserUpdateDTO updateDTO)
+    {
+        var existingUser = await _unitOfWork.Repository<UserAnswer>().GetByIdAsync(id)
+            ?? throw new EntityNotFoundException(nameof(UserAnswer), id);
+        _mapper.Map(updateDTO, existingUser);
+        _unitOfWork.Repository<UserAnswer>().Update(existingUser);
+        await _unitOfWork.SaveChangesAsync();
+        return _mapper.Map<UserDTO>(existingUser);
+    }
+
+    public async Task<UserDTO> PatchAsync(int id, UserPatchDTO patchDTO)
+    {
+        var existingUser = await _unitOfWork.Repository<UserAnswer>().GetByIdAsync(id)
+           ?? throw new EntityNotFoundException(nameof(UserAnswer), id);
+        _mapper.Map(patchDTO, existingUser);
+        _unitOfWork.Repository<UserAnswer>().Update(existingUser);
+        await _unitOfWork.SaveChangesAsync();
+        return _mapper.Map<UserDTO>(existingUser);
+    }
+
+    public async Task DeleteAsync(int id)
+    {
+        var existingUser = await _unitOfWork.Repository<User>().GetByIdAsync(id)
+           ?? throw new EntityNotFoundException(nameof(User), id);
+        _unitOfWork.Repository<User>().Delete(existingUser);
+        await _unitOfWork.SaveChangesAsync();
+    }
 }

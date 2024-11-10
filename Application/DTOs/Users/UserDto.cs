@@ -29,5 +29,4 @@ public class UserDTO
     public ICollection<RelationshipDTO> Relationships { get; set; } = [];
     public ICollection<SurveyDTO> Surveys { get; set; } = [];
     public ICollection<UserAnswerDTO> UserAnswers { get; set; } = [];
-
 }
