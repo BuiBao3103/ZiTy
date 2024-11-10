@@ -61,10 +61,10 @@ public class UserService(IUnitOfWork unitOfWork, IMediaService mediaService, IEm
         user.Password = BCrypt.Net.BCrypt.HashPassword(password);
 
         var createdUser = await _unitOfWork.Repository<User>().AddAsync(user);
+        await _unitOfWork.SaveChangesAsync();
 
         await _emailService.SendAccountCreationEmail(createdUser, password);
         return _mapper.Map<UserDTO>(createdUser);
-
     }
 
     public async Task<UserDTO> UploadAvatarAsync(int id, IFormFile file)
