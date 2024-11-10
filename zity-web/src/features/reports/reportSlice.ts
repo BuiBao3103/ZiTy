@@ -5,10 +5,22 @@ export const reportsSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getReports: builder.query<
       ResponseDataType<IReport>,
-      { page?: number; includes?: string[]; relationshipId?: number }
+      {
+				page?: number
+        pageSize?: number
+        includes?: string[]
+        sort?: string[]
+        relationshipId?: number
+      }
     >({
-      query: (params = { page: 1, includes: [], relationshipId: -1 }) => {
+      query: (params = { page: 1 }) => {
         let url = `reports?page=${params.page}`
+        if (params.pageSize && params.pageSize > 0) {
+          url += `&pageSize=${params.pageSize}`
+        }
+        if (params.sort && params.sort.length > 0) {
+          url += `&sort=${params.sort.join(',')}`
+        }
         if (params.includes && params?.includes.length > 0) {
           url += `&includes=${params.includes.join(',')}`
         }

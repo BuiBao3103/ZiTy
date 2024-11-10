@@ -24,8 +24,30 @@ const surveySlice = createSlice({
 
 const surveyApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getSurverys: builder.query<ResponseDataType<ISurvey>, number | void>({
-      query: (page = 1) => ({ url: `surveys?page=${page}` }),
+    getSurverys: builder.query<
+      ResponseDataType<ISurvey>,
+      {
+        page?: number
+        pageSize?: number
+        includes?: string[]
+        sort?: string[]
+      }
+    >({
+      query: (params = { page: 1 }) => { 
+				let url = `reports?page=${params.page}`
+				if (params.pageSize && params.pageSize > 0) {
+					url += `&pageSize=${params.pageSize}`
+				}
+				if (params.sort && params.sort.length > 0) {
+					url += `&sort=${params.sort.join(',')}`
+				}
+				if (params.includes && params?.includes.length > 0) {
+					url += `&includes=${params.includes.join(',')}`
+				}
+				return {
+					url: url
+				}
+			 },
       providesTags: (results) =>
         results
           ? [
