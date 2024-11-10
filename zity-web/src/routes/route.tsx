@@ -7,7 +7,6 @@ import AuthLayout from '@pages/auth'
 import Login from '@pages/auth/login'
 
 // Home Page
-import Home from '@pages/home'
 
 // Admin Pages
 import HomeAdmin from '@admin/home'
@@ -21,6 +20,7 @@ import ReportAdmin from '@admin/report'
 import SettingAdmin from '@admin/setting'
 
 // User Pages
+import Home from '@/pages/user/home'
 import Package from '@user/package'
 import Report from '@user/report'
 import Bill from '@user/bill'
