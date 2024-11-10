@@ -3,6 +3,7 @@ using Application.Interfaces;
 using Domain.Core.Repositories;
 using Domain.Core.Specifications;
 using Domain.Entities;
+using Domain.Exceptions;
 using Microsoft.IdentityModel.Tokens;
 using MyApp.Domain.Configurations;
 using System.IdentityModel.Tokens.Jwt;
@@ -125,5 +126,20 @@ public class AuthService(IUnitOfWork unitOfWork, AppSettings appSettings) : IAut
     private static bool VerifyPassword(User user, string password)
     {
         return BCrypt.Net.BCrypt.Verify(password, user.Password);
+    }
+
+    public async Task UpdatePasswordFirstLoginAsync(int userId, UpdatePasswordFirstLoginDTO updatePasswordFirstLogin)
+    {
+        User user = await _unitOfWork.Repository<User>().GetByIdAsync(userId)
+            ?? throw new SecurityTokenException("User not found.");
+        if (user.IsFirstLogin == false)
+            throw new BusinessRuleException("User has already updated password.");
+        if (updatePasswordFirstLogin.NewPassword != updatePasswordFirstLogin.ConfirmPassword)
+            throw new BusinessRuleException("New password and confirm password do not match.");
+        string hashedPassword = BCrypt.Net.BCrypt.HashPassword(updatePasswordFirstLogin.NewPassword);
+        user.Password = hashedPassword;
+        user.IsFirstLogin = false;
+        _unitOfWork.Repository<User>().Update(user);
+        await _unitOfWork.SaveChangesAsync();
     }
 }
