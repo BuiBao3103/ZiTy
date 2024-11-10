@@ -76,4 +76,15 @@ public class SurveyService(IUnitOfWork unitOfWork, IMapper mapper) : ISurveyServ
         _unitOfWork.Repository<Survey>().Delete(existingSurvey);
         await _unitOfWork.SaveChangesAsync();
     }
+
+    public async Task SubmitAsync(int id, SurveySubmitDTO surveySubmitDTO)
+    {
+        Console.WriteLine("Survey submitted");
+        Console.WriteLine(surveySubmitDTO.UserId);
+        foreach (var answerId in surveySubmitDTO.AnswerIds)
+            Console.WriteLine(answerId);
+        foreach (var otherAnswer in surveySubmitDTO.OtherAnswers)
+            Console.WriteLine(otherAnswer);
+
+    }
 }

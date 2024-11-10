@@ -47,4 +47,11 @@ public class SurveysController(ISurveyService surveyService) : ControllerBase
         await _surveyService.DeleteAsync(id);
         return NoContent();
     }
+
+    [HttpPost("{id}/submit")]
+    public async Task<IActionResult> Submit([FromRoute] int id, [FromBody] SurveySubmitDTO surveySubmitDTO)
+    {
+        await _surveyService.SubmitAsync(id, surveySubmitDTO);
+        return NoContent();
+    }
 }

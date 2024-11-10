@@ -12,4 +12,5 @@ public interface ISurveyService
     Task<SurveyDTO> UpdateAsync(int id, SurveyUpdateDTO surveyUpdateDTO);
     Task<SurveyDTO> PatchAsync(int id, SurveyPatchDTO surveyPatchDTO);
     Task DeleteAsync(int id);
+    Task SubmitAsync(int id, SurveySubmitDTO surveySubmitDTO);
 }
