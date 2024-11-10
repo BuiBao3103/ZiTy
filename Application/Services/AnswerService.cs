@@ -37,7 +37,9 @@ public class AnswerService(IUnitOfWork unitOfWork, IMapper mapper) : IAnswerServ
 
     public async Task<AnswerDTO> GetByIdAsync(int id, string? includes = null)
     {
-        var answer = await _unitOfWork.Repository<Answer>().GetByIdAsync(id)
+        var spec = new BaseSpecification<Answer>(a => a.DeletedAt == null && a.Id == id);
+        includes?.Split(',').ToList().ForEach(spec.AddInclude);
+        var answer = await _unitOfWork.Repository<Answer>().FirstOrDefaultAsync(spec)
             ?? throw new EntityNotFoundException(nameof(Answer), id);
         return _mapper.Map<AnswerDTO>(answer);
     }

@@ -35,8 +35,10 @@ public class RejectionReasonService(IUnitOfWork unitOfWork, IMapper mapper) : IR
 
     public async Task<RejectionReasonDTO> GetByIdAsync(int id, string? includes = null)
     {
-        var rejectionReason = await _unitOfWork.Repository<RejectionReason>().GetByIdAsync(id)
-             ?? throw new EntityNotFoundException(nameof(RejectionReason), id);
+        var spec = new BaseSpecification<RejectionReason>(a => a.DeletedAt == null && a.Id == id);
+        includes?.Split(',').ToList().ForEach(spec.AddInclude);
+        var rejectionReason = await _unitOfWork.Repository<RejectionReason>().FirstOrDefaultAsync(spec)
+            ?? throw new EntityNotFoundException(nameof(RejectionReason), id);
         return _mapper.Map<RejectionReasonDTO>(rejectionReason);
     }
     public async Task<RejectionReasonDTO> CreateAsync(RejectionReasonCreateDTO createDTO)

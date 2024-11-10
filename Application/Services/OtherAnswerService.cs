@@ -36,7 +36,9 @@ public class OtherAnswerService(IUnitOfWork unitOfWork, IMapper mapper) : IOther
 
     public async Task<OtherAnswerDTO> GetByIdAsync(int id, string? includes = null)
     {
-        var otherAnswer = await _unitOfWork.Repository<OtherAnswer>().GetByIdAsync(id)
+        var spec = new BaseSpecification<OtherAnswer>(a => a.DeletedAt == null && a.Id == id);
+        includes?.Split(',').ToList().ForEach(spec.AddInclude);
+        var otherAnswer = await _unitOfWork.Repository<OtherAnswer>().FirstOrDefaultAsync(spec)
             ?? throw new EntityNotFoundException(nameof(OtherAnswer), id);
         return _mapper.Map<OtherAnswerDTO>(otherAnswer);
     }

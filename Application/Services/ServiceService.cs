@@ -35,7 +35,9 @@ public class ServiceService(IUnitOfWork unitOfWork, IMapper mapper) : IServiceSe
 
     public async Task<ServiceDTO> GetByIdAsync(int id, string? includes = null)
     {
-        var service = await _unitOfWork.Repository<Service>().GetByIdAsync(id)
+        var spec = new BaseSpecification<Service>(a => a.DeletedAt == null && a.Id == id);
+        includes?.Split(',').ToList().ForEach(spec.AddInclude);
+        var service = await _unitOfWork.Repository<Service>().FirstOrDefaultAsync(spec)
             ?? throw new EntityNotFoundException(nameof(Service), id);
         return _mapper.Map<ServiceDTO>(service);
     }

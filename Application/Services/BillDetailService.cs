@@ -35,8 +35,10 @@ public class BillDetailService(IUnitOfWork unitOfWork, IMapper mapper) : IBillDe
 
     public async Task<BillDetailDTO> GetByIdAsync(int id, string? includes = null)
     {
-        var billDetail = await _unitOfWork.Repository<BillDetail>().GetByIdAsync(id)
-          ?? throw new EntityNotFoundException(nameof(BillDetail), id);
+        var spec = new BaseSpecification<BillDetail>(a => a.DeletedAt == null && a.Id == id);
+        includes?.Split(',').ToList().ForEach(spec.AddInclude);
+        var billDetail = await _unitOfWork.Repository<BillDetail>().FirstOrDefaultAsync(spec)
+            ?? throw new EntityNotFoundException(nameof(BillDetail), id);
         return _mapper.Map<BillDetailDTO>(billDetail);
     }
 

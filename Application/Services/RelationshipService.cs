@@ -35,7 +35,9 @@ public class RelationshipService(IUnitOfWork unitOfWork, IMapper mapper) : IRela
 
     public async Task<RelationshipDTO> GetByIdAsync(int id, string? includes = null)
     {
-        var relationship = await _unitOfWork.Repository<Relationship>().GetByIdAsync(id)
+        var spec = new BaseSpecification<Relationship>(a => a.DeletedAt == null && a.Id == id);
+        includes?.Split(',').ToList().ForEach(spec.AddInclude);
+        var relationship = await _unitOfWork.Repository<Relationship>().FirstOrDefaultAsync(spec)
             ?? throw new EntityNotFoundException(nameof(Relationship), id);
         return _mapper.Map<RelationshipDTO>(relationship);
     }

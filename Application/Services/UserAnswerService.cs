@@ -34,7 +34,9 @@ public class UserAnswerService(IUnitOfWork unitOfWork, IMapper mapper) : IUserAn
     }
     public async Task<UserAnswerDTO> GetByIdAsync(int id, string? includes = null)
     {
-        var userAnswer = await _unitOfWork.Repository<UserAnswer>().GetByIdAsync(id)
+        var spec = new BaseSpecification<UserAnswer>(a => a.DeletedAt == null && a.Id == id);
+        includes?.Split(',').ToList().ForEach(spec.AddInclude);
+        var userAnswer = await _unitOfWork.Repository<UserAnswer>().FirstOrDefaultAsync(spec)
             ?? throw new EntityNotFoundException(nameof(UserAnswer), id);
         return _mapper.Map<UserAnswerDTO>(userAnswer);
     }

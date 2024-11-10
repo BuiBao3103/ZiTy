@@ -35,7 +35,9 @@ public class SurveyService(IUnitOfWork unitOfWork, IMapper mapper) : ISurveyServ
 
     public async Task<SurveyDTO> GetByIdAsync(int id, string? includes = null)
     {
-        var survey = await _unitOfWork.Repository<Survey>().GetByIdAsync(id)
+        var spec = new BaseSpecification<Survey>(a => a.DeletedAt == null && a.Id == id);
+        includes?.Split(',').ToList().ForEach(spec.AddInclude);
+        var survey = await _unitOfWork.Repository<Survey>().FirstOrDefaultAsync(spec)
             ?? throw new EntityNotFoundException(nameof(Survey), id);
         return _mapper.Map<SurveyDTO>(survey);
     }

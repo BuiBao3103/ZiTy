@@ -36,8 +36,10 @@ public class ReportService(IUnitOfWork unitOfWork, IMapper mapper) : IReportServ
 
     public async Task<ReportDTO> GetByIdAsync(int id, string? includes = null)
     {
-        var report = await _unitOfWork.Repository<Report>().GetByIdAsync(id)
-           ?? throw new EntityNotFoundException(nameof(Report), id);
+        var spec = new BaseSpecification<Report>(a => a.DeletedAt == null && a.Id == id);
+        includes?.Split(',').ToList().ForEach(spec.AddInclude);
+        var report = await _unitOfWork.Repository<Report>().FirstOrDefaultAsync(spec)
+            ?? throw new EntityNotFoundException(nameof(Report), id);
         return _mapper.Map<ReportDTO>(report);
     }
 

@@ -45,8 +45,10 @@ public class UserService(IUnitOfWork unitOfWork, IMediaService mediaService, IEm
 
     public async Task<UserDTO> GetByIdAsync(int id, string? includes = null)
     {
-        var user = await _unitOfWork.Repository<User>().GetByIdAsync(id)
-                ?? throw new EntityNotFoundException(nameof(User), id);
+        var spec = new BaseSpecification<User>(a => a.DeletedAt == null && a.Id == id);
+        includes?.Split(',').ToList().ForEach(spec.AddInclude);
+        var user = await _unitOfWork.Repository<User>().FirstOrDefaultAsync(spec)
+            ?? throw new EntityNotFoundException(nameof(User), id);
         return _mapper.Map<UserDTO>(user);
 
     }

@@ -41,7 +41,9 @@ public class BillService(IUnitOfWork unitOfWork, IMapper mapper, IVNPayService v
 
     public async Task<BillDTO> GetByIdAsync(int id, string? includes = null)
     {
-        var bill = await _unitOfWork.Repository<Bill>().GetByIdAsync(id)
+        var spec = new BaseSpecification<Bill>(a => a.DeletedAt == null && a.Id == id);
+        includes?.Split(',').ToList().ForEach(spec.AddInclude);
+        var bill = await _unitOfWork.Repository<Bill>().FirstOrDefaultAsync(spec)
             ?? throw new EntityNotFoundException(nameof(Bill), id);
         return _mapper.Map<BillDTO>(bill);
     }
