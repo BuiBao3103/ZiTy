@@ -14,7 +14,7 @@ const Index = () => {
     data: bills,
     isLoading,
     isFetching,
-  } = useGetBillsQuery({ page: currentPage, includes: ['relationship'] })
+  } = useGetBillsQuery({ page: currentPage, includes: ['Relationship'] })
 
   return (
     <>

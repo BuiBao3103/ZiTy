@@ -9,60 +9,21 @@ import {
 } from '@/components/ui/pagination'
 import { Filter, Search } from 'lucide-react'
 import { Button } from '@components/ui/button'
-import { IPackage } from '@/schema/package.validate'
 import PackageForm from './components/package-form'
 import PackageList from './components/package-list'
 import BreadCrumb from '@/components/breadcrumb'
 import { useDocumentTitle } from 'usehooks-ts'
+import { useGetPackagesQuery } from '@/features/package/packageSlice'
+import PaginationCustom from '@/components/pagination/PaginationCustom'
+import { useState } from 'react'
 const Index = () => {
   useDocumentTitle('Package')
-  const packages: IPackage[] = [
-    {
-      id: 1,
-      image: 'Image 1',
-      description: 'Description 1',
-      isReceived: true,
-      userId: 1,
-			createdAt: new Date(),
-			updatedAt: new Date()
-    },
-    {
-      id: 2,
-      image: 'Image 2',
-      description: 'Description 2',
-      isReceived: true,
-      userId: 2,
-			createdAt: new Date(),
-			updatedAt: new Date()
-    },
-    {
-      id: 3,
-      image: 'Image 3',
-      description: 'Description 3',
-      isReceived: true,
-      userId: 3,
-			createdAt: new Date(),
-			updatedAt: new Date()
-    },
-    {
-      id: 4,
-      image: 'Image 4',
-      description: 'Description 4',
-      isReceived: true,
-      userId: 4,
-			createdAt: new Date(),
-			updatedAt: new Date()
-    },
-    {
-      id: 5,
-      image: 'Image 5',
-      description: 'Description 5',
-      isReceived: false,
-      userId: 5,
-			createdAt: new Date(),
-			updatedAt: new Date()
-    },
-  ]
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const {
+    data: packages,
+    isLoading,
+    isFetching,
+  } = useGetPackagesQuery({ page: currentPage })
 
   return (
     <>
@@ -94,25 +55,13 @@ const Index = () => {
               </PackageForm>
             </div>
             <div className="size-full">
-              <PackageList packages={packages} />
+              <PackageList packages={packages?.contents} />
             </div>
-            <Pagination className="mt-2">
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious to="#" />
-                </PaginationItem>
-                {[1, 2, 3, 4, 5].map((page) => (
-                  <PaginationItem
-                    key={page}
-                    className={`${page === 1 ? 'bg-primary rounded-md' : ''}`}>
-                    <PaginationLink to="#">{page}</PaginationLink>
-                  </PaginationItem>
-                ))}
-                <PaginationItem>
-                  <PaginationNext to="#" />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
+            <PaginationCustom
+              onPageChange={setCurrentPage}
+              currentPage={currentPage}
+              totalPages={packages?.totalPages}
+            />
           </div>
         </div>
       </div>
