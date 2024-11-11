@@ -32,16 +32,20 @@ const PaginationCustom = ({
   return (
     <Pagination className="mt-2">
       <PaginationContent>
-        <PaginationItem>
-          <PaginationPrevious
-            to="#"
-            aria-disabled={currentPage === 1}
-            className={`cursor-pointer ${
-              currentPage === 1 ? 'opacity-50 pointer-events-none' : ''
-            }`}
-            onClick={() => currentPage > 1 && handlePageClick(currentPage - 1)}
-          />
-        </PaginationItem>
+        {totalPages > 0 && (
+          <PaginationItem>
+            <PaginationPrevious
+              to="#"
+              aria-disabled={currentPage === 1}
+              className={`cursor-pointer ${
+                currentPage === 1 ? 'opacity-50 pointer-events-none' : ''
+              }`}
+              onClick={() =>
+                currentPage > 1 && handlePageClick(currentPage - 1)
+              }
+            />
+          </PaginationItem>
+        )}
 
         {[...Array(totalPages)].map((_, index) => {
           const page = index + 1
@@ -57,18 +61,22 @@ const PaginationCustom = ({
             </PaginationItem>
           )
         })}
-        <PaginationItem>
-          <PaginationNext
-            to="#"
-            aria-disabled={currentPage === totalPages}
-            className={`cursor-pointer ${
-              currentPage === totalPages ? 'opacity-50 pointer-events-none' : ''
-            }`}
-            onClick={() =>
-              currentPage < totalPages && handlePageClick(currentPage + 1)
-            }
-          />
-        </PaginationItem>
+        {totalPages > 0 && (
+          <PaginationItem>
+            <PaginationNext
+              to="#"
+              aria-disabled={currentPage === totalPages}
+              className={`cursor-pointer ${
+                currentPage === totalPages
+                  ? 'opacity-50 pointer-events-none'
+                  : ''
+              }`}
+              onClick={() =>
+                currentPage < totalPages && handlePageClick(currentPage + 1)
+              }
+            />
+          </PaginationItem>
+        )}
       </PaginationContent>
     </Pagination>
   )

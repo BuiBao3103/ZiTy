@@ -86,7 +86,7 @@ const Header = () => {
       role: ['ADMIN'],
     },
     {
-      label: 'Apartments',
+      label: 'Apartments Management',
       icon: <TableCellsMerge />,
       to: ROUTES.ADMIN.APARTMENTS,
       role: ['ADMIN'],
