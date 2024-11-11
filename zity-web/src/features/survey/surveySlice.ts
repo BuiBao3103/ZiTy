@@ -34,7 +34,7 @@ const surveyApiSlice = apiSlice.injectEndpoints({
       }
     >({
       query: (params = { page: 1 }) => { 
-				let url = `reports?page=${params.page}`
+				let url = `surveys?page=${params.page}`
 				if (params.pageSize && params.pageSize > 0) {
 					url += `&pageSize=${params.pageSize}`
 				}
@@ -68,7 +68,7 @@ const surveyApiSlice = apiSlice.injectEndpoints({
         const survey = surveyResult.data as ISurvey
         // Fetch questions using the survey ID
         const questionsResult = await fetchWithBQ(
-          `/questions?SurveyId=eq:${survey.id}&Includes=answers`,
+          `/questions?SurveyId=eq:${survey.id}&includes=Answers`,
         )
         if (questionsResult.error)
           return { error: questionsResult.error as FetchBaseQueryError }
