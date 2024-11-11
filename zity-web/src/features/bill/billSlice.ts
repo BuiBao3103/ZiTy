@@ -32,7 +32,7 @@ export const billSlice = apiSlice.injectEndpoints({
     }),
     getBill: builder.query<IBill, number | undefined | string>({
       query: (id) => ({
-        url: `bills/${id}?includes=relationship`,
+        url: `bills/${id}?includes=Relationship`,
       }),
       providesTags: (result, error, id) => [{ type: 'Bills', id }],
     }),

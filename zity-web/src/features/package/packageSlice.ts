@@ -3,8 +3,30 @@ import { apiSlice } from '../api/apiSlice'
 
 const packageSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getPackages: builder.query<ResponseDataType<IPackage>, number | void>({
-      query: (page = 1) => `/items?page=${page}`,
+    getPackages: builder.query<ResponseDataType<IPackage>, {
+			page?: number
+			pageSize?: number
+			includes?: string[]
+			sort?: string[]
+		}>({
+      query: (params = {page: 1,pageSize: 1,}) => {
+				let url = '/items'
+				if (params.page) {
+					url += `?page=${params.page}`
+				}
+				if (params.pageSize) {
+					url += `&pageSize=${params.pageSize}`
+				}
+				if (params.includes && params.includes.length > 0) {
+					url += `&includes=${params.includes.join(',')}`
+				}
+				if (params.sort && params.sort.length > 0) {
+					url += `&sort=${params.sort.join(',')}`
+				}
+				return {
+					url: url
+				}
+			},
     }),
     getPackage: builder.query<IPackage, string>({
       query: (id) => `/items/${id}`,
