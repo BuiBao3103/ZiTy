@@ -9,6 +9,7 @@ using Application.DTOs;
 using Application.DTOs.Momo;
 using Application.Core.Services;
 using Domain.Exceptions;
+using Application.Core.Exceptions;
 
 namespace Application.Services;
 
@@ -111,6 +112,35 @@ public class BillService(IUnitOfWork unitOfWork, IMapper mapper, IVNPayService v
             _unitOfWork.Repository<Bill>().Update(bill);
             await _unitOfWork.SaveChangesAsync();
         }
+    }
+
+    public async Task<List<BillDTO>> UpdateWaterReadingAsync(BillUpdateWaterReadingDto waterReadingDto)
+    {
+        Dictionary<string, string[]> errors = new();
+        List<Bill> bills = new();
+        foreach (var waterReading in waterReadingDto.WaterReadings)
+        {
+
+            var bill = await _unitOfWork.Repository<Bill>().GetByIdAsync(waterReading.BillId);
+            if (bill == null)
+            {
+                errors.Add($"Id-{waterReading.NewWaterIndex}-{waterReading.ReadingDate}", new string[] { "Bill not found" });
+            }
+            else
+            {
+
+                bills.Add(bill);
+                bill.NewWater = waterReading.NewWaterIndex;
+                bill.WaterReadingDate = waterReading.ReadingDate;
+                _unitOfWork.Repository<Bill>().Update(bill);
+            }
+        }
+        if (errors.Count > 0)
+        {
+            throw new ValidationException(errors);
+        }
+        await _unitOfWork.SaveChangesAsync();
+        return bills.Select(_mapper.Map<BillDTO>).ToList();
     }
 }
 
