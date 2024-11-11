@@ -59,11 +59,11 @@ public class UserService(IUnitOfWork unitOfWork, IMediaService mediaService, IEm
 
         var password = PasswordGenerator.GeneratePassword(12);
         user.Password = BCrypt.Net.BCrypt.HashPassword(password);
-
+        user.Avatar = CloudinaryConstants.DEFAULT_AVATAR;
         var createdUser = await _unitOfWork.Repository<User>().AddAsync(user);
-        await _unitOfWork.SaveChangesAsync();
-
         await _emailService.SendAccountCreationEmail(createdUser, password);
+
+        await _unitOfWork.SaveChangesAsync();
         return _mapper.Map<UserDTO>(createdUser);
     }
 
@@ -71,7 +71,7 @@ public class UserService(IUnitOfWork unitOfWork, IMediaService mediaService, IEm
     {
         var user = await _unitOfWork.Repository<User>().GetByIdAsync(id)
                 ?? throw new EntityNotFoundException(nameof(User), id);
-        if (!string.IsNullOrEmpty(user.Avatar))
+        if (!string.IsNullOrEmpty(user.Avatar) && !user.Avatar.Contains("default_avt.jpg"))
         {
             await _mediaService.DeleteImageAsync(user.Avatar, CloudinaryConstants.USER_AVATARS_FOLDER);
         }
