@@ -19,7 +19,7 @@ export const UserSchema = z.object({
     .refine(
       (url) => /\.(jpg|jpeg|png|gif)$/i.test(url),
       'Avatar must be a valid image URL (.jpg, .jpeg, .png, or .gif)',
-    )
+    ).nullable()
     .optional(),
   isFirstLogin: z.boolean().optional(),
   email: z.string().email('Invalid email address'),
@@ -30,8 +30,8 @@ export const UserSchema = z.object({
   gender: GenderSchema,
   nationId: z
     .string()
-    .min(12, 'Nation ID is required')
-    .max(12, 'Nation ID is required'),
+    .min(12, 'Nation ID is 12 characters required')
+    .max(12, 'At most 12 characters required'),
   fullName: z
     .string()
     .min(2, 'Full name must be at least 2 characters long')
