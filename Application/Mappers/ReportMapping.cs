@@ -9,7 +9,7 @@ public class ReportMapping : Profile
     public ReportMapping()
     {
         CreateMap<Report, ReportDTO>()
-            .ForMember(dest => dest.RejectionReasons, opt => opt.MapFrom(src => src.RejectionReasons))
+            .ForMember(dest => dest.RejectionReason, opt => opt.MapFrom(src => src.RejectionReason))
             .ForMember(dest => dest.Relationship, opt => opt.MapFrom(src => src.Relationship));
 
         CreateMap<ReportCreateDTO, Report>()

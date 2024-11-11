@@ -21,7 +21,7 @@ public class ReportDTO
 
     public int? RelationshipId { get; set; }
 
-    public ICollection<RejectionReasonDTO> RejectionReasons { get; set; } = [];
+    public RejectionReasonDTO? RejectionReason { get; set; }
 
     public RelationshipDTO? Relationship { get; set; }
 }

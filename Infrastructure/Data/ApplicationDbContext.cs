@@ -313,9 +313,11 @@ public partial class ApplicationDbContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("updated_at");
 
-            entity.HasOne(d => d.Report).WithMany(p => p.RejectionReasons)
-                .HasForeignKey(d => d.ReportId)
-                .HasConstraintName("rejection_reasons_ibfk_1");
+            entity.HasOne(d => d.Report)
+              .WithOne(p => p.RejectionReason)
+              .HasForeignKey<RejectionReason>(d => d.ReportId)
+              .HasConstraintName("rejection_reasons_ibfk_1");
+
         });
 
         modelBuilder.Entity<Relationship>(entity =>
