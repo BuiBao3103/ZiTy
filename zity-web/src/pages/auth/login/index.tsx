@@ -53,7 +53,6 @@ export default function Index() {
       .unwrap()
       .then(async (res) => {
         dispatch(userLoggedIn(res))
-				console.log(res)
         await getCurrentUser()
           .unwrap()
           .then((payload) => {
@@ -79,7 +78,7 @@ export default function Index() {
           })
           .catch((error) => {
             console.log(error)
-            throw new Error("Can't get user information")
+            throw new Error("Username or password doesn't match")
           })
       })
       .catch((error) => {
@@ -88,7 +87,6 @@ export default function Index() {
   }
 
   const onError = (error: any) => {
-    console.log(error)
     if (error['email']?.message) {
       toast.error(error['email']?.message)
     }
