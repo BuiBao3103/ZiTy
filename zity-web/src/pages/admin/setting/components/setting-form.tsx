@@ -9,6 +9,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { usePatchSettingMutation } from '@/features/setting/settingSlice'
 import { SettingSchema } from '@/schema/setting.validate'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -16,21 +17,27 @@ interface SettingFormProps {
   setting?: z.infer<typeof SettingSchema>
 }
 
-const SettingForm = () => {
+const SettingForm = ({ setting }: SettingFormProps) => {
   const [patchSetting, { isLoading }] = usePatchSettingMutation()
 
   const form = useForm<z.infer<typeof SettingSchema>>()
 
   const onSubmit = async (data: z.infer<typeof SettingSchema>) => {
-    await patchSetting(data)
-      .unwrap()
-      .then((payload) => {
-        console.log(payload)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
+    // await patchSetting(data)
+    //   .unwrap()
+    //   .then((payload) => {
+    //     console.log(payload)
+    //   })
+    //   .catch((error) => {
+    //     console.log(error)
+    //   })
   }
+
+  useEffect(() => {
+    if (setting) {
+      form.reset(setting)
+    }
+  }, [setting])
 
   return (
     <Form {...form}>
@@ -99,10 +106,10 @@ const SettingForm = () => {
         />
         <FormField
           control={form.control}
-          name="currentMonthly"
+          name="systemStatus"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Current Monthly</FormLabel>
+              <FormLabel>System Status</FormLabel>
               <FormControl>
                 <Input {...field} className="md:w-1/2" />
               </FormControl>

@@ -1,5 +1,4 @@
 import { Skeleton } from '@/components/ui/skeleton'
-import React from 'react'
 import SurveyItem from './survey-item'
 import { ISurvey } from '@/schema/survey.validate'
 

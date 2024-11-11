@@ -19,7 +19,7 @@ export const UserSchema = z.object({
     .refine(
       (url) => /\.(jpg|jpeg|png|gif)$/i.test(url),
       'Avatar must be a valid image URL (.jpg, .jpeg, .png, or .gif)',
-    )
+    ).nullable()
     .optional(),
   isFirstLogin: z.boolean().optional(),
   email: z.string().email('Invalid email address'),
@@ -30,8 +30,8 @@ export const UserSchema = z.object({
   gender: GenderSchema,
   nationId: z
     .string()
-    .min(12, 'Nation ID is required')
-    .max(12, 'Nation ID is required'),
+    .min(12, 'Nation ID is 12 characters required')
+    .max(12, 'At most 12 characters required'),
   fullName: z
     .string()
     .min(2, 'Full name must be at least 2 characters long')
@@ -63,21 +63,8 @@ export const NullableUserSchema = UserSchema.partial().nullable()
 
 // Zod schema for UserLogin type
 export const UserLoginSchema = z.object({
-  username: z
-    .string()
-    .min(3, 'Username must be at least 3 characters long')
-    .max(20, 'Username must be at most 20 characters long')
-    .regex(
-      /^[a-zA-Z0-9_]+$/,
-      'Username can only contain letters, numbers, and underscores',
-    ),
-  password: z
-    .string()
-    .min(6, 'Password must be at least 6 characters')
-    .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
-    .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
-    .regex(/[0-9]/, 'Password must contain at least one number')
-    .regex(/[\W_]/, 'Password must contain at least one special character'),
+  username: z.string(),
+  password: z.string()
 })
 
 export interface UserLogin extends z.infer<typeof UserLoginSchema> {}

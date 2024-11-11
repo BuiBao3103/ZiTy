@@ -58,7 +58,7 @@ const ApartmentFormDetail = ({ apartment }: IApartmentFormDetailProps) => {
         throw new Error('Something went wrong')
       } else {
         toast.success('Apartment updated successfully')
-        navigate('/apartment')
+        navigate('/admin/apartments')
       }
     } catch (error: any) {
       console.log(error)
@@ -73,7 +73,7 @@ const ApartmentFormDetail = ({ apartment }: IApartmentFormDetailProps) => {
         throw new Error('Something went wrong')
       } else {
         toast.success('Apartment deleted successfully')
-        navigate('/apartment')
+        navigate('/admin/apartments')
       }
     } catch (error: any) {
       console.log(error)
@@ -167,10 +167,10 @@ const ApartmentFormDetail = ({ apartment }: IApartmentFormDetailProps) => {
               )}
             />
           </div>
-          <div className="size-full">
+          {/* <div className="size-full">
             <Table className="w-full h-full border">
-              <TableHeader className="bg-zinc-200">
-                <TableRow>
+              <TableHeader className="bg-primary">
+                <TableRow className="[&>th]:text-black">
                   <TableHead>ID</TableHead>
                   <TableHead>Fullname</TableHead>
                   <TableHead>User Type</TableHead>
@@ -190,10 +190,14 @@ const ApartmentFormDetail = ({ apartment }: IApartmentFormDetailProps) => {
                 ))}
               </TableBody>
             </Table>
-          </div>
+          </div> */}
         </div>
         <div className="w-full flex justify-between items-center">
-          <AlertDelete description="apartment" setAction={() => handleDelete()} isLoading={isLoadingDelete} />
+          <AlertDelete
+            description="apartment"
+            setAction={() => handleDelete()}
+            isLoading={isLoadingDelete}
+          />
           <div className="flex space-x-4">
             <Button type="button" size={'lg'} variant="ghost">
               Cancel

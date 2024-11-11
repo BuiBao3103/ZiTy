@@ -17,7 +17,7 @@ const UserItem = ({ user, setShowDetail }: UserItemProps) => {
       <TableCell className="">
         <div className="w-full flex items-center gap-3">
           <img
-            src={user?.avatar}
+            src={user?.avatar ?? undefined}
             alt="user avatar"
             className="size-9 rounded-full object-cover hidden sm:inline-block"
           />

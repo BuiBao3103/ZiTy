@@ -14,7 +14,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
-	FormMessage,
+  FormMessage,
 } from '@/components/ui/form'
 import {
   Select,
@@ -42,7 +42,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 const UserForm = () => {
   const [open, setOpen] = useState<boolean>(false)
   const [createUser, { isLoading }] = useCreateUserMutation()
-  const form = useForm<z.infer<typeof UserSchema>>({
+  const form = useForm<Omit<z.infer<typeof UserSchema>, 'id'>>({
     mode: 'onSubmit',
     defaultValues: {
       fullName: '',
@@ -54,18 +54,16 @@ const UserForm = () => {
       phone: '',
       userType: 'RESIDENT',
     },
-		resolver: zodResolver(UserSchema),
+    resolver: zodResolver(UserSchema.omit({ id: true })),
   })
 
-  const onSubmit = async (data: z.infer<typeof UserSchema>) => {
-    console.log(data)
+  const onSubmit = async (data: Omit<z.infer<typeof UserSchema>, 'id'>) => {
     try {
       await createUser(data)
         .unwrap()
         .then((payload) => {
-          console.log(payload)
           toast.success('User created successfully')
-					form.reset()
+          form.reset()
           setOpen(false)
         })
         .catch((error) => {
@@ -77,7 +75,6 @@ const UserForm = () => {
     } finally {
       setOpen(false)
     }
-    // Handle form submission logic here
   }
 
   const handleQrScanSuccess = (data: any) => {
@@ -90,6 +87,10 @@ const UserForm = () => {
       'dateOfBirth',
       (data.dob && parseDateFromString(data.dob)) ?? undefined,
     ) // Adjust as necessary
+  }
+
+  const onError = (error: any) => {
+    console.log(error)
   }
 
   return (
@@ -117,7 +118,7 @@ const UserForm = () => {
         </div>
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(onSubmit)}
+            onSubmit={form.handleSubmit(onSubmit, onError)}
             className="space-y-2 lg:space-y-4">
             <FormField
               control={form.control}
@@ -132,7 +133,7 @@ const UserForm = () => {
                       className="focus-visible:ring-primary"
                     />
                   </FormControl>
-									<FormMessage />
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -153,7 +154,7 @@ const UserForm = () => {
                         className="focus-visible:ring-primary"
                       />
                     </FormControl>
-										<FormMessage />
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -177,7 +178,7 @@ const UserForm = () => {
                         </SelectContent>
                       </Select>
                     </FormControl>
-										<FormMessage />
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -196,7 +197,7 @@ const UserForm = () => {
                         onChange={field.onChange}
                       />
                     </FormControl>
-										<FormMessage />
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -216,7 +217,7 @@ const UserForm = () => {
                         className="focus-visible:ring-primary"
                       />
                     </FormControl>
-										<FormMessage />
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -234,7 +235,7 @@ const UserForm = () => {
                         className="focus-visible:ring-primary read-only:bg-muted"
                       />
                     </FormControl>
-										<FormMessage />
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -254,18 +255,33 @@ const UserForm = () => {
                         className="focus-visible:ring-primary"
                       />
                     </FormControl>
-										<FormMessage />
+                    <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
             <FormField
               control={form.control}
+              name="isStaying"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center space-x-2 space-y-0">
+                  <FormControl>
+                    <Checkbox checked={field.value} onChange={field.onChange} />
+                  </FormControl>
+                  <FormLabel className="font-medium uppercase">
+                    Is staying
+                  </FormLabel>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="userType"
               render={() => (
                 <FormItem>
                   <div className="">
-                    <FormLabel className="text-base">Status</FormLabel>
+                    <FormLabel className="text-base">Role</FormLabel>
                   </div>
                   <div className="flex space-x-4">
                     {['ADMIN', 'RESIDENT'].map((role, index) => (
@@ -293,7 +309,7 @@ const UserForm = () => {
                       />
                     ))}
                   </div>
-									<FormMessage />
+                  <FormMessage />
                 </FormItem>
               )}
             />

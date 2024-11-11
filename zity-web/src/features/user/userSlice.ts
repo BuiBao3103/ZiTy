@@ -96,17 +96,7 @@ const userApiSlice = apiSlice.injectEndpoints({
       {
         id: string | number
         body: Partial<User> &
-          Omit<
-            User,
-            | 'id'
-            | 'createdAt'
-            | 'updatedAt'
-            | 'items'
-            | 'otherAnswers'
-            | 'relationships'
-            | 'surveys'
-            | 'userAnswers'
-          >
+          Pick<User,"email" | "fullName" | "isStaying" | "dateOfBirth" | "nationId" | "phone" | "gender">
       }
     >({
       query: (data) => ({
@@ -121,7 +111,7 @@ const userApiSlice = apiSlice.injectEndpoints({
         url: `/users/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: (result, error, id) => [{ type: 'Users', id }],
+      invalidatesTags: (result, error, id) => [{ type: 'Users' }],
     }),
     updatePassord: builder.mutation<void, { body: FirstLogin }>({
       query: (data) => ({

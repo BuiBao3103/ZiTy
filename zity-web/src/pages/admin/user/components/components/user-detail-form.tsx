@@ -66,9 +66,17 @@ const UserDetailForm = ({ user, setShowDetail }: UserDetailFormProps) => {
   })
 
   const onSubmit = async (data: z.infer<typeof UserSchema>) => {
-    console.log(data)
+    const newData = {
+      email: data.email,
+      fullName: data.fullName,
+      phone: data.phone,
+      gender: data.gender,
+      nationId: data.nationId,
+      dateOfBirth: data.dateOfBirth,
+      isStaying: data.isStaying,
+    }
     try {
-      const result = await updateUser({ id: data.id, body: data })
+      const result = await updateUser({ id: data.id, body: newData })
       if (result.error) {
         throw new Error('Something went wrong')
       } else {
@@ -92,16 +100,20 @@ const UserDetailForm = ({ user, setShowDetail }: UserDetailFormProps) => {
         setShowDetail('')
       }
     } catch (error: any) {
-      if(error.status === 405){
-				toast.error("Method not allowed")
-			}
+      if (error.status === 405) {
+        toast.error('Method not allowed')
+      }
     }
+  }
+
+  const onError = (error: any) => {
+    console.log(error)
   }
 
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(onSubmit, onError)}
         className="z-[99] min-[500px]:max-w-lg lg:max-w-2xl border-4 border-white/80 w-full animate-in fade-in slide-in-from-bottom-2 duration-300 relative bg-white rounded-lg overflow-hidden shadow-lg">
         {isLoading && (
           <div className="absolute inset-0 size-full rounded-md flex justify-center items-center bg-white/50 backdrop-blur-md">
@@ -305,11 +317,31 @@ const UserDetailForm = ({ user, setShowDetail }: UserDetailFormProps) => {
           </div>
           <FormField
             control={form.control}
+            name="isStaying"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-center space-x-2 space-y-0">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={(checked) => {
+                      field.onChange(checked)
+                    }}
+                  />
+                </FormControl>
+                <FormLabel className={`uppercase ${field.value ? "font-medium" : "font-normal"}`}>
+                  Is staying
+                </FormLabel>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
             name="userType"
             render={() => (
               <FormItem>
                 <div className="">
-                  <FormLabel className="text-base">Status</FormLabel>
+                  <FormLabel className="text-base">Role</FormLabel>
                 </div>
                 <div className="flex space-x-4">
                   {['ADMIN', 'RESIDENT'].map((role, index) => (
@@ -323,9 +355,14 @@ const UserDetailForm = ({ user, setShowDetail }: UserDetailFormProps) => {
                             key={index}
                             className="flex flex-row items-center space-x-2 space-y-0">
                             <FormControl>
-                              <Checkbox {...field} checked={field.value === role as UserRole} />
+                              <Checkbox
+                                checked={field.value === role}
+                                onCheckedChange={() => {
+                                  field.onChange(role)
+                                }}
+                              />
                             </FormControl>
-                            <FormLabel className="text-sm font-normal">
+                            <FormLabel className={`text-sm ${field.value === role ? 'font-medium' : 'font-normal'}`}>
                               {role}
                             </FormLabel>
                           </FormItem>
