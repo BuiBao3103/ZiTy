@@ -18,11 +18,7 @@ import { toast } from 'sonner'
 import QuestionItem from './question-item'
 import { ChevronLeft, Loader } from 'lucide-react'
 import { useAppDispath } from '@/store'
-import {
-  createNewSurvey,
-  useCreateSurveyMutation,
-  useUpdateSurveryMutation,
-} from '@/features/survey/surveySlice'
+import { useUpdateSurveryMutation } from '@/features/survey/surveySlice'
 import { DateTimePicker } from '@/components/ui/datetime-picker'
 import { SurveySchema } from '@/schema/survey.validate'
 import { useNavigate } from 'react-router-dom'
@@ -34,29 +30,12 @@ interface SurveyFormProps {
 }
 
 const SurveyForm = ({ mode = 'create', initialData }: SurveyFormProps) => {
-  const dispatch = useAppDispath()
   const navigate = useNavigate()
   const [updateSurvey, { isLoading: isLoadingUpdate }] =
     useUpdateSurveryMutation()
-  const [createSurvey, { isLoading }] = useCreateSurveyMutation()
 
   const form = useForm<z.infer<typeof SurveySchema>>({
-    defaultValues: initialData || {
-      title: '',
-      questions: [
-        {
-          content: '',
-          answers: [
-            { content: '' },
-            { content: '' },
-            { content: '' },
-            { content: '' },
-          ],
-        },
-      ],
-      startDate: new Date(),
-      endDate: new Date(),
-    },
+    defaultValues: initialData,
     resolver: zodResolver(SurveySchema),
   })
 
@@ -75,8 +54,7 @@ const SurveyForm = ({ mode = 'create', initialData }: SurveyFormProps) => {
 
   const appendQuestion = () => {
     append({
-      id: 0,
-      surveyId: initialData?.id || 0, // or any appropriate surveyId
+      surveyId: initialData?.id, // or any appropriate surveyId
       content: '',
       answers: [
         {
@@ -87,26 +65,16 @@ const SurveyForm = ({ mode = 'create', initialData }: SurveyFormProps) => {
   }
 
   const onSubmit = async (data: z.infer<typeof SurveySchema>) => {
-    let result
-    if (mode === 'create') {
-      const { id, ...rest } = data
-      result = await createSurvey(rest)
-    } else {
-      result = await updateSurvey({ id: initialData?.id, body: data })
-    }
+    const result = await updateSurvey({ id: initialData?.id, body: data })
     if (result.error) {
       toast.error(result.data)
     } else {
       console.log(data)
-      toast.success(
-        `Survey ${mode === 'create' ? 'created' : 'updated'} successfully`,
-      )
-      navigate('/admin/survey')
-      if (mode === 'create') {
-        form.reset()
-      }
+      toast.success(`Survey updated successfully`)
+      navigate('/admin/surveys')
     }
   }
+
 
   const onError = (error: any) => {
     console.log(error)
@@ -118,22 +86,17 @@ const SurveyForm = ({ mode = 'create', initialData }: SurveyFormProps) => {
         variant="ghost"
         type="button"
         onClick={() => {
-          if (mode == 'create') {
-            dispatch(createNewSurvey({ isCreateNewSurvey: false }))
-          } else {
-            navigate('/admin/surveys')
-          }
+          navigate('/admin/surveys')
         }}
         className="w-fit px-0">
         <ChevronLeft /> Back to survey
       </Button>
       <Card className="h-full relative">
-        {isLoading ||
-          (isLoadingUpdate && (
-            <div className="fixed z-10 inset-0 size-full backdrop-blur bg-white/10 flex justify-center items-center">
-              <Loader size={50} className="animate-spin text-primary" />
-            </div>
-          ))}
+        {isLoadingUpdate && (
+          <div className="fixed z-10 inset-0 size-full backdrop-blur bg-white/10 flex justify-center items-center">
+            <Loader size={50} className="animate-spin text-primary" />
+          </div>
+        )}
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit, onError)}
