@@ -15,4 +15,5 @@ public interface IBillService
     Task<string> CreatePaymentVNPayAsync(int id);
     Task<MomoCreatePaymentDto> CreatePaymentMomoAsync(int id, MomoRequestCreatePaymentDto request);
     Task HandleMoMoCallBackAsync(int id, MomoCallBackDto callbackDto);
+    Task<List<BillDTO>> UpdateWaterReadingAsync(BillUpdateWaterReadingDto waterReadingDto);
 }

@@ -69,4 +69,10 @@ public class BillController(IBillService billService) : ControllerBase
         await _billService.HandleMoMoCallBackAsync(id, callbackDto);
         return NoContent();
     }
+
+    [HttpPatch("update-water-readings")]
+    public async Task<IActionResult> UpdateWaterReading([FromBody] BillUpdateWaterReadingDto waterReadingDto)
+    {
+        return Ok(await _billService.UpdateWaterReadingAsync(waterReadingDto));
+    }
 }
