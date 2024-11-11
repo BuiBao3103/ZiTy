@@ -6,7 +6,7 @@ import { ThemeProvider } from './context/theme-provider.tsx'
 import { TooltipProvider } from './components/ui/tooltip.tsx'
 import { Provider } from 'react-redux'
 import { store } from './store.ts'
-
+import { Toaster as Sonner } from '@components/ui/sonner'
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Provider store={store}>
@@ -16,5 +16,12 @@ createRoot(document.getElementById('root')!).render(
         </TooltipProvider>
       </ThemeProvider>
     </Provider>
+		<Sonner
+        richColors
+        theme="light"
+        toastOptions={{}}
+        closeButton
+        visibleToasts={4}
+      />
   </StrictMode>,
 )

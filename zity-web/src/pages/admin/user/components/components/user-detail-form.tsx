@@ -319,15 +319,18 @@ const UserDetailForm = ({ user, setShowDetail }: UserDetailFormProps) => {
             control={form.control}
             name="isStaying"
             render={({ field }) => (
-              <FormItem>
-                <div className="flex flex-row items-center space-x-2 space-y-0">
-                  <FormControl>
-                    <Checkbox checked={field.value} onChange={field.onChange} />
-                  </FormControl>
-                  <FormLabel className="text-sm font-normal">
-                    Is staying
-                  </FormLabel>
-                </div>
+              <FormItem className="flex flex-row items-center space-x-2 space-y-0">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={(checked) => {
+                      field.onChange(checked)
+                    }}
+                  />
+                </FormControl>
+                <FormLabel className={`uppercase ${field.value ? "font-medium" : "font-normal"}`}>
+                  Is staying
+                </FormLabel>
                 <FormMessage />
               </FormItem>
             )}
@@ -338,7 +341,7 @@ const UserDetailForm = ({ user, setShowDetail }: UserDetailFormProps) => {
             render={() => (
               <FormItem>
                 <div className="">
-                  <FormLabel className="text-base">Status</FormLabel>
+                  <FormLabel className="text-base">Role</FormLabel>
                 </div>
                 <div className="flex space-x-4">
                   {['ADMIN', 'RESIDENT'].map((role, index) => (
@@ -353,11 +356,13 @@ const UserDetailForm = ({ user, setShowDetail }: UserDetailFormProps) => {
                             className="flex flex-row items-center space-x-2 space-y-0">
                             <FormControl>
                               <Checkbox
-                                {...field}
-                                checked={field.value === (role as UserRole)}
+                                checked={field.value === role}
+                                onCheckedChange={() => {
+                                  field.onChange(role)
+                                }}
                               />
                             </FormControl>
-                            <FormLabel className="text-sm font-normal">
+                            <FormLabel className={`text-sm ${field.value === role ? 'font-medium' : 'font-normal'}`}>
                               {role}
                             </FormLabel>
                           </FormItem>
