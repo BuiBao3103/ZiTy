@@ -1,4 +1,3 @@
-import React from 'react'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -10,7 +9,7 @@ import {
 import { Separator } from '@/components/ui/separator'
 import { useState } from 'react'
 import ServiceDetailForm from './components/service-detail-form'
-import { Eye, Plus } from 'lucide-react'
+import { Eye } from 'lucide-react'
 import { ServiceSchema } from '@/schema/service.validate'
 import { z } from 'zod'
 

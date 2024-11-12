@@ -1,4 +1,3 @@
-import AlertDelete from '@/components/alert/AlertDelete'
 import BreadCrumb from '@/components/breadcrumb'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -11,13 +10,11 @@ import { Filter, Search } from 'lucide-react'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { useDocumentTitle } from 'usehooks-ts'
-import SurveyForm from './components/survey-form'
 import { useState } from 'react'
-import SurveyItem from './components/survey-item'
-import { Skeleton } from '@/components/ui/skeleton'
 import PaginationCustom from '@/components/pagination/PaginationCustom'
 import SurveyDetail from './components/survey-detail'
 import SurveyList from './components/survey-list'
+import SurveyCreate from './components/survey-create'
 
 const Index = () => {
   useDocumentTitle('Survey')
@@ -31,7 +28,7 @@ const Index = () => {
     data: surveys,
     isLoading,
     isFetching,
-  } = useGetSurverysQuery(currentPage)
+  } = useGetSurverysQuery({page: currentPage})
 
   return (
     <div
@@ -48,7 +45,7 @@ const Index = () => {
       <div className="w-full h-full p-4 overflow-hidden">
         <div className="w-full h-full bg-white rounded-md p-4 flex flex-col	space-y-4">
           {isCreateNewSurvey ? (
-            <SurveyForm mode="create" />
+            <SurveyCreate />
           ) : params?.id ? (
             <SurveyDetail surveyID={params?.id} />
           ) : (
