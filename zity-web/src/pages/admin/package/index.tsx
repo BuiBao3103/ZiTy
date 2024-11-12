@@ -1,21 +1,13 @@
 import { Input } from '@/components/ui/input'
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from '@/components/ui/pagination'
 import { Filter, Search } from 'lucide-react'
 import { Button } from '@components/ui/button'
-import PackageForm from './components/package-form'
 import PackageList from './components/package-list'
 import BreadCrumb from '@/components/breadcrumb'
 import { useDocumentTitle } from 'usehooks-ts'
 import { useGetPackagesQuery } from '@/features/package/packageSlice'
 import PaginationCustom from '@/components/pagination/PaginationCustom'
 import { useState } from 'react'
+import PackageDetail from './components/package-detail'
 const Index = () => {
   useDocumentTitle('Package')
   const [currentPage, setCurrentPage] = useState<number>(1)
@@ -45,17 +37,21 @@ const Index = () => {
                   Filter
                 </Button>
               </div>
-              <PackageForm>
+              <PackageDetail mode="create">
                 <Button
                   className="w-full sm:w-[160px]"
                   variant={'default'}
                   size={'lg'}>
                   New Package
                 </Button>
-              </PackageForm>
+              </PackageDetail>
             </div>
             <div className="size-full">
-              <PackageList packages={packages?.contents} />
+              <PackageList
+                packages={packages?.contents}
+                isFetching={isFetching}
+                isLoading={isLoading}
+              />
             </div>
             <PaginationCustom
               onPageChange={setCurrentPage}

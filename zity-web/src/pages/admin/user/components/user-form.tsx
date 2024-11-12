@@ -61,7 +61,7 @@ const UserForm = () => {
     try {
       await createUser(data)
         .unwrap()
-        .then((payload) => {
+        .then(() => {
           toast.success('User created successfully')
           form.reset()
           setOpen(false)

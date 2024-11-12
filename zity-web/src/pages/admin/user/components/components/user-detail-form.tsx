@@ -31,7 +31,6 @@ import {
 } from '@/features/user/userSlice'
 import { toast } from 'sonner'
 import { Checkbox } from '@/components/ui/checkbox'
-import { UserRole } from '@/enums'
 
 interface UserDetailFormProps {
   user?: User
