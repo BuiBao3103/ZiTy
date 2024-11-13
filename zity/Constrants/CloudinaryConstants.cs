@@ -1,4 +1,4 @@
-﻿namespace zity.Constants
+﻿namespace zity.Constrants
 {
     public static class CloudinaryConstants
     {

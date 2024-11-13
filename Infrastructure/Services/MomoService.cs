@@ -2,8 +2,8 @@
 using System.Text;
 using Application.Core.Services;
 using Application.DTOs.Momo;
+using Domain.Configurations;
 using Domain.Entities;
-using MyApp.Domain.Configurations;
 using Newtonsoft.Json;
 using RestSharp;
 

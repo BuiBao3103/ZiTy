@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Domain.Core.Repositories;
 using Infrastructure.Data;
 using Infrastructure.Repositories;
-using MyApp.Domain.Configurations;
 using Infrastructure.Services;
 using Application.Core.Services;
 //using Infrastructure.Services;

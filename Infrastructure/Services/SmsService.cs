@@ -1,6 +1,6 @@
 ﻿using System.Text;
 using Application.Core.Services;
-using MyApp.Domain.Configurations;
+using Domain.Configurations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 

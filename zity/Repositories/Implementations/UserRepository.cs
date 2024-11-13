@@ -4,7 +4,7 @@ using zity.DTOs.Users;
 using zity.Models;
 using zity.Repositories.Interfaces;
 using zity.Utilities;
-namespace zity.Services.Implementations
+namespace zity.Repositories.Implementations
 {
     public class UserRepository(ApplicationDbContext dbContext) : IUserRepository
     {

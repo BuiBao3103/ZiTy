@@ -1,4 +1,5 @@
 using Application;
+using Domain.Configurations;
 using Infrastructure;
 using Infrastructure.Data;
 using Infrastructure.ErrorHandling;
@@ -6,7 +7,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using MyApp.Domain.Configurations;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);

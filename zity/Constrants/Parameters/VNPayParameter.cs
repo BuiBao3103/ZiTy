@@ -1,4 +1,4 @@
-﻿namespace zity.Constants.Parameters
+﻿namespace zity.Constrants.Parameters
 {
     public static class VNPayParameter
     {

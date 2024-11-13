@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using zity.Constants;
+using zity.Constrants;
 namespace zity.DTOs
 {
     public class BaseQueryDTO

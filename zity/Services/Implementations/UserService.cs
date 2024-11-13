@@ -3,11 +3,11 @@ using zity.Repositories.Interfaces;
 using zity.Mappers;
 using zity.Services.Interfaces;
 using zity.Utilities;
-using zity.Constants;
 using zity.ExceptionHandling;
 using AutoMapper;
 using zity.Models;
 using zity.ExceptionHandling.Exceptions;
+using zity.Constrants;
 
 namespace zity.Services.Implementations
 {
