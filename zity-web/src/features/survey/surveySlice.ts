@@ -33,21 +33,21 @@ const surveyApiSlice = apiSlice.injectEndpoints({
         sort?: string[]
       }
     >({
-      query: (params = { page: 1 }) => { 
-				let url = `surveys?page=${params.page}`
-				if (params.pageSize && params.pageSize > 0) {
-					url += `&pageSize=${params.pageSize}`
-				}
-				if (params.sort && params.sort.length > 0) {
-					url += `&sort=${params.sort.join(',')}`
-				}
-				if (params.includes && params?.includes.length > 0) {
-					url += `&includes=${params.includes.join(',')}`
-				}
-				return {
-					url: url
-				}
-			 },
+      query: (params = { page: 1 }) => {
+        let url = `surveys?page=${params.page}`
+        if (params.pageSize && params.pageSize > 0) {
+          url += `&pageSize=${params.pageSize}`
+        }
+        if (params.sort && params.sort.length > 0) {
+          url += `&sort=${params.sort.join(',')}`
+        }
+        if (params.includes && params?.includes.length > 0) {
+          url += `&includes=${params.includes.join(',')}`
+        }
+        return {
+          url: url,
+        }
+      },
       providesTags: (results) =>
         results
           ? [
@@ -97,6 +97,17 @@ const surveyApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: [{ type: 'Surveys', id: 'LIST' }],
     }),
+    createFullSurvey: builder.mutation<
+      ISurvey,
+      Partial<ISurvey> & Omit<ISurvey, 'id' | 'createdAt' | 'updatedAt'>
+    >({
+      query: (data) => ({
+        url: 'surveys/full-create',
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: [{ type: 'Surveys', id: 'LIST' }],
+    }),
     updateSurvery: builder.mutation<
       void,
       { id: number | undefined; body: Partial<ISurvey> }
@@ -128,4 +139,5 @@ export const {
   useCreateSurveyMutation,
   useUpdateSurveryMutation,
   useDeleteSurveyMutation,
+	useCreateFullSurveyMutation,
 } = surveyApiSlice

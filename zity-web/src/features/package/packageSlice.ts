@@ -14,7 +14,7 @@ const packageSlice = apiSlice.injectEndpoints({
       }
     >({
       query: (params = { page: 1, pageSize: 1 }) => {
-        let url = '/items'
+        let url = 'items'
         if (params.page) {
           url += `?page=${params.page}`
         }
@@ -33,7 +33,7 @@ const packageSlice = apiSlice.injectEndpoints({
       },
     }),
     getPackage: builder.query<IPackage, number | undefined>({
-      query: (id) => `/items/${id}`,
+      query: (id) => `items/${id}`,
     }),
     updatePackage: builder.mutation<
       IPackage,
@@ -44,7 +44,7 @@ const packageSlice = apiSlice.injectEndpoints({
       }
     >({
       query: (data) => ({
-        url: `/items/${data.id}`,
+        url: `items/${data.id}`,
         method: 'PUT',
         body: data,
       }),
@@ -54,14 +54,14 @@ const packageSlice = apiSlice.injectEndpoints({
       Pick<IPackage, 'image' | 'description' | 'isReceived'>
     >({
       query: (data) => ({
-        url: '/items',
+        url: 'items',
         method: 'POST',
         body: data,
       }),
     }),
     deletePackage: builder.mutation<void, string>({
       query: (id) => ({
-        url: `/items/${id}`,
+        url: `items/${id}`,
         method: 'DELETE',
       }),
     }),
@@ -70,7 +70,7 @@ const packageSlice = apiSlice.injectEndpoints({
       { id: string; data: Partial<IPackage> }
     >({
       query: ({ id, data }) => ({
-        url: `/items/${id}`,
+        url: `items/${id}`,
         method: 'PATCH',
         body: data,
       }),
