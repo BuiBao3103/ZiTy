@@ -20,6 +20,7 @@ public class BaseSpecification<T> : ISpecification<T>
     public int Skip { get; private set; }
     public bool IsPagingEnabled { get; private set; } = false;
 
+
     public virtual void AddInclude(Expression<Func<T, object>> includeExpression)
     {
         Includes.Add(includeExpression);

@@ -6,6 +6,8 @@ using Domain.Core.Repositories;
 using Domain.Core.Specifications;
 using Application.DTOs;
 using Domain.Exceptions;
+using Application.Core.Utilities;
+using System.Linq.Expressions;
 
 
 namespace Application.Services;
@@ -14,10 +16,11 @@ public class AnswerService(IUnitOfWork unitOfWork, IMapper mapper) : IAnswerServ
 {
     private readonly IMapper _mapper = mapper;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
-
+     
     public async Task<PaginatedResult<AnswerDTO>> GetAllAsync(AnswerQueryDTO query)
     {
-        var spec = new BaseSpecification<Answer>(a => a.DeletedAt == null);
+        var filterExpression = query.BuildFilterCriteria<Answer>(a => a.DeletedAt == null);
+        var spec = new BaseSpecification<Answer>(filterExpression);
         var totalCount = await _unitOfWork.Repository<Answer>().CountAsync(spec);
         query.Includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);
         if (!string.IsNullOrEmpty(query.Sort))
