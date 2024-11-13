@@ -9,10 +9,10 @@ import {
 } from '@/components/ui/table'
 import { IPackage } from '@/schema/package.validate'
 import { Eye } from 'lucide-react'
-import PackageForm from './package-form'
 import AlertDelete from '@/components/alert/AlertDelete'
 import { Button } from '@/components/ui/button'
 import TableRowSkeleton from '@/components/skeleton/TableRowSkeleton'
+import PackageDetail from './package-detail'
 
 interface PackageListProps {
   packages?: IPackage[]
@@ -38,24 +38,21 @@ const PackageList = ({ packages, isLoading, isFetching }: PackageListProps) => {
           {(isLoading || isFetching) &&
             Array.from({ length: 10 }).map((_, index) => (
               <TableRow key={index} className="">
-                  <TableRowSkeleton/>
-                  <TableRowSkeleton/>
-                  <TableRowSkeleton/>
-                  <TableRowSkeleton/>
-                  <TableRowSkeleton/>
-                  <TableRowSkeleton/>
+                <TableRowSkeleton />
+                <TableRowSkeleton />
+                <TableRowSkeleton />
+                <TableRowSkeleton />
+                <TableRowSkeleton />
+                <TableRowSkeleton />
               </TableRow>
             ))}
           {packages &&
-            packages.map((packagee) => (
+            packages.map((packagee, index) => (
               <TableRow
-                key={packagee.id}
+                key={index}
                 className="font-medium cursor-pointer">
                 <TableCell className="py-3">{packagee.id}</TableCell>
-                <TableCell className="">
-                  123
-                  {/* <p className="">{packagee.}</p> */}
-                </TableCell>
+                <TableCell className="">{packagee.userId}</TableCell>
                 <TableCell>123</TableCell>
                 <TableCell>123</TableCell>
                 <TableCell>123</TableCell>
@@ -66,11 +63,11 @@ const PackageList = ({ packages, isLoading, isFetching }: PackageListProps) => {
                   </Badge>
                 </TableCell>
                 <TableCell>
-                  <PackageForm id="123">
+                  <PackageDetail mode="edit" id={packagee.id}>
                     <Button size={'icon'} variant={'ghost'}>
                       <Eye />
                     </Button>
-                  </PackageForm>
+                  </PackageDetail>
                 </TableCell>
                 <TableCell>
                   <AlertDelete

@@ -1,6 +1,7 @@
 import { Badge } from '@/components/ui/badge'
 import { TableCell, TableRow } from '@/components/ui/table'
 import { User } from '@/schema/user.validate'
+import DefaultAvatar from '@/assets/default-avatar.jpeg'
 
 interface UserItemProps {
   user: User
@@ -17,7 +18,7 @@ const UserItem = ({ user, setShowDetail }: UserItemProps) => {
       <TableCell className="">
         <div className="w-full flex items-center gap-3">
           <img
-            src={user?.avatar ?? undefined}
+            src={user?.avatar ?? DefaultAvatar}
             alt="user avatar"
             className="size-9 rounded-full object-cover hidden sm:inline-block"
           />

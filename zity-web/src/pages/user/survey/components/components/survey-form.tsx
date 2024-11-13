@@ -7,7 +7,8 @@ import {
   FormLabel,
 } from '@/components/ui/form'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { ISurvey, SurveySchema } from '@/schema/survey.validate'
+import { useCreateUserAnswerMutation } from '@/features/userAnswer/userAnswerSlice'
+import { SurveySchema } from '@/schema/survey.validate'
 import { useAppSelector } from '@/store'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -17,11 +18,30 @@ interface SurveyFormProps {
 }
 
 const SurveyForm = ({ survey }: SurveyFormProps) => {
-	const user = useAppSelector((state) => state.authReducer.user)
+  const [createUserAnswer, { isLoading }] = useCreateUserAnswerMutation()
+  const user = useAppSelector((state) => state.authReducer.user)
   const form = useForm()
 
-  const onSubmit = (data: any) => {
-    console.log(data)
+  const onSubmit = async (data: any) => {
+    //call number of api based on the number of questions
+    const promises = survey?.questions.map((question, index) => {
+      const answer = data.answers[index]
+      return createUserAnswer({
+        userId: user?.id,
+        answerId: answer,
+      }).unwrap()
+    })
+
+    try {
+      if (promises) {
+        await Promise.all(promises)
+      }
+			console.log('success')
+			console.log(promises)
+      // Handle success (e.g., show a success message, redirect, etc.)
+    } catch (error) {
+      // Handle error (e.g., show an error message)
+    }
   }
 
   return (

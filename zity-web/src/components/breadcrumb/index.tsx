@@ -8,19 +8,22 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
 import { Fragment } from 'react/jsx-runtime'
+import { useAppSelector } from '@/store'
 
 interface BreadcrumbProps {
   paths: { label: string; to?: string }[] // Array to handle multiple breadcrumb levels
 }
 
 const Index: React.FC<BreadcrumbProps> = ({ paths }) => {
+  const user = useAppSelector((state) => state.userReducer.user)
+
   return (
     <div className="w-full px-4 pt-4">
       <Breadcrumb className="p-4 font-medium bg-white rounded-md">
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <Link to={'/'}>Home</Link>
+              <Link to={user?.userType === 'ADMIN' ? '/admin' : '/'}>Home</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />

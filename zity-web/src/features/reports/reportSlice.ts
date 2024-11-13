@@ -46,7 +46,6 @@ export const reportsSlice = apiSlice.injectEndpoints({
     getReport: builder.query<IReport, string | number>({
       query: (id) => ({
         url: `reports/${id}?includes=rejectionReason`,
-        method: 'GET',
       }),
       providesTags: (result, error, id) =>
         result ? [{ type: 'Reports', id }] : [],

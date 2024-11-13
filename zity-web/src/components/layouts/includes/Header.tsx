@@ -1,6 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
+import DefaultAvatar from '@/assets/default-avatar.jpeg'
 import {
   Tooltip,
   TooltipContent,
@@ -139,6 +140,12 @@ const Header = () => {
       to: ROUTES.ADMIN.SETTINGS,
       role: ['ADMIN'],
     },
+    {
+      label: 'Chat',
+      icon: <MessageCircleQuestion />,
+      to: ROUTES.ADMIN.CHAT,
+      role: ['ADMIN'],
+    },
   ]
 
   const filteredSidebars = useMemo(() => {
@@ -170,12 +177,12 @@ const Header = () => {
     })
   }, [user?.userType, user?.relationships?.[0]?.role])
 
-  const handleLogout = useCallback(() => {
+  const handleLogout = () => {
     cookies.remove('accessToken')
     cookies.remove('refreshToken')
     dispatch(userLoggedOut())
     navigate('/login', { replace: true })
-  }, [cookies, dispatch, navigate])
+  }
 
   const isActiveRoute = (route: string) => {
     if (route === ROUTES.ADMIN.HOME) {
@@ -200,14 +207,14 @@ const Header = () => {
         <div
           className={`md:w-full h-full md:h-[150px] p-1 md:p-3 md:order-none order-2 relative`}>
           <img
-            src={(panelRightOpen && width > 768) ? LogoMobile : Logo}
+            src={panelRightOpen && width > 768 ? LogoMobile : Logo}
             onClick={() =>
               navigate(`${user?.userType === 'ADMIN' ? '/admin' : '/'}`)
             }
             loading="lazy"
             alt="Logo website"
             className={`size-full object-contain aspect-square cursor-pointer ${
-              (panelRightOpen && width > 768) ? 'mt-5' : ""
+              panelRightOpen && width > 768 ? 'mt-5' : ''
             }`}
           />
           {width > 768 && (
@@ -273,7 +280,7 @@ const Header = () => {
             panelRightOpen ? 'flex-col' : 'flex-row'
           } md:flex items-center gap-2`}>
           <Avatar>
-            <AvatarImage src={user?.avatar} />
+            <AvatarImage src={user?.avatar ?? DefaultAvatar} />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           <div

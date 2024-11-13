@@ -28,7 +28,7 @@ const Index = () => {
     data: surveys,
     isLoading,
     isFetching,
-  } = useGetSurverysQuery({page: currentPage})
+  } = useGetSurverysQuery({ page: currentPage })
 
   return (
     <div
@@ -50,24 +50,25 @@ const Index = () => {
             <SurveyDetail surveyID={params?.id} />
           ) : (
             <>
-              <div className="w-full h-auto flex lg:flex-row flex-col gap-4 justify-between items-center">
+              <div className="w-full h-auto flex sm:flex-row flex-col gap-4 justify-between items-center">
                 <div className="w-full flex gap-4 items-center">
-                  <div className="lg:w-1/4 flex items-center border px-3 py-0.5 relative rounded-md focus-within:border-primary transition-all">
+                  <div className="sm:w-1/4 w-full flex items-center border px-3 py-0.5 relative rounded-md focus-within:border-primary transition-all">
                     <Search size={20} />
                     <Input
                       placeholder="Search something"
                       className="border-none shadow-none focus-visible:ring-0"
                     />
                   </div>
-                  <Button className="gap-1" size={'lg'} variant={'secondary'}>
+                  <Button className="gap-1" size={`lg`} variant={'secondary'}>
                     <Filter size={20} />
-                    Filter
+                    <span className="sm:inline-block hidden">Filter</span>
                   </Button>
                 </div>
                 <Button
                   onClick={() =>
                     dispatch(createNewSurvey({ isCreateNewSurvey: true }))
                   }
+                  className={`sm:w-fit w-full`}
                   size={'lg'}
                   variant={'default'}>
                   Create Survey

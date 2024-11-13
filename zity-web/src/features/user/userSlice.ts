@@ -39,12 +39,15 @@ const userSlice = createSlice({
 
 const userApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getUser: builder.query<
+    getUsers: builder.query<
       ResponseDataType<User>,
-      { page?: number; username?: string }
+      { page?: number; username?: string; pageSize?: number }
     >({
-      query: (params = { page: 1, username: '' }) => {
+      query: (params = { page: 1, username: '', pageSize: 10 }) => {
         let baseUrl = `users?page=${params.page}`
+        if (params.pageSize && params.pageSize != 10) {
+          baseUrl += `&pageSize=${params.pageSize}`
+        }
         if (params.username && params.username != '') {
           baseUrl += `&username=like:${params.username}`
         }
@@ -62,6 +65,18 @@ const userApiSlice = apiSlice.injectEndpoints({
               { type: 'Users', id: 'LIST' },
             ]
           : [{ type: 'Users', id: 'LIST' }],
+    }),
+    getUsersInScroll: builder.query<ResponseDataType<User>, number>({
+      query: (pageNumber) => `users?page=${pageNumber}`,
+      serializeQueryArgs: ({ endpointName }) => {
+        return endpointName
+      },
+      merge(currentCacheData, responseData) {
+        currentCacheData.contents.push(...responseData.contents)
+      },
+      forceRefetch({ currentArg, previousArg }) {
+        return currentArg !== previousArg
+      },
     }),
     getUserById: builder.query<User, string | number>({
       query: (id) => `users/${id}`,
@@ -96,7 +111,16 @@ const userApiSlice = apiSlice.injectEndpoints({
       {
         id: string | number
         body: Partial<User> &
-          Pick<User,"email" | "fullName" | "isStaying" | "dateOfBirth" | "nationId" | "phone" | "gender">
+          Pick<
+            User,
+            | 'email'
+            | 'fullName'
+            | 'isStaying'
+            | 'dateOfBirth'
+            | 'nationId'
+            | 'phone'
+            | 'gender'
+          >
       }
     >({
       query: (data) => ({
@@ -118,7 +142,7 @@ const userApiSlice = apiSlice.injectEndpoints({
         url: 'auth/first-login/update-password',
         method: 'PATCH',
         body: data.body,
-      })
+      }),
     }),
   }),
 })
@@ -126,12 +150,13 @@ const userApiSlice = apiSlice.injectEndpoints({
 export default userSlice.reducer
 export const { getQrScanInformation, getUserInformation } = userSlice.actions
 export const {
-  useGetUserQuery,
+  useGetUsersQuery,
+	useGetUsersInScrollQuery,
   useGetUserByIdQuery,
   useCreateUserMutation,
   useUpdateUserMutation,
   useDeleteUserMutation,
   useGetCurrentUserQuery,
   useLazyGetCurrentUserQuery,
-	useUpdatePassordMutation
+  useUpdatePassordMutation,
 } = userApiSlice

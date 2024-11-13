@@ -17,5 +17,6 @@ export const ROUTES = {
     SURVEYS: '/admin/surveys',
     REPORTS: '/admin/reports',
     SETTINGS: '/admin/settings',
+		CHAT: '/admin/chat',
   },
 } as const
