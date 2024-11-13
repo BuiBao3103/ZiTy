@@ -1,8 +1,8 @@
 ﻿using Application.Core.Services;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
+using Domain.Configurations;
 using Microsoft.AspNetCore.Http;
-using MyApp.Domain.Configurations;
 
 namespace Infrastructure.Services;
 

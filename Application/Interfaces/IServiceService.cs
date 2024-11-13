@@ -1,7 +1,7 @@
 ﻿using Application.DTOs;
 using Application.DTOs.Services;
 
-namespace Application.Services;
+namespace Application.Interfaces;
 
 public interface IServiceService
 {

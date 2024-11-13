@@ -1,8 +1,7 @@
-﻿
-
+﻿using Application.DTOs;
 using Application.DTOs.Surveys;
 
-namespace Application.DTOs;
+namespace Application.Interfaces;
 
 public interface ISurveyService
 {

@@ -1,5 +1,4 @@
-﻿
-namespace MyApp.Domain.Configurations;
+﻿namespace Domain.Configurations;
 
 public class AppSettings
 {

@@ -1,9 +1,9 @@
 ﻿using Application.Core.Constants.Parameters;
 using Application.Core.Services;
 using Application.Core.Utilities;
+using Domain.Configurations;
 using Domain.Entities;
 using Microsoft.AspNetCore.Http;
-using MyApp.Domain.Configurations;
 using System.Diagnostics;
 
 

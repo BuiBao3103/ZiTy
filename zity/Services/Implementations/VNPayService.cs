@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using zity.Configuration;
-using zity.Constants.Parameters;
+using zity.Constrants.Parameters;
 using zity.Models;
 using zity.Services.Interfaces;
 using zity.Utilities;

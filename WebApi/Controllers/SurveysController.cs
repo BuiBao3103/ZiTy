@@ -1,5 +1,5 @@
-﻿using Application.DTOs;
-using Application.DTOs.Surveys;
+﻿using Application.DTOs.Surveys;
+using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers;

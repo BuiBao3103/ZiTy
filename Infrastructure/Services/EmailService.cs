@@ -1,10 +1,10 @@
 ﻿using Application.Core.Services;
+using Domain.Configurations;
 using Domain.Entities;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.AspNetCore.Http;
 using MimeKit;
-using MyApp.Domain.Configurations;
 
 namespace Infrastructure.Services;
 
