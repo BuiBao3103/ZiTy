@@ -1,4 +1,5 @@
-﻿using Application.DTOs;
+﻿using Application.Core.Utilities;
+using Application.DTOs;
 using Application.DTOs.Questions;
 using Application.Interfaces;
 using AutoMapper;
@@ -6,6 +7,7 @@ using Domain.Core.Repositories;
 using Domain.Core.Specifications;
 using Domain.Entities;
 using Domain.Exceptions;
+using System.Diagnostics;
 
 namespace Application.Services;
 
@@ -16,7 +18,8 @@ public class QuestionService(IUnitOfWork unitOfWork, IMapper mapper) : IQuestion
 
     public async Task<PaginatedResult<QuestionDTO>> GetAllAsync(QuestionQueryDTO query)
     {
-        var spec = new BaseSpecification<Question>(a => a.DeletedAt == null);
+        var filterExpression = query.BuildFilterCriteria<Question>(a => a.DeletedAt == null);
+        var spec = new BaseSpecification<Question>(filterExpression);
         var totalCount = await _unitOfWork.Repository<Question>().CountAsync(spec);
         query.Includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);
         if (!string.IsNullOrEmpty(query.Sort))

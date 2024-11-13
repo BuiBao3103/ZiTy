@@ -1,4 +1,5 @@
-﻿using Application.DTOs;
+﻿using Application.Core.Utilities;
+using Application.DTOs;
 using Application.DTOs.Reports;
 using Application.Interfaces;
 using AutoMapper;
@@ -17,7 +18,8 @@ public class ReportService(IUnitOfWork unitOfWork, IMapper mapper) : IReportServ
 
     public async Task<PaginatedResult<ReportDTO>> GetAllAsync(ReportQueryDTO query)
     {
-        var spec = new BaseSpecification<Report>(a => a.DeletedAt == null);
+        var filterExpression = query.BuildFilterCriteria<Report>(a => a.DeletedAt == null);
+        var spec = new BaseSpecification<Report>(filterExpression);
         var totalCount = await _unitOfWork.Repository<Report>().CountAsync(spec);
         query.Includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);
         if (!string.IsNullOrEmpty(query.Sort))

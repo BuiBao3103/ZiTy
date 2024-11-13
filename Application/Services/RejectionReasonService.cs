@@ -1,4 +1,5 @@
-﻿using Application.DTOs;
+﻿using Application.Core.Utilities;
+using Application.DTOs;
 using Application.DTOs.RejectionReasons;
 using Application.Interfaces;
 using AutoMapper;
@@ -15,7 +16,8 @@ public class RejectionReasonService(IUnitOfWork unitOfWork, IMapper mapper) : IR
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     public async Task<PaginatedResult<RejectionReasonDTO>> GetAllAsync(RejectionReasonQueryDTO query)
     {
-        var spec = new BaseSpecification<RejectionReason>(a => a.DeletedAt == null);
+        var filterExpression = query.BuildFilterCriteria<RejectionReason>(a => a.DeletedAt == null);
+        var spec = new BaseSpecification<RejectionReason>(filterExpression);
         var totalCount = await _unitOfWork.Repository<RejectionReason>().CountAsync(spec);
         query.Includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);
         if (!string.IsNullOrEmpty(query.Sort))

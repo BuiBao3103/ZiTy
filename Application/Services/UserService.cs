@@ -1,5 +1,6 @@
 ﻿using Application.Core.Constants;
 using Application.Core.Services;
+using Application.Core.Utilities;
 using Application.DTOs;
 using Application.DTOs.Users;
 using Application.Interfaces;
@@ -26,7 +27,8 @@ public class UserService(IUnitOfWork unitOfWork, IMediaService mediaService, IEm
 
     public async Task<PaginatedResult<UserDTO>> GetAllAsync(UserQueryDTO query)
     {
-        var spec = new BaseSpecification<User>(a => a.DeletedAt == null);
+        var filterExpression = query.BuildFilterCriteria<User>(a => a.DeletedAt == null);
+        var spec = new BaseSpecification<User>(filterExpression);
         var totalCount = await _unitOfWork.Repository<User>().CountAsync(spec);
         query.Includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);
         if (!string.IsNullOrEmpty(query.Sort))

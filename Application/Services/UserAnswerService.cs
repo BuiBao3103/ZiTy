@@ -1,4 +1,5 @@
-﻿using Application.DTOs;
+﻿using Application.Core.Utilities;
+using Application.DTOs;
 using Application.DTOs.UserAnswers;
 using Application.Interfaces;
 using AutoMapper;
@@ -16,7 +17,8 @@ public class UserAnswerService(IUnitOfWork unitOfWork, IMapper mapper) : IUserAn
     private readonly IMapper _mapper = mapper;
     public async Task<PaginatedResult<UserAnswerDTO>> GetAllAsync(UserAnswerQueryDTO query)
     {
-        var spec = new BaseSpecification<UserAnswer>(a => a.DeletedAt == null);
+        var filterExpression = query.BuildFilterCriteria<UserAnswer>(a => a.DeletedAt == null);
+        var spec = new BaseSpecification<UserAnswer>(filterExpression);
         var totalCount = await _unitOfWork.Repository<UserAnswer>().CountAsync(spec);
         query.Includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);
         if (!string.IsNullOrEmpty(query.Sort))

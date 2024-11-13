@@ -10,6 +10,7 @@ using Application.DTOs.Momo;
 using Application.Core.Services;
 using Domain.Exceptions;
 using Application.Core.Exceptions;
+using Application.Core.Utilities;
 
 namespace Application.Services;
 
@@ -23,7 +24,8 @@ public class BillService(IUnitOfWork unitOfWork, IMapper mapper, IVNPayService v
 
     public async Task<PaginatedResult<BillDTO>> GetAllAsync(BillQueryDTO query)
     {
-        var spec = new BaseSpecification<Bill>(a => a.DeletedAt == null);
+        var filterExpression = query.BuildFilterCriteria<Bill>(a => a.DeletedAt == null);
+        var spec = new BaseSpecification<Bill>(filterExpression);
         var totalCount = await _unitOfWork.Repository<Bill>().CountAsync(spec);
         query.Includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);
         if (!string.IsNullOrEmpty(query.Sort))
