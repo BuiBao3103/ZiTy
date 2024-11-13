@@ -3,7 +3,6 @@ using Survey.Infrastructure;
 using Survey.Infrastructure.ErrorHandling;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using System.Text;
 using Survey.Domain.Configurations;
 using Survey.Infrastructure.Data;
 
@@ -82,15 +81,16 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(corsPolicy, builder =>
     {
-        builder.AllowAnyOrigin()
-               .AllowAnyMethod()
-               .AllowAnyHeader();
+        builder.AllowAnyOrigin()  
+               .AllowAnyMethod()  
+               .AllowAnyHeader(); 
     });
 });
 
+
 builder.Services.AddAuthorization();
 var app = builder.Build();
-
+app.UseCors(corsPolicy);
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -98,7 +98,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.UseCors(corsPolicy);
+
 app.UseExceptionHandler();
 app.UseStatusCodePages();
 app.UseHttpsRedirection();
