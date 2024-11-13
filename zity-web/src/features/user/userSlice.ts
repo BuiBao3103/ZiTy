@@ -67,7 +67,7 @@ const userApiSlice = apiSlice.injectEndpoints({
           : [{ type: 'Users', id: 'LIST' }],
     }),
     getUsersInScroll: builder.query<ResponseDataType<User>, number>({
-      query: (pageNumber) => `users?page=${pageNumber}`,
+      query: (pageNumber) => `users?page=${pageNumber}&pageSize=15`,
       serializeQueryArgs: ({ endpointName }) => {
         return endpointName
       },

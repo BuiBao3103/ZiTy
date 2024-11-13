@@ -2,7 +2,7 @@ import { SystemStatusSchema } from '@/enums'
 import {z} from 'zod'
 
 export const SettingSchema = z.object({
-	id: z.number(),
+	id: z.number().optional(),
 	currentMonthly: z.string(),
 	systemStatus: SystemStatusSchema,
 	roomPricePerM2: z.number(),

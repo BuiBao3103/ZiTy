@@ -13,42 +13,38 @@ const settingApiSlice = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
-		updateTransitionPrepayment: builder.mutation<ISetting, Partial<ISetting>>({
-			query: (data) => ({
-				url: 'settings/transition/prepayment',
-				method: 'POST',
-				body: data,
-			}),
-		}),
-		updateTransitionPayment: builder.mutation<ISetting, Partial<ISetting>>({
-			query: (data) => ({
-				url: 'settings/transition/payment',
-				method: 'POST',
-				body: data,
-			}),
-		}),
-		updateTransitionOverdue: builder.mutation<ISetting, Partial<ISetting>>({
-			query: (data) => ({
-				url: 'settings/transition/overdue',
-				method: 'POST',
-				body: data,
-			}),
-		}),
-		updateTransitionDelinquent: builder.mutation<ISetting, Partial<ISetting>>({
-			query: (data) => ({
-				url: 'settings/transition/prepayment',
-				method: 'POST',
-				body: data,
-			}),
-		}),
+    updateTransitionPrepayment: builder.mutation<ISetting, void>({
+      query: () => ({
+        url: 'settings/transition/prepayment',
+        method: 'POST',
+      }),
+    }),
+    updateTransitionPayment: builder.mutation<ISetting, void>({
+      query: () => ({
+        url: 'settings/transition/payment',
+        method: 'POST',
+      }),
+    }),
+    updateTransitionOverdue: builder.mutation<ISetting, void>({
+      query: () => ({
+        url: 'settings/transition/overdue',
+        method: 'POST',
+      }),
+    }),
+    updateTransitionDelinquent: builder.mutation<ISetting, void>({
+      query: () => ({
+        url: 'settings/transition/prepayment',
+        method: 'POST',
+      }),
+    }),
   }),
 })
 
 export const {
   useGetSettingsQuery,
   usePatchSettingMutation,
-	useUpdateTransitionDelinquentMutation,
-	useUpdateTransitionOverdueMutation,
-	useUpdateTransitionPaymentMutation,
-	useUpdateTransitionPrepaymentMutation,
+  useUpdateTransitionDelinquentMutation,
+  useUpdateTransitionOverdueMutation,
+  useUpdateTransitionPaymentMutation,
+  useUpdateTransitionPrepaymentMutation,
 } = settingApiSlice

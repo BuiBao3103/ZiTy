@@ -14,12 +14,12 @@ const Index = () => {
     data: surveys,
     isLoading,
     isFetching,
-  } = useGetSurverysQuery(currentPage)
+  } = useGetSurverysQuery({page: currentPage})
   return (
     <div className="w-ful h-full flex flex-col bg-zinc-100">
       <BreadCrumb
         paths={[
-          { label: 'survey', to: '/survey' },
+          { label: 'survey', to: '/surveys' },
           ...(params.id ? [{ label: params.id }] : []),
         ]}
       />
