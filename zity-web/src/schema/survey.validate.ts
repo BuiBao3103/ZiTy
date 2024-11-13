@@ -3,7 +3,7 @@ import { QuestionSchema } from './question.validate'
 
 export const SurveySchema = z
   .object({
-    id: z.number(),
+    id: z.number().optional(),
     title: z.string(),
     startDate: z.coerce.date(),
     endDate: z.coerce.date(),
@@ -23,6 +23,10 @@ export const SurveySchema = z
   .refine((data) => data.endDate > new Date(), {
     message: 'End date must be in the future',
     path: ['endDate'], // Attach the error to endDate
+  })
+  .refine((data) => data.startDate !== data.endDate, {
+    message: 'Start date must be different from end date',
+		path: ['startDate', 'endDate'], // Attach the error to both startDate and endDate
   })
 export type ServiceFormSchema = z.infer<typeof SurveySchema>
 
