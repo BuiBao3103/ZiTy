@@ -5,7 +5,7 @@ import { useGetSettingsQuery } from '@/features/setting/settingSlice'
 
 const Index = () => {
   useDocumentTitle('Setting')
-  const { data: setting, isLoading, isFetching } = useGetSettingsQuery()
+  const { data: setting, } = useGetSettingsQuery()
 
   return (
     <>
