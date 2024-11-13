@@ -18,6 +18,7 @@ import BillAdmin from '@admin/bill'
 import SurveyAdmin from '@admin/survey'
 import ReportAdmin from '@admin/report'
 import SettingAdmin from '@admin/setting'
+import ChatAdmin from '@admin/chat'
 
 // User Pages
 import Home from '@/pages/user/home'
@@ -52,6 +53,7 @@ const adminRoutes: RouteObject[] = [
   { path: ROUTES.ADMIN.SURVEYS + '/:id?', element: <SurveyAdmin /> },
   { path: ROUTES.ADMIN.REPORTS + '/:id?', element: <ReportAdmin /> },
   { path: ROUTES.ADMIN.SETTINGS + '/:id?', element: <SettingAdmin /> },
+  { path: ROUTES.ADMIN.CHAT, element: <ChatAdmin /> },
 ]
 
 const route = createBrowserRouter([

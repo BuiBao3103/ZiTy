@@ -5,7 +5,7 @@ import { Filter, Search } from 'lucide-react'
 import UserList from './components/user-list'
 import { useDebounceCallback, useDocumentTitle } from 'usehooks-ts'
 import UserForm from './components/user-form'
-import { useGetUserQuery } from '@/features/user/userSlice'
+import { useGetUsersQuery } from '@/features/user/userSlice'
 import { useState } from 'react'
 import PaginationCustom from '@/components/pagination/PaginationCustom'
 
@@ -23,7 +23,7 @@ const Index = () => {
     data: users,
     isLoading,
     isFetching,
-  } = useGetUserQuery({ page: currentPage, username: searchByUsername })
+  } = useGetUsersQuery({ page: currentPage, username: searchByUsername })
   return (
     <>
       <div className="w-full h-full lg:h-screen flex flex-col bg-zinc-100">

@@ -34,7 +34,9 @@ interface ReportFormDetailProps {
 
 const ReportFormDetail = ({ report, setShowDetail }: ReportFormDetailProps) => {
   const [rejectionReason, setRejectionReason] = useState<string>('')
-  const debounced = useDebounceCallback(setRejectionReason, 500)
+  const debounced = useDebounceCallback((rejectionReason) => {
+		setRejectionReason(rejectionReason)
+	}, 500)
   const [updateReport, { isLoading }] = useUpdateReportMutation()
   const [createRejection, { isLoading: isLoadingRejection }] =
     useCreateRejectionReasonMutation()
@@ -140,7 +142,7 @@ const ReportFormDetail = ({ report, setShowDetail }: ReportFormDetailProps) => {
           {form.getValues('status') === 'REJECTED' && (
             <Textarea 
 						rows={5} 
-						defaultValue={report?.rejectionReason.content} 
+						defaultValue={report?.rejectionReason.content}
 						className='disabled:bg-zinc-200 text-black'
 						disabled={!report?.rejectionReason.content ? false : true} 
 						onChange={(e) => debounced(e.target.value)} />
