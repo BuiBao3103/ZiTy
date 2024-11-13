@@ -121,7 +121,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 5112
+          "Port": 5001
         }
       ],
       "UpstreamPathTemplate": "/api/surveys/{everything}",
@@ -133,7 +133,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 5112
+          "Port": 5001
         }
       ],
       "UpstreamPathTemplate": "/api/questions/{everything}",
@@ -145,7 +145,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 5112
+          "Port": 5001
         }
       ],
       "UpstreamPathTemplate": "/api/answers/{everything}",
@@ -157,7 +157,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 5112
+          "Port": 5001
         }
       ],
       "UpstreamPathTemplate": "/api/userAnswers/{everything}",
@@ -169,7 +169,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 5112
+          "Port": 5001
         }
       ],
       "UpstreamPathTemplate": "/api/otherAnswers/{everything}",
@@ -183,7 +183,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 80
+          "Port": 5002
         }
       ],
       "UpstreamPathTemplate": "/api/reports/{everything}",
@@ -195,7 +195,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 80
+          "Port": 5002
         }
       ],
       "UpstreamPathTemplate": "/api/rejectionReasons/{everything}",
