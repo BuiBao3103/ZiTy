@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35122.118
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "zity", "zity\zity.csproj", "{5BD41BB7-0728-41E6-A33E-A1A3B0482525}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "WebApi\WebApi.csproj", "{C0A347E8-3488-49BE-BE4D-16AB246BEEB5}"
 	ProjectSection(ProjectDependencies) = postProject
 		{1FA86CFB-B94A-499E-A0C6-6BB6952D6D7E} = {1FA86CFB-B94A-499E-A0C6-6BB6952D6D7E}
@@ -55,15 +53,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiGateway", "ApiGateway\Ap
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Report", "Report", "{BC3D3B7F-810B-4158-A9FC-5A1A5ED9D029}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Report.Domain", "Report.Domain\Report.Domain.csproj", "{B1244C2A-4AB7-4EEE-977E-7642DF6B6520}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Report.Domain", "Report.Domain\Report.Domain.csproj", "{B1244C2A-4AB7-4EEE-977E-7642DF6B6520}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Report.Application", "Report.Application\Report.Application.csproj", "{7760AABE-8139-4CB7-8361-907E181C92A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Report.Application", "Report.Application\Report.Application.csproj", "{7760AABE-8139-4CB7-8361-907E181C92A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Report.Infrastructure", "Report.Infrastructure\Report.Infrastructure.csproj", "{A72D5E9A-7F85-48FB-B4DE-7195DB6E2CFC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Report.Infrastructure", "Report.Infrastructure\Report.Infrastructure.csproj", "{A72D5E9A-7F85-48FB-B4DE-7195DB6E2CFC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Report.WebApi", "Report.WebApi\Report.WebApi.csproj", "{061975B8-9F8B-4218-8738-CA7E6567D5B9}"
-EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{E45BEAF3-BA87-42D6-90E4-BA4971E561C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Report.WebApi", "Report.WebApi\Report.WebApi.csproj", "{061975B8-9F8B-4218-8738-CA7E6567D5B9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,10 +67,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5BD41BB7-0728-41E6-A33E-A1A3B0482525}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5BD41BB7-0728-41E6-A33E-A1A3B0482525}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5BD41BB7-0728-41E6-A33E-A1A3B0482525}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5BD41BB7-0728-41E6-A33E-A1A3B0482525}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C0A347E8-3488-49BE-BE4D-16AB246BEEB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C0A347E8-3488-49BE-BE4D-16AB246BEEB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C0A347E8-3488-49BE-BE4D-16AB246BEEB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -127,10 +119,6 @@ Global
 		{061975B8-9F8B-4218-8738-CA7E6567D5B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{061975B8-9F8B-4218-8738-CA7E6567D5B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{061975B8-9F8B-4218-8738-CA7E6567D5B9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E45BEAF3-BA87-42D6-90E4-BA4971E561C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E45BEAF3-BA87-42D6-90E4-BA4971E561C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E45BEAF3-BA87-42D6-90E4-BA4971E561C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E45BEAF3-BA87-42D6-90E4-BA4971E561C0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
