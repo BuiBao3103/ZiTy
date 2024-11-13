@@ -1,4 +1,5 @@
-﻿using Application.DTOs;
+﻿using Application.Core.Utilities;
+using Application.DTOs;
 using Application.DTOs.Relationships;
 using Application.Interfaces;
 using AutoMapper;
@@ -16,7 +17,8 @@ public class RelationshipService(IUnitOfWork unitOfWork, IMapper mapper) : IRela
 
     public async Task<PaginatedResult<RelationshipDTO>> GetAllAsync(RelationshipQueryDTO query)
     {
-        var spec = new BaseSpecification<Relationship>(a => a.DeletedAt == null);
+        var filterExpression = query.BuildFilterCriteria<Relationship>(a => a.DeletedAt == null);
+        var spec = new BaseSpecification<Relationship>(filterExpression);
         var totalCount = await _unitOfWork.Repository<Relationship>().CountAsync(spec);
         query.Includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);
         if (!string.IsNullOrEmpty(query.Sort))

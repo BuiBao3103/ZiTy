@@ -1,4 +1,5 @@
-﻿using Application.DTOs;
+﻿using Application.Core.Utilities;
+using Application.DTOs;
 using Application.DTOs.OtherAnswers;
 using Application.Interfaces;
 using AutoMapper;
@@ -16,7 +17,8 @@ public class OtherAnswerService(IUnitOfWork unitOfWork, IMapper mapper) : IOther
 
     public async Task<PaginatedResult<OtherAnswerDTO>> GetAllAsync(OtherAnswerQueryDTO query)
     {
-        var spec = new BaseSpecification<OtherAnswer>(a => a.DeletedAt == null);
+        var filterExpression = query.BuildFilterCriteria<OtherAnswer>(a => a.DeletedAt == null);
+        var spec = new BaseSpecification<OtherAnswer>(filterExpression);
         var totalCount = await _unitOfWork.Repository<OtherAnswer>().CountAsync(spec);
         query.Includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);
         if (!string.IsNullOrEmpty(query.Sort))

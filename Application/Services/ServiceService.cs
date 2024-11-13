@@ -1,4 +1,5 @@
-﻿using Application.DTOs;
+﻿using Application.Core.Utilities;
+using Application.DTOs;
 using Application.DTOs.Services;
 using AutoMapper;
 using Domain.Core.Repositories;
@@ -16,7 +17,8 @@ public class ServiceService(IUnitOfWork unitOfWork, IMapper mapper) : IServiceSe
 
     public async Task<PaginatedResult<ServiceDTO>> GetAllAsync(ServiceQueryDTO query)
     {
-        var spec = new BaseSpecification<Service>(a => a.DeletedAt == null);
+        var filterExpression = query.BuildFilterCriteria<Service>(a => a.DeletedAt == null);
+        var spec = new BaseSpecification<Service>(filterExpression);
         var totalCount = await _unitOfWork.Repository<Service>().CountAsync(spec);
         query.Includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);
         if (!string.IsNullOrEmpty(query.Sort))

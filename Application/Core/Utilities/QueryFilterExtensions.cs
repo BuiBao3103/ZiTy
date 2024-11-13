@@ -17,7 +17,7 @@ public static class FilterCriteriaExtensions
             .Where(p => p.GetValue(queryDto) != null &&
                        !typeof(BaseQueryDTO).GetProperties().Select(bp => bp.Name)
                            .Contains(p.Name));
-
+        Console.WriteLine(properties.ToList().Count);
         var parameter = Expression.Parameter(typeof(T), "x");
         Expression finalExpression = Expression.Constant(true);
 
@@ -25,11 +25,12 @@ public static class FilterCriteriaExtensions
         foreach (var property in properties)
         {
             var filterValue = property.GetValue(queryDto)?.ToString();
+            Console.WriteLine(filterValue);
             if (string.IsNullOrEmpty(filterValue)) continue;
 
             var parts = filterValue.Split(':');
             if (parts.Length != 2) continue;
-
+            Console.WriteLine(1);
             var operator_ = parts[0].ToLower();
             var value = parts[1];
 
@@ -37,42 +38,41 @@ public static class FilterCriteriaExtensions
             var propertyInfo = typeof(T).GetProperty(propertyName);
 
             if (propertyInfo == null) continue;
-
+            Console.WriteLine(2);
             var propertyExpression = Expression.Property(parameter, propertyInfo);
             Expression condition = null;
-
             try
             {
                 switch (operator_)
                 {
                     case "eq":
-                        var equalValue = Convert.ChangeType(value, propertyInfo.PropertyType);
-                        condition = Expression.Equal(propertyExpression, Expression.Constant(equalValue));
+                        var equalValue = ConvertToNullableType(value, propertyInfo.PropertyType);
+                        condition = Expression.Equal(propertyExpression, Expression.Constant(equalValue, propertyInfo.PropertyType));
                         break;
 
                     case "neq":
-                        var notEqualValue = Convert.ChangeType(value, propertyInfo.PropertyType);
-                        condition = Expression.NotEqual(propertyExpression, Expression.Constant(notEqualValue));
+                        var notEqualValue = ConvertToNullableType(value, propertyInfo.PropertyType);
+                        condition = Expression.NotEqual(propertyExpression, Expression.Constant(notEqualValue, propertyInfo.PropertyType));
                         break;
 
                     case "gt":
-                        var gtValue = Convert.ChangeType(value, propertyInfo.PropertyType);
-                        condition = Expression.GreaterThan(propertyExpression, Expression.Constant(gtValue));
+                        var gtValue = ConvertToNullableType(value, propertyInfo.PropertyType);
+                        condition = Expression.GreaterThan(propertyExpression, Expression.Constant(gtValue, propertyInfo.PropertyType));
                         break;
 
                     case "gte":
-                        var gteValue = Convert.ChangeType(value, propertyInfo.PropertyType);
-                        condition = Expression.GreaterThanOrEqual(propertyExpression, Expression.Constant(gteValue));
+                        var gteValue = ConvertToNullableType(value, propertyInfo.PropertyType);
+                        condition = Expression.GreaterThanOrEqual(propertyExpression, Expression.Constant(gteValue, propertyInfo.PropertyType));
                         break;
 
                     case "lt":
-                        var ltValue = Convert.ChangeType(value, propertyInfo.PropertyType);
-                        condition = Expression.LessThan(propertyExpression, Expression.Constant(ltValue));
+                        var ltValue = ConvertToNullableType(value, propertyInfo.PropertyType);
+                        condition = Expression.LessThan(propertyExpression, Expression.Constant(ltValue, propertyInfo.PropertyType));
                         break;
 
                     case "lte":
-                        var lteValue = Convert.ChangeType(value, propertyInfo.PropertyType);
-                        condition = Expression.LessThanOrEqual(propertyExpression, Expression.Constant(lteValue));
+                        var lteValue = ConvertToNullableType(value, propertyInfo.PropertyType);
+                        condition = Expression.LessThanOrEqual(propertyExpression, Expression.Constant(lteValue, propertyInfo.PropertyType));
                         break;
 
                     case "like":
@@ -85,25 +85,26 @@ public static class FilterCriteriaExtensions
 
                     case "in":
                         var values = value.Split(',')
-                            .Select(v => Convert.ChangeType(v.Trim(), propertyInfo.PropertyType))
+                            .Select(v => ConvertToNullableType(v.Trim(), propertyInfo.PropertyType))
                             .ToList();
                         var listType = typeof(List<>).MakeGenericType(propertyInfo.PropertyType);
                         var containsMethod = typeof(Enumerable).GetMethods()
                             .First(m => m.Name == "Contains" && m.GetParameters().Length == 2)
                             .MakeGenericMethod(propertyInfo.PropertyType);
-                        condition = Expression.Call(null, containsMethod,
-                            Expression.Constant(values), propertyExpression);
+                        condition = Expression.Call(null, containsMethod, Expression.Constant(values), propertyExpression);
                         break;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                throw new Exception($"Error building filter criteria for property {propertyName}", ex);
                 // Skip invalid conversions
-                continue;
+                //continue;
             }
 
             if (condition != null)
             {
+                Console.WriteLine($"add: {Expression.Constant(condition.ToString())}");
                 finalExpression = Expression.AndAlso(finalExpression, condition);
             }
         }
@@ -138,5 +139,14 @@ public static class FilterCriteriaExtensions
         {
             return node == _oldParameter ? _newParameter : base.VisitParameter(node);
         }
+    }
+    private static object ConvertToNullableType(string value, Type targetType)
+    {
+        if (string.IsNullOrEmpty(value))
+            return null; // Return null for empty strings
+
+        var underlyingType = Nullable.GetUnderlyingType(targetType) ?? targetType;
+
+        return Convert.ChangeType(value, underlyingType);
     }
 }

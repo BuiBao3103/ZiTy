@@ -25,6 +25,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application", "Application\
 		{C361D8DA-60B8-4DAD-9DC6-94EE23379A1C} = {C361D8DA-60B8-4DAD-9DC6-94EE23379A1C}
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Zity.Application", "Zity.Application", "{D74B47F7-6610-4B49-98EB-965F7C7B9765}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Zity.Domain", "Zity.Domain", "{EBBE078F-92AF-4B93-9F0B-E38969BC6D97}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Zity.WebApi", "Zity.WebApi", "{CB6F0283-C76B-44D8-8DA3-1C94C1A65C2C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Zity.Infrastructure", "Zity.Infrastructure", "{4288D604-1438-4ED7-B363-4AF9B23B6BA8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,6 +62,12 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C0A347E8-3488-49BE-BE4D-16AB246BEEB5} = {CB6F0283-C76B-44D8-8DA3-1C94C1A65C2C}
+		{1FA86CFB-B94A-499E-A0C6-6BB6952D6D7E} = {4288D604-1438-4ED7-B363-4AF9B23B6BA8}
+		{C361D8DA-60B8-4DAD-9DC6-94EE23379A1C} = {EBBE078F-92AF-4B93-9F0B-E38969BC6D97}
+		{2C4E7538-7F4E-4DAA-9CAD-47E91C3EDC97} = {D74B47F7-6610-4B49-98EB-965F7C7B9765}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4B67C32A-6CF6-444D-957F-2DA01CEA00CD}

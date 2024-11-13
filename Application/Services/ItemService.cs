@@ -1,5 +1,6 @@
 ﻿using Application.Core.Constants;
 using Application.Core.Services;
+using Application.Core.Utilities;
 using Application.DTOs;
 using Application.DTOs.Items;
 using Application.Interfaces;
@@ -20,7 +21,8 @@ public class ItemService(IUnitOfWork unitOfWork, IMapper mapper, IMediaService m
 
     public async Task<PaginatedResult<ItemDTO>> GetAllAsync(ItemQueryDTO query)
     {
-        var spec = new BaseSpecification<Item>(a => a.DeletedAt == null);
+        var filterExpression = query.BuildFilterCriteria<Item>(a => a.DeletedAt == null);
+        var spec = new BaseSpecification<Item>(filterExpression);
         var totalCount = await _unitOfWork.Repository<Item>().CountAsync(spec);
         query.Includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);
         if (!string.IsNullOrEmpty(query.Sort))

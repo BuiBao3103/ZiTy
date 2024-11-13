@@ -1,4 +1,5 @@
-﻿using Application.DTOs;
+﻿using Application.Core.Utilities;
+using Application.DTOs;
 using Application.DTOs.Surveys;
 using AutoMapper;
 using Domain.Core.Repositories;
@@ -16,7 +17,8 @@ public class SurveyService(IUnitOfWork unitOfWork, IMapper mapper) : ISurveyServ
 
     public async Task<PaginatedResult<SurveyDTO>> GetAllAsync(SurveyQueryDTO query)
     {
-        var spec = new BaseSpecification<Survey>(a => a.DeletedAt == null);
+        var filterExpression = query.BuildFilterCriteria<Survey>(a => a.DeletedAt == null);
+        var spec = new BaseSpecification<Survey>(filterExpression);
         var totalCount = await _unitOfWork.Repository<Survey>().CountAsync(spec);
         query.Includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);
         if (!string.IsNullOrEmpty(query.Sort))

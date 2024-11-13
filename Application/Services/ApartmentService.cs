@@ -1,4 +1,5 @@
-﻿using Application.DTOs;
+﻿using Application.Core.Utilities;
+using Application.DTOs;
 using Application.DTOs.Apartments;
 using Application.Interfaces;
 using AutoMapper;
@@ -31,7 +32,8 @@ public class ApartmentService(IUnitOfWork unitOfWork, IMapper mapper) : IApartme
 
     public async Task<PaginatedResult<ApartmentDTO>> GetAllAsync(ApartmentQueryDTO query)
     {
-        var spec = new BaseSpecification<Apartment>(a => a.DeletedAt == null);
+        var filterExpression = query.BuildFilterCriteria<Apartment>(a => a.DeletedAt == null);
+        var spec = new BaseSpecification<Apartment>(filterExpression);
         var totalCount = await _unitOfWork.Repository<Apartment>().CountAsync(spec);
         query.Includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);
         if (!string.IsNullOrEmpty(query.Sort))

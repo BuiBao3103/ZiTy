@@ -6,6 +6,7 @@ using Domain.Core.Repositories;
 using Application.DTOs.BillDetails;
 using Domain.Core.Specifications;
 using Domain.Exceptions;
+using Application.Core.Utilities;
 
 namespace Application.Services;
 
@@ -16,7 +17,8 @@ public class BillDetailService(IUnitOfWork unitOfWork, IMapper mapper) : IBillDe
 
     public async Task<PaginatedResult<BillDetailDTO>> GetAllAsync(BillDetailQueryDTO query)
     {
-        var spec = new BaseSpecification<BillDetail>(a => a.DeletedAt == null);
+        var filterExpression = query.BuildFilterCriteria<BillDetail>(a => a.DeletedAt == null);
+        var spec = new BaseSpecification<BillDetail>(filterExpression);
         var totalCount = await _unitOfWork.Repository<BillDetail>().CountAsync(spec);
         query.Includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);
         if (!string.IsNullOrEmpty(query.Sort))
