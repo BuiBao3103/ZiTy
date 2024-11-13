@@ -1,13 +1,13 @@
-﻿using Application.Core.Exceptions;
-using Domain.Exceptions;
-using Microsoft.Extensions.Hosting;
+﻿using Survey.Application.Core.Exceptions;
+using Survey.Domain.Exceptions;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
+using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Diagnostics;
+namespace Survey.Infrastructure.ErrorHandling;
 
-namespace Infrastructure.ErrorHandling;
 
 public class GlobalExceptionHandler : IExceptionHandler
 {

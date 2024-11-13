@@ -7,7 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="DotNetEnv" Version="3.1.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Survey.Application\Survey.Application.csproj" />
+    <ProjectReference Include="..\Survey.Domain\Survey.Domain.csproj" />
+    <ProjectReference Include="..\Survey.Infrastructure\Survey.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
