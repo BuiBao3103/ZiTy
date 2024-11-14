@@ -1,6 +1,7 @@
 ﻿using Application.Core.Utilities;
 using Application.DTOs;
 using Application.DTOs.Services;
+using Application.Interfaces;
 using AutoMapper;
 using Domain.Core.Repositories;
 using Domain.Core.Specifications;

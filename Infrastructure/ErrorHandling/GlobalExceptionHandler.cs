@@ -1,15 +1,13 @@
 ﻿using Application.Core.Exceptions;
 using Domain.Exceptions;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
-
-namespace Infrastructure.ErrorHandling;
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
-using System.Net;
+using Microsoft.AspNetCore.Diagnostics;
+
+namespace Infrastructure.ErrorHandling;
 
 public class GlobalExceptionHandler : IExceptionHandler
 {

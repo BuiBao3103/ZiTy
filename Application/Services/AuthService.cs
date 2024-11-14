@@ -1,11 +1,11 @@
 ﻿using Application.DTOs.Auth;
 using Application.Interfaces;
+using Domain.Configurations;
 using Domain.Core.Repositories;
 using Domain.Core.Specifications;
 using Domain.Entities;
 using Domain.Exceptions;
 using Microsoft.IdentityModel.Tokens;
-using MyApp.Domain.Configurations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;

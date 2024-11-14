@@ -1,4 +1,4 @@
-﻿namespace zity.Utilities
+﻿namespace Application.Core.Utilities
 {
     public static class PasswordGenerator
     {
@@ -6,8 +6,8 @@
 
         public static string GeneratePassword(int length = 12)
         {
-            const string upperChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; 
-            const string lowerChars = "abcdefghijklmnopqrstuvwxyz"; 
+            const string upperChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const string lowerChars = "abcdefghijklmnopqrstuvwxyz";
             const string digits = "0123456789";
             const string specialChars = "!@#$%^&*()_+-=[]{}|;:,.<>?";
 
