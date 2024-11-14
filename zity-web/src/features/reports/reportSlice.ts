@@ -27,7 +27,6 @@ export const reportsSlice = apiSlice.injectEndpoints({
         if (params.relationshipId && params.relationshipId !== -1) {
           url += `&relationshipId=eq:${params.relationshipId}`
         }
-
         return {
           url: url,
         }

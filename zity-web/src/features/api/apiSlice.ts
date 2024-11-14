@@ -30,13 +30,11 @@ const baseQueryWithReauth: BaseQueryFn<
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions)
-	console.log('result: ', result)
-  if (result.error && result.error.status === 401) {
+  if (result.error && result.error.status === 401 && (result.error.data as { message: string }).message === "Unauthorized") {
     // try to get a new token
     const refreshToken =
       (api.getState() as RootState).authReducer.refreshToken ||
       cookies.get('refreshToken')
-			console.log('refreshToken: ', refreshToken)
     const refreshResult = await baseQuery(
       {
         url: 'auth/refresh-token',
@@ -58,8 +56,8 @@ const baseQueryWithReauth: BaseQueryFn<
           refreshToken: tokens.refreshToken,
         }),
       )
-			cookies.set('accessToken', tokens.token, { path: '/' })
-			cookies.set('refreshToken', tokens.refreshToken, { path: '/' })
+      cookies.set('accessToken', tokens.token, { path: '/' })
+      cookies.set('refreshToken', tokens.refreshToken, { path: '/' })
       // retry the initial query
       result = await baseQuery(args, api, extraOptions)
     } else {
@@ -90,7 +88,7 @@ export const apiSlice = createApi({
     'Apartments',
     'Surveys',
     'RejectionReasons',
-		'Users'
+    'Users',
   ],
   endpoints: () => ({}),
 })

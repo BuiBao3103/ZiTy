@@ -5,10 +5,18 @@ export const billSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getBills: builder.query<
       ResponseDataType<IBill>,
-      { page?: number; id?: number; includes?: string[] }
+      {
+        page?: number
+        id?: number
+        includes?: string[]
+        relationshipId?: number
+      }
     >({
-      query: (params = { page: 1, id: 1, includes: [] }) => {
+      query: (params = { page: 1 }) => {
         let url = `bills?page=${params.page}`
+        if (params.relationshipId) {
+          url += `&relationshipId=eq:${params.relationshipId}`
+        }
         if (params.id) {
           url += `&id=eq:${params.id}`
         }
