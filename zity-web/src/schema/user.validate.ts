@@ -19,7 +19,8 @@ export const UserSchema = z.object({
     .refine(
       (url) => /\.(jpg|jpeg|png|gif)$/i.test(url),
       'Avatar must be a valid image URL (.jpg, .jpeg, .png, or .gif)',
-    ).nullable()
+    )
+    .nullable()
     .optional(),
   isFirstLogin: z.boolean().optional(),
   email: z.string().email('Invalid email address'),
@@ -63,8 +64,8 @@ export const NullableUserSchema = UserSchema.partial().nullable()
 
 // Zod schema for UserLogin type
 export const UserLoginSchema = z.object({
-  username: z.string(),
-  password: z.string()
+  username: z.string().trim().min(1, 'Username is required'),
+  password: z.string().trim().min(1, 'Password is required'),
 })
 
 export interface UserLogin extends z.infer<typeof UserLoginSchema> {}

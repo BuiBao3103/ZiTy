@@ -21,7 +21,7 @@ const SurveyItem = ({ survey }: SurveyItemProps) => {
   }
 
   return (
-    <div className="w-full p-4 rounded-md border flex flex-col gap-4">
+    <div className="w-full h-fit p-4 rounded-md border flex flex-col gap-4">
       <div className="w-full grid grid-cols-2 md:grid-cols-3">
         <section className="w-full space-y-0.5 font-medium">
           <h1>{survey.title}</h1>

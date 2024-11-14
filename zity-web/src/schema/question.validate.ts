@@ -7,7 +7,7 @@ export const BaseEntitySchema = z.object({
 })
 
 export const AnswerItemSchema = z.object({
-  id: z.number().nullable().optional(),
+  id: z.number().optional(),
   content: z.string().optional(),
   question: z.string().nullable().optional(),
   questionId: z.number().optional(),
@@ -15,12 +15,24 @@ export const AnswerItemSchema = z.object({
 
 export type AnswerItem = z.infer<typeof AnswerItemSchema>
 
+export const OtherAnswersSchema = z
+  .object({
+    id: z.number().optional(),
+    content: z
+      .string({ required_error: 'Password is required' })
+      .trim()
+      .min(10, 'Content must not be empty'),
+    questionId: z.number(),
+    userId: z.number(),
+  })
+  .merge(BaseEntitySchema)
+
 export const QuestionSchema = z.object({
   id: z.number().optional(),
   content: z.string(),
   surveyId: z.number().optional(),
   answers: z.array(AnswerItemSchema),
-  otherAnswers: z.array(z.any()).optional(),
+  otherAnswers: z.array(OtherAnswersSchema),
   survey: z.any().nullable(), // Adjust the structure of 'survey' if needed
 })
 
@@ -33,27 +45,3 @@ export const QuestionItem = QuestionSchema.pick({
 })
 
 export interface IQuestion extends QuestionFormSchema, BaseEntity {}
-
-export const QuestionFormSchema = z
-  .object({
-    title: z
-      .string({ required_error: 'This field is required' })
-      .min(1, 'Title is required'),
-    description: z.string(),
-    questions: z.array(z.any()),
-    startDate: z.date({ required_error: 'This field is required' }),
-    endDate: z.date({ required_error: 'This field is required' }),
-  })
-  // Custom validation between startDate and endDate
-  .refine((data) => data.startDate < data.endDate, {
-    message: 'Start date must be before end date',
-    path: ['startDate'], // Attach the error to the startDate or endDate
-  })
-  .refine((data) => data.startDate > new Date(), {
-    message: 'Start date must be in the future',
-    path: ['startDate'], // Attach the error to startDate
-  })
-  .refine((data) => data.endDate > new Date(), {
-    message: 'End date must be in the future',
-    path: ['endDate'], // Attach the error to endDate
-  })

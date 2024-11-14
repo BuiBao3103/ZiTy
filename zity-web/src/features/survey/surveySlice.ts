@@ -85,7 +85,6 @@ const surveyApiSlice = apiSlice.injectEndpoints({
       providesTags: (result, error, id) =>
         result ? [{ type: 'Surveys', id }] : [],
     }),
-
     createSurvey: builder.mutation<
       ISurvey,
       Partial<ISurvey> & Omit<ISurvey, 'id' | 'createdAt' | 'updatedAt'>
@@ -139,5 +138,5 @@ export const {
   useCreateSurveyMutation,
   useUpdateSurveryMutation,
   useDeleteSurveyMutation,
-	useCreateFullSurveyMutation,
+  useCreateFullSurveyMutation,
 } = surveyApiSlice

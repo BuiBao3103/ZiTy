@@ -30,7 +30,7 @@ const baseQueryWithReauth: BaseQueryFn<
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions)
-  if (result.error && result.error.status === 401 && (result.error.data as { message: string }).message === "Unauthorized") {
+  if (result.error && result.error.status === 401) {
     // try to get a new token
     const refreshToken =
       (api.getState() as RootState).authReducer.refreshToken ||
@@ -61,17 +61,21 @@ const baseQueryWithReauth: BaseQueryFn<
       // retry the initial query
       result = await baseQuery(args, api, extraOptions)
     } else {
-      toast.error('Your session has expired. Please log in again.', {
-        action: {
-          label: 'Log in',
-          onClick: () => {
-            cookies.remove('accessToken')
-            cookies.remove('refreshToken')
-            api.dispatch(userLoggedOut())
-            window.location.href = '/login'
+      if (
+        (result.error.data as { message: string }).message === 'Unauthorized'
+      ) {
+        toast.error('Your session has expired. Please log in again.', {
+          action: {
+            label: 'Log in',
+            onClick: () => {
+              cookies.remove('accessToken')
+              cookies.remove('refreshToken')
+              api.dispatch(userLoggedOut())
+              window.location.href = '/login'
+            },
           },
-        },
-      })
+        })
+      }
     }
   }
   return result

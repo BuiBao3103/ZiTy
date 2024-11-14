@@ -8,7 +8,11 @@ interface SurveyListUserProps {
   isFetching?: boolean
 }
 
-const SurveyListUser = ({ isFetching, isLoading, surveys }: SurveyListUserProps) => {
+const SurveyListUser = ({
+  isFetching,
+  isLoading,
+  surveys,
+}: SurveyListUserProps) => {
   return (
     <div className="w-full h-full overflow-y-auto grid grid-cols-1 xl:grid-cols-2 gap-4">
       {isLoading || isFetching
