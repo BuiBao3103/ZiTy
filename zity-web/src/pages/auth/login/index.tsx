@@ -10,6 +10,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from '@/components/ui/form'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -60,7 +61,10 @@ export default function Index() {
             if (payload.userType === 'ADMIN') {
               navigate('/admin')
             } else {
-              if (payload.relationships && payload?.relationships[0]?.role === 'OWNER') {
+              if (
+                payload.relationships &&
+                payload?.relationships[0]?.role === 'OWNER'
+              ) {
                 navigate('/')
               } else {
                 navigate('/bills')
@@ -82,17 +86,8 @@ export default function Index() {
           })
       })
       .catch((error) => {
-        toast.error(error.message)
+        console.log(error)
       })
-  }
-
-  const onError = (error: any) => {
-    if (error['email']?.message) {
-      toast.error(error['email']?.message)
-    }
-    if (error['password']?.message) {
-      toast.error(error['password']?.message)
-    }
   }
 
   return (
@@ -107,7 +102,7 @@ export default function Index() {
         </div>
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(onSubmit, onError)}
+            onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-4">
             <FormField
               control={form.control}
@@ -118,6 +113,7 @@ export default function Index() {
                   <FormControl>
                     <Input placeholder="Enter username..." {...field} />
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -137,6 +133,8 @@ export default function Index() {
                   <FormControl>
                     <Input type={!isShowing ? 'password' : 'text'} {...field} />
                   </FormControl>
+                  <FormMessage />
+
                   <span
                     onClick={handleShowPassword}
                     className="absolute top-7 right-2">
