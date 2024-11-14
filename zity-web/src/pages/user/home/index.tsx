@@ -72,10 +72,8 @@ const Index = () => {
           .unwrap()
           .then((payload) => {
             setApartmentData(payload)
-            console.log('get apartment success')
           })
           .catch(() => {
-            console.log('get apartment failed')
           })
       }
     }
@@ -130,7 +128,7 @@ const Index = () => {
               <Table className="w-full border">
                 <TableHeader className="bg-primary">
                   <TableRow>
-                    <TableHead className="text-white">ID</TableHead>
+                    <TableHead className="text-white">ID123</TableHead>
                     <TableHead className="text-white">Fullname</TableHead>
                     <TableHead className="text-white">User Type</TableHead>
                     <TableHead className="text-white">Created Date</TableHead>

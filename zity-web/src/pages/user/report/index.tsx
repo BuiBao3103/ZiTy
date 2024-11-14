@@ -10,7 +10,7 @@ const Index = () => {
   useDocumentTitle('Report')
   const [currentPage, setCurrentPage] = useState<number>(1)
   const user = useAppSelector((state) => state.userReducer.user)
-  const { data, isLoading } = useGetReportsQuery({
+  const { data, isLoading, isFetching } = useGetReportsQuery({
     page: currentPage,
     includes: ['relationship'],
     relationshipId: user?.relationships?.[0]?.id,
@@ -27,7 +27,11 @@ const Index = () => {
               className="border-none shadow-none focus-visible:ring-0"
             />
           </div>
-          <ReportList reports={data?.contents} />
+          <ReportList
+            reports={data?.contents}
+            isLoading={isLoading}
+            isFetching={isFetching}
+          />
         </div>
       </div>
     </div>

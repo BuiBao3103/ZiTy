@@ -6,13 +6,15 @@ import AlertDelete from '@/components/alert/AlertDelete'
 import { IReport } from '@/schema/report.validate'
 import { formatDateWithSlash } from '@/utils/Generate'
 import ReportItem from './report-item'
+import { Skeleton } from '@/components/ui/skeleton'
 
 interface ReportListProps {
   reports?: IReport[]
+  isLoading?: boolean
+  isFetching?: boolean
 }
 
-const ReportList = ({ reports }: ReportListProps) => {
-
+const ReportList = ({ reports, isFetching, isLoading }: ReportListProps) => {
   return (
     <div
       className={`w-full h-full grid grid-cols-1 lg:grid-cols-3 gap-4 overflow-y-auto`}>
@@ -22,6 +24,15 @@ const ReportList = ({ reports }: ReportListProps) => {
           <BadgePlus size={50} />
         </div>
       </ReportForm>
+			{
+				(isLoading || isFetching) && (
+						Array.from({ length: 5 }).map((_, index) => (
+							<Skeleton className="w-[510px] h-[310px]" key={index}>
+
+							</Skeleton>
+						))
+				)
+			}
       {reports &&
         reports.map((report, index) => (
           <ReportItem report={report} key={index} />

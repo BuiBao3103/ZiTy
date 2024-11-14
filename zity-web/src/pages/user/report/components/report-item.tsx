@@ -1,18 +1,26 @@
 import { formatDateWithSlash } from '@/utils/Generate'
 import ReportForm from './report-form'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { IReport } from '@/schema/report.validate'
 import AlertDelete from '@/components/alert/AlertDelete'
+import { useDeleteReportMutation } from '@/features/reports/reportSlice'
+import { toast } from 'sonner'
 
 interface ReportItemProps {
   report: IReport
 }
 
 const ReportItem = ({ report }: ReportItemProps) => {
-
+  const [deleteReport, { isLoading }] = useDeleteReportMutation()
   const handleDelete = async () => {
-    console.log('delete')
+    await deleteReport(report.id)
+      .unwrap()
+      .then(() => {
+        toast.success('Delete report successfully')
+      })
+      .catch(() => {
+        toast.error('Delete report failed')
+      })
   }
 
   return (
@@ -32,11 +40,6 @@ const ReportItem = ({ report }: ReportItemProps) => {
           <span className="font-normal">Description:</span> {report.content}
         </p>
       </div>
-      <div className="flex gap-2 uppercase">
-        <Badge variant={'info'}>Other</Badge>
-        <Badge variant={'error'}>Environment</Badge>
-        <Badge variant={'warning'}>Noise</Badge>
-      </div>
       <div className="w-full flex justify-between items-center">
         <div className="flex gap-2">
           <div className="flex flex-col">
@@ -51,6 +54,7 @@ const ReportItem = ({ report }: ReportItemProps) => {
         <AlertDelete
           description="report"
           setAction={() => handleDelete()}
+					isLoading={isLoading}
           variants="error"
         />
       </div>
