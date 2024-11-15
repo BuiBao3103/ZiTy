@@ -1,6 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Timestamp } from '@firebase/firestore-types'
 import { useAppSelector } from '@/store'
+import { useGetUserByIdQuery } from '@/features/user/userSlice'
 
 interface MessageProps {
   senderId: number
@@ -9,7 +10,9 @@ interface MessageProps {
 }
 const Index = ({ senderId, text, timestamp }: MessageProps) => {
   const user = useAppSelector((state) => state.userReducer.user)
-
+  const { data: userSend } = useGetUserByIdQuery(senderId, {
+    skip: !senderId,
+  })
   return (
     <div
       className={`grid gap-x-3 gap-y-1 w-full ${
@@ -17,21 +20,14 @@ const Index = ({ senderId, text, timestamp }: MessageProps) => {
           ? 'place-items-end grid-cols-[1fr_auto]'
           : 'place-items-start grid-cols-[auto_1fr]'
       }`}>
-      <Avatar
-        className={`${
-          senderId !== user?.id ? 'col-start-2' : 'col-start-1'
-        } row-span-2 self-end`}>
-        <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-        <AvatarFallback>JP</AvatarFallback>
-      </Avatar>
       <div
         className={`${
           senderId !== user?.id
             ? 'col-start-1 row-start-1'
             : 'col-start-2 row-start-1'
         } text-sm leading-tight`}>
-        {user?.fullName} {' '}
-        <span className="text-xs opacity-50">
+        {/* {senderId !== user?.id ? `${user?.fullName}` : `${userSend?.fullName}`}{' '} */}
+        <span className="text-xs  opacity-70">
           {timestamp?.toDate()?.toLocaleTimeString('en-US', {
             hour: 'numeric',
             minute: 'numeric',
