@@ -41,6 +41,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Send } from 'lucide-react'
 import { useDocumentTitle } from 'usehooks-ts'
+import { useAppSelector } from '@/store'
 
 interface Theme {
   id: string
@@ -57,8 +58,7 @@ const themes = [
   { id: 'bg4', name: 'Theme 4', src: bg4, color: '#c5ebfe' },
 ]
 const Index = () => {
-
-	useDocumentTitle('Chat')
+  useDocumentTitle('Chat')
 
   const [theme, setTheme] = useState<Theme>(() => {
     const savedTheme = localStorage.getItem('selectedTheme')
@@ -79,7 +79,7 @@ const Index = () => {
       setTheme(JSON.parse(savedTheme))
     }
   }, [])
-
+  const user = useAppSelector((state) => state.userReducer.user)
   const [messages, setMessages] = useState<z.infer<typeof MessageSchema>[]>([])
   const msgContainerRef = useRef<HTMLDivElement>(null)
   const form = useForm<z.infer<typeof MessageSchema>>({
@@ -88,10 +88,10 @@ const Index = () => {
     },
   })
   const onSubmit = async (data: z.infer<typeof MessageSchema>) => {
-		if(data.text.length === 0) {
-			return;
-		}
-    const messagesRef = collection(db, `conversations/1/messages`)
+    if (data.text.length === 0) {
+      return
+    }
+    const messagesRef = collection(db, `conversations/${user?.id}/messages`)
     const messageDocRef = await addDoc(messagesRef, {
       senderId: 1,
       timestamp: serverTimestamp(),
@@ -101,7 +101,7 @@ const Index = () => {
     form.setFocus('text')
 
     // Reference to the conversation document
-    const conversationRef = doc(db, 'conversations/1')
+    const conversationRef = doc(db, `conversations/${user?.id}`)
 
     // Update the conversation docume
     await updateDoc(conversationRef, {
@@ -118,8 +118,8 @@ const Index = () => {
   }
 
   useEffect(() => {
-    const messagesRef = collection(db, 'conversations/1/messages')
-    const q = query(messagesRef, orderBy('timestamp', 'asc'), limit(50))
+    const messagesRef = collection(db, `conversations/${user?.id}/messages`)
+    const q = query(messagesRef, orderBy('timestamp', 'desc'), limit(50))
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const messages: z.infer<typeof MessageSchema>[] = []
       snapshot.forEach((doc) => {
@@ -128,7 +128,7 @@ const Index = () => {
       setMessages(messages)
     })
     return () => unsubscribe()
-  }, [])
+  }, [user])
   useEffect(() => {
     if (msgContainerRef.current) {
       msgContainerRef.current.scrollTo({

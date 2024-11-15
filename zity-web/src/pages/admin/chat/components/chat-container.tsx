@@ -1,6 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import GridWallpaper from '@/assets/grid-wallpaper.jpg'
 import { Separator } from '@/components/ui/separator'
 import { memo } from 'react'
 import { FormEvent, useEffect, useState } from 'react'
@@ -59,7 +58,7 @@ const ChatContainer = () => {
       timestamp: serverTimestamp(),
       text: msg,
     })
-		setMsg('')
+    setMsg('')
     const conversationRef = doc(db, `conversations/${user?.id}`)
     await updateDoc(conversationRef, {
       is_admin_seen: false,
@@ -81,8 +80,14 @@ const ChatContainer = () => {
       </header>
 
       <Separator />
-
-      <Messages messages={messages} />
+      <div className="size-full relative bg-black">
+        <img
+          src={GridWallpaper}
+          alt="grid wallpaper"
+          className="size-full object-cover absolute inset-0 z-10"
+        />
+        <Messages messages={messages} />
+      </div>
 
       <Separator />
 

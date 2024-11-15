@@ -1,9 +1,9 @@
 import { apiSlice } from '../api/apiSlice'
-import { Apartment } from '@/schema/apartment.validate'
+import { IApartment } from '@/schema/apartment.validate'
 
 export const apartmentSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getApartments: builder.query<ResponseDataType<Apartment>, number | void>({
+    getApartments: builder.query<ResponseDataType<IApartment>, number | void>({
       query: (page = 1) => {
         return {
           url: `apartments?page=${page}`,
@@ -20,7 +20,7 @@ export const apartmentSlice = apiSlice.injectEndpoints({
             ]
           : [{ type: 'Apartments', id: 'LIST' }],
     }),
-    getApartment: builder.query<Apartment, string | undefined>({
+    getApartment: builder.query<IApartment, string | undefined>({
       query: (id: string) => ({
         url: `apartments/${id}`,
         method: 'GET',
@@ -30,7 +30,7 @@ export const apartmentSlice = apiSlice.injectEndpoints({
     }),
     updateApartment: builder.mutation<
       void,
-      { id: string; body: Partial<Apartment> }
+      { id: string; body: Partial<IApartment> }
     >({
       query: (data) => ({
         url: `apartments/${data.id}`,

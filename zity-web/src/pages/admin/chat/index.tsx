@@ -18,10 +18,10 @@ const Index = () => {
         ]}
       />
       <div className="p-4 h-full flex gap-4 overflow-hidden">
-        <div className="md:w-1/4 w-full bg-white rounded-md overflow-hidden p-3">
+        <div className="sm:w-2/5 lg:w-1/4 w-full bg-white rounded-md overflow-hidden p-3">
           <ChatList />
         </div>
-        <div className="bg-white rounded-md md:w-3/4 w-full overflow-hidden">
+        <div className="bg-white rounded-md sm:w-3/5 lg:w-3/4 w-full overflow-hidden">
           {/* Chat messages section */}
 					{
 						!id ? (

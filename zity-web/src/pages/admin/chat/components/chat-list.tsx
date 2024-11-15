@@ -49,7 +49,7 @@ const ChatList = () => {
       className="h-full flex flex-col gap-1 overflow-y-auto">
       {isLoading ? (
         <div className="flex items-center justify-center h-full">
-          <p className="text-gray-500">Loading...</p>
+          <Loader2 className='animate-spin text-primary' />
         </div>
       ) : (
         data?.contents.map((user, index) => (

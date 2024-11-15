@@ -35,7 +35,7 @@ const Index = () => {
         <div className="bg-white w-full h-full rounded-md p-4 space-y-4 flex flex-col overflow-hidden">
           {!params.id && (
             <>
-              <section className="w-full flex flex-col sm:flex-row sm:gap-0 gap-4 justify-between items-center">
+              <section className="w-full flex flex-col sm:flex-row gap-4 justify-between items-center">
                 <div className="w-full lg:w-1/3 flex items-center border px-3 py-0.5 relative rounded-md focus-within:border-primary transition-all">
                   <Search size={20} />
                   <Input
