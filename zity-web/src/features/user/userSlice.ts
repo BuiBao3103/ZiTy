@@ -66,8 +66,12 @@ const userApiSlice = apiSlice.injectEndpoints({
             ]
           : [{ type: 'Users', id: 'LIST' }],
     }),
-    getUsersInScroll: builder.query<ResponseDataType<User>, number>({
-      query: (pageNumber) => `users?page=${pageNumber}&pageSize=15`,
+    getUsersInScroll: builder.query<
+      ResponseDataType<User>,
+      { page?: number; pageSize?: number }
+    >({
+      query: (params) =>
+        `users?page=${params.page}&pageSize=${params.pageSize}&Id=neq:1`,
       serializeQueryArgs: ({ endpointName }) => {
         return endpointName
       },
@@ -151,7 +155,7 @@ export default userSlice.reducer
 export const { getQrScanInformation, getUserInformation } = userSlice.actions
 export const {
   useGetUsersQuery,
-	useGetUsersInScrollQuery,
+  useGetUsersInScrollQuery,
   useGetUserByIdQuery,
   useCreateUserMutation,
   useUpdateUserMutation,

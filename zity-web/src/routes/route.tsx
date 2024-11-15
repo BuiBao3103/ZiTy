@@ -53,7 +53,7 @@ const adminRoutes: RouteObject[] = [
   { path: ROUTES.ADMIN.SURVEYS + '/:id?', element: <SurveyAdmin /> },
   { path: ROUTES.ADMIN.REPORTS + '/:id?', element: <ReportAdmin /> },
   { path: ROUTES.ADMIN.SETTINGS + '/:id?', element: <SettingAdmin /> },
-  { path: ROUTES.ADMIN.CHAT, element: <ChatAdmin /> },
+  { path: ROUTES.ADMIN.CHAT + '/:id?', element: <ChatAdmin /> },
 ]
 
 const route = createBrowserRouter([

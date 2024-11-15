@@ -55,24 +55,23 @@ const SurveyForm = ({ survey }: SurveyFormProps) => {
         }))
         .filter((answer) => answer.content !== null),
     }
-    console.log(newData)
-    // await submitSurvey({ id: survey?.id, body: newData })
-    //   .unwrap()
-    //   .then(() => {
-    //     toast.success('Thanks for your response')
-    //     navigate('/surveys')
-    //   })
-    //   .catch((error) => {
-    //     console.log(error)
-    //     toast.error('Something went wrong')
-    //   })
+    await submitSurvey({ id: survey?.id, body: newData })
+      .unwrap()
+      .then(() => {
+        toast.success('Thanks for your response')
+        navigate('/surveys')
+      })
+      .catch((error) => {
+        console.log(error)
+        toast.error('Something went wrong')
+      })
   }
 
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-4 overflow-y-auto">
+        className="flex flex-col space-y-4 overflow-y-auto">
         {survey &&
           survey.questions.map((question, index) => (
             <div key={index} className="rounded-md p-4 border shadow-md">
