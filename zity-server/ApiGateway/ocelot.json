@@ -7,7 +7,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 80
+          "Port": 5004
         }
       ],
       "UpstreamPathTemplate": "/api/auth/{everything}",
@@ -19,7 +19,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 80
+          "Port": 5004
         }
       ],
       "UpstreamPathTemplate": "/api/users/{everything}",
@@ -33,7 +33,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 80
+          "Port": 5005
         }
       ],
       "UpstreamPathTemplate": "/api/apartments/{everything}",
@@ -45,7 +45,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 80
+          "Port": 5005
         }
       ],
       "UpstreamPathTemplate": "/api/relationships/{everything}",
@@ -57,7 +57,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 80
+          "Port": 5005
         }
       ],
       "UpstreamPathTemplate": "/api/items/{everything}",
