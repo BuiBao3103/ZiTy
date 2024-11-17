@@ -1,8 +1,8 @@
 using Apartment.Domain.Core.Models;
 using Apartment.Domain.Core.Repositories;
-using Infrastructure.Data;
+using Apartment.Infrastructure.Data;
 
-namespace Infrastructure.Repositories
+namespace Apartment.Infrastructure.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {

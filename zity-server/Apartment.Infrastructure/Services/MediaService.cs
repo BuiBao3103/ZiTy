@@ -4,7 +4,7 @@ using CloudinaryDotNet.Actions;
 using Apartment.Domain.Configurations;
 using Microsoft.AspNetCore.Http;
 
-namespace Infrastructure.Services;
+namespace Apartment.Infrastructure.Services;
 
 public class MediaService : IMediaService
 {

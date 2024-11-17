@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using Infrastructure.Data;
 using Apartment.Domain.Core.Specifications;
 using Apartment.Domain.Core.Models;
 using Apartment.Domain.Core.Repositories;
+using Apartment.Infrastructure.Data;
 
-namespace Infrastructure.Repositories;
+namespace Apartment.Infrastructure.Repositories;
 public class BaseRepositoryAsync<T> : IBaseRepositoryAsync<T> where T : BaseEntity
 {
     protected readonly ApartmentDbContext _dbContext;

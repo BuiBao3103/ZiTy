@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Diagnostics;
 
-namespace Infrastructure.ErrorHandling;
+namespace Apartment.Infrastructure.ErrorHandling;
 
 public class GlobalExceptionHandler : IExceptionHandler
 {

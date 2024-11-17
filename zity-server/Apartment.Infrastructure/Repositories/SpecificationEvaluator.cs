@@ -3,7 +3,7 @@ using Apartment.Domain.Core.Specifications;
 using Apartment.Domain.Core.Models;
 using System.Linq.Dynamic.Core;
 
-namespace Infrastructure.Repositories;
+namespace Apartment.Infrastructure.Repositories;
 
 public class SpecificationEvaluator<T> where T : BaseEntity
 {
@@ -32,11 +32,11 @@ public class SpecificationEvaluator<T> where T : BaseEntity
         }
         else if (!string.IsNullOrWhiteSpace(specification.OrderByString))
         {
-            query = DynamicQueryableExtensions.OrderBy(query, specification.OrderByString);
+            query = query.OrderBy(specification.OrderByString);
         }
         else if (!string.IsNullOrWhiteSpace(specification.OrderByDescendingString))
         {
-            query = DynamicQueryableExtensions.OrderBy(query, specification.OrderByDescendingString + " DESC");
+            query = query.OrderBy(specification.OrderByDescendingString + " DESC");
         }
 
         if (specification.GroupBy != null)

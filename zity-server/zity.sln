@@ -89,6 +89,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apartment.Application", "Ap
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apartment.Infrastructure", "Apartment.Infrastructure\Apartment.Infrastructure.csproj", "{F84F4781-1AFE-485F-904F-8E2B8563EBBC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apartment.WebApi", "Apartment.WebApi\Apartment.WebApi.csproj", "{BB84EF30-9CBA-45AB-8918-78AC545F2070}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -191,6 +193,10 @@ Global
 		{F84F4781-1AFE-485F-904F-8E2B8563EBBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F84F4781-1AFE-485F-904F-8E2B8563EBBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F84F4781-1AFE-485F-904F-8E2B8563EBBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB84EF30-9CBA-45AB-8918-78AC545F2070}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB84EF30-9CBA-45AB-8918-78AC545F2070}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB84EF30-9CBA-45AB-8918-78AC545F2070}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB84EF30-9CBA-45AB-8918-78AC545F2070}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -221,6 +227,7 @@ Global
 		{C8451849-B224-41A1-BDEE-D75C613B6611} = {0C12EB37-A395-47B7-AC10-5208B659ADB3}
 		{A9F4B075-BA88-409D-A482-E0D7A08E2E93} = {0C12EB37-A395-47B7-AC10-5208B659ADB3}
 		{F84F4781-1AFE-485F-904F-8E2B8563EBBC} = {0C12EB37-A395-47B7-AC10-5208B659ADB3}
+		{BB84EF30-9CBA-45AB-8918-78AC545F2070} = {0C12EB37-A395-47B7-AC10-5208B659ADB3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4B67C32A-6CF6-444D-957F-2DA01CEA00CD}

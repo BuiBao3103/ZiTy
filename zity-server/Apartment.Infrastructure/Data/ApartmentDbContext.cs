@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Pomelo.EntityFrameworkCore.MySql.Scaffolding.Internal;
 
 
-namespace Infrastructure.Data;
+namespace Apartment.Infrastructure.Data;
 
 public partial class ApartmentDbContext : DbContext
 {
@@ -16,7 +16,7 @@ public partial class ApartmentDbContext : DbContext
     }
 
 
-    public virtual DbSet<Apartment.Domain.Entities.Apartment> Apartments { get; set; }
+    public virtual DbSet<Domain.Entities.Apartment> Apartments { get; set; }
 
 
 
@@ -44,7 +44,7 @@ public partial class ApartmentDbContext : DbContext
 
 
 
-        modelBuilder.Entity<Apartment.Domain.Entities.Apartment>(entity =>
+        modelBuilder.Entity<Domain.Entities.Apartment>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
