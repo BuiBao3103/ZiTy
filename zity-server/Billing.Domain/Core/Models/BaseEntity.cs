@@ -1,4 +1,4 @@
-﻿namespace Domain.Core.Models
+﻿namespace Billing.Domain.Core.Models
 {
     public class BaseEntity
     { }

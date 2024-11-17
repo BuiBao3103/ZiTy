@@ -1,6 +1,6 @@
-﻿using Domain.Core.Models;
+﻿using Billing.Domain.Core.Models;
 
-namespace Domain.Core.Repositories;
+namespace Billing.Domain.Core.Repositories;
 public interface IUnitOfWork
 {
     Task<int> SaveChangesAsync();

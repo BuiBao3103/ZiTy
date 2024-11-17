@@ -1,6 +1,6 @@
 using System.Linq.Expressions;
 
-namespace Domain.Core.Specifications;
+namespace Billing.Domain.Core.Specifications;
 public interface ISpecification<T>
 {
     Expression<Func<T, bool>> Criteria { get; }

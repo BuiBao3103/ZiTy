@@ -1,4 +1,4 @@
-﻿namespace Domain.Exceptions;
+﻿namespace Billing.Domain.Exceptions;
 
 public class EntityNotFoundException : DomainException
 {

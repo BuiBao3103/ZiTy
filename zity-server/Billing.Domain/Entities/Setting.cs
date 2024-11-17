@@ -1,7 +1,7 @@
-﻿using Domain.Core.Models;
-using Domain.Enums;
+﻿using Billing.Domain.Core.Models;
+using Billing.Domain.Enums;
 
-namespace Domain.Entities;
+namespace Billing.Domain.Entities;
 public partial class Setting : BaseEntity
 {
     public int Id { get; set; }

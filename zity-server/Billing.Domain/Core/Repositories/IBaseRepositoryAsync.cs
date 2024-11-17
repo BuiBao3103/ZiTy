@@ -1,7 +1,7 @@
-﻿using Domain.Core.Models;
-using Domain.Core.Specifications;
+﻿using Billing.Domain.Core.Models;
+using Billing.Domain.Core.Specifications;
 
-namespace Domain.Core.Repositories;
+namespace Billing.Domain.Core.Repositories;
 public interface IBaseRepositoryAsync<T> where T : BaseEntity
 {
     Task<T> GetByIdAsync(object id);

@@ -1,4 +1,4 @@
-﻿namespace Domain.Configurations;
+﻿namespace Billing.Domain.Configurations;
 
 public class AppSettings
 {

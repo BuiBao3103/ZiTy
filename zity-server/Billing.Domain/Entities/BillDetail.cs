@@ -1,6 +1,6 @@
-﻿using Domain.Core.Models;
+﻿using Billing.Domain.Core.Models;
 
-namespace Domain.Entities;
+namespace Billing.Domain.Entities;
 
 public partial class BillDetail : BaseEntity
 {

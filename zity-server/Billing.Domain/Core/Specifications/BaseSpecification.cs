@@ -1,6 +1,6 @@
 using System.Linq.Expressions;
 
-namespace Domain.Core.Specifications;
+namespace Billing.Domain.Core.Specifications;
 public class BaseSpecification<T> : ISpecification<T>
 {
     public BaseSpecification(Expression<Func<T, bool>> criteria)
@@ -50,7 +50,7 @@ public class BaseSpecification<T> : ISpecification<T>
 
     public virtual void ApplyOrderBy(string orderByString)
     {
-        OrderByString  = orderByString;
+        OrderByString = orderByString;
     }
 
     public virtual void ApplyOrderByDescending(string orderByDescendingString)
