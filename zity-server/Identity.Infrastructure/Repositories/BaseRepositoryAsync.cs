@@ -7,9 +7,9 @@ using Identity.Infrastructure.Data;
 namespace Identity.Infrastructure.Repositories;
 public class BaseRepositoryAsync<T> : IBaseRepositoryAsync<T> where T : BaseEntity
 {
-    protected readonly ApplicationDbContext _dbContext;
+    protected readonly IdentityDbContext _dbContext;
 
-    public BaseRepositoryAsync(ApplicationDbContext dbContext)
+    public BaseRepositoryAsync(IdentityDbContext dbContext)
     {
         _dbContext = dbContext;
     }

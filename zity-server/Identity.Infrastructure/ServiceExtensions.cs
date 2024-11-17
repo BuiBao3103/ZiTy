@@ -6,14 +6,14 @@ using Identity.Infrastructure.Repositories;
 using Identity.Infrastructure.Services;
 using Identity.Application.Core.Services;
 
-namespace Infrastructure;
+namespace Identity.Infrastructure;
 public static class ServiceExtensions
 {
     public static void ConfigureInfrastructure(this IServiceCollection services)
     {
-        
 
-        
+
+
 
         services.AddScoped(typeof(IBaseRepositoryAsync<>), typeof(BaseRepositoryAsync<>));
         services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -26,9 +26,9 @@ public static class ServiceExtensions
 
     public static void MigrateDatabase(this IServiceProvider serviceProvider)
     {
-        var dbContextOptions = serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>();
+        var dbContextOptions = serviceProvider.GetRequiredService<DbContextOptions<IdentityDbContext>>();
 
-        using (var dbContext = new ApplicationDbContext(dbContextOptions))
+        using (var dbContext = new IdentityDbContext(dbContextOptions))
         {
             dbContext.Database.Migrate();
         }

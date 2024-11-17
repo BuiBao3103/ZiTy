@@ -8,9 +8,9 @@ using Pomelo.EntityFrameworkCore.MySql.Scaffolding.Internal;
 
 namespace Identity.Infrastructure.Data;
 
-public partial class ApplicationDbContext : DbContext
+public partial class IdentityDbContext : DbContext
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+    public IdentityDbContext(DbContextOptions<IdentityDbContext> options)
         : base(options)
     {
     }

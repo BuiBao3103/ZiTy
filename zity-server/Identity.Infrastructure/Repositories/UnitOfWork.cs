@@ -6,10 +6,10 @@ namespace Identity.Infrastructure.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {
-        protected readonly ApplicationDbContext _dbContext;
+        protected readonly IdentityDbContext _dbContext;
         private readonly IDictionary<Type, dynamic> _repositories;
 
-        public UnitOfWork(ApplicationDbContext dbContext)
+        public UnitOfWork(IdentityDbContext dbContext)
         {
             _dbContext = dbContext;
             _repositories = new Dictionary<Type, dynamic>();
