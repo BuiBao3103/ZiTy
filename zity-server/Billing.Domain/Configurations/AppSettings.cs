@@ -3,13 +3,8 @@
 public class AppSettings
 {
     public MySqlSettings MySqlSettings { get; set; } = null!;
-    public CloudinarySettings CloudinarySettings { get; set; } = null!;
-    public EsmsSettings EsmsSettings { get; set; } = null!;
-    public JWTSettings JWTSettings { get; set; } = null!;
-    public MailSettings MailSettings { get; set; } = null!;
     public MomoSettings MomoSettings { get; set; } = null!;
     public VNPaySettings VNPaySettings { get; set; } = null!;
-    public EndpointSettings EndpointSettings { get; set; } = null!;
 }
 public class MySqlSettings
 {
@@ -24,39 +19,10 @@ public class MySqlSettings
     }
 }
 
-public class CloudinarySettings
-{
-    public string CloudName { get; set; } = null!;
-    public string ApiKey { get; set; } = null!;
-    public string ApiSecret { get; set; } = null!;
 
-}
 
-public class EsmsSettings
-{
-    public string ApiKey { get; set; } = null!;
-    public string ApiSecret { get; set; } = null!;
-    public string BrandName { get; set; } = null!;
-}
 
-public class JWTSettings
-{
-    public string AccessTokenKey { get; set; } = null!;
-    public string RefreshTokenKey { get; set; } = null!;
-    public string Issuer { get; set; } = null!;
-    public string Audience { get; set; } = null!;
-    public int AccessExpirationInMinutes { get; set; }
-    public int RefreshExpirationInDays { get; set; }
-}
 
-public class MailSettings
-{
-    public string Host { get; set; } = null!;
-    public int Port { get; set; }
-    public string Username { get; set; } = null!;
-    public string Password { get; set; } = null!;
-    public string FromEmail { get; set; } = null!;
-}
 
 public class MomoSettings
 {
@@ -73,8 +39,4 @@ public class VNPaySettings
     public string TmnCode { get; set; } = null!;
     public string HashSecret { get; set; } = null!;
     public string Url { get; set; } = null!;
-}
-public class EndpointSettings
-{
-    public string LoginUrl { get; set; } = null!;
 }

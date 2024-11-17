@@ -19,6 +19,7 @@ app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("http://localhost:5001/swagger/v1/swagger.json", "Survey Service API");
     c.SwaggerEndpoint("http://localhost:5002/swagger/v1/swagger.json", "Report Service API");
+    c.SwaggerEndpoint("http://localhost:5003/swagger/v1/swagger.json", "Billing Service API");
 });
 
 await app.UseOcelot();

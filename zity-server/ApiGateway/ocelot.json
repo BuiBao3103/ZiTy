@@ -71,7 +71,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 80
+          "Port": 5003
         }
       ],
       "UpstreamPathTemplate": "/api/bills/{everything}",
@@ -83,7 +83,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 80
+          "Port": 5003
         }
       ],
       "UpstreamPathTemplate": "/api/billdetails/{everything}",
@@ -95,7 +95,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 80
+          "Port": 5003
         }
       ],
       "UpstreamPathTemplate": "/api/services/{everything}",
@@ -107,7 +107,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 80
+          "Port": 5003
         }
       ],
       "UpstreamPathTemplate": "/api/settings/{everything}",
