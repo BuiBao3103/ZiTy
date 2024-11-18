@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button'
 import TableRowSkeleton from '@/components/skeleton/TableRowSkeleton'
 import PackageDetail from './package-detail'
 import { formatDateWithSlash } from '@/utils/Generate'
+import { useState } from 'react'
 
 interface PackageListProps {
   packages?: IPackage[]
@@ -22,6 +23,8 @@ interface PackageListProps {
 }
 
 const PackageList = ({ packages, isLoading, isFetching }: PackageListProps) => {
+  const [showDetail, setShowDetail] = useState<number | undefined>(undefined)
+
   return (
     <>
       <Table className="mt-4 h-full">
@@ -31,6 +34,7 @@ const PackageList = ({ packages, isLoading, isFetching }: PackageListProps) => {
             <TableHead>Shipping to</TableHead>
             <TableHead>Phone</TableHead>
             <TableHead>Delivery Date</TableHead>
+            <TableHead>Description</TableHead>
             <TableHead>Status</TableHead>
           </TableRow>
         </TableHeader>
@@ -48,25 +52,36 @@ const PackageList = ({ packages, isLoading, isFetching }: PackageListProps) => {
             ))}
           {packages &&
             packages.map((packagee, index) => (
-              <TableRow
-                key={index}
-                className="font-medium cursor-pointer">
+              <TableRow key={index} className="font-medium cursor-pointer">
                 <TableCell className="w-[5%] py-3">{packagee.id}</TableCell>
-                <TableCell className="w-[25%]">{packagee.user?.fullName}</TableCell>
-                <TableCell className='w-[15%]'>{packagee.user?.phone}</TableCell>
-                <TableCell className='w-[15%]'>{formatDateWithSlash(new Date(packagee.createdAt))}</TableCell>
-                <TableCell className='w-[25%] uppercase'>
+                <TableCell className="w-[25%]">
+                  {packagee.user?.fullName}
+                </TableCell>
+                <TableCell className="w-[10%]">
+                  {packagee.user?.phone}
+                </TableCell>
+                <TableCell className="w-[10%]">
+                  {formatDateWithSlash(new Date(packagee.createdAt))}
+                </TableCell>
+                <TableCell className="w-[10%] uppercase">
                   <Badge
                     variant={`${packagee.isReceive ? 'success' : 'error'}`}>
                     {packagee.isReceive ? 'Collected' : 'Not Collected'}
                   </Badge>
                 </TableCell>
+								<TableCell className="w-[25%]">
+                  {packagee.description}
+                </TableCell>
                 <TableCell>
-                  <PackageDetail mode="edit" id={packagee.id}>
-                    <Button size={'icon'} variant={'ghost'}>
-                      <Eye />
-                    </Button>
-                  </PackageDetail>
+                  <Button
+                    onClick={() => {
+                      setShowDetail(packagee.id)
+                    }}
+                    type="button"
+                    size={'icon'}
+                    variant={'ghost'}>
+                    <Eye />
+                  </Button>
                 </TableCell>
                 <TableCell>
                   <AlertDelete
@@ -80,6 +95,13 @@ const PackageList = ({ packages, isLoading, isFetching }: PackageListProps) => {
             ))}
         </TableBody>
       </Table>
+      {showDetail && (
+        <PackageDetail
+          id={showDetail}
+          mode="edit"
+          setShowDetail={setShowDetail}
+        />
+      )}
     </>
   )
 }

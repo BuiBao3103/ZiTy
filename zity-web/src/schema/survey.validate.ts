@@ -26,8 +26,33 @@ export const SurveySchema = z
   })
   .refine((data) => data.startDate !== data.endDate, {
     message: 'Start date must be different from end date',
-		path: ['startDate', 'endDate'], // Attach the error to both startDate and endDate
+    path: ['startDate', 'endDate'], // Attach the error to both startDate and endDate
   })
 export type ServiceFormSchema = z.infer<typeof SurveySchema>
 
 export interface ISurvey extends ServiceFormSchema, BaseEntity {}
+
+export interface Question {
+  questionId: number
+  questionContent: string
+  answers: Answer[]
+  otherAnswers: OtherAnswer[]
+}
+
+export interface Answer {
+  answerId: number
+  content: string
+  count: number
+  isMostSelected: boolean
+}
+
+export interface OtherAnswer {
+  id: number
+  content: string
+}
+
+export interface ISurveyStatistics {
+  survey: ISurvey
+  totalParticipants: number
+  questionStatistics: Question[]
+}

@@ -1,6 +1,26 @@
 import { IPackage } from '@/schema/package.validate'
 import { apiSlice } from '../api/apiSlice'
-const packageSlice = apiSlice.injectEndpoints({
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+
+interface PackageState {
+  showPackage: boolean
+}
+
+const initialState: PackageState = {
+  showPackage: false,
+}
+
+const packageSlice = createSlice({
+  name: 'auth',
+  initialState,
+  reducers: {
+    showDetailPackage(state, action: PayloadAction<PackageState>) {
+      state.showPackage = action.payload.showPackage
+    },
+  },
+})
+
+const packageApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getPackages: builder.query<
       ResponseDataType<IPackage>,
@@ -103,11 +123,15 @@ const packageSlice = apiSlice.injectEndpoints({
   }),
 })
 
+export const { showDetailPackage } = packageSlice.actions
+export default packageSlice.reducer
+
 export const {
   useGetPackagesQuery,
   useCreatePackageMutation,
   useDeletePackageMutation,
   useUpdatePackageMutation,
   useGetPackageQuery,
+	useLazyGetPackageQuery,
   useUpdateImagePackageMutation,
-} = packageSlice
+} = packageApiSlice
