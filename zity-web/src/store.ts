@@ -6,12 +6,14 @@ import authSlice from './features/auth/authSlice'
 import { apiSlice } from './features/api/apiSlice'
 import surveySlice from './features/survey/surveySlice'
 import userSlice from './features/user/userSlice'
+import packageSlice from './features/package/packageSlice'
 
 export const store = configureStore({
   reducer: {
     userReducer: userSlice,
     authReducer: authSlice,
     surveyReducer: surveySlice,
+		packageReducer: packageSlice,
     [apiSlice.reducerPath]: apiSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>

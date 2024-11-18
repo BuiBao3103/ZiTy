@@ -10,14 +10,13 @@ import { useState } from 'react'
 import PackageDetail from './components/package-detail'
 const Index = () => {
   useDocumentTitle('Package')
+  const [showDetail, setShowDetail] = useState<number | undefined>(undefined)
   const [currentPage, setCurrentPage] = useState<number>(1)
   const {
     data: packages,
     isLoading,
     isFetching,
-  } = useGetPackagesQuery({ page: currentPage,includes: ['user'] })
-
-	console.log(packages)
+  } = useGetPackagesQuery({ page: currentPage, includes: ['user'] })
 
   return (
     <>
@@ -39,14 +38,16 @@ const Index = () => {
                   Filter
                 </Button>
               </div>
-              <PackageDetail mode="create">
-                <Button
-                  className="w-full sm:w-[160px]"
-                  variant={'default'}
-                  size={'lg'}>
-                  New Package
-                </Button>
-              </PackageDetail>
+              <Button
+                type="button"
+                onClick={() => {
+                  setShowDetail(-1)
+                }}
+                className="w-full sm:w-[160px]"
+                variant={'default'}
+                size={'lg'}>
+                New Package
+              </Button>
             </div>
             <div className="size-full">
               <PackageList
@@ -63,6 +64,9 @@ const Index = () => {
           </div>
         </div>
       </div>
+      {showDetail === -1 && (
+        <PackageDetail mode="create" setShowDetail={setShowDetail} />
+      )}
     </>
   )
 }

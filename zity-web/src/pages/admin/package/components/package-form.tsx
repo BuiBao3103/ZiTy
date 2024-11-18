@@ -31,7 +31,7 @@ import {
 
 interface PackageFormProps {
   packagee?: IPackage
-  setOpen: (value: boolean) => void
+  setOpen: (value: number | undefined) => void
 }
 
 const PackageForm = ({ packagee, setOpen }: PackageFormProps) => {
@@ -79,11 +79,11 @@ const PackageForm = ({ packagee, setOpen }: PackageFormProps) => {
         // Wait for all updates to complete
         await Promise.all(updatePromises)
         toast.success('Package updated successfully')
-        setOpen(false)
+        setOpen(undefined)
       } else {
         await createPackage(data).unwrap()
         toast.success('Package created successfully')
-        setOpen(false)
+        setOpen(undefined)
       }
     } catch (error) {
       console.error(error)
@@ -242,7 +242,7 @@ const PackageForm = ({ packagee, setOpen }: PackageFormProps) => {
             type="button"
             size={'lg'}
             variant={'ghost'}
-            onClick={() => setOpen(false)}>
+            onClick={() => setOpen(undefined)}>
             Cancel
           </Button>
           <Button type="submit" size={'lg'} variant={'default'}>

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { apiSlice } from '../api/apiSlice'
-import { ISurvey } from '@/schema/survey.validate'
+import { ISurvey, ISurveyStatistics } from '@/schema/survey.validate'
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 import { IQuestion } from '@/schema/question.validate'
 
@@ -85,6 +85,11 @@ const surveyApiSlice = apiSlice.injectEndpoints({
       providesTags: (result, error, id) =>
         result ? [{ type: 'Surveys', id }] : [],
     }),
+    getSurveyStatistics: builder.query<ISurveyStatistics, number | undefined>({
+      query: (id) => ({
+        url: `surveys/${id}/statistic`,
+      }),
+    }),
     createSurvey: builder.mutation<
       ISurvey,
       Partial<ISurvey> & Omit<ISurvey, 'id' | 'createdAt' | 'updatedAt'>
@@ -139,4 +144,5 @@ export const {
   useUpdateSurveryMutation,
   useDeleteSurveyMutation,
   useCreateFullSurveyMutation,
+	useGetSurveyStatisticsQuery,
 } = surveyApiSlice
