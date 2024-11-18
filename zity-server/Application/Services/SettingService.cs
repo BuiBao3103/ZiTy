@@ -6,6 +6,8 @@ using Domain.Core.Repositories;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.Exceptions;
+using Domain.Core.Specifications;
+using Microsoft.Extensions.FileSystemGlobbing.Internal.PathSegments;
 
 namespace Application.Services;
 public class SettingService(IUnitOfWork unitOfWork, IMapper mapper) : ISettingService
@@ -67,13 +69,58 @@ public class SettingService(IUnitOfWork unitOfWork, IMapper mapper) : ISettingSe
 
     public async Task<SettingDTO> TransitionToPrepayment()
     {
-        var existingSetting = await _unitOfWork.Repository<Setting>().GetByIdAsync(SettingConstants.SettingId)
+        var setting = await _unitOfWork.Repository<Setting>().GetByIdAsync(SettingConstants.SettingId)
            ?? throw new EntityNotFoundException(nameof(Service), SettingConstants.SettingId);
-        _unitOfWork.Repository<Setting>().Update(existingSetting);
 
-        existingSetting.SystemStatus = SystemStatusEnum.PREPAYMENT;
+        var relationshipSpec = new BaseSpecification<Relationship>(r => r.DeletedAt == null && r.Role == "OWNER" && r.User.IsStaying == true);
+        relationshipSpec.AddInclude(r => r.User);
+        relationshipSpec.AddInclude(r => r.Apartment);
+        var relationships = await _unitOfWork.Repository<Relationship>().ListAsync(relationshipSpec);
+
+        var serviceSpec = new BaseSpecification<Service>(s => s.DeletedAt == null);
+        var services = await _unitOfWork.Repository<Service>().ListAsync(serviceSpec);
+
+
+        foreach (var relationship in relationships)
+        {
+            var billSpec = new BaseSpecification<Bill>(b => b.RelationshipId == relationship.Id && b.Status == "UNPAID" && b.Monthly == setting.CurrentMonthly);
+            var currentMonthlyBill = await _unitOfWork.Repository<Bill>().FirstOrDefaultAsync(billSpec);
+            if (currentMonthlyBill == null)
+            {
+                List<BillDetail> billDetails = new List<BillDetail>();
+                var totalServicePrice = 0.0f;
+                foreach (var service in services)
+                {
+                    BillDetail billDetail = new BillDetail()
+                    {
+                        ServiceId = service.Id,
+                        Price = service.Price,
+                    };
+                    billDetails.Add(billDetail);
+                    totalServicePrice += service.Price;
+                }
+
+                var totalRoomPrice = (setting.RoomPricePerM2 * relationship.Apartment.Area) * (100 + setting.RoomVat) / 100;
+
+
+                Bill newBill = new Bill
+                {
+                    RelationshipId = relationship.Id,
+                    Monthly = setting.CurrentMonthly,
+                    CreatedAt = DateTime.Now,
+                    Status = "UNPAID",
+                    TotalPrice = totalServicePrice + totalRoomPrice,
+                };
+                await _unitOfWork.Repository<Bill>().AddAsync(newBill);
+            }
+        }
+
+
+        _unitOfWork.Repository<Setting>().Update(setting);
+
+        setting.SystemStatus = SystemStatusEnum.PREPAYMENT;
 
         await _unitOfWork.SaveChangesAsync();
-        return _mapper.Map<SettingDTO>(existingSetting);
+        return _mapper.Map<SettingDTO>(setting);
     }
 }
