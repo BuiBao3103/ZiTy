@@ -110,6 +110,7 @@ public class SettingService(IUnitOfWork unitOfWork, IMapper mapper) : ISettingSe
                     CreatedAt = DateTime.Now,
                     Status = "UNPAID",
                     TotalPrice = totalServicePrice + totalRoomPrice,
+                    BillDetails = billDetails
                 };
                 await _unitOfWork.Repository<Bill>().AddAsync(newBill);
             }
