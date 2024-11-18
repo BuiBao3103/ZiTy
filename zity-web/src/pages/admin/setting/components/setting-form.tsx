@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Skeleton } from '@/components/ui/skeleton'
 import {
   usePatchSettingMutation,
   useUpdateTransitionDelinquentMutation,
@@ -66,7 +67,7 @@ const SettingForm = ({ setting, isLoading, isFetching }: SettingFormProps) => {
     await patchSetting(data)
       .unwrap()
       .then((payload) => {
-				console.log(payload)
+        console.log(payload)
         toast.success('Update setting successfully')
       })
       .catch((error) => {
@@ -149,121 +150,166 @@ const SettingForm = ({ setting, isLoading, isFetching }: SettingFormProps) => {
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-0 h-full overflow-hidden flex space-x-4">
         <div className="md:w-1/2 w-full flex flex-col space-y-4">
-          <div className="border border-zinc-300 p-4 rounded-md flex flex-col space-y-3 shadow-md">
-            <Label>Current Monthly</Label>
-            <Input
-              type="month"
-              defaultValue={setting?.currentMonthly}
-              onChange={(e) => updateDebounceCurrentValue(e.target.value)}
-            />
-            <Button
-              type="button"
-              onClick={() =>
-                onSubmitMonthly({ currentMonthly: debounceCurrentMonthly })
-              }
-              className="w-fit">
-              {isUpdateSetting ? 'Loading...' : 'Submit'}
-            </Button>
-          </div>
-          <div className="border border-zinc-300 p-4 rounded-md shadow-md">
-            <FormField
-              control={form.control}
-              name="roomPricePerM2"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Room Price Per M2</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="waterPricePerM3"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Water Price Per M3</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="waterVat"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Water VAT</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="envProtectionTax"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Environment Protection Tax</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <div className="pt-4">
-              <Button type="submit" className="">
-                {isUpdateSetting ? 'Loading...' : 'Submit'}
-              </Button>
-            </div>
-          </div>
+          {isLoading || isFetching ? (
+            <>
+              <Skeleton className="w-full h-[144px]" />
+              <Skeleton className="w-full h-[358px]" />
+            </>
+          ) : (
+            <>
+              <div className="border border-zinc-300 p-4 rounded-md flex flex-col space-y-3 shadow-md">
+                <Label>Current Monthly</Label>
+                <Input
+                  type="month"
+                  defaultValue={setting?.currentMonthly}
+                  onChange={(e) => updateDebounceCurrentValue(e.target.value)}
+                />
+                <Button
+                  type="button"
+                  onClick={() =>
+                    onSubmitMonthly({ currentMonthly: debounceCurrentMonthly })
+                  }
+                  className="w-fit">
+                  {isUpdateSetting ? 'Loading...' : 'Submit'}
+                </Button>
+              </div>
+              <div className="border border-zinc-300 p-4 rounded-md shadow-md">
+                <FormField
+                  control={form.control}
+                  name="roomPricePerM2"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Room Price Per M2</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          step={1000}
+                          defaultValue={field.value}
+                          onBlur={field.onBlur}
+                          name={field.name}
+                          ref={field.ref}
+                          placeholder="Enter room price per m2"
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="waterPricePerM3"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Water Price Per M3</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          step={1000}
+                          defaultValue={field.value}
+                          onBlur={field.onBlur}
+                          name={field.name}
+                          ref={field.ref}
+                          placeholder="Enter water price per m3"
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="waterVat"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Water VAT (%)</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          defaultValue={field.value}
+                          onBlur={field.onBlur}
+                          name={field.name}
+                          ref={field.ref}
+                          placeholder="Enter water VAT"
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="envProtectionTax"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Environment Protection Tax (%)</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          defaultValue={field.value}
+                          onBlur={field.onBlur}
+                          name={field.name}
+                          ref={field.ref}
+                          placeholder="Enter environment protection tax"
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <div className="pt-4">
+                  <Button type="submit" className="">
+                    {isUpdateSetting ? 'Loading...' : 'Submit'}
+                  </Button>
+                </div>
+              </div>
+            </>
+          )}
         </div>
-        <div className="md:w-1/2 w-full flex flex-col space-y-4 p-4 border border-zinc-300 rounded-md h-fit shadow-md">
-          <Label>System Status</Label>
-          <div className="flex gap-4">
-            <Button
-              variant="info"
-              onClick={handlePrepaymentTransition}
-              disabled={isUpdatePrepayment}>
-              {isUpdatePrepayment ? 'Updating...' : 'Prepayment'}
-            </Button>
-            <Button
-              variant="success"
-              onClick={handlePaymentTransition}
-              disabled={isUpdatePayment}>
-              {isUpdatePayment ? 'Updating...' : 'Payment'}
-            </Button>
-            <Button
-              variant="warning"
-              onClick={handleOverdueTransition}
-              disabled={isUpdateOverdue}>
-              {isUpdateOverdue ? 'Updating...' : 'Overdue'}
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={handleDelinquentTransition}
-              disabled={isUpdateDelinquent}>
-              {isUpdateDelinquent ? 'Updating...' : 'Delinquent'}
-            </Button>
-          </div>
-          <div className="flex gap-4">
-            <p className="font-medium">Current System Status:</p>
-            <Badge
-              variant={`${
-                setting?.systemStatus === 'DELINQUENT'
-                  ? 'destructive'
-                  : setting?.systemStatus === 'OVERDUE'
-                  ? 'warning'
-                  : setting?.systemStatus === 'PAYMENT'
-                  ? 'success'
-                  : 'info'
-              }`}>
-              {setting?.systemStatus}
-            </Badge>
-          </div>
+        <div className="md:w-1/2 w-full">
+          {isLoading || isFetching ? (
+            <Skeleton className="w-full h-[140px]" />
+          ) : (
+            <div className="flex flex-col space-y-4 p-4 border border-zinc-300 rounded-md h-fit shadow-md">
+              <Label>System Status</Label>
+              <div className="flex gap-4">
+                <Button
+                  variant="info"
+                  onClick={handlePrepaymentTransition}
+                  disabled={isUpdatePrepayment}>
+                  {isUpdatePrepayment ? 'Updating...' : 'Prepayment'}
+                </Button>
+                <Button
+                  variant="success"
+                  onClick={handlePaymentTransition}
+                  disabled={isUpdatePayment}>
+                  {isUpdatePayment ? 'Updating...' : 'Payment'}
+                </Button>
+                <Button
+                  variant="warning"
+                  onClick={handleOverdueTransition}
+                  disabled={isUpdateOverdue}>
+                  {isUpdateOverdue ? 'Updating...' : 'Overdue'}
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={handleDelinquentTransition}
+                  disabled={isUpdateDelinquent}>
+                  {isUpdateDelinquent ? 'Updating...' : 'Delinquent'}
+                </Button>
+              </div>
+              <div className="flex gap-4">
+                <p className="font-medium">Current System Status:</p>
+                <Badge
+                  variant={`${
+                    setting?.systemStatus === 'DELINQUENT'
+                      ? 'destructive'
+                      : setting?.systemStatus === 'OVERDUE'
+                      ? 'warning'
+                      : setting?.systemStatus === 'PAYMENT'
+                      ? 'success'
+                      : 'info'
+                  }`}>
+                  {setting?.systemStatus}
+                </Badge>
+              </div>
+            </div>
+          )}
         </div>
       </form>
     </Form>

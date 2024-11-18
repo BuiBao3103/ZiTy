@@ -13,6 +13,7 @@ import AlertDelete from '@/components/alert/AlertDelete'
 import { Button } from '@/components/ui/button'
 import TableRowSkeleton from '@/components/skeleton/TableRowSkeleton'
 import PackageDetail from './package-detail'
+import { formatDateWithSlash } from '@/utils/Generate'
 
 interface PackageListProps {
   packages?: IPackage[]
@@ -28,7 +29,6 @@ const PackageList = ({ packages, isLoading, isFetching }: PackageListProps) => {
           <TableRow>
             <TableHead>ID</TableHead>
             <TableHead>Shipping to</TableHead>
-            <TableHead>From</TableHead>
             <TableHead>Phone</TableHead>
             <TableHead>Delivery Date</TableHead>
             <TableHead>Status</TableHead>
@@ -51,15 +51,14 @@ const PackageList = ({ packages, isLoading, isFetching }: PackageListProps) => {
               <TableRow
                 key={index}
                 className="font-medium cursor-pointer">
-                <TableCell className="py-3">{packagee.id}</TableCell>
-                <TableCell className="">{packagee.userId}</TableCell>
-                <TableCell>123</TableCell>
-                <TableCell>123</TableCell>
-                <TableCell>123</TableCell>
-                <TableCell className={`uppercase`}>
+                <TableCell className="w-[5%] py-3">{packagee.id}</TableCell>
+                <TableCell className="w-[25%]">{packagee.user?.fullName}</TableCell>
+                <TableCell className='w-[15%]'>{packagee.user?.phone}</TableCell>
+                <TableCell className='w-[15%]'>{formatDateWithSlash(new Date(packagee.createdAt))}</TableCell>
+                <TableCell className='w-[25%] uppercase'>
                   <Badge
-                    variant={`${packagee.isReceived ? 'success' : 'error'}`}>
-                    {packagee.isReceived ? 'Collected' : 'Not Collected'}
+                    variant={`${packagee.isReceive ? 'success' : 'error'}`}>
+                    {packagee.isReceive ? 'Collected' : 'Not Collected'}
                   </Badge>
                 </TableCell>
                 <TableCell>

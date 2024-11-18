@@ -15,7 +15,9 @@ const Index = () => {
     data: packages,
     isLoading,
     isFetching,
-  } = useGetPackagesQuery({ page: currentPage })
+  } = useGetPackagesQuery({ page: currentPage,includes: ['user'] })
+
+	console.log(packages)
 
   return (
     <>

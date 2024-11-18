@@ -5,7 +5,7 @@ import { useGetSettingsQuery } from '@/features/setting/settingSlice'
 
 const Index = () => {
   useDocumentTitle('Setting')
-  const { data: setting, } = useGetSettingsQuery()
+  const { data: setting,isLoading,isFetching } = useGetSettingsQuery()
 
   return (
     <>
@@ -14,7 +14,7 @@ const Index = () => {
         <div className="size-full p-4">
           <div className="size-full p-4 bg-white rounded-md ">
             <div className="size-full flex flex-col gap-4 overflow-hidden">
-							<SettingForm setting={setting} />
+							<SettingForm setting={setting} isFetching={isFetching} isLoading={isLoading}  />
 						</div>
           </div>
         </div>

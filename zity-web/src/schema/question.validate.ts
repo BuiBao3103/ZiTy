@@ -32,7 +32,7 @@ export const QuestionSchema = z.object({
   content: z.string(),
   surveyId: z.number().optional(),
   answers: z.array(AnswerItemSchema),
-  otherAnswers: z.array(OtherAnswersSchema),
+  otherAnswers: z.array(OtherAnswersSchema).optional(),
   survey: z.any().nullable(), // Adjust the structure of 'survey' if needed
 })
 

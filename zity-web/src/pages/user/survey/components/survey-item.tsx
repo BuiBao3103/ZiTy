@@ -12,6 +12,12 @@ const SurveyItem = ({ survey }: SurveyItemProps) => {
   const navigate = useNavigate()
 
   const handleChooseSurvey = () => {
+
+		if(new Date(survey.startDate) > new Date()) {
+			toast.info("This survey hasn't started yet!")
+			return;
+		}
+
     //if end date is less than current date => show toast
     if (new Date(survey.endDate) < new Date()) {
       toast.error('This survey has ended')

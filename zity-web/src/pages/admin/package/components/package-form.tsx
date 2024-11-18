@@ -5,9 +5,10 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { FieldErrors, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from 'sonner'
@@ -17,8 +18,16 @@ import { PlusCircle, X } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import {
   useCreatePackageMutation,
+  useUpdateImagePackageMutation,
   useUpdatePackageMutation,
 } from '@/features/package/packageSlice'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 interface PackageFormProps {
   packagee?: IPackage
@@ -26,64 +35,60 @@ interface PackageFormProps {
 }
 
 const PackageForm = ({ packagee, setOpen }: PackageFormProps) => {
-  const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const [selectedImage, setSelectedImage] = useState<string | null>(
+    typeof packagee?.image === 'string' ? packagee.image : null,
+  )
   const [createPackage, { isLoading }] = useCreatePackageMutation()
   const [updatePackage, { isLoading: isUpdating }] = useUpdatePackageMutation()
+  const [updateImagePackage, { isLoading: isUpdatingImage }] =
+    useUpdateImagePackageMutation()
 
   const form = useForm<z.infer<typeof PackageSchema>>({
     mode: 'onSubmit',
     defaultValues: packagee || {
       description: '',
-      image: '',
-      isReceived: false,
+      image: undefined,
+      isReceive: false,
     },
     resolver: zodResolver(PackageSchema),
   })
 
   const onSubmit = async (data: z.infer<typeof PackageSchema>) => {
-    const newData = {
-      image: data.image,
-      description: data.description,
-      isReceived: data.isReceived,
-    }
-    if (packagee) {
-      await updatePackage({ id: packagee.id, body: newData })
-        .unwrap()
-        .then(() => {
-          toast.success('Package updated successfully')
-          setOpen(false)
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-    } else {
-      await createPackage(data)
-        .unwrap()
-        .then(() => {
-          toast.success('Package created successfully')
-          setOpen(false)
-        })
-        .catch((error) => {
-          console.log(error)
-          toast.error('Something went wrong')
-        })
-    }
-  }
+    try {
+      const newData = {
+        description: data.description,
+        isReceive: data.isReceive,
+      }
+      if (packagee) {
+        // Update existing package
+        const updatePromises = []
 
-  const onError = (errors: FieldErrors<z.infer<typeof PackageSchema>>) => {
-    console.log(errors)
-    // if (error['name']) {
-    //   toast.error(error['']?.message)
-    //   return
-    // }
-    // if (error['description']) {
-    //   toast.error(error['description']?.message)
-    //   return
-    // }
-    // if (error['price']) {
-    //   toast.error(error['price']?.message)
-    //   return
-    // }
+        // Add package data update promise
+        updatePromises.push(
+          updatePackage({ id: packagee.id, body: newData }).unwrap(),
+        )
+        // Add image update promise if there's a new image
+        if (typeof data.image !== 'string') {
+          const formData = new FormData()
+          formData.append('file', data.image)
+          updatePromises.push(
+            updateImagePackage({ id: packagee.id, image: formData }).unwrap(),
+          )
+        }
+
+        // Wait for all updates to complete
+        await Promise.all(updatePromises)
+        toast.success('Package updated successfully')
+        setOpen(false)
+      } else {
+        await createPackage(data).unwrap()
+        toast.success('Package created successfully')
+        setOpen(false)
+      }
+    } catch (error) {
+      console.error(error)
+      toast.error('Something went wrong')
+    }
   }
 
   // Handle image selection
@@ -91,6 +96,21 @@ const PackageForm = ({ packagee, setOpen }: PackageFormProps) => {
     const files = e.target.files
     if (!files) return
     const file = files[0]
+
+    // Validate file type
+    const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
+    if (!validTypes.includes(file.type)) {
+      toast.error('Please upload a valid image file (JPEG, PNG, GIF, or WebP)')
+      return
+    }
+
+    // Validate file size (5MB)
+    const maxSize = 5 * 1024 * 1024
+    if (file.size > maxSize) {
+      toast.error('File size must be less than 5MB')
+      return
+    }
+
     if (file) {
       setSelectedImage(URL.createObjectURL(file))
     }
@@ -110,9 +130,10 @@ const PackageForm = ({ packagee, setOpen }: PackageFormProps) => {
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit, onError)}
+        encType="multipart/form-data"
+        onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-4">
-        <div className="w-full flex justify-center items-center gap-4">
+        <div className="w-full flex justify-center gap-4">
           <div className="w-full space-y-4">
             <FormField
               control={form.control}
@@ -123,25 +144,38 @@ const PackageForm = ({ packagee, setOpen }: PackageFormProps) => {
                   <FormControl>
                     <Textarea
                       {...field}
+                      className="max-h-40"
                       placeholder="Type something"></Textarea>
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
             <FormField
               control={form.control}
-              name="isReceived"
+              name="isReceive"
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>Status</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="text"
-                      readOnly
-                      value={field.value ? 'Collected' : 'Not Collected'}
-                      className="bg-gray-300"
-                    />
-                  </FormControl>
+                  <Select
+                    disabled={String(field.value) === 'true' ? true : false}
+                    onValueChange={(value) => {
+                      // Convert string value to boolean
+                      field.onChange(value === 'true')
+                    }}
+                    value={String(field.value)} // Convert boolean to string for Select
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select package status" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="true">Collected</SelectItem>
+                      <SelectItem value="false">Not Collected</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -161,7 +195,7 @@ const PackageForm = ({ packagee, setOpen }: PackageFormProps) => {
                             src={selectedImage}
                             loading="lazy"
                             alt="Preview"
-                            className="w-full h-full object-cover rounded-md"
+                            className="w-full h-full object-center object-contain rounded-md relative z-10"
                           />
                           <Button
                             size={'icon'}
@@ -183,16 +217,21 @@ const PackageForm = ({ packagee, setOpen }: PackageFormProps) => {
                       <Input
                         type="file"
                         accept="image/*"
-                        className="absolute size-full opacity-0 cursor-pointer"
+                        className="absolute size-full opacity-0 cursor-pointer object-center"
                         placeholder="Type something"
-                        {...field}
                         onChange={(e) => {
-                          field.onChange(e)
+                          if (e.target.files) {
+                            field.onChange(e.target.files[0])
+                          }
                           handleImageChange(e)
                         }}
+                        onBlur={field.onBlur}
+                        name={field.name}
+                        ref={field.ref}
                       />
                     </div>
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -207,7 +246,9 @@ const PackageForm = ({ packagee, setOpen }: PackageFormProps) => {
             Cancel
           </Button>
           <Button type="submit" size={'lg'} variant={'default'}>
-            {isLoading || isUpdating ? 'Submitting...' : 'Submit'}
+            {isLoading || isUpdating || isUpdatingImage
+              ? 'Submitting...'
+              : 'Submit'}
           </Button>
         </div>
       </form>
