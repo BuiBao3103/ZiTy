@@ -57,14 +57,22 @@ public class SettingService(IUnitOfWork unitOfWork, IMapper mapper) : ISettingSe
 
     public async Task<SettingDTO> TransitionToPayment()
     {
-        var existingSetting = await _unitOfWork.Repository<Setting>().GetByIdAsync(SettingConstants.SettingId)
+        var setting = await _unitOfWork.Repository<Setting>().GetByIdAsync(SettingConstants.SettingId)
             ?? throw new EntityNotFoundException(nameof(Service), SettingConstants.SettingId);
 
-        existingSetting.SystemStatus = SystemStatusEnum.PAYMENT;
+        var billSpec = new BaseSpecification<Bill>(b => b.DeletedAt == null && b.Monthly == setting.CurrentMonthly && b.NewWater == null);
+        var bills = await _unitOfWork.Repository<Bill>().ListAsync(billSpec);
 
-        _unitOfWork.Repository<Setting>().Update(existingSetting);
+        if (bills.Count != 0)
+        {
+            throw new BusinessRuleException("There are still bills that have not been calculated water price");
+        }
+
+        setting.SystemStatus = SystemStatusEnum.PAYMENT;
+
+        _unitOfWork.Repository<Setting>().Update(setting);
         await _unitOfWork.SaveChangesAsync();
-        return _mapper.Map<SettingDTO>(existingSetting);
+        return _mapper.Map<SettingDTO>(setting);
     }
 
     public async Task<SettingDTO> TransitionToPrepayment()

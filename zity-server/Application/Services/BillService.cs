@@ -11,6 +11,7 @@ using Application.Core.Services;
 using Domain.Exceptions;
 using Application.Core.Exceptions;
 using Application.Core.Utilities;
+using Application.Core.Constants;
 
 namespace Application.Services;
 
@@ -118,28 +119,31 @@ public class BillService(IUnitOfWork unitOfWork, IMapper mapper, IVNPayService v
 
     public async Task<List<BillDTO>> UpdateWaterReadingAsync(BillUpdateWaterReadingDto waterReadingDto)
     {
-        Dictionary<string, string[]> errors = new();
-        List<Bill> bills = new();
+        List<Bill> bills = [];
         foreach (var waterReading in waterReadingDto.WaterReadings)
         {
+            Setting setting = await _unitOfWork.Repository<Setting>().GetByIdAsync(SettingConstants.SettingId);
 
             var bill = await _unitOfWork.Repository<Bill>().GetByIdAsync(waterReading.BillId);
             if (bill == null)
             {
-                errors.Add($"Id-{waterReading.NewWaterIndex}-{waterReading.ReadingDate}", new string[] { "Bill not found" });
+                throw new EntityNotFoundException(nameof(Bill), waterReading.BillId);
             }
             else
             {
-
                 bills.Add(bill);
+
                 bill.NewWater = waterReading.NewWaterIndex;
                 bill.WaterReadingDate = waterReading.ReadingDate;
-                _unitOfWork.Repository<Bill>().Update(bill);
+                if (bill.OldWater == null)
+                {
+                    int numberWater = waterReading.NewWaterIndex - bill.OldWater ?? throw new BusinessRuleException("Old water index is null of bill " + bill.Id);
+                    var waterPrice = setting.RoomPricePerM2 * numberWater * (100 + setting.WaterVat + setting.EnvProtectionTax) / 100;
+                    bill.TotalPrice += waterPrice;
+                    _unitOfWork.Repository<Bill>().Update(bill);
+                }
+
             }
-        }
-        if (errors.Count > 0)
-        {
-            throw new ValidationException(errors);
         }
         await _unitOfWork.SaveChangesAsync();
         return bills.Select(_mapper.Map<BillDTO>).ToList();
