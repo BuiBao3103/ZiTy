@@ -61,12 +61,25 @@ public class UserService(IUnitOfWork unitOfWork, IMediaService mediaService, IEm
         var password = PasswordGenerator.GeneratePassword(12);
         user.Password = BCrypt.Net.BCrypt.HashPassword(password);
         user.Avatar = CloudinaryConstants.DEFAULT_AVATAR;
-        var createdUser = await _unitOfWork.Repository<User>().AddAsync(user);
-        await _emailService.SendAccountCreationEmail(createdUser, password);
 
+        // Check if a user already exists with the given username or NationId
+        var spec = new BaseSpecification<User>(a => a.DeletedAt == null && (a.Username == user.Username || a.NationId == user.NationId));
+        var existedUser = await _unitOfWork.Repository<User>().FirstOrDefaultAsync(spec);
+        if (existedUser != null)
+        {
+            throw new BusinessRuleException("Username or NationalId already exists");
+        }
+
+        // Try to send the email first
+        await _emailService.SendAccountCreationEmail(user, password);
+
+        // If email is successfully sent, create the user
+        var createdUser = await _unitOfWork.Repository<User>().AddAsync(user);
         await _unitOfWork.SaveChangesAsync();
+
         return _mapper.Map<UserDTO>(createdUser);
     }
+
 
     public async Task<UserDTO> UploadAvatarAsync(int id, IFormFile file)
     {
