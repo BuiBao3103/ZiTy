@@ -1,7 +1,5 @@
 import { IPackage } from '@/schema/package.validate'
 import { apiSlice } from '../api/apiSlice'
-import { number } from 'zod'
-
 const packageSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getPackages: builder.query<
