@@ -45,14 +45,23 @@ public class SettingService(IUnitOfWork unitOfWork, IMapper mapper) : ISettingSe
 
     public async Task<SettingDTO> TransitionToOverdue()
     {
-        var existingSetting = await _unitOfWork.Repository<Setting>().GetByIdAsync(SettingConstants.SettingId)
+        var setting = await _unitOfWork.Repository<Setting>().GetByIdAsync(SettingConstants.SettingId)
              ?? throw new EntityNotFoundException(nameof(Service), SettingConstants.SettingId);
 
-        existingSetting.SystemStatus = SystemStatusEnum.OVERDUE;
+        var billSpec = new BaseSpecification<Bill>(b => b.DeletedAt == null && b.Monthly == setting.CurrentMonthly && b.Status == "UNPAID");
+        var bills = await _unitOfWork.Repository<Bill>().ListAsync(billSpec);
 
-        _unitOfWork.Repository<Setting>().Update(existingSetting);
+        foreach (var bill in bills)
+        {
+            bill.Status = "OVERDUE";
+            _unitOfWork.Repository<Bill>().Update(bill);
+        }
+        setting.SystemStatus = SystemStatusEnum.OVERDUE;
+
+
+        _unitOfWork.Repository<Setting>().Update(setting);
         await _unitOfWork.SaveChangesAsync();
-        return _mapper.Map<SettingDTO>(existingSetting);
+        return _mapper.Map<SettingDTO>(setting);
     }
 
     public async Task<SettingDTO> TransitionToPayment()
