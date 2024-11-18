@@ -6,6 +6,7 @@ import { AlarmClock, Clock } from 'lucide-react'
 import { memo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
+import StatisticsSurvey from '../statistics/statistics-survey'
 
 interface SurveyItemProps {
   survey: ISurvey
@@ -18,7 +19,7 @@ const SurveyItem = ({ survey }: SurveyItemProps) => {
     await deleteSurvey(survey?.id)
       .unwrap()
       .then(() => {
-				toast.success('Survey deleted successfully')
+        toast.success('Survey deleted successfully')
       })
       .catch((err) => {
         toast.error(err.error.message)
@@ -76,6 +77,7 @@ const SurveyItem = ({ survey }: SurveyItemProps) => {
         </div>
       </div>
       <div className="w-full flex gap-4">
+        <StatisticsSurvey survey={survey} />
         <Button
           onClick={() => navigate(`/admin/surveys/${survey.id}`)}
           type="button"

@@ -1,7 +1,5 @@
 import { IPackage } from '@/schema/package.validate'
 import { apiSlice } from '../api/apiSlice'
-import { number } from 'zod'
-
 const packageSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getPackages: builder.query<
@@ -31,39 +29,65 @@ const packageSlice = apiSlice.injectEndpoints({
           url: url,
         }
       },
+      providesTags: (results) =>
+        results
+          ? [
+              ...results.contents.map(({ id }) => ({
+                type: 'Packages' as const,
+                id,
+              })),
+              { type: 'Packages', id: 'LIST' },
+            ]
+          : [{ type: 'Packages', id: 'LIST' }],
     }),
     getPackage: builder.query<IPackage, number | undefined>({
       query: (id) => `items/${id}`,
+      providesTags: (result, error, id) => [{ type: 'Packages', id }],
     }),
     updatePackage: builder.mutation<
       IPackage,
       {
         id: number
-        body: Partial<IPackage> &
-          Pick<IPackage, 'image' | 'description' | 'isReceived'>
+        body: Partial<IPackage> & Pick<IPackage, 'description' | 'isReceive'>
       }
     >({
       query: (data) => ({
         url: `items/${data.id}`,
-        method: 'PUT',
-        body: data,
+        method: 'PATCH',
+        body: data.body,
       }),
+      invalidatesTags: (result, error, { id }) => [{ type: 'Packages', id }],
     }),
+    updateImagePackage: builder.mutation<void, { id: number; image: FormData }>(
+      {
+        query: ({ id, image }) => ({
+          url: `items/${id}/image`,
+          method: 'POST',
+          body: image,
+          headers: {
+            'Content-Type': undefined,
+          },
+        }),
+        invalidatesTags: (result, error, { id }) => [{ type: 'Packages', id }],
+      },
+    ),
     createPackage: builder.mutation<
       IPackage,
-      Pick<IPackage, 'image' | 'description' | 'isReceived'>
+      Pick<IPackage, 'image' | 'description' | 'isReceive'>
     >({
       query: (data) => ({
         url: 'items',
         method: 'POST',
         body: data,
       }),
+      invalidatesTags: [{ type: 'Packages', id: 'LIST' }],
     }),
     deletePackage: builder.mutation<void, string>({
       query: (id) => ({
         url: `items/${id}`,
         method: 'DELETE',
       }),
+      invalidatesTags: [{ type: 'Packages', id: 'LIST' }],
     }),
     patchPackage: builder.mutation<
       IPackage,
@@ -74,6 +98,7 @@ const packageSlice = apiSlice.injectEndpoints({
         method: 'PATCH',
         body: data,
       }),
+      invalidatesTags: (result, error, { id }) => [{ type: 'Packages', id }],
     }),
   }),
 })
@@ -84,4 +109,5 @@ export const {
   useDeletePackageMutation,
   useUpdatePackageMutation,
   useGetPackageQuery,
+  useUpdateImagePackageMutation,
 } = packageSlice
