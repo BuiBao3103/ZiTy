@@ -13,9 +13,7 @@ public static class ServiceExtensions
 {
     public static void ConfigureInfrastructure(this IServiceCollection services)
     {
-        
-
-        
+        services.AddScoped<IStatisticRepository, StatisticRepository>();
 
         services.AddScoped(typeof(IBaseRepositoryAsync<>), typeof(BaseRepositoryAsync<>));
         services.AddScoped<IUnitOfWork, UnitOfWork>();

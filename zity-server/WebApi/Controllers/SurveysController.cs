@@ -61,4 +61,10 @@ public class SurveysController(ISurveyService surveyService) : ControllerBase
         var createdSurvey = await _surveyService.CreateFullSurveyAsync(surveyCreateFullDTO);
         return CreatedAtAction(nameof(Get), new { id = createdSurvey.Id }, createdSurvey);
     }
+
+    [HttpGet("{id}/statistic")]
+    public async Task<IActionResult> Statistic([FromRoute] int id)
+    {
+        return Ok(await _surveyService.StatisticSurveyAsync(id));
+    }
 }

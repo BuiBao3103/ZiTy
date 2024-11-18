@@ -8,11 +8,13 @@ namespace Infrastructure.Repositories
     {
         protected readonly ApplicationDbContext _dbContext;
         private readonly IDictionary<Type, dynamic> _repositories;
+        private readonly IStatisticRepository _statisticRepository;
 
-        public UnitOfWork(ApplicationDbContext dbContext)
+        public UnitOfWork(ApplicationDbContext dbContext, IStatisticRepository statisticRepository)
         {
             _dbContext = dbContext;
             _repositories = new Dictionary<Type, dynamic>();
+            _statisticRepository = statisticRepository;
         }
 
         public IBaseRepositoryAsync<T> Repository<T>() where T : BaseEntity
@@ -47,5 +49,6 @@ namespace Infrastructure.Repositories
         {
             await _dbContext.Database.RollbackTransactionAsync();
         }
+        public IStatisticRepository StatisticRepository => _statisticRepository; 
     }
 }

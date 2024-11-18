@@ -1,6 +1,8 @@
 ﻿using Application.DTOs.Surveys;
 using AutoMapper;
+using Domain.Core.Models;
 using Domain.Entities;
+using System.Diagnostics.Contracts;
 
 namespace Application.Mappers;
 
@@ -35,9 +37,19 @@ public class SurveyMapping : Profile
                 Answers = q.Answers.Select(a => new Answer
                 {
                     CreatedAt = DateTime.Now,
-                    Content = a.Content
+                    Content = a.Content 
                 }).ToList()
             }).ToList()));
+        CreateMap<QuestionStatistics, QuestionStatisticsDto>()
+                .ForMember(dest => dest.Answers, opt =>
+                    opt.MapFrom(src => src.Answers))
+                .ForMember(dest => dest.OtherAnswers, opt =>
+                    opt.MapFrom(src => src.OtherAnswers));
+
+        CreateMap<AnswerStatistics, AnswerDetailDto>()
+            .ForMember(dest => dest.IsMostSelected, opt => opt.MapFrom(src => false));
+
+        CreateMap<OtherAnswerStatistics, OtherAnswerDetailDto>();
     }
 }
 
