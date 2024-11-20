@@ -7,21 +7,28 @@ import BreadCrumb from '@/components/breadcrumb'
 import { useGetBillsQuery } from '@/features/bill/billSlice'
 import { useState } from 'react'
 import PaginationCustom from '@/components/pagination/PaginationCustom'
+import PageSizeSelector from '@/components/table/page-size-selector'
+import PaginationInfo from '@/components/table/page-info'
 const Index = () => {
   useDocumentTitle('Bill')
+  const [pageSize, setPageSize] = useState<number>(10)
   const [currentPage, setCurrentPage] = useState<number>(1)
   const {
     data: bills,
     isLoading,
     isFetching,
-  } = useGetBillsQuery({ page: currentPage, includes: ['Relationship'] })
+  } = useGetBillsQuery({
+    page: currentPage,
+    includes: ['Relationship'],
+    pageSize: pageSize,
+  })
 
   return (
     <>
       <div className="w-full sm:h-screen flex flex-col bg-zinc-100">
         <BreadCrumb paths={[{ label: 'bill', to: '/bill' }]} />
-        <div className="size-full p-4">
-          <div className="size-full p-4 bg-white rounded-md flex flex-col">
+        <div className="size-full p-4 overflow-hidden">
+          <div className="size-full p-4 bg-white rounded-md flex flex-col space-y-2">
             <div className="w-full h-auto flex justify-between items-center">
               <div className="w-full flex gap-4 items-center">
                 <div className="lg:w-1/4 flex items-center border px-3 py-0.5 relative rounded-md focus-within:border-primary transition-all">
@@ -37,18 +44,34 @@ const Index = () => {
                 </Button>
               </div>
             </div>
-            <div className="size-full">
+            <div className="size-full overflow-y-auto">
               <BillList
                 bills={bills?.contents}
                 isFetching={isFetching}
                 isLoading={isLoading}
               />
             </div>
-            <PaginationCustom
-              onPageChange={setCurrentPage}
-              currentPage={currentPage}
-              totalPages={bills?.totalPages}
-            />
+            <div className="w-full flex justify-between items-center">
+              <PageSizeSelector
+                className="w-full"
+                pageSize={pageSize}
+                onPageSizeChange={setPageSize}
+              />
+              <div className="w-full">
+                <PaginationCustom
+                  currentPage={currentPage}
+                  onPageChange={setCurrentPage}
+                  totalPages={bills?.totalPages}
+                />
+              </div>
+              <PaginationInfo
+                className="w-full whitespace-nowrap"
+                currentPage={currentPage}
+                pageSize={pageSize}
+                totalItems={bills?.totalItems}
+                loading={isLoading || isFetching}
+              />
+            </div>
           </div>
         </div>
       </div>

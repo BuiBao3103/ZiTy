@@ -8,12 +8,25 @@ import UserForm from './components/user-form'
 import { useGetUsersQuery } from '@/features/user/userSlice'
 import { useState } from 'react'
 import PaginationCustom from '@/components/pagination/PaginationCustom'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import PageSizeSelector from '@/components/table/page-size-selector'
+import PaginationInfo from '@/components/table/page-info'
 
 const Index = () => {
   useDocumentTitle('User')
-  const [searchByUsername, setSearchByUsername] = useState<string>('')
+  const [pageSize, setPageSize] = useState<number>(10)
+  const [searchValue, setSearchValue] = useState<string>('')
+  const [filterType, setFilterType] = useState<string>('username') // Default filter
+  const [advancedSearch, setAdvancedSearch] = useState<boolean>(false)
   const handleSearch = useDebounceCallback((value: string) => {
-    setSearchByUsername(value)
+    setSearchValue(value)
     if (value) {
       setCurrentPage(1)
     }
@@ -23,49 +36,84 @@ const Index = () => {
     data: users,
     isLoading,
     isFetching,
-  } = useGetUsersQuery({ page: currentPage, username: searchByUsername })
+  } = useGetUsersQuery({
+    page: currentPage,
+    [filterType]: searchValue,
+    pageSize: pageSize,
+  })
   return (
-    <>
-      <div className="w-full h-full lg:h-screen flex flex-col bg-zinc-100">
-        <BreadCrumb paths={[{ label: 'user', to: '/user' }]} />
-        <div className="size-full p-4">
-          <div className="size-full p-4 bg-white rounded-md flex flex-col	">
-            <div className="w-full h-auto flex lg:flex-row flex-col gap-4 justify-between items-center">
-              <div className="w-full flex gap-4 items-center">
-                <div className="w-full lg:w-1/4 flex items-center border px-3 py-0.5 relative rounded-md focus-within:border-primary transition-all">
-                  <Search size={20} />
-                  <Input
-                    placeholder="Search something"
-                    className="border-none shadow-none focus-visible:ring-0"
-                    onChange={(e) => handleSearch(e.target.value)}
-                  />
-                </div>
-                <Button
-                  className="w-full lg:w-fit gap-1"
-                  size={'lg'}
-                  variant={'secondary'}>
-                  <Filter size={20} />
-                  Filter
-                </Button>
+    <div className="w-full h-full lg:h-screen flex flex-col bg-zinc-100 overflow-hidden">
+      <BreadCrumb paths={[{ label: 'user', to: '/user' }]} />
+      <div className="size-full p-4 overflow-hidden">
+        <div className="size-full p-4 bg-white rounded-md flex flex-col space-y-2 overflow-hidden">
+          <div className="w-full h-auto flex lg:flex-row flex-col gap-4 justify-between items-center">
+            <div className="w-full flex gap-4 items-center">
+              <div className="w-full lg:w-[40%] xl:w-1/4 flex items-center border px-3 py-0.5 relative rounded-md focus-within:border-primary transition-all">
+                <Search size={22} />
+                <Input
+                  placeholder="Search something"
+                  className="border-none shadow-none focus-visible:ring-0"
+                  onChange={(e) => handleSearch(e.target.value)}
+                />
               </div>
-              <UserForm />
+              <Select
+                value={filterType}
+                onValueChange={(value) => setFilterType(value)}>
+                <SelectTrigger className="w-[130px] h-10">
+                  <SelectValue placeholder="Select filter" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="username">User name</SelectItem>
+                    <SelectItem value="fullName">Full name</SelectItem>
+                    <SelectItem value="phone">Phone</SelectItem>
+                    <SelectItem value="email">Email</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </div>
-            <div className="size-full">
-              <UserList
-                users={users?.contents}
-                isFetching={isFetching}
-                isLoading={isLoading}
+            <Button
+              onClick={() => setAdvancedSearch(!advancedSearch)}
+              type="button"
+              className={`w-full lg:w-fit gap-1`}
+              size={'lg'}
+              variant={`${advancedSearch ? 'default' : 'secondary'}`}>
+              <Filter size={20} />
+              Filter
+            </Button>
+            <UserForm />
+          </div>
+          <div className="size-full overflow-y-auto">
+            <UserList
+              users={users?.contents}
+              isFetching={isFetching}
+              isLoading={isLoading}
+            />
+          </div>
+          <div className="w-full flex justify-between items-center">
+            <PageSizeSelector
+              className="w-full"
+              pageSize={pageSize}
+              onPageSizeChange={setPageSize}
+            />
+            <div className="w-full">
+              <PaginationCustom
+                currentPage={currentPage}
+                onPageChange={setCurrentPage}
+                totalPages={users?.totalPages}
               />
             </div>
-            <PaginationCustom
+            <PaginationInfo
+              className="w-full whitespace-nowrap"
               currentPage={currentPage}
-              onPageChange={setCurrentPage}
-              totalPages={users?.totalPages}
+              pageSize={pageSize}
+              totalItems={users?.totalItems}
+              loading={isLoading || isFetching}
             />
           </div>
         </div>
       </div>
-    </>
+    </div>
   )
 }
 

@@ -30,7 +30,7 @@ const PaginationCustom = ({
   )
 
   return (
-    <Pagination className="mt-2">
+    <Pagination>
       <PaginationContent>
         {totalPages > 0 && (
           <PaginationItem>

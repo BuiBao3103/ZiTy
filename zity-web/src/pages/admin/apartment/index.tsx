@@ -10,16 +10,18 @@ import { useGetApartmentsQuery } from '@/features/apartment/apartmentSlice'
 import ApartmentSkeleton from '@/components/skeleton/ApartmentSkeleton'
 import { useState } from 'react'
 import PaginationCustom from '@/components/pagination/PaginationCustom'
+import PageSizeSelector from '@/components/table/page-size-selector'
+import PaginationInfo from '@/components/table/page-info'
 const Index = () => {
+  useDocumentTitle('Apartment')
   const params = useParams()
+  const [pageSize, setPageSize] = useState<number>(10)
   const [currentPage, setCurrentPage] = useState<number>(1)
   const {
     data: apartments,
     isLoading,
     isFetching,
-  } = useGetApartmentsQuery(currentPage)
-  useDocumentTitle('Apartment')
-  // console.log('apartments', apartments)
+  } = useGetApartmentsQuery({ page: currentPage, pageSize: pageSize })
   return (
     <div className="w-full sm:h-screen flex flex-col bg-zinc-100 overflow-hidden">
       <BreadCrumb
@@ -55,10 +57,26 @@ const Index = () => {
                 ) : (
                   <ApartmentList apartments={apartments?.contents} />
                 )}
-                <PaginationCustom
-                  onPageChange={setCurrentPage}
+              </div>
+              <div className="w-full flex justify-between items-center">
+                <PageSizeSelector
+                  className="w-full"
+                  pageSize={pageSize}
+                  onPageSizeChange={setPageSize}
+                />
+                <div className="w-full">
+                  <PaginationCustom
+                    currentPage={currentPage}
+                    onPageChange={setCurrentPage}
+                    totalPages={apartments?.totalPages}
+                  />
+                </div>
+                <PaginationInfo
+                  className="w-full whitespace-nowrap"
                   currentPage={currentPage}
-                  totalPages={apartments?.totalPages}
+                  pageSize={pageSize}
+                  totalItems={apartments?.totalItems}
+                  loading={isLoading || isFetching}
                 />
               </div>
             </>

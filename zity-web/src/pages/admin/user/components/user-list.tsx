@@ -22,8 +22,8 @@ const UserList = ({ users, isLoading, isFetching }: UserListProps) => {
 
   return (
     <>
-      <Table className="mt-4">
-        <TableHeader>
+      <Table className="relative">
+        <TableHeader className='sticky top-0 bg-white '>
           <TableRow>
             <TableHead className="w-[5%]">ID</TableHead>
             <TableHead className="w-[50%]">Full Name</TableHead>

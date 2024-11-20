@@ -19,8 +19,8 @@ interface ServiceListProps {
 const ServiceList = ({ services, isFetching, isLoading }: ServiceListProps) => {
   return (
     <>
-      <Table className="mt-4 h-full">
-        <TableHeader>
+      <Table className="relative">
+        <TableHeader className='bg-white sticky top-0'>
           <TableRow>
             <TableHead className='w-[5%]'>ID</TableHead>
             <TableHead className='w-[25%]'>Name</TableHead>

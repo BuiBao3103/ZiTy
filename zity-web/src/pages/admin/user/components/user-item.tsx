@@ -22,9 +22,10 @@ const UserItem = ({ user, setShowDetail }: UserItemProps) => {
             alt="user avatar"
             className="size-9 rounded-full object-cover hidden sm:inline-block"
           />
-          <div className="flex flex-col">
             <p className="">{user?.fullName}</p>
-          </div>
+						<span>-</span>
+            <p className="">{user?.username}</p>
+
         </div>
       </TableCell>
       <TableCell>{user?.phone ?? ''.slice(0, -4) + '****'}</TableCell>

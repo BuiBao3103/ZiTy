@@ -22,8 +22,8 @@ const BillList = ({ bills, isFetching, isLoading }: BillListProps) => {
 
   return (
     <>
-      <Table className="mt-4 h-full">
-        <TableHeader>
+      <Table className="relative">
+        <TableHeader className='bg-white sticky top-0'>
           <TableRow>
             <TableHead className='w-[5%]'>ID</TableHead>
             <TableHead>Apartment</TableHead>

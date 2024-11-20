@@ -15,9 +15,12 @@ import PaginationCustom from '@/components/pagination/PaginationCustom'
 import SurveyDetail from './components/survey-detail'
 import SurveyList from './components/survey-list'
 import SurveyCreate from './components/survey-create'
+import PageSizeSelector from '@/components/table/page-size-selector'
+import PaginationInfo from '@/components/table/page-info'
 
 const Index = () => {
   useDocumentTitle('Survey')
+  const [pageSize, setPageSize] = useState<number>(10)
   const params = useParams()
   const dispatch = useAppDispath()
   const isCreateNewSurvey = useSelector(
@@ -43,7 +46,7 @@ const Index = () => {
         ]}
       />
       <div className="w-full h-full p-4 overflow-hidden">
-        <div className="w-full h-full bg-white rounded-md p-4 flex flex-col	space-y-4">
+        <div className="w-full h-full bg-white rounded-md p-4 flex flex-col	space-y-2">
           {isCreateNewSurvey ? (
             <SurveyCreate />
           ) : params?.id ? (
@@ -74,16 +77,32 @@ const Index = () => {
                   Create Survey
                 </Button>
               </div>
-              <div className="size-full flex flex-col overflow-hidden">
+              <div className="size-full overflow-y-auto">
                 <SurveyList
                   surveys={surveys?.contents}
                   isFetching={isFetching}
                   isLoading={isLoading}
                 />
-                <PaginationCustom
+              </div>
+              <div className="w-full flex justify-between items-center">
+                <PageSizeSelector
+                  className="w-full"
+                  pageSize={pageSize}
+                  onPageSizeChange={setPageSize}
+                />
+                <div className="w-full">
+                  <PaginationCustom
+                    currentPage={currentPage}
+                    onPageChange={setCurrentPage}
+                    totalPages={surveys?.totalPages}
+                  />
+                </div>
+                <PaginationInfo
+                  className="w-full whitespace-nowrap"
                   currentPage={currentPage}
-                  onPageChange={setCurrentPage}
-                  totalPages={surveys?.totalPages}
+                  pageSize={pageSize}
+                  totalItems={surveys?.totalItems}
+                  loading={isLoading || isFetching}
                 />
               </div>
             </>

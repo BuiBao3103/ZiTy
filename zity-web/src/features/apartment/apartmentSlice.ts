@@ -3,10 +3,28 @@ import { IApartment } from '@/schema/apartment.validate'
 
 export const apartmentSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getApartments: builder.query<ResponseDataType<IApartment>, number | void>({
-      query: (page = 1) => {
+    getApartments: builder.query<
+      ResponseDataType<IApartment>,
+      {
+        page?: number
+        pageSize?: number
+        id?: number
+        includes?: string[]
+      }
+    >({
+      query: (params = {}) => {
+        let url = `apartments?page=${params.page}`
+        if (params.pageSize) {
+          url += `&PageSize=${params.pageSize}`
+        }
+        if (params.id) {
+          url += `$id=eq:${params.id}`
+        }
+        if (params.includes && params.includes?.length > 0) {
+          url += `&includes=${params.includes.join(',')}`
+        }
         return {
-          url: `apartments?page=${page}`,
+          url: url,
         }
       },
       providesTags: (result) =>
@@ -56,5 +74,5 @@ export const {
   useGetApartmentQuery,
   useUpdateApartmentMutation,
   useDeleteApartmentMutation,
-	useLazyGetApartmentQuery
+  useLazyGetApartmentQuery,
 } = apartmentSlice

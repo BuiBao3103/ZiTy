@@ -27,8 +27,8 @@ const PackageList = ({ packages, isLoading, isFetching }: PackageListProps) => {
 
   return (
     <>
-      <Table className="mt-4 h-full">
-        <TableHeader>
+      <Table className="relative">
+        <TableHeader className='bg-white sticky top-0'>
           <TableRow>
             <TableHead>ID</TableHead>
             <TableHead>Shipping to</TableHead>

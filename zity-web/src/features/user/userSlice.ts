@@ -41,12 +41,28 @@ const userApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getUsers: builder.query<
       ResponseDataType<User>,
-      { page?: number; username?: string; pageSize?: number }
+      {
+        page?: number
+        username?: string
+        pageSize?: number
+        fullName?: string
+        phone?: string
+        email?: string
+      }
     >({
       query: (params = { page: 1, username: '', pageSize: 10 }) => {
         let baseUrl = `users?page=${params.page}`
         if (params.pageSize && params.pageSize != 10) {
           baseUrl += `&pageSize=${params.pageSize}`
+        }
+        if (params.email && params.email != '') {
+          baseUrl += `&email=like:${params.email}`
+        }
+        if (params.fullName && params.fullName != '') {
+          baseUrl += `&fullName=like:${params.fullName}`
+        }
+        if (params.phone && params.phone != '') {
+          baseUrl += `&phone=like:${params.phone}`
         }
         if (params.username && params.username != '') {
           baseUrl += `&username=like:${params.username}`

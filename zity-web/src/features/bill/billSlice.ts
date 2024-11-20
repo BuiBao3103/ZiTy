@@ -7,6 +7,7 @@ export const billSlice = apiSlice.injectEndpoints({
       ResponseDataType<IBill>,
       {
         page?: number
+        pageSize?: number
         id?: number
         includes?: string[]
         relationshipId?: number
@@ -14,6 +15,9 @@ export const billSlice = apiSlice.injectEndpoints({
     >({
       query: (params = { page: 1 }) => {
         let url = `bills?page=${params.page}`
+        if (params.pageSize) {
+          url += `&PageSize=${params.pageSize}`
+        }
         if (params.relationshipId) {
           url += `&relationshipId=eq:${params.relationshipId}`
         }
