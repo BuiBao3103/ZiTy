@@ -33,14 +33,29 @@ public class SettingService(IUnitOfWork unitOfWork, IMapper mapper) : ISettingSe
 
     public async Task<SettingDTO> TransitionToDelinquent()
     {
-        var existingSetting = await _unitOfWork.Repository<Setting>().GetByIdAsync(SettingConstants.SettingId)
+        var setting = await _unitOfWork.Repository<Setting>().GetByIdAsync(SettingConstants.SettingId)
             ?? throw new EntityNotFoundException(nameof(Service), SettingConstants.SettingId);
 
-        existingSetting.SystemStatus = SystemStatusEnum.DELINQUENT;
+        var relationshipSpec = new BaseSpecification<Relationship>(r => r.DeletedAt == null && r.Role == "OWNER" && r.Bills.Any(b => b.Status == "OVERDUE"));
+        relationshipSpec.AddInclude(r => r.Apartment);
+        var relationships = await _unitOfWork.Repository<Relationship>().ListAsync(relationshipSpec);
 
-        _unitOfWork.Repository<Setting>().Update(existingSetting);
+        var distinctRelationships = relationships
+            .GroupBy(r => r.Apartment.Id)
+            .Select(g => g.First())
+            .ToList();
+
+        foreach (var relationship in distinctRelationships)
+        {
+            relationship.Apartment.Status = "DISRUPTION";
+            _unitOfWork.Repository<Apartment>().Update(relationship.Apartment);
+        }
+
+        setting.SystemStatus = SystemStatusEnum.DELINQUENT;
+
+        _unitOfWork.Repository<Setting>().Update(setting);
         await _unitOfWork.SaveChangesAsync();
-        return _mapper.Map<SettingDTO>(existingSetting);
+        return _mapper.Map<SettingDTO>(setting);
     }
 
     public async Task<SettingDTO> TransitionToOverdue()
@@ -90,7 +105,6 @@ public class SettingService(IUnitOfWork unitOfWork, IMapper mapper) : ISettingSe
            ?? throw new EntityNotFoundException(nameof(Service), SettingConstants.SettingId);
 
         var relationshipSpec = new BaseSpecification<Relationship>(r => r.DeletedAt == null && r.Role == "OWNER" && r.User.IsStaying == true);
-        relationshipSpec.AddInclude(r => r.User);
         relationshipSpec.AddInclude(r => r.Apartment);
         var relationships = await _unitOfWork.Repository<Relationship>().ListAsync(relationshipSpec);
 
