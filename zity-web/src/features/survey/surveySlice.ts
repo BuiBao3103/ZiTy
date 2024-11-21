@@ -63,17 +63,14 @@ const surveyApiSlice = apiSlice.injectEndpoints({
       async queryFn(_arg, _queryApi, _extraOptions, fetchWithBQ) {
         // Fetch survey details
         const surveyResult = await fetchWithBQ(`/surveys/${_arg}`)
-        if (surveyResult.error)
-          return { error: surveyResult.error as FetchBaseQueryError }
+        if (surveyResult.error) return { error: surveyResult.error as FetchBaseQueryError }
         const survey = surveyResult.data as ISurvey
         // Fetch questions using the survey ID
         const questionsResult = await fetchWithBQ(
           `/questions?SurveyId=eq:${survey.id}&includes=Answers`,
         )
-        if (questionsResult.error)
-          return { error: questionsResult.error as FetchBaseQueryError }
-        const questions = (questionsResult.data as ResponseDataType<IQuestion>)
-          .contents
+        if (questionsResult.error) return { error: questionsResult.error as FetchBaseQueryError }
+        const questions = (questionsResult.data as ResponseDataType<IQuestion>).contents
         // Combine survey data with questions and return the combined result
         return {
           data: {
@@ -82,8 +79,7 @@ const surveyApiSlice = apiSlice.injectEndpoints({
           },
         }
       },
-      providesTags: (result, error, id) =>
-        result ? [{ type: 'Surveys', id }] : [],
+      providesTags: (result, error, id) => (result ? [{ type: 'Surveys', id }] : []),
     }),
     getSurveyStatistics: builder.query<ISurveyStatistics, number | undefined>({
       query: (id) => ({
@@ -112,18 +108,13 @@ const surveyApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: [{ type: 'Surveys', id: 'LIST' }],
     }),
-    updateSurvery: builder.mutation<
-      void,
-      { id: number | undefined; body: Partial<ISurvey> }
-    >({
+    updateSurvery: builder.mutation<void, { id: number | undefined; body: Partial<ISurvey> }>({
       query: (data) => ({
         url: `surveys/${data.id}`,
         method: 'PUT',
         body: data.body,
       }),
-      invalidatesTags: (result, error, arg) => [
-        { type: 'Surveys', id: arg.id },
-      ],
+      invalidatesTags: (result, error, arg) => [{ type: 'Surveys', id: arg.id }],
     }),
     deleteSurvey: builder.mutation<void, string | number | undefined>({
       query: (id) => ({
@@ -144,5 +135,5 @@ export const {
   useUpdateSurveryMutation,
   useDeleteSurveyMutation,
   useCreateFullSurveyMutation,
-	useGetSurveyStatisticsQuery,
+  useGetSurveyStatisticsQuery,
 } = surveyApiSlice

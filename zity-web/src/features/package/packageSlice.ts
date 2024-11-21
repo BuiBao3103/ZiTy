@@ -1,6 +1,7 @@
-import { IPackage } from '@/schema/package.validate'
+import { IPackage, PackageSchema } from '@/schema/package.validate'
 import { apiSlice } from '../api/apiSlice'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { z } from 'zod'
 
 interface PackageState {
   showPackage: boolean
@@ -29,9 +30,7 @@ const packageApiSlice = apiSlice.injectEndpoints({
         pageSize?: number
         includes?: string[]
         sort?: string[]
-        UserId?: number
-        isReceive?: boolean
-      }
+      } & Partial<IPackage>
     >({
       query: (params?) => {
         let url = 'items'
@@ -41,8 +40,8 @@ const packageApiSlice = apiSlice.injectEndpoints({
         if (params?.isReceive) {
           url += `&isReceive=eq:${params.isReceive}`
         }
-        if (params?.UserId) {
-          url += `&UserId=eq:${params.UserId}`
+        if (params?.userId) {
+          url += `&UserId=eq:${params.userId}`
         }
         if (params?.pageSize) {
           url += `&pageSize=${params.pageSize}`
@@ -86,19 +85,17 @@ const packageApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: (result, error, { id }) => [{ type: 'Packages', id }],
     }),
-    updateImagePackage: builder.mutation<void, { id: number; image: FormData }>(
-      {
-        query: ({ id, image }) => ({
-          url: `items/${id}/image`,
-          method: 'POST',
-          body: image,
-          headers: {
-            'Content-Type': undefined,
-          },
-        }),
-        invalidatesTags: (result, error, { id }) => [{ type: 'Packages', id }],
-      },
-    ),
+    updateImagePackage: builder.mutation<void, { id: number; image: FormData }>({
+      query: ({ id, image }) => ({
+        url: `items/${id}/image`,
+        method: 'POST',
+        body: image,
+        headers: {
+          'Content-Type': undefined,
+        },
+      }),
+      invalidatesTags: (result, error, { id }) => [{ type: 'Packages', id }],
+    }),
     createPackage: builder.mutation<
       IPackage,
       Pick<IPackage, 'image' | 'description' | 'isReceive'>
@@ -117,10 +114,7 @@ const packageApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: [{ type: 'Packages', id: 'LIST' }],
     }),
-    patchPackage: builder.mutation<
-      IPackage,
-      { id: string; data: Partial<IPackage> }
-    >({
+    patchPackage: builder.mutation<IPackage, { id: string; data: Partial<IPackage> }>({
       query: ({ id, data }) => ({
         url: `items/${id}`,
         method: 'PATCH',

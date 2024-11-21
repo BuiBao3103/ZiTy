@@ -1,12 +1,9 @@
-import { IRejectionReasons } from '@/schema/report.validate'
+import { IRejectionReason } from '@/schema/report.validate'
 import { apiSlice } from '../api/apiSlice'
 
 export const rejectedReasonsSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getRejectionReasons: builder.query<
-      ResponseDataType<IRejectionReasons>,
-      number | void
-    >({
+    getRejectionReasons: builder.query<ResponseDataType<IRejectionReason>, number | void>({
       query: (page = 1) => {
         return {
           url: `rejectionReasons?page=${page}`,
@@ -23,17 +20,16 @@ export const rejectedReasonsSlice = apiSlice.injectEndpoints({
             ]
           : [{ type: 'RejectionReasons', id: 'LIST' }],
     }),
-    getRejectionReason: builder.query<IRejectionReasons, string | number>({
+    getRejectionReason: builder.query<IRejectionReason, string | number>({
       query: (id: string) => ({
         url: `rejected-reasons/${id}`,
         method: 'GET',
       }),
-      providesTags: (result, error, id) =>
-        result ? [{ type: 'RejectionReasons', id }] : [],
+      providesTags: (result, error, id) => (result ? [{ type: 'RejectionReasons', id }] : []),
     }),
     createRejectionReason: builder.mutation<
-      IRejectionReasons,
-      Partial<IRejectionReasons> & Omit<IRejectionReasons, 'id'>
+      IRejectionReason,
+      Partial<IRejectionReason> & Omit<IRejectionReason, 'id'>
     >({
       query: (data) => ({
         url: 'rejectionReasons',
@@ -44,16 +40,14 @@ export const rejectedReasonsSlice = apiSlice.injectEndpoints({
     }),
     updateRejectionReason: builder.mutation<
       void,
-      { id: string | number | undefined; body: Partial<IRejectionReasons> }
+      { id: string | number | undefined; body: Partial<IRejectionReason> }
     >({
       query: (data) => ({
         url: `rejectionReasons/${data.id}`,
         method: 'PATCH',
         body: data.body,
       }),
-      invalidatesTags: (result, error, arg) => [
-        { type: 'RejectionReasons', id: arg.id },
-      ],
+      invalidatesTags: (result, error, arg) => [{ type: 'RejectionReasons', id: arg.id }],
     }),
     deleteRejectionReason: builder.mutation<void, string | number | undefined>({
       query: (id: string) => ({

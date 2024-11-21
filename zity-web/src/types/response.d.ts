@@ -11,3 +11,5 @@ interface BaseEntity {
   updatedAt: Date | string
   deletedAt?: Date | string
 }
+
+type QueryArgs<T,U> = T & Partial<U>;

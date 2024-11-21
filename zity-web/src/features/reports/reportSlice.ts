@@ -6,12 +6,12 @@ export const reportsSlice = apiSlice.injectEndpoints({
     getReports: builder.query<
       ResponseDataType<IReport>,
       {
-				page?: number
+        page?: number
         pageSize?: number
         includes?: string[]
         sort?: string[]
         relationshipId?: number
-      }
+      } & Partial<IReport>
     >({
       query: (params = { page: 1 }) => {
         let url = `reports?page=${params.page}`
@@ -46,13 +46,11 @@ export const reportsSlice = apiSlice.injectEndpoints({
       query: (id) => ({
         url: `reports/${id}?includes=rejectionReason`,
       }),
-      providesTags: (result, error, id) =>
-        result ? [{ type: 'Reports', id }] : [],
+      providesTags: (result, error, id) => (result ? [{ type: 'Reports', id }] : []),
     }),
     createReport: builder.mutation<
       IReport,
-      | Partial<IReport>
-      | Pick<IReport, 'title' | 'content' | 'relationshipId' | 'status'>
+      Partial<IReport> | Pick<IReport, 'title' | 'content' | 'relationshipId' | 'status'>
     >({
       query: (data) => ({
         url: 'reports',
@@ -61,18 +59,13 @@ export const reportsSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: [{ type: 'Reports', id: 'LIST' }],
     }),
-    updateReport: builder.mutation<
-      void,
-      { id: number | undefined; body: Partial<IReport> }
-    >({
+    updateReport: builder.mutation<void, { id: number | undefined; body: Partial<IReport> }>({
       query: (data) => ({
         url: `reports/${data.id}`,
         method: 'PATCH',
         body: data.body,
       }),
-      invalidatesTags: (result, error, arg) => [
-        { type: 'Reports', id: arg.id },
-      ],
+      invalidatesTags: (result, error, arg) => [{ type: 'Reports', id: arg.id }],
     }),
     deleteReport: builder.mutation<void, string | number | undefined>({
       query: (id: string) => ({

@@ -13,9 +13,7 @@ const settingApiSlice = apiSlice.injectEndpoints({
         method: 'PATCH',
         body: data,
       }),
-      invalidatesTags: (result, error, arg) => [
-        { type: 'Surveys', id: arg.id },
-      ],
+      invalidatesTags: (result, error, arg) => [{ type: 'Surveys', id: arg.id }],
     }),
     updateTransitionPrepayment: builder.mutation<ISetting, void>({
       query: () => ({

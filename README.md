@@ -71,10 +71,13 @@ This web application was built to help residents in apartment
 |---|---|
 | <img src="./screens/userAdmin.png"/>  |  <img src="./screens/settingAdmin.png" />  |
 
-| Setting Page |  Survey Doing Page |
+| Setting Page |  Chat Page |
 |---|---|
-| <img src="./screens/settingAdmin.png"/>  |  <img src="./screens/settingAdmin.png"/> |
+| <img src="./screens/settingAdmin.png"/>  |  <img src="./screens/chatAdmin.png"/> |
 
+| Survey Statistics Page |  ... |
+|---|---|
+| <img src="./screens/surveyStatistics.png	"/>  |  <img src="./screens/chatAdmin.png1"/> |
 
 ### Make sure to star the repository if you find it helpful!
 

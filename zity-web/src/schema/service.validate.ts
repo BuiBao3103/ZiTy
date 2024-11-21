@@ -17,4 +17,4 @@ export const ServiceSchema = z.object({
 
 type ServiceFormSchema = z.infer<typeof ServiceSchema>
 
-export interface Service extends ServiceFormSchema, BaseEntity {}
+export interface IService extends ServiceFormSchema, BaseEntity {}

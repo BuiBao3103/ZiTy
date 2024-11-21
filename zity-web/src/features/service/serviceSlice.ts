@@ -1,11 +1,11 @@
-import { Service } from '@/schema/service.validate'
+import { IService } from '@/schema/service.validate'
 import { apiSlice } from '../api/apiSlice'
 
 export const serviceApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getServices: builder.query<
-      ResponseDataType<Service>,
-      { page?: number; name?: string; pageSize?: number }
+      ResponseDataType<IService>,
+      { page?: number; pageSize?: number } & Partial<IService>
     >({
       query: (params = { page: 1, name: '' }) => {
         let baseUrl = `services?page=${params.page}`
@@ -30,17 +30,14 @@ export const serviceApiSlice = apiSlice.injectEndpoints({
             ]
           : [{ type: 'Service', id: 'LIST' }],
     }),
-    getService: builder.query<Service, string | number | undefined>({
+    getService: builder.query<IService, string | number | undefined>({
       query: (id: string) => ({
         url: `services/${id}`,
         method: 'GET',
       }),
       providesTags: (result, error, id) => [{ type: 'Service', id }],
     }),
-    createService: builder.mutation<
-      Service,
-      Omit<Service, 'id' | 'createdAt' | 'updatedAt'>
-    >({
+    createService: builder.mutation<IService, Omit<IService, 'id' | 'createdAt' | 'updatedAt'>>({
       query: (body) => ({
         url: 'services',
         method: 'POST',
@@ -49,10 +46,10 @@ export const serviceApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: [{ type: 'Service', id: 'LIST' }],
     }),
     updateService: builder.mutation<
-      Service,
+      IService,
       {
         id: number | undefined
-        body: Partial<Service> & Omit<Service, 'id' | 'createdAt' | 'updatedAt'>
+        body: Partial<IService> & Omit<IService, 'id' | 'createdAt' | 'updatedAt'>
       }
     >({
       query: (data) => ({
@@ -62,7 +59,7 @@ export const serviceApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: (result, error, { id }) => [{ type: 'Service', id }],
     }),
-    patchService: builder.mutation<Service, Partial<Service>>({
+    patchService: builder.mutation<IService, Partial<IService>>({
       query: (body) => ({
         url: `services/${body.id}`,
         method: 'PATCH',

@@ -25,10 +25,7 @@ const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    getQrScanInformation: (
-      state,
-      action: PayloadAction<QrScanInformation | undefined>,
-    ) => {
+    getQrScanInformation: (state, action: PayloadAction<QrScanInformation | undefined>) => {
       state.qrScanInformation = action.payload
     },
     getUserInformation: (state, action: PayloadAction<User>) => {
@@ -45,10 +42,7 @@ const userApiSlice = apiSlice.injectEndpoints({
         page?: number
         username?: string
         pageSize?: number
-        fullName?: string
-        phone?: string
-        email?: string
-      }
+      } & Partial<User>
     >({
       query: (params = { page: 1, username: '', pageSize: 10 }) => {
         let baseUrl = `users?page=${params.page}`
@@ -82,12 +76,8 @@ const userApiSlice = apiSlice.injectEndpoints({
             ]
           : [{ type: 'Users', id: 'LIST' }],
     }),
-    getUsersInScroll: builder.query<
-      ResponseDataType<User>,
-      { page?: number; pageSize?: number }
-    >({
-      query: (params) =>
-        `users?page=${params.page}&pageSize=${params.pageSize}&Id=neq:1`,
+    getUsersInScroll: builder.query<ResponseDataType<User>, { page?: number; pageSize?: number }>({
+      query: (params) => `users?page=${params.page}&pageSize=${params.pageSize}&Id=neq:1`,
       serializeQueryArgs: ({ endpointName }) => {
         return endpointName
       },
@@ -133,13 +123,7 @@ const userApiSlice = apiSlice.injectEndpoints({
         body: Partial<User> &
           Pick<
             User,
-            | 'email'
-            | 'fullName'
-            | 'isStaying'
-            | 'dateOfBirth'
-            | 'nationId'
-            | 'phone'
-            | 'gender'
+            'email' | 'fullName' | 'isStaying' | 'dateOfBirth' | 'nationId' | 'phone' | 'gender'
           >
       }
     >({

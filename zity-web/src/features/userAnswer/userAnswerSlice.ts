@@ -3,16 +3,10 @@ import { apiSlice } from '../api/apiSlice'
 
 const userAnswerApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getUserAnswers: builder.query<
-      ResponseDataType<IUserAnswer>,
-      string | number
-    >({
+    getUserAnswers: builder.query<ResponseDataType<IUserAnswer>, string | number>({
       query: () => `userAnswers`,
     }),
-    getUserAnswer: builder.query<
-      ResponseDataType<IUserAnswer>,
-      string | number
-    >({
+    getUserAnswer: builder.query<ResponseDataType<IUserAnswer>, string | number>({
       query: (id) => `userAnswers/${id}`,
     }),
     createUserAnswer: builder.mutation<
@@ -25,10 +19,7 @@ const userAnswerApiSlice = apiSlice.injectEndpoints({
         body,
       }),
     }),
-    updateUserAnswer: builder.mutation<
-      ResponseDataType<IUserAnswer>,
-      IUserAnswer
-    >({
+    updateUserAnswer: builder.mutation<ResponseDataType<IUserAnswer>, IUserAnswer>({
       query: (body) => ({
         url: `userAnswers/${body.id}`,
         method: 'PUT',
