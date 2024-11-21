@@ -17,7 +17,7 @@ const Index = () => {
   })
   return (
     <div className="w-full sm:h-screen flex flex-col bg-zinc-100">
-      <BreadCrumb paths={[{ label: 'report', to: '/report' }]} />
+      <BreadCrumb paths={[{ label: 'report', to: '/reports' }]} />
       <div className="w-full h-full p-4 overflow-hidden">
         <div className="w-full h-full p-4 bg-white rounded-md flex flex-col gap-4">
           <div className="w-full flex items-center border px-4 py-1 relative rounded-md focus-within:border-primary transition-all">

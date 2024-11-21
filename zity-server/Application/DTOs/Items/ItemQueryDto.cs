@@ -8,4 +8,6 @@ public class ItemQueryDTO : BaseQueryDTO
     public string? Id { get; set; }
     [RegularExpression(@"^(eq):[\w\s,]*$", ErrorMessage = "Invalid filter format")]
     public string? UserId { get; set; }
+    [RegularExpression(@"^(eq):[\w\s,]*$", ErrorMessage = "Invalid filter format")]
+    public string? IsReceive { get; set; }
 }

@@ -19,13 +19,19 @@ const Index = () => {
   useDocumentTitle('Bill')
   const params = useParams()
   const { width = 0 } = useWindowSize()
-	const user = useAppSelector((state) => state.userReducer.user)
+  const user = useAppSelector((state) => state.userReducer.user)
   const [currentPage, setCurrentPage] = useState<number>(1)
-  const { data: bills, isLoading, isFetching } = useGetBillsQuery({page: currentPage,relationshipId: user?.relationships?.[0].id})
+  const {
+    data: bills,
+    isLoading,
+    isFetching,
+  } = useGetBillsQuery({
+    page: currentPage,
+    relationshipId: user?.relationships?.[0].id,
+  })
   const handlePageChange = (page: number) => {
     setCurrentPage(page)
   }
-	console.log(bills)
   return (
     <div className="w-full sm:h-screen flex flex-col bg-zinc-100 overflow-hidden">
       <BreadCrumb

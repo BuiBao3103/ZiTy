@@ -1,25 +1,38 @@
-import { Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { useDocumentTitle, useWindowSize } from 'usehooks-ts'
 import PackageList from './components/package-list'
-import { Search } from 'lucide-react'
-import { Input } from '@/components/ui/input'
 import BreadCrumb from '@components/breadcrumb'
-import { PDFDownloadLink, PDFViewer, usePDF } from '@react-pdf/renderer'
 import PackageDetail from './components/package-detail'
-import { Separator } from '@/components/ui/separator'
-import { Button } from '@/components/ui/button'
-import { useEffect } from 'react'
+import { useGetPackagesQuery } from '@/features/package/packageSlice'
+import { useAppSelector } from '@/store'
+import { useState } from 'react'
+
 const Index = () => {
   useDocumentTitle('Package')
+  const [activeFilter, setActiveFilter] = useState('All')
   const filterBar: string[] = ['All', 'Not Collected', 'Collected']
+  const user = useAppSelector((state) => state.userReducer.user)
   const params = useParams()
   const { width = 0 } = useWindowSize()
+  const { data: packages } = useGetPackagesQuery({
+    page: 1,
+    UserId: user?.id,
+    includes: ['user'],
+  })
+
+  // Filter packages based on the active filter
+  const filteredPackages = packages?.contents.filter((pkg) => {
+    if (activeFilter === 'All') return true
+    if (activeFilter === 'Collected') return pkg.isReceive
+    if (activeFilter === 'Not Collected') return !pkg.isReceive
+    return true
+  })
 
   return (
     <div className="w-full sm:h-screen flex flex-col bg-zinc-100 overflow-hidden">
       <BreadCrumb
         paths={[
-          { label: 'package', to: '/package' },
+          { label: 'package', to: '/packages' },
           ...(params.id ? [{ label: params.id }] : []),
         ]}
       />
@@ -33,38 +46,22 @@ const Index = () => {
             ) : (
               <>
                 <div className="w-full h-fit flex flex-col sm:flex-row justify-between items-center sm:gap-0 gap-4">
-                  <div className="w-full lg:w-1/2 flex items-center border px-3 py-0.5 relative rounded-md focus-within:border-primary transition-all">
-                    <Search size={20} />
-                    <Input
-                      placeholder="Search something"
-                      className="border-none shadow-none focus-visible:ring-0"
-                    />
-                  </div>
-                  <div className="w-full sm:w-fit rounded-md flex bg-zinc-200 overflow-hidden">
+                  <div className="w-full sm:w-fit rounded-md flex bg-zinc-200 overflow-hidden border">
                     {filterBar.map((item, index) => (
                       <span
                         key={index}
-                        className="inline-block w-full text-nowrap text-center font-medium px-4 py-2 bg-transparent hover:bg-primary transition-all cursor-pointer">
+                        onClick={() => setActiveFilter(item)}
+                        className={`inline-block w-full text-nowrap text-center font-medium px-4 py-2 transition-all cursor-pointer ${
+                          activeFilter === item
+                            ? 'bg-primary text-white'
+                            : 'bg-transparent hover:bg-primary/20'
+                        }`}>
                         {item}
                       </span>
                     ))}
                   </div>
-                  {/* <Select defaultValue={'apple'}>
-                    <SelectTrigger className="w-full sm:w-[140px] xl:w-[180px] h-full">
-                      <SelectValue placeholder="Select a fruit" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectItem value="apple">Apple</SelectItem>
-                        <SelectItem value="banana">Banana</SelectItem>
-                        <SelectItem value="blueberry">Blueberry</SelectItem>
-                        <SelectItem value="grapes">Grapes</SelectItem>
-                        <SelectItem value="pineapple">Pineapple</SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select> */}
                 </div>
-                <PackageList id={params.id} />
+                <PackageList packages={filteredPackages} />
               </>
             )}
           </div>

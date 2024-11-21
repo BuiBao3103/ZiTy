@@ -29,20 +29,28 @@ const packageApiSlice = apiSlice.injectEndpoints({
         pageSize?: number
         includes?: string[]
         sort?: string[]
+        UserId?: number
+        isReceive?: boolean
       }
     >({
-      query: (params = { page: 1, pageSize: 1 }) => {
+      query: (params?) => {
         let url = 'items'
-        if (params.page) {
+        if (params?.page) {
           url += `?page=${params.page}`
         }
-        if (params.pageSize) {
+        if (params?.isReceive) {
+          url += `&isReceive=eq:${params.isReceive}`
+        }
+        if (params?.UserId) {
+          url += `&UserId=eq:${params.UserId}`
+        }
+        if (params?.pageSize) {
           url += `&pageSize=${params.pageSize}`
         }
-        if (params.includes && params.includes.length > 0) {
+        if (params?.includes && params?.includes.length > 0) {
           url += `&includes=${params.includes.join(',')}`
         }
-        if (params.sort && params.sort.length > 0) {
+        if (params?.sort && params?.sort.length > 0) {
           url += `&sort=${params.sort.join(',')}`
         }
         return {
@@ -132,6 +140,6 @@ export const {
   useDeletePackageMutation,
   useUpdatePackageMutation,
   useGetPackageQuery,
-	useLazyGetPackageQuery,
+  useLazyGetPackageQuery,
   useUpdateImagePackageMutation,
 } = packageApiSlice
