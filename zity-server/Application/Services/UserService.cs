@@ -27,6 +27,7 @@ public class UserService(IUnitOfWork unitOfWork, IMediaService mediaService, IEm
     public async Task<PaginatedResult<UserDTO>> GetAllAsync(UserQueryDTO query)
     {
         var filterExpression = query.BuildFilterCriteria<User>(a => a.DeletedAt == null);
+        Console.WriteLine(filterExpression);
         var spec = new BaseSpecification<User>(filterExpression);
         var totalCount = await _unitOfWork.Repository<User>().CountAsync(spec);
         query.Includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);

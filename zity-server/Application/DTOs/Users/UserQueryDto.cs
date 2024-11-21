@@ -7,5 +7,11 @@ public class UserQueryDTO : BaseQueryDTO
     public string Id { get; set; } = "";
 
     [RegularExpression(@"^(eq|neq|like|in):[\w\s,]*$", ErrorMessage = "Invalid filter format")]
-    public string Username { get; set; } = "";
+    public string? Username { get; set; } = "";
+
+    [RegularExpression(@"^(eq):[\w\s,]*$", ErrorMessage = "Invalid filter format")]
+    public string? IsStaying { get; set; }
+
+    [RegularExpression(@"^(eq):[\w\s,]*$", ErrorMessage = "Invalid filter format")]
+    public string? UserType { get; set; } = "";
 }
