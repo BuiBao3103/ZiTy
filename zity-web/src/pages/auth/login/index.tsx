@@ -86,7 +86,7 @@ export default function Index() {
           })
       })
       .catch((error) => {
-        console.log(error)
+				toast.error(error.data.message)
       })
   }
 
@@ -131,7 +131,7 @@ export default function Index() {
                     </Link>
                   </div>
                   <FormControl>
-                    <Input type={!isShowing ? 'password' : 'text'} {...field} />
+                    <Input placeholder='Enter password...' type={!isShowing ? 'password' : 'text'} {...field} />
                   </FormControl>
                   <FormMessage />
 

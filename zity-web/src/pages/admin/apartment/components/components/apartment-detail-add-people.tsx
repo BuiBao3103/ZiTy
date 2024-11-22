@@ -19,6 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { toast } from 'sonner'
 
 interface IApartmentDetailAddPeopleProps {
   relationships?: z.infer<typeof ExtendedRelationshipsSchema>[]
@@ -46,6 +47,11 @@ const ApartmentDetailAddPeople = ({
   // Check if a user is already in relationships
   const isUserInRelationships = (userId: number) => {
     return relationships.some((relationship) => relationship.userId === userId)
+  }
+
+  //Check if it already have a user with role OWNER
+  const isOwnerInRelationships = () => {
+    return relationships.some((relationship) => relationship.role === 'OWNER')
   }
 
   // Handle checkbox change
@@ -78,6 +84,10 @@ const ApartmentDetailAddPeople = ({
 
   // Handle adding selected people
   const handleActionAddPeople = async () => {
+		if(isOwnerInRelationships()) {
+			toast.error('This apartment already have an owner')
+			return;
+		}
     try {
       if (selectedUsers.length === 0) return
 
@@ -128,7 +138,6 @@ const ApartmentDetailAddPeople = ({
                     <Label className="flex items-center gap-2">
                       <Checkbox
                         checked={isUserInRelationships(user.id) || isUserSelected(user.id)}
-                        disabled={isUserInRelationships(user.id)}
                         onCheckedChange={(checked) =>
                           handleCheckboxChange(user.id, checked as boolean)
                         }
