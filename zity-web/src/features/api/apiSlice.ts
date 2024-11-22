@@ -16,25 +16,23 @@ const baseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_SERVER_URL,
   prepareHeaders: (headers, { getState }) => {
     // By default, if we have a token in the store, let's use that for authenticated requests
-    const token =
-      (getState() as RootState).authReducer.token || cookies.get('accessToken')
+    const token = (getState() as RootState).authReducer.token || cookies.get('accessToken')
     if (token) {
       headers.set('authorization', `Bearer ${token}`)
     }
     return headers
   },
 })
-const baseQueryWithReauth: BaseQueryFn<
-  string | FetchArgs,
-  unknown,
-  FetchBaseQueryError
-> = async (args, api, extraOptions) => {
+const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
+  args,
+  api,
+  extraOptions,
+) => {
   let result = await baseQuery(args, api, extraOptions)
   if (result.error && result.error.status === 401) {
     // try to get a new token
     const refreshToken =
-      (api.getState() as RootState).authReducer.refreshToken ||
-      cookies.get('refreshToken')
+      (api.getState() as RootState).authReducer.refreshToken || cookies.get('refreshToken')
     const refreshResult = await baseQuery(
       {
         url: 'auth/refresh-token',
@@ -61,9 +59,7 @@ const baseQueryWithReauth: BaseQueryFn<
       // retry the initial query
       result = await baseQuery(args, api, extraOptions)
     } else {
-      if (
-        (result.error.data as { message: string }).message === 'Unauthorized'
-      ) {
+      if ((result.error.data as { message: string }).message === 'Unauthorized') {
         toast.error('Your session has expired. Please log in again.', {
           action: {
             label: 'Log in',
@@ -93,8 +89,9 @@ export const apiSlice = createApi({
     'Surveys',
     'RejectionReasons',
     'Users',
-		'Settings',
-		'Packages',
+    'Settings',
+    'Packages',
+    'Relationships',
   ],
   endpoints: () => ({}),
 })

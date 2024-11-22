@@ -1,10 +1,10 @@
 import { apiSlice } from '../api/apiSlice'
-import { IApartment } from '@/schema/apartment.validate'
+import { ApartmentFormSchema } from '@/schema/apartment.validate'
 
 export const apartmentSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getApartments: builder.query<
-      ResponseDataType<IApartment>,
+      ResponseDataType<ApartmentFormSchema>,
       {
         page?: number
         pageSize?: number
@@ -38,26 +38,35 @@ export const apartmentSlice = apiSlice.injectEndpoints({
             ]
           : [{ type: 'Apartments', id: 'LIST' }],
     }),
-    getApartment: builder.query<IApartment, string | undefined>({
-      query: (id: string) => ({
-        url: `apartments/${id}`,
-        method: 'GET',
-      }),
-      providesTags: (result, error, id) =>
-        result ? [{ type: 'Apartments', id }] : [],
+    getApartment: builder.query<ApartmentFormSchema, { id: string; includes?: string }>({
+      query: (params) => {
+        let url = `apartments/${params.id}`
+        if (params.includes) {
+          url += `?includes=${params.includes}`
+        }
+        return {
+          url: url,
+        }
+      },
+      providesTags: (result, error, { id }) => (result ? [{ type: 'Apartments', id }] : []),
     }),
     updateApartment: builder.mutation<
       void,
-      { id: string; body: Partial<IApartment> }
+      {
+        id: string
+        body: Partial<ApartmentFormSchema> &
+          Pick<
+            ApartmentFormSchema,
+            'area' | 'description' | 'floorNumber' | 'apartmentNumber' | 'status'
+          >
+      }
     >({
       query: (data) => ({
         url: `apartments/${data.id}`,
         method: 'PUT',
         body: data.body,
       }),
-      invalidatesTags: (result, error, arg) => [
-        { type: 'Apartments', id: arg.id },
-      ],
+      invalidatesTags: (result, error, arg) => [{ type: 'Apartments', id: arg.id }],
     }),
     deleteApartment: builder.mutation<void, string | undefined>({
       query: (id: string) => ({

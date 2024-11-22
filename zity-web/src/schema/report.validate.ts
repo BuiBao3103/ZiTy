@@ -1,6 +1,7 @@
 import { ReportStatusSchema } from '@/enums'
 import { z } from 'zod'
-import { IRelationships } from './relationship.validate'
+import { ExtendedRelationshipsSchema } from './relationship.validate'
+import { BaseEntitySchema } from './base.entity'
 
 export const ReportSchema = z.object({
   id: z.number(),
@@ -17,9 +18,13 @@ export const RejectionReasonSchema = z.object({
   reportId: z.number().nullable(),
 })
 
-export interface IRejectionReason extends z.infer<typeof RejectionReasonSchema> {}
-
-export interface IReport extends BaseEntity, ReportFormSchema {
-  rejectionReason: IRejectionReason,
-	relationship?: IRelationships
+export type ReportType = z.infer<typeof ReportSchema> & {
+  relationship?: z.infer<typeof ExtendedRelationshipsSchema>[]
+  createdAt?: Date | null | string
+  updatedAt?: Date | null | string
+  deleteAt?: Date | null | string
 }
+
+export const ExtendedReportSchema: z.ZodType<ReportType> = ReportSchema.extend({
+  relationships: z.lazy(() => ExtendedRelationshipsSchema.array()).optional(),
+}).merge(BaseEntitySchema)

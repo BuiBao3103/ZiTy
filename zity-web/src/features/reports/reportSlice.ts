@@ -1,17 +1,17 @@
-import { IReport } from '@/schema/report.validate'
+import { ReportType } from '@/schema/report.validate'
 import { apiSlice } from '../api/apiSlice'
 
 export const reportsSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getReports: builder.query<
-      ResponseDataType<IReport>,
+      ResponseDataType<ReportType>,
       {
         page?: number
         pageSize?: number
         includes?: string[]
         sort?: string[]
         relationshipId?: number
-      } & Partial<IReport>
+      } & Partial<ReportType>
     >({
       query: (params = { page: 1 }) => {
         let url = `reports?page=${params.page}`
@@ -42,15 +42,15 @@ export const reportsSlice = apiSlice.injectEndpoints({
             ]
           : [{ type: 'Reports', id: 'LIST' }],
     }),
-    getReport: builder.query<IReport, string | number>({
+    getReport: builder.query<ReportType, string | number>({
       query: (id) => ({
         url: `reports/${id}?includes=rejectionReason`,
       }),
       providesTags: (result, error, id) => (result ? [{ type: 'Reports', id }] : []),
     }),
     createReport: builder.mutation<
-      IReport,
-      Partial<IReport> | Pick<IReport, 'title' | 'content' | 'relationshipId' | 'status'>
+      ReportType,
+      Partial<ReportType> | Pick<ReportType, 'title' | 'content' | 'relationshipId' | 'status'>
     >({
       query: (data) => ({
         url: 'reports',
@@ -59,7 +59,7 @@ export const reportsSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: [{ type: 'Reports', id: 'LIST' }],
     }),
-    updateReport: builder.mutation<void, { id: number | undefined; body: Partial<IReport> }>({
+    updateReport: builder.mutation<void, { id: number | undefined; body: Partial<ReportType> }>({
       query: (data) => ({
         url: `reports/${data.id}`,
         method: 'PATCH',

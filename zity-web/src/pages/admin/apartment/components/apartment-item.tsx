@@ -1,10 +1,10 @@
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { IApartment } from '@/schema/apartment.validate'
+import { ApartmentFormSchema } from '@/schema/apartment.validate'
 import { useNavigate } from 'react-router-dom'
 
 interface ApartmentItemProps {
-  apartment: IApartment
+  apartment: ApartmentFormSchema
 }
 
 const ApartmentItem = ({ apartment }: ApartmentItemProps) => {

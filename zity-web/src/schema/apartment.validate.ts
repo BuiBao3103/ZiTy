@@ -1,14 +1,26 @@
 import { ApartmentStatusSchema } from '@/enums'
 import { z } from 'zod'
+import { BaseEntitySchema } from './base.entity'
+import { ExtendedRelationshipsSchema } from './relationship.validate'
 
 export const ApartmentSchema = z.object({
-	id: z.string(),
-	area: z.number().positive(),
-	description: z.string(),
-	floorNumber: z.number().positive(),
-	apartmentNumber: z.number().positive(),
-	status: ApartmentStatusSchema,
+  id: z.string(),
+  area: z.number().positive(),
+  description: z.string(),
+  floorNumber: z.number().positive(),
+  apartmentNumber: z.number().positive(),
+  status: ApartmentStatusSchema,
 })
-export type ApartmentFromSchema = z.infer<typeof ApartmentSchema>
 
-export interface IApartment extends BaseEntity, ApartmentFromSchema {}
+type ApartmentType = z.infer<typeof ApartmentSchema> & {
+  relationships?: z.infer<typeof ExtendedRelationshipsSchema>[]
+  createdAt?: Date | null | string
+  updatedAt?: Date | null | string
+  deleteAt?: Date | null | string
+}
+
+export const ExtendedApartmentSchema: z.ZodType<ApartmentType> = ApartmentSchema.extend({
+  relationships: z.lazy(() => ExtendedRelationshipsSchema.array()).optional(),
+}).merge(BaseEntitySchema)
+
+export type ApartmentFormSchema = z.infer<typeof ExtendedApartmentSchema>

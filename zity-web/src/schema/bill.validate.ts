@@ -1,10 +1,7 @@
-import {
-  BillStatusSchema,
-  PaymentMethodTypeSchema,
-  RequestTypeForMomoSchema,
-} from '@/enums'
+import { BillStatusSchema, PaymentMethodTypeSchema, RequestTypeForMomoSchema } from '@/enums'
 import { z } from 'zod'
-import { IRelationships } from './relationship.validate'
+import { ExtendedRelationshipsSchema } from './relationship.validate'
+import { BaseEntitySchema } from './base.entity'
 
 export const BillSchema = z.object({
   id: z.number(),
@@ -16,9 +13,17 @@ export const BillSchema = z.object({
   relationshipId: z.number(),
   waterReadingDate: z.coerce.date().nullable(),
 })
-export interface IBill extends z.infer<typeof BillSchema>,BaseEntity {
-	relationship?: IRelationships
+
+type BillType = z.infer<typeof BillSchema> & {
+  relationship?: z.infer<typeof ExtendedRelationshipsSchema>[]
+  createdAt?: Date | null | string
+  updatedAt?: Date | null | string
+  deleteAt?: Date | null | string
 }
+
+export const ExtendedBillSchema: z.ZodType<BillType> = BillSchema.extend({
+  relationships: z.lazy(() => ExtendedRelationshipsSchema.array()).optional(),
+}).merge(BaseEntitySchema)
 
 export const PaymentMethodSchema = z
   .object({
@@ -28,10 +33,7 @@ export const PaymentMethodSchema = z
   .refine(
     (data) => {
       // If name is "MOMO", then requestType must be present
-      return (
-        data.name !== 'MOMO' ||
-        (data.requestType !== undefined && data.requestType !== null)
-      )
+      return data.name !== 'MOMO' || (data.requestType !== undefined && data.requestType !== null)
     },
     {
       message: 'requestType is required when name is "MOMO"',

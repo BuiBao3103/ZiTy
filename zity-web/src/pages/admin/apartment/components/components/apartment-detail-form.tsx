@@ -22,16 +22,17 @@ import {
   useDeleteApartmentMutation,
   useUpdateApartmentMutation,
 } from '@/features/apartment/apartmentSlice'
-import { ApartmentSchema } from '@/schema/apartment.validate'
+import { ApartmentSchema, ExtendedApartmentSchema } from '@/schema/apartment.validate'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { z } from 'zod'
+import ApartmentDetailTable from './apartment-detail-table'
 
 interface IApartmentFormDetailProps {
-  apartment?: z.infer<typeof ApartmentSchema>
+  apartment?: z.infer<typeof ExtendedApartmentSchema>
 }
 
 const ApartmentFormDetail = ({ apartment }: IApartmentFormDetailProps) => {
@@ -41,8 +42,7 @@ const ApartmentFormDetail = ({ apartment }: IApartmentFormDetailProps) => {
     resolver: zodResolver(ApartmentSchema),
   })
   const [updateApartment, { isLoading }] = useUpdateApartmentMutation()
-  const [deleteApartment, { isLoading: isLoadingDelete }] =
-    useDeleteApartmentMutation()
+  const [deleteApartment, { isLoading: isLoadingDelete }] = useDeleteApartmentMutation()
   const onSubmit = async (data: z.infer<typeof ApartmentSchema>) => {
     try {
       const result = await updateApartment({ id: data.id, body: data })
@@ -56,6 +56,10 @@ const ApartmentFormDetail = ({ apartment }: IApartmentFormDetailProps) => {
       console.log(error)
       toast.error(error.message)
     }
+  }
+
+  const onError = (error: any) => {
+    console.log(error)
   }
 
   const handleDelete = async () => {
@@ -76,7 +80,7 @@ const ApartmentFormDetail = ({ apartment }: IApartmentFormDetailProps) => {
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(onSubmit, onError)}
         className="flex flex-col h-full space-y-4">
         <div className="size-full flex lg:flex-row flex-col space-y-4 lg:space-x-4">
           <div className="size-full">
@@ -87,12 +91,7 @@ const ApartmentFormDetail = ({ apartment }: IApartmentFormDetailProps) => {
                 <FormItem>
                   <FormLabel>Floor Number</FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
-                      type="text"
-                      readOnly
-                      className="read-only:bg-zinc-100"
-                    />
+                    <Input {...field} type="text" readOnly className="read-only:bg-zinc-100" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -145,9 +144,7 @@ const ApartmentFormDetail = ({ apartment }: IApartmentFormDetailProps) => {
                       </SelectTrigger>
                       <SelectContent>
                         {['IN_USE', 'EMPTY', 'DISRUPTION'].map((status) => (
-                          <SelectItem
-                            key={status}
-                            value={status as ApartmentStatus}>
+                          <SelectItem key={status} value={status as ApartmentStatus}>
                             {status}
                           </SelectItem>
                         ))}
@@ -159,30 +156,12 @@ const ApartmentFormDetail = ({ apartment }: IApartmentFormDetailProps) => {
               )}
             />
           </div>
-          {/* <div className="size-full">
-            <Table className="w-full h-full border">
-              <TableHeader className="bg-primary">
-                <TableRow className="[&>th]:text-black">
-                  <TableHead>ID</TableHead>
-                  <TableHead>Fullname</TableHead>
-                  <TableHead>User Type</TableHead>
-                  <TableHead>Created Date</TableHead>
-                  <TableHead>Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {Array.from({ length: 5 }).map((_, index) => (
-                  <TableRow key={index}>
-                    <TableCell>1</TableCell>
-                    <TableCell>John Doe</TableCell>
-                    <TableCell>Owner</TableCell>
-                    <TableCell>2021-10-10</TableCell>
-                    <TableCell>Active</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div> */}
+          <div className="size-full">
+            <ApartmentDetailTable
+              relationships={apartment?.relationships}
+              apartmentId={apartment?.id}
+            />
+          </div>
         </div>
         <div className="w-full flex justify-between items-center">
           <AlertDelete
@@ -195,11 +174,7 @@ const ApartmentFormDetail = ({ apartment }: IApartmentFormDetailProps) => {
               Cancel
             </Button>
             <Button type="submit" size={'lg'} variant="default">
-              {isLoading ? (
-                <Loader size={20} className="animate-spin" />
-              ) : (
-                'Save'
-              )}
+              {isLoading ? <Loader size={20} className="animate-spin" /> : 'Save'}
             </Button>
           </div>
         </div>

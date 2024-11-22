@@ -1,10 +1,5 @@
 import { z } from 'zod'
-
-export const BaseEntitySchema = z.object({
-  createdAt: z.union([z.date(), z.string()]).optional(),
-  updatedAt: z.union([z.date(), z.string()]).optional(),
-  deletedAt: z.union([z.date(), z.string()]).optional(),
-})
+import { BaseEntitySchema } from './base.entity'
 
 export const AnswerItemSchema = z.object({
   id: z.number().optional(),

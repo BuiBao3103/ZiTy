@@ -27,11 +27,8 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { BillStatus } from '@/enums'
-import {
-  useDeleteBillMutation,
-  useUpdateBillMutation,
-} from '@/features/bill/billSlice'
-import { BillSchema, IBill } from '@/schema/bill.validate'
+import { useDeleteBillMutation, useUpdateBillMutation } from '@/features/bill/billSlice'
+import { BillSchema, ExtendedBillSchema } from '@/schema/bill.validate'
 import { formatISODate } from '@/utils/ExtractTime'
 import { formatDateWithSlash } from '@/utils/Generate'
 import { Loader } from 'lucide-react'
@@ -41,7 +38,7 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 
 interface BillDetailFormProps {
-  bill?: IBill
+  bill?: z.infer<typeof ExtendedBillSchema>
   setShowDetail: (id: number | null) => void
 }
 
@@ -85,22 +82,18 @@ const BillDetailForm = ({ bill, setShowDetail }: BillDetailFormProps) => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-				{
-					isLoading && (
-						<div className="absolute inset-0 z-10 size-full flex justify-center items-center bg-white/50 backdrop-blur-sm">
-							<Loader className="text-primary animate-spin" size={52} />
-						</div>
-					)
-				}
+        {isLoading && (
+          <div className="absolute inset-0 z-10 size-full flex justify-center items-center bg-white/50 backdrop-blur-sm">
+            <Loader className="text-primary animate-spin" size={52} />
+          </div>
+        )}
         <div className="w-full flex justify-between items-center px-4 py-3">
           <div className="flex flex-col">
             <p className="text-3xl font-medium">
               Bill <span className="text-zinc-400">#</span>
               <span className="text-primary">{bill?.id}</span>
             </p>
-            <span className="uppercase text-sm font-medium text-zinc-400">
-              water bill
-            </span>
+            <span className="uppercase text-sm font-medium text-zinc-400">water bill</span>
           </div>
         </div>
         <Separator />
@@ -109,8 +102,7 @@ const BillDetailForm = ({ bill, setShowDetail }: BillDetailFormProps) => {
             <div className="w-full">
               <Label className="text-zinc-400">Issued on:</Label>
               <p className="font-medium">
-                {bill?.createdAt &&
-                  formatISODate(new Date(bill?.createdAt).toISOString())}
+                {bill?.createdAt && formatISODate(new Date(bill?.createdAt).toISOString())}
               </p>
             </div>
             <div className="w-full">
@@ -129,10 +121,8 @@ const BillDetailForm = ({ bill, setShowDetail }: BillDetailFormProps) => {
             <div className="w-full ">
               <Label className="text-zinc-400">To:</Label>
               <div className="flex flex-col">
-                <span className="font-medium">{bill?.relationship?.role}</span>
-                <p className="text-sm text-zinc-400">
-                  Room {bill?.relationship?.apartmentId}
-                </p>
+                <span className="font-medium">{bill?.relationship?.[0].role}</span>
+                <p className="text-sm text-zinc-400">Room {bill?.relationship?.[0].apartmentId}</p>
               </div>
             </div>
           </div>
@@ -198,16 +188,9 @@ const BillDetailForm = ({ bill, setShowDetail }: BillDetailFormProps) => {
         </div>
         <Separator />
         <div className="w-full flex justify-between items-center p-4">
-          <AlertDelete
-            description="bill"
-            setAction={() => handleDelete()}
-            isLoading={isDeleting}
-          />
+          <AlertDelete description="bill" setAction={() => handleDelete()} isLoading={isDeleting} />
           <div className="w-full flex justify-end gap-2">
-            <Button
-              onClick={() => setShowDetail(null)}
-              type="button"
-              variant={'ghost'}>
+            <Button onClick={() => setShowDetail(null)} type="button" variant={'ghost'}>
               Cancel
             </Button>
             <Button type="submit" variant={'default'}>

@@ -11,9 +11,12 @@ interface IApartmentDetailProps {
 
 const ApartmentDetail = ({ id }: IApartmentDetailProps) => {
   const navigate = useNavigate()
-  const { data, isLoading, isFetching } = useGetApartmentQuery(id, {
-    skip: !id,
-  })
+  const { data, isLoading, isFetching } = useGetApartmentQuery(
+    { id: id, includes: 'relationships.User' },
+    {
+      skip: !id,
+    },
+  )
   return (
     <div className="w-full h-full flex flex-col gap-4 relative">
       {isLoading || isFetching ? (
@@ -21,10 +24,7 @@ const ApartmentDetail = ({ id }: IApartmentDetailProps) => {
       ) : (
         <>
           <div className="flex items-center">
-            <Button
-              onClick={() => navigate('/admin/apartments')}
-              size={'icon'}
-              variant={'ghost'}>
+            <Button onClick={() => navigate('/admin/apartments')} size={'icon'} variant={'ghost'}>
               <ChevronLeft />
             </Button>
             <h1 className="text-xl font-medium">{data?.id}</h1>
