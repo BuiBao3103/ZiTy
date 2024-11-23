@@ -28,6 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import PackageReceivedPackage from './components/package-received-package'
 
 interface PackageFormProps {
   packagee?: IPackage
@@ -40,8 +41,7 @@ const PackageForm = ({ packagee, setOpen }: PackageFormProps) => {
   )
   const [createPackage, { isLoading }] = useCreatePackageMutation()
   const [updatePackage, { isLoading: isUpdating }] = useUpdatePackageMutation()
-  const [updateImagePackage, { isLoading: isUpdatingImage }] =
-    useUpdateImagePackageMutation()
+  const [updateImagePackage, { isLoading: isUpdatingImage }] = useUpdateImagePackageMutation()
 
   const form = useForm<z.infer<typeof PackageSchema>>({
     mode: 'onSubmit',
@@ -64,16 +64,12 @@ const PackageForm = ({ packagee, setOpen }: PackageFormProps) => {
         const updatePromises = []
 
         // Add package data update promise
-        updatePromises.push(
-          updatePackage({ id: packagee.id, body: newData }).unwrap(),
-        )
+        updatePromises.push(updatePackage({ id: packagee.id, body: newData }).unwrap())
         // Add image update promise if there's a new image
         if (typeof data.image !== 'string') {
           const formData = new FormData()
           formData.append('file', data.image)
-          updatePromises.push(
-            updateImagePackage({ id: packagee.id, image: formData }).unwrap(),
-          )
+          updatePromises.push(updateImagePackage({ id: packagee.id, image: formData }).unwrap())
         }
 
         // Wait for all updates to complete
@@ -208,9 +204,7 @@ const PackageForm = ({ packagee, setOpen }: PackageFormProps) => {
                         </>
                       ) : (
                         <>
-                          <span className="text-zinc-400 font-medium">
-                            Add image{' '}
-                          </span>
+                          <span className="text-zinc-400 font-medium">Add image </span>
                           <PlusCircle size={35} className="text-zinc-400" />
                         </>
                       )}
@@ -237,19 +231,16 @@ const PackageForm = ({ packagee, setOpen }: PackageFormProps) => {
             />
           </div>
         </div>
-        <div className="w-full flex justify-end gap-4">
-          <Button
-            type="button"
-            size={'lg'}
-            variant={'ghost'}
-            onClick={() => setOpen(undefined)}>
-            Cancel
-          </Button>
-          <Button type="submit" size={'lg'} variant={'default'}>
-            {isLoading || isUpdating || isUpdatingImage
-              ? 'Submitting...'
-              : 'Submit'}
-          </Button>
+        <div className="w-full flex justify-between items-center">
+          {packagee && <PackageReceivedPackage packageId={packagee.id} />}
+          <div className="w-full flex justify-end gap-4">
+            <Button type="button" size={'lg'} variant={'ghost'} onClick={() => setOpen(undefined)}>
+              Cancel
+            </Button>
+            <Button type="submit" size={'lg'} variant={'default'}>
+              {isLoading || isUpdating || isUpdatingImage ? 'Submitting...' : 'Submit'}
+            </Button>
+          </div>
         </div>
       </form>
     </Form>

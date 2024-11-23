@@ -28,8 +28,8 @@ const BillList = ({ bills, isFetching, isLoading }: BillListProps) => {
             <TableHead className='w-[5%]'>ID</TableHead>
             <TableHead>Apartment</TableHead>
             <TableHead>Total</TableHead>
-            <TableHead>Old Water</TableHead>
-            <TableHead>New Water</TableHead>
+            <TableHead>Old Water(m<sup>3</sup>)</TableHead>
+            <TableHead>New Water(m<sup>3</sup>)</TableHead>
             <TableHead>Water Read Date</TableHead>
             <TableHead>Status</TableHead>
           </TableRow>

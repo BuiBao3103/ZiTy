@@ -121,8 +121,8 @@ const BillDetailForm = ({ bill, setShowDetail }: BillDetailFormProps) => {
             <div className="w-full ">
               <Label className="text-zinc-400">To:</Label>
               <div className="flex flex-col">
-                <span className="font-medium">{bill?.relationship?.[0].role}</span>
-                <p className="text-sm text-zinc-400">Room {bill?.relationship?.[0].apartmentId}</p>
+                <span className="font-medium">{bill?.relationship?.role}</span>
+                <p className="text-sm text-zinc-400">Room {bill?.relationship?.apartmentId}</p>
               </div>
             </div>
           </div>

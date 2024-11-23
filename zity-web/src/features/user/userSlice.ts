@@ -148,6 +148,12 @@ const userApiSlice = apiSlice.injectEndpoints({
         body: data.body,
       }),
     }),
+    notifyReceivedPackage: builder.mutation<void, { id: number }>({
+      query: (data) => ({
+        url: `users/${data.id}/notify-received-package`,
+        method: 'POST',
+      }),
+    }),
   }),
 })
 
@@ -163,4 +169,5 @@ export const {
   useGetCurrentUserQuery,
   useLazyGetCurrentUserQuery,
   useUpdatePassordMutation,
+	useNotifyReceivedPackageMutation,
 } = userApiSlice

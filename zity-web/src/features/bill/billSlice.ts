@@ -1,4 +1,4 @@
-import { IBill } from '@/schema/bill.validate'
+import { IBill, IUpdateWaterReading } from '@/schema/bill.validate'
 import { apiSlice } from '../api/apiSlice'
 
 export const billSlice = apiSlice.injectEndpoints({
@@ -8,15 +8,16 @@ export const billSlice = apiSlice.injectEndpoints({
       {
         page?: number
         pageSize?: number
-        id?: number
         includes?: string[]
-        relationshipId?: number
-      }
+      } & Partial<IBill>
     >({
       query: (params = { page: 1 }) => {
         let url = `bills?page=${params.page}`
         if (params.pageSize) {
           url += `&PageSize=${params.pageSize}`
+        }
+        if (params.monthly) {
+          url += `&Monthly=eq:${params.monthly}`
         }
         if (params.relationshipId) {
           url += `&relationshipId=eq:${params.relationshipId}`
@@ -82,6 +83,16 @@ export const billSlice = apiSlice.injectEndpoints({
         method: 'POST',
       }),
     }),
+    updateWaterReadings: builder.mutation<void, { body: { waterReadings: IUpdateWaterReading[] } }>(
+      {
+        query: (data) => ({
+          url: `bills/update-water-readings`,
+          method: 'PATCH',
+          body: data.body,
+        }),
+        invalidatesTags: (result, error) => [{ type: 'Bills' }],
+      },
+    ),
   }),
 })
 
@@ -89,7 +100,9 @@ export const {
   usePaidByMomoMutation,
   usePaidByVnpayMutation,
   useGetBillsQuery,
+  useLazyGetBillsQuery,
   useGetBillQuery,
   useUpdateBillMutation,
   useDeleteBillMutation,
+  useUpdateWaterReadingsMutation,
 } = billSlice

@@ -1,5 +1,5 @@
 import { Input } from '@/components/ui/input'
-import { Filter, Search } from 'lucide-react'
+import { Droplets, Filter, Search } from 'lucide-react'
 import { Button } from '@components/ui/button'
 import BillList from './components/bill-list'
 import { useDocumentTitle } from 'usehooks-ts'
@@ -9,8 +9,11 @@ import { useState } from 'react'
 import PaginationCustom from '@/components/pagination/PaginationCustom'
 import PageSizeSelector from '@/components/table/page-size-selector'
 import PaginationInfo from '@/components/table/page-info'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import BillUpdateWaterReading from './components/bill-update-water-reading'
 const Index = () => {
   useDocumentTitle('Bill')
+  const [isOpenWaterReading, setIsOpenWaterReading] = useState<boolean>(false)
   const [pageSize, setPageSize] = useState<number>(10)
   const [currentPage, setCurrentPage] = useState<number>(1)
   const {
@@ -43,13 +46,23 @@ const Index = () => {
                   Filter
                 </Button>
               </div>
+              <div className="flex gap-2">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      type="button"
+                      onClick={() => setIsOpenWaterReading(true)}
+                      size={'icon'}
+                      variant={'outline'}>
+                      <Droplets size={20} />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Update water reading</TooltipContent>
+                </Tooltip>
+              </div>
             </div>
             <div className="size-full overflow-y-auto">
-              <BillList
-                bills={bills?.contents}
-                isFetching={isFetching}
-                isLoading={isLoading}
-              />
+              <BillList bills={bills?.contents} isFetching={isFetching} isLoading={isLoading} />
             </div>
             <div className="w-full flex justify-between items-center">
               <PageSizeSelector
@@ -75,6 +88,7 @@ const Index = () => {
           </div>
         </div>
       </div>
+      {isOpenWaterReading && <BillUpdateWaterReading setIsOpenWaterReading={setIsOpenWaterReading} />}
     </>
   )
 }

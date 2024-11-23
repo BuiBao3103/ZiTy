@@ -5,7 +5,7 @@ import { BaseEntitySchema } from './base.entity'
 
 export const BillSchema = z.object({
   id: z.number(),
-  monthly: z.number(),
+  monthly: z.string(),
   totalPrice: z.number(),
   oldWater: z.number().nullable(),
   newWater: z.number().nullable(),
@@ -15,15 +15,34 @@ export const BillSchema = z.object({
 })
 
 type BillType = z.infer<typeof BillSchema> & {
-  relationship?: z.infer<typeof ExtendedRelationshipsSchema>[]
+  relationship?: z.infer<typeof ExtendedRelationshipsSchema>
   createdAt?: Date | null | string
   updatedAt?: Date | null | string
   deleteAt?: Date | null | string
 }
 
 export const ExtendedBillSchema: z.ZodType<BillType> = BillSchema.extend({
-  relationships: z.lazy(() => ExtendedRelationshipsSchema.array()).optional(),
+  relationship: z.lazy(() => ExtendedRelationshipsSchema).optional(),
 }).merge(BaseEntitySchema)
+
+export type IBill = z.infer<typeof ExtendedBillSchema>
+
+export const UpdateWaterReadingSchema = z
+  .object({
+    billId: z.number(),
+    newWaterIndex: z.number().optional(),
+    readingDate: z.coerce.date().optional(),
+  })
+  .refine((data) => data.readingDate !== undefined && data.readingDate > new Date(), {
+    message: 'Reading date must be in the future',
+    path: ['readingDate'], // Attach the error to readingDate
+  })
+
+export const UpdateWaterReadingListSchema = z.object({
+  waterReadings: z.array(UpdateWaterReadingSchema),
+})
+
+export type IUpdateWaterReading = z.infer<typeof UpdateWaterReadingSchema>
 
 export const PaymentMethodSchema = z
   .object({
