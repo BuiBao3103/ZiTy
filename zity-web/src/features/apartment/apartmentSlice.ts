@@ -50,6 +50,14 @@ export const apartmentSlice = apiSlice.injectEndpoints({
       },
       providesTags: (result, error, { id }) => (result ? [{ type: 'Apartments', id }] : []),
     }),
+    createApartment: builder.mutation<ApartmentFormSchema, Partial<ApartmentFormSchema>>({
+      query: (body) => ({
+        url: 'apartments',
+        method: 'POST',
+        body: body,
+      }),
+      invalidatesTags: [{ type: 'Apartments', id: 'LIST' }],
+    }),
     updateApartment: builder.mutation<
       void,
       {

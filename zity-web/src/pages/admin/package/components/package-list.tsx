@@ -49,8 +49,8 @@ const PackageList = ({ packages, isLoading, isFetching }: PackageListProps) => {
             <TableHead>Shipping to</TableHead>
             <TableHead>Phone</TableHead>
             <TableHead>Delivery Date</TableHead>
-            <TableHead>Description</TableHead>
             <TableHead>Status</TableHead>
+            <TableHead>Description</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
