@@ -44,7 +44,7 @@ const settingApiSlice = apiSlice.injectEndpoints({
     }),
     updateTransitionDelinquent: builder.mutation<ISetting, void>({
       query: () => ({
-        url: 'settings/transition/prepayment',
+        url: 'settings/transition/delinquent',
         method: 'POST',
       }),
       invalidatesTags(result, error, arg, meta) {

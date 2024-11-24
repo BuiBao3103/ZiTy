@@ -103,8 +103,9 @@ const SettingForm = ({ setting, isLoading, isFetching }: SettingFormProps) => {
         .then(() => {
           toast.success('Updated to Payment status successfully')
         })
-        .catch(() => {
-          toast.error('Failed to update status')
+        .catch((error:any) => {
+          console.error('Failed to update to Payment status:', error)
+          toast.error(error.data.detail)
         })
     } catch (error) {
       console.error('Failed to update to Payment status:', error)

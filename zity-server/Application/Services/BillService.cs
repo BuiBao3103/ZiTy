@@ -122,7 +122,10 @@ public class BillService(IUnitOfWork unitOfWork, IMapper mapper, IVNPayService v
         {
             Setting setting = await _unitOfWork.Repository<Setting>().GetByIdAsync(SettingConstants.SettingId);
 
-            var bill = await _unitOfWork.Repository<Bill>().GetByIdAsync(waterReading.BillId);
+            var billSpec = new BaseSpecification<Bill>(b => b.Id == waterReading.BillId);
+            billSpec.AddInclude(b => b.Relationship.Apartment);
+
+            var bill = await _unitOfWork.Repository<Bill>().FirstOrDefaultAsync(billSpec);
             if (bill == null)
             {
                 throw new EntityNotFoundException(nameof(Bill), waterReading.BillId);
@@ -134,10 +137,13 @@ public class BillService(IUnitOfWork unitOfWork, IMapper mapper, IVNPayService v
                 bill.NewWater = waterReading.NewWaterIndex;
                 bill.WaterReadingDate = waterReading.ReadingDate;
 
-                int numberWater = waterReading.NewWaterIndex - bill.OldWater ?? throw new BusinessRuleException("Old water index is null of bill " + bill.Id);
+                int numberWater = (int)waterReading.NewWaterIndex! - (int)bill.OldWater!;
                 var waterPrice = setting.WaterPricePerM3 * numberWater * (100 + setting.WaterVat + setting.EnvProtectionTax) / 100;
                 bill.TotalPrice += waterPrice;
                 _unitOfWork.Repository<Bill>().Update(bill);
+
+                bill.Relationship.Apartment.CurrentWaterNumber = (int)waterReading.NewWaterIndex!;
+                _unitOfWork.Repository<Apartment>().Update(bill.Relationship.Apartment);
 
             }
         }

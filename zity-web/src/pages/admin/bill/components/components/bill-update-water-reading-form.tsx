@@ -40,13 +40,13 @@ const BillUpdateWaterReadingForm = ({
     const filteredData = data.waterReadings.filter(
       (item) => (item.newWaterIndex || item.newWaterIndex != 0) && item.readingDate,
     )
-    const checkValidReadingDate = filteredData.every(
-      (item) => item.readingDate && item.readingDate > new Date(),
-    )
-    if (!checkValidReadingDate) {
-      toast.error('Reading date must be in the future')
-      return
-    }
+    // const checkValidReadingDate = filteredData.every(
+    //   (item) => item.readingDate && item.readingDate > new Date(),
+    // )
+    // if (!checkValidReadingDate) {
+    //   toast.error('Reading date must be in the future')
+    //   return
+    // }
     await updateWaterReadings({ body: { waterReadings: filteredData } })
       .unwrap()
       .then(() => {
@@ -74,7 +74,7 @@ const BillUpdateWaterReadingForm = ({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {bills?.map((bill, index) => (
+              {bills?.filter(bill => bill.newWater === null).map((bill, index) => (
                 <TableRow key={bill.id}>
                   <TableCell>
                     <FormField

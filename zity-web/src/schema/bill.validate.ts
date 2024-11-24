@@ -33,10 +33,6 @@ export const UpdateWaterReadingSchema = z
     newWaterIndex: z.number().optional(),
     readingDate: z.coerce.date().optional(),
   })
-  .refine((data) => data.readingDate !== undefined && data.readingDate > new Date(), {
-    message: 'Reading date must be in the future',
-    path: ['readingDate'], // Attach the error to readingDate
-  })
 
 export const UpdateWaterReadingListSchema = z.object({
   waterReadings: z.array(UpdateWaterReadingSchema),
