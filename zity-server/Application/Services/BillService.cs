@@ -1,17 +1,15 @@
-﻿using AutoMapper;
+﻿using Application.Core.Constants;
+using Application.Core.Services;
+using Application.Core.Utilities;
+using Application.DTOs;
 using Application.DTOs.Bills;
-using Domain.Entities;
+using Application.DTOs.Momo;
 using Application.Interfaces;
+using AutoMapper;
 using Domain.Core.Repositories;
 using Domain.Core.Specifications;
-using Application.DTOs;
-
-using Application.DTOs.Momo;
-using Application.Core.Services;
+using Domain.Entities;
 using Domain.Exceptions;
-using Application.Core.Exceptions;
-using Application.Core.Utilities;
-using Application.Core.Constants;
 
 namespace Application.Services;
 
@@ -137,7 +135,7 @@ public class BillService(IUnitOfWork unitOfWork, IMapper mapper, IVNPayService v
                 bill.WaterReadingDate = waterReading.ReadingDate;
 
                 int numberWater = waterReading.NewWaterIndex - bill.OldWater ?? throw new BusinessRuleException("Old water index is null of bill " + bill.Id);
-                var waterPrice = setting.RoomPricePerM2 * numberWater * (100 + setting.WaterVat + setting.EnvProtectionTax) / 100;
+                var waterPrice = setting.WaterPricePerM3 * numberWater * (100 + setting.WaterVat + setting.EnvProtectionTax) / 100;
                 bill.TotalPrice += waterPrice;
                 _unitOfWork.Repository<Bill>().Update(bill);
 

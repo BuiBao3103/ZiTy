@@ -3,10 +3,10 @@ using Application.DTOs.Settings;
 using Application.Interfaces;
 using AutoMapper;
 using Domain.Core.Repositories;
+using Domain.Core.Specifications;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.Exceptions;
-using Domain.Core.Specifications;
 
 namespace Application.Services;
 public class SettingService(IUnitOfWork unitOfWork, IMapper mapper) : ISettingService
@@ -110,29 +110,27 @@ public class SettingService(IUnitOfWork unitOfWork, IMapper mapper) : ISettingSe
         var serviceSpec = new BaseSpecification<Service>(s => s.DeletedAt == null);
         var services = await _unitOfWork.Repository<Service>().ListAsync(serviceSpec);
 
+        //init list billdetails and cal total price
+        var billDetails = new List<BillDetail>();
+        var totalServicePrice = 0.0f;
+        foreach (var service in services)
+        {
+            var billDetail = new BillDetail()
+            {
+                ServiceId = service.Id,
+                Price = service.Price,
+            };
+            billDetails.Add(billDetail);
+            totalServicePrice += service.Price;
+        }
 
         foreach (var relationship in relationships)
         {
-            var billSpec = new BaseSpecification<Bill>(b => b.RelationshipId == relationship.Id && b.Status == "UNPAID" && b.Monthly == setting.CurrentMonthly);
+            var billSpec = new BaseSpecification<Bill>(b => b.RelationshipId == relationship.Id && b.Monthly == setting.CurrentMonthly);
             var currentMonthlyBill = await _unitOfWork.Repository<Bill>().FirstOrDefaultAsync(billSpec);
             if (currentMonthlyBill == null)
             {
-                var billDetails = new List<BillDetail>();
-                var totalServicePrice = 0.0f;
-                foreach (var service in services)
-                {
-                    var billDetail = new BillDetail()
-                    {
-                        ServiceId = service.Id,
-                        Price = service.Price,
-                    };
-                    billDetails.Add(billDetail);
-                    totalServicePrice += service.Price;
-                }
-
                 var totalRoomPrice = (setting.RoomPricePerM2 * relationship.Apartment.Area) * (100 + setting.RoomVat) / 100;
-
-
                 var newBill = new Bill()
                 {
                     RelationshipId = relationship.Id,
