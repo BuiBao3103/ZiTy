@@ -17,7 +17,7 @@ public static class FilterCriteriaExtensions
             .Where(p => p.GetValue(queryDto) != null &&
                        !typeof(BaseQueryDTO).GetProperties().Select(bp => bp.Name)
                            .Contains(p.Name));
-        Console.WriteLine(properties.ToList().Count);
+
         var parameter = Expression.Parameter(typeof(T), "x");
         Expression finalExpression = Expression.Constant(true);
 
@@ -25,58 +25,77 @@ public static class FilterCriteriaExtensions
         foreach (var property in properties)
         {
             var filterValue = property.GetValue(queryDto)?.ToString();
-            Console.WriteLine(filterValue);
             if (string.IsNullOrEmpty(filterValue)) continue;
 
             var parts = filterValue.Split(':');
             if (parts.Length != 2) continue;
-            Console.WriteLine(1);
+
             var operator_ = parts[0].ToLower();
             var value = parts[1];
 
-            var propertyName = property.Name;
-            var propertyInfo = typeof(T).GetProperty(propertyName);
+            var propertyPath = property.Name.Split('_');
+            Expression propertyExpression = parameter;
 
-            if (propertyInfo == null) continue;
-            Console.WriteLine(2);
-            var propertyExpression = Expression.Property(parameter, propertyInfo);
+            // Build the property access chain for nested properties
+            foreach (var prop in propertyPath)
+            {
+                var currentType = propertyExpression.Type;
+                var propertyInfo = currentType.GetProperty(prop);
+
+                if (propertyInfo == null)
+                {
+                    // Try to find case-insensitive match
+                    propertyInfo = currentType.GetProperties()
+                        .FirstOrDefault(p => p.Name.Equals(prop, StringComparison.OrdinalIgnoreCase));
+
+                    if (propertyInfo == null) break;
+                }
+
+                propertyExpression = Expression.Property(propertyExpression, propertyInfo);
+            }
+
+            // If property path is invalid, skip this filter
+            if (propertyExpression == parameter) continue;
+
             Expression condition = null;
             try
             {
+                var propertyType = propertyExpression.Type;
+
                 switch (operator_)
                 {
                     case "eq":
-                        var equalValue = ConvertToNullableType(value, propertyInfo.PropertyType);
-                        condition = Expression.Equal(propertyExpression, Expression.Constant(equalValue, propertyInfo.PropertyType));
+                        var equalValue = ConvertToNullableType(value, propertyType);
+                        condition = Expression.Equal(propertyExpression, Expression.Constant(equalValue, propertyType));
                         break;
 
                     case "neq":
-                        var notEqualValue = ConvertToNullableType(value, propertyInfo.PropertyType);
-                        condition = Expression.NotEqual(propertyExpression, Expression.Constant(notEqualValue, propertyInfo.PropertyType));
+                        var notEqualValue = ConvertToNullableType(value, propertyType);
+                        condition = Expression.NotEqual(propertyExpression, Expression.Constant(notEqualValue, propertyType));
                         break;
 
                     case "gt":
-                        var gtValue = ConvertToNullableType(value, propertyInfo.PropertyType);
-                        condition = Expression.GreaterThan(propertyExpression, Expression.Constant(gtValue, propertyInfo.PropertyType));
+                        var gtValue = ConvertToNullableType(value, propertyType);
+                        condition = Expression.GreaterThan(propertyExpression, Expression.Constant(gtValue, propertyType));
                         break;
 
                     case "gte":
-                        var gteValue = ConvertToNullableType(value, propertyInfo.PropertyType);
-                        condition = Expression.GreaterThanOrEqual(propertyExpression, Expression.Constant(gteValue, propertyInfo.PropertyType));
+                        var gteValue = ConvertToNullableType(value, propertyType);
+                        condition = Expression.GreaterThanOrEqual(propertyExpression, Expression.Constant(gteValue, propertyType));
                         break;
 
                     case "lt":
-                        var ltValue = ConvertToNullableType(value, propertyInfo.PropertyType);
-                        condition = Expression.LessThan(propertyExpression, Expression.Constant(ltValue, propertyInfo.PropertyType));
+                        var ltValue = ConvertToNullableType(value, propertyType);
+                        condition = Expression.LessThan(propertyExpression, Expression.Constant(ltValue, propertyType));
                         break;
 
                     case "lte":
-                        var lteValue = ConvertToNullableType(value, propertyInfo.PropertyType);
-                        condition = Expression.LessThanOrEqual(propertyExpression, Expression.Constant(lteValue, propertyInfo.PropertyType));
+                        var lteValue = ConvertToNullableType(value, propertyType);
+                        condition = Expression.LessThanOrEqual(propertyExpression, Expression.Constant(lteValue, propertyType));
                         break;
 
                     case "like":
-                        if (propertyInfo.PropertyType == typeof(string))
+                        if (propertyType == typeof(string))
                         {
                             var methodInfo = typeof(string).GetMethod("Contains", new[] { typeof(string) });
                             condition = Expression.Call(propertyExpression, methodInfo, Expression.Constant(value));
@@ -85,45 +104,50 @@ public static class FilterCriteriaExtensions
 
                     case "in":
                         var values = value.Split(',')
-                            .Select(v => ConvertToNullableType(v.Trim(), propertyInfo.PropertyType))
+                            .Select(v => ConvertToNullableType(v.Trim(), propertyType))
                             .ToList();
-                        var listType = typeof(List<>).MakeGenericType(propertyInfo.PropertyType);
+                        var listType = typeof(List<>).MakeGenericType(propertyType);
                         var containsMethod = typeof(Enumerable).GetMethods()
                             .First(m => m.Name == "Contains" && m.GetParameters().Length == 2)
-                            .MakeGenericMethod(propertyInfo.PropertyType);
+                            .MakeGenericMethod(propertyType);
                         condition = Expression.Call(null, containsMethod, Expression.Constant(values), propertyExpression);
                         break;
+                }
+
+                if (condition != null)
+                {
+                    // Add null checks for nested properties
+                    if (propertyPath.Length > 1)
+                    {
+                        Expression nullCheckExpression = parameter;
+                        for (int i = 0; i < propertyPath.Length - 1; i++)
+                        {
+                            nullCheckExpression = Expression.Property(nullCheckExpression, propertyPath[i]);
+                            var nullCheck = Expression.NotEqual(nullCheckExpression, Expression.Constant(null));
+                            condition = Expression.AndAlso(nullCheck, condition);
+                        }
+                    }
+
+                    finalExpression = Expression.AndAlso(finalExpression, condition);
                 }
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error building filter criteria for property {propertyName}", ex);
-                // Skip invalid conversions
-                //continue;
-            }
-
-            if (condition != null)
-            {
-                Console.WriteLine($"add: {Expression.Constant(condition.ToString())}");
-                finalExpression = Expression.AndAlso(finalExpression, condition);
+                throw new Exception($"Error building filter criteria for property {property.Name}", ex);
             }
         }
 
         // If there's a base filter, combine it with the dynamic criteria
         if (baseFilter != null)
         {
-            // Convert the base filter to use our parameter
             var visitor = new ParameterReplaceVisitor(baseFilter.Parameters[0], parameter);
             var baseBody = visitor.Visit(baseFilter.Body);
-
-            // Combine with AND
             finalExpression = Expression.AndAlso(baseBody, finalExpression);
         }
 
         return Expression.Lambda<Func<T, bool>>(finalExpression, parameter);
     }
 
-    // Helper visitor class to replace parameters in expressions
     private class ParameterReplaceVisitor : ExpressionVisitor
     {
         private readonly ParameterExpression _oldParameter;
@@ -140,13 +164,13 @@ public static class FilterCriteriaExtensions
             return node == _oldParameter ? _newParameter : base.VisitParameter(node);
         }
     }
+
     private static object ConvertToNullableType(string value, Type targetType)
     {
         if (string.IsNullOrEmpty(value))
-            return null; // Return null for empty strings
+            return null;
 
         var underlyingType = Nullable.GetUnderlyingType(targetType) ?? targetType;
-
         return Convert.ChangeType(value, underlyingType);
     }
 }
