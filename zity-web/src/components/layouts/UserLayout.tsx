@@ -26,9 +26,11 @@ const UserLayout = () => {
         toast.error('You are not authorized to access this page')
         return
       }
-
-      // Check if a non-owner user is trying to access non-bills pages
-      if (relationships && !hasRole('OWNER') && location.pathname !== ROUTES.BILLS) {
+      if (
+        userType === 'RESIDENT' &&
+        hasRole('OWNER') &&
+        (location.pathname !== ROUTES.BILLS && location.pathname !== ROUTES.HOME)
+      ) {
         navigate(ROUTES.BILLS)
         toast.error('You are not authorized to access this page')
       }

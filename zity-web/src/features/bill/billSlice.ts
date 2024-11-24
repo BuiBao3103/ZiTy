@@ -9,12 +9,16 @@ export const billSlice = apiSlice.injectEndpoints({
         page?: number
         pageSize?: number
         includes?: string[]
+        Relationship_UserId?: number
       } & Partial<IBill>
     >({
       query: (params = { page: 1 }) => {
         let url = `bills?page=${params.page}`
         if (params.pageSize) {
           url += `&PageSize=${params.pageSize}`
+        }
+        if (params.Relationship_UserId) {
+          url += `&Relationship_UserId=eq:${params.Relationship_UserId}`
         }
         if (params.monthly) {
           url += `&Monthly=eq:${params.monthly}`

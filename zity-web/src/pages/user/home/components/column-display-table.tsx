@@ -43,11 +43,7 @@ const ColumnDisplayTable = ({ apartmentData }: ColumnDisplayTableProps) => {
                 <TableCell>{relationship.user?.fullName}</TableCell>
                 <TableCell>{relationship.role}</TableCell>
                 <TableCell>{relationship.user?.phone}</TableCell>
-                <TableCell>
-                  <Badge variant={`${relationship.user?.gender === 'FEMALE' ? 'info' : 'warning'}`}>
-                    {relationship.user?.gender}
-                  </Badge>
-                </TableCell>
+                <TableCell>{relationship.user?.gender}</TableCell>
               </TableRow>
             ))}
           </TableBody>

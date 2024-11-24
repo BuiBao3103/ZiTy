@@ -24,7 +24,7 @@ import MobileMenu from './components/MobileMenu'
 import Logo from '@/assets/logo.svg'
 import LogoMobile from '@/assets/logoMobile.svg'
 import { ApartmentUserRole, UserRole } from '@/enums'
-import { useCallback, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useAppDispath, useAppSelector } from '@/store'
 import { ROUTES } from '@/configs/endpoint'
 import Cookies from 'universal-cookie'
@@ -33,7 +33,7 @@ export interface SideBarProps {
   label: string
   icon: React.ReactNode
   to: string
-  role?: UserRole[] | UserRole | ApartmentUserRole
+  role?: (UserRole | ApartmentUserRole)[]
 }
 
 const Header = () => {
@@ -50,31 +50,31 @@ const Header = () => {
       label: 'Home',
       icon: <House />,
       to: ROUTES.HOME,
-      role: 'RESIDENT',
+      role: ['OWNER', 'USER'],
     },
     {
       label: 'Packages',
       icon: <Package />,
       to: ROUTES.PACKAGES,
-      role: 'RESIDENT',
+      role: ['USER'],
     },
     {
       label: 'Surveys',
       icon: <NotebookText />,
       to: ROUTES.SURVEYS,
-      role: 'RESIDENT',
+      role: ['USER'],
     },
     {
       label: 'Reports',
       icon: <Flag />,
       to: ROUTES.REPORTS,
-      role: 'RESIDENT',
+      role: ['USER'],
     },
     {
       label: 'Bills',
       icon: <Receipt />,
       to: ROUTES.BILLS,
-      role: ['RESIDENT'],
+      role: ['OWNER', 'USER'],
     },
     {
       label: 'Home',
@@ -128,7 +128,7 @@ const Header = () => {
       label: 'Ask For Support',
       icon: <MessageCircleQuestion />,
       to: ROUTES.CHAT,
-      role: ['RESIDENT'],
+      role: ['USER'],
     },
     {
       label: 'Setting Admin',
@@ -146,7 +146,7 @@ const Header = () => {
 
   const filteredSidebars = useMemo(() => {
     if (!user?.userType || !user?.relationships) return []
-
+    console.log(user)
     return userSideBars.filter((sidebar) => {
       const { userType, relationships } = user
 
@@ -155,22 +155,21 @@ const Header = () => {
         relationships?.some((relationship) => relationship.role === role) ?? false
 
       // If the user is a RESIDENT and has an OWNER role in any relationship
-      if (userType === 'RESIDENT' && hasRole('OWNER')) {
+      if (userType === 'RESIDENT' && hasRole('OWNER') && !hasRole('USER')) {
+        return Array.isArray(sidebar.role) && sidebar.role.includes('OWNER')
+      } else if (userType === 'RESIDENT' && hasRole('USER') && !hasRole('OWNER')) {
+        return Array.isArray(sidebar.role) && sidebar.role.includes('USER')
+      } else if (userType === 'RESIDENT' && hasRole('USER') && hasRole('OWNER')) {
         return (
-          sidebar.role === 'RESIDENT' ||
-          (Array.isArray(sidebar.role) && sidebar.role.includes('RESIDENT'))
+          Array.isArray(sidebar.role) &&
+          (sidebar.role.includes('OWNER') || sidebar.role.includes('USER'))
         )
       }
-
-      // If the user is a RESIDENT but doesn't have an OWNER role, only return the 'Bill' element
-      if (userType === 'RESIDENT' && !hasRole('OWNER')) {
-        return sidebar.label === 'Bills'
-      }
-
       // Otherwise, filter normally based on role matching
       if (Array.isArray(sidebar.role)) {
         return sidebar.role.includes(userType)
       }
+      console.log('sidebar.role', sidebar.role)
 
       // Default check for non-array roles
       return sidebar.role === userType

@@ -12,7 +12,7 @@ import BillPaidDialog from './components/bill-paid-dialog'
 import { useGetBillsQuery } from '@/features/bill/billSlice'
 import UserBillSkeleton from '@/components/skeleton/UserBillSkeleton'
 import PaginationCustom from '@/components/pagination/PaginationCustom'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useAppSelector } from '@/store'
 
 const Index = () => {
@@ -27,18 +27,20 @@ const Index = () => {
     isFetching,
   } = useGetBillsQuery({
     page: currentPage,
-    relationshipId: user?.relationships?.[0].id,
+    Relationship_UserId: user?.id,
   })
+  console.log(bills)
   const handlePageChange = (page: number) => {
     setCurrentPage(page)
   }
+  const checkPermission = useMemo(() => {
+    return user?.relationships?.some(({ role }) => role === 'OWNER') || false
+  }, [user])
+
   return (
     <div className="w-full sm:h-screen flex flex-col bg-zinc-100 overflow-hidden">
       <BreadCrumb
-        paths={[
-          { label: 'bill', to: '/bills' },
-          ...(params.id ? [{ label: params.id }] : []),
-        ]}
+        paths={[{ label: 'bill', to: '/bills' }, ...(params.id ? [{ label: params.id }] : [])]}
       />
       <div className="w-full h-full p-4 flex gap-4 overflow-hidden">
         <div className="w-full h-full flex flex-col p-4 bg-white rounded-md">
@@ -49,10 +51,7 @@ const Index = () => {
                   <p className="font-medium">Bill-{params.id}.pdf</p>
                   <div className="flex gap-4 items-center">
                     <BillPaidDialog id={params.id}>
-                      <Button
-                        value={'default'}
-                        type="button"
-                        className="text-white">
+                      <Button value={'default'} type="button" className="text-white">
                         Paid now
                       </Button>
                     </BillPaidDialog>
@@ -81,9 +80,7 @@ const Index = () => {
                 </div>
                 <div className="w-full h-full flex flex-col gap-4 overflow-hidden">
                   {isFetching || isLoading ? (
-                    Array.from({ length: 5 }).map((_, index) => (
-                      <UserBillSkeleton key={index} />
-                    ))
+                    Array.from({ length: 5 }).map((_, index) => <UserBillSkeleton key={index} />)
                   ) : (
                     <BillList bills={bills?.contents} />
                   )}
@@ -106,14 +103,13 @@ const Index = () => {
             <div className="w-full h-14 bg-success flex justify-between items-center rounded-b-md p-4 relative">
               <p className="font-medium">Bill-{params.id}.pdf</p>
               <div className="flex gap-4 items-center">
-                <BillPaidDialog id={params.id}>
-                  <Button
-                    value={'default'}
-                    type="button"
-                    className="text-white">
-                    Paid now
-                  </Button>
-                </BillPaidDialog>
+                {checkPermission && (
+                  <BillPaidDialog id={params.id}>
+                    <Button value={'default'} type="button" className="text-white">
+                      Paid now
+                    </Button>
+                  </BillPaidDialog>
+                )}
                 <PDFDownloadLink
                   document={<BillDetail id={parseInt(params.id)} />}
                   fileName={`Bill-${params.id}.pdf`}>
