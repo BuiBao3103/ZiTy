@@ -72,12 +72,15 @@ export const relationshipsSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: (result, error, arg) => [{ type: 'Relationships', id: arg.id }],
     }),
-    deleteRelationship: builder.mutation<void, string | number | undefined>({
-      query: (id: string) => ({
-        url: `relationships/${id}`,
+    deleteRelationship: builder.mutation<void, { id?: string | number; apartmentId?: string }>({
+      query: (data) => ({
+        url: `relationships/${data.id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: (result, error, id) => [{ type: 'Relationships', id }],
+      invalidatesTags: (result, error, { id, apartmentId }) => [
+        { type: 'Relationships', id },
+        // { type: 'Apartments', id: apartmentId },
+      ],
     }),
   }),
 })

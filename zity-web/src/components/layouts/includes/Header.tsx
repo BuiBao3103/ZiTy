@@ -74,7 +74,7 @@ const Header = () => {
       label: 'Bills',
       icon: <Receipt />,
       to: ROUTES.BILLS,
-      role: ['OWNER', 'USER'],
+      role: ['OWNER'],
     },
     {
       label: 'Home',
@@ -146,32 +146,43 @@ const Header = () => {
 
   const filteredSidebars = useMemo(() => {
     if (!user?.userType || !user?.relationships) return []
-    console.log(user)
-    return userSideBars.filter((sidebar) => {
-      const { userType, relationships } = user
 
-      // Helper function to check if any relationship role matches the condition
-      const hasRole = (role: ApartmentUserRole) =>
-        relationships?.some((relationship) => relationship.role === role) ?? false
+    const { userType, relationships } = user
 
-      // If the user is a RESIDENT and has an OWNER role in any relationship
-      if (userType === 'RESIDENT' && hasRole('OWNER') && !hasRole('USER')) {
-        return Array.isArray(sidebar.role) && sidebar.role.includes('OWNER')
-      } else if (userType === 'RESIDENT' && hasRole('USER') && !hasRole('OWNER')) {
-        return Array.isArray(sidebar.role) && sidebar.role.includes('USER')
-      } else if (userType === 'RESIDENT' && hasRole('USER') && hasRole('OWNER')) {
-        return (
-          Array.isArray(sidebar.role) &&
-          (sidebar.role.includes('OWNER') || sidebar.role.includes('USER'))
+    // Helper function to check if any relationship role matches the condition
+    const hasRole = (role: ApartmentUserRole) =>
+      relationships?.some((relationship) => relationship.role === role) ?? false
+
+    // If the user is a RESIDENT
+    if (userType === 'RESIDENT') {
+      const isOwner = hasRole('OWNER')
+      const isUser = hasRole('USER')
+
+      if (!isOwner && isUser) {
+        // Case 1: User has USER role but not OWNER
+        return userSideBars.filter(
+          (sidebar) => Array.isArray(sidebar.role) && sidebar.role.includes('USER'),
+        )
+      } else if (isOwner && !isUser) {
+        // Case 2: User has OWNER role but not USER
+        return userSideBars.filter(
+          (sidebar) => Array.isArray(sidebar.role) && sidebar.role.includes('OWNER'),
+        )
+      } else if (isOwner && isUser) {
+        // Case 3: User has both OWNER and USER roles
+        return userSideBars.filter(
+          (sidebar) =>
+            Array.isArray(sidebar.role) &&
+            (sidebar.role.includes('OWNER') || sidebar.role.includes('USER')),
         )
       }
-      // Otherwise, filter normally based on role matching
+    }
+
+    // For other user types, filter normally
+    return userSideBars.filter((sidebar) => {
       if (Array.isArray(sidebar.role)) {
         return sidebar.role.includes(userType)
       }
-      console.log('sidebar.role', sidebar.role)
-
-      // Default check for non-array roles
       return sidebar.role === userType
     })
   }, [user?.userType, user?.relationships])

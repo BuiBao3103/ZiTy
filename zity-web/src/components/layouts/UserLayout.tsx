@@ -2,7 +2,7 @@ import { ROUTES } from '@/configs/endpoint'
 import { ApartmentUserRole } from '@/enums'
 import { useAppSelector } from '@/store'
 import { useEffect } from 'react'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { matchPath, Outlet, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 
 const UserLayout = () => {
@@ -20,22 +20,23 @@ const UserLayout = () => {
       const hasRole = (role: ApartmentUserRole) =>
         relationships?.some((relationship) => relationship.role === role)
 
-      // Check if the user is not a regular user
-      if (userType !== 'RESIDENT') {
+      if (userType === 'RESIDENT') {
+        if (hasRole('OWNER') && !hasRole('USER')) {
+          if (
+            !matchPath({ path: '/bills/:id?', end: true }, location.pathname) &&
+            location.pathname !== ROUTES.HOME
+          ) {
+            navigate(ROUTES.HOME)
+            toast.error('You are not authorized to access this page.123')
+          }
+        }
+      } else {
+        // Case: Not a RESIDENT
         navigate(ROUTES.ADMIN.HOME)
-        toast.error('You are not authorized to access this page')
-        return
-      }
-      if (
-        userType === 'RESIDENT' &&
-        hasRole('OWNER') &&
-        (location.pathname !== ROUTES.BILLS && location.pathname !== ROUTES.HOME)
-      ) {
-        navigate(ROUTES.BILLS)
-        toast.error('You are not authorized to access this page')
+        toast.error('You are not authorized to access this page.')
       }
     }
-  }, [navigate, user, location.pathname, token])
+  }, [navigate, user, token])
 
   return <Outlet />
 }

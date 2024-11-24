@@ -22,10 +22,7 @@ import Logo from '@/assets/logo.svg'
 import { UserLoginSchema } from '@/schema/user.validate'
 import Cookies from 'universal-cookie'
 import { useAppDispath } from '@/store'
-import {
-  getUserInformation,
-  useLazyGetCurrentUserQuery,
-} from '@/features/user/userSlice'
+import { getUserInformation, useLazyGetCurrentUserQuery } from '@/features/user/userSlice'
 
 export default function Index() {
   useDocumentTitle('Login')
@@ -39,8 +36,7 @@ export default function Index() {
   const handleShowPassword = () => {
     setIsShowing(!isShowing)
   }
-  const [getCurrentUser, { isLoading: isLoadingCurrentUser }] =
-    useLazyGetCurrentUserQuery()
+  const [getCurrentUser, { isLoading: isLoadingCurrentUser }] = useLazyGetCurrentUserQuery()
   const form = useForm<z.infer<typeof UserLoginSchema>>({
     resolver: zodResolver(UserLoginSchema),
     defaultValues: {
@@ -61,14 +57,7 @@ export default function Index() {
             if (payload.userType === 'ADMIN') {
               navigate('/admin')
             } else {
-              if (
-                payload.relationships &&
-                payload?.relationships[0]?.role === 'OWNER'
-              ) {
-                navigate('/')
-              } else {
-                navigate('/bills')
-              }
+              navigate('/')
             }
             toast.success('Login successful')
             cookie.set('accessToken', res.token, {
@@ -86,7 +75,7 @@ export default function Index() {
           })
       })
       .catch((error) => {
-				toast.error(error.data.message)
+        toast.error(error.data.message)
       })
   }
 
@@ -101,9 +90,7 @@ export default function Index() {
           </p>
         </div>
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
               name="username"
@@ -124,20 +111,20 @@ export default function Index() {
                 <FormItem className="relative">
                   <div className="flex items-center">
                     <FormLabel>Password</FormLabel>
-                    <Link
-                      to="/forgot-password"
-                      className="ml-auto inline-block text-sm underline">
+                    <Link to="/forgot-password" className="ml-auto inline-block text-sm underline">
                       Forgot your password?
                     </Link>
                   </div>
                   <FormControl>
-                    <Input placeholder='Enter password...' type={!isShowing ? 'password' : 'text'} {...field} />
+                    <Input
+                      placeholder="Enter password..."
+                      type={!isShowing ? 'password' : 'text'}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
 
-                  <span
-                    onClick={handleShowPassword}
-                    className="absolute top-7 right-2">
+                  <span onClick={handleShowPassword} className="absolute top-7 right-2">
                     {!isShowing ? <Eye size={20} /> : <EyeOff size={20} />}
                   </span>
                 </FormItem>

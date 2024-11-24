@@ -1,6 +1,6 @@
 export const ROUTES = {
-	LOGIN: '/login',
-	PAYMENT: '/payment',
+  LOGIN: '/login',
+  PAYMENT: '/payment',
   HOME: '/',
   PACKAGES: '/packages',
   SURVEYS: '/surveys',
@@ -8,8 +8,8 @@ export const ROUTES = {
   BILLS: '/bills',
   CHAT: '/chat',
   ADMIN: {
-		HOME: '/admin',
-		APARTMENTS: '/admin/apartments',
+    HOME: '/admin',
+    APARTMENTS: '/admin/apartments',
     SERVICES: '/admin/services',
     USERS: '/admin/users',
     PACKAGES: '/admin/packages',
@@ -17,6 +17,7 @@ export const ROUTES = {
     SURVEYS: '/admin/surveys',
     REPORTS: '/admin/reports',
     SETTINGS: '/admin/settings',
-		CHAT: '/admin/chat',
+    CHAT: '/admin/chat',
   },
+  NOTFOUND: '/404',
 } as const

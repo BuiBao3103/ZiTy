@@ -49,6 +49,9 @@ const userApiSlice = apiSlice.injectEndpoints({
         if (params.pageSize && params.pageSize != 10) {
           baseUrl += `&pageSize=${params.pageSize}`
         }
+        if (params.id) {
+          baseUrl += `&id=eq:${params.id}`
+        }
         if (params.email && params.email != '') {
           baseUrl += `&email=like:${params.email}`
         }
@@ -169,5 +172,5 @@ export const {
   useGetCurrentUserQuery,
   useLazyGetCurrentUserQuery,
   useUpdatePassordMutation,
-	useNotifyReceivedPackageMutation,
+  useNotifyReceivedPackageMutation,
 } = userApiSlice

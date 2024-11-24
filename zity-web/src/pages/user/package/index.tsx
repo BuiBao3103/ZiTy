@@ -6,6 +6,7 @@ import PackageDetail from './components/package-detail'
 import { useGetPackagesQuery } from '@/features/package/packageSlice'
 import { useAppSelector } from '@/store'
 import { useState } from 'react'
+import PaginationCustom from '@/components/pagination/PaginationCustom'
 
 const Index = () => {
   useDocumentTitle('Package')
@@ -14,8 +15,9 @@ const Index = () => {
   const user = useAppSelector((state) => state.userReducer.user)
   const params = useParams()
   const { width = 0 } = useWindowSize()
+  const [currentPage, setCurrentPage] = useState<number>(1)
   const { data: packages } = useGetPackagesQuery({
-    page: 1,
+    page: currentPage,
     userId: user?.id,
     includes: ['user'],
   })
@@ -64,6 +66,13 @@ const Index = () => {
                 <PackageList packages={filteredPackages} />
               </>
             )}
+          </div>
+          <div className="bg-white p-2">
+            <PaginationCustom
+              onPageChange={setCurrentPage}
+              currentPage={currentPage}
+              totalPages={packages?.totalPages}
+            />
           </div>
         </div>
         {params.id && width > 1024 && (

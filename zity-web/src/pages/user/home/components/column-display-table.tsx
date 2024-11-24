@@ -9,7 +9,6 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { ApartmentFormSchema } from '@/schema/apartment.validate'
-import { Badge } from '@/components/ui/badge'
 
 interface ColumnDisplayTableProps {
   apartmentData?: ApartmentFormSchema

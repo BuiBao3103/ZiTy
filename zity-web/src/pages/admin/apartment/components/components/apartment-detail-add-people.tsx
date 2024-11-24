@@ -4,10 +4,13 @@ import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
-import { useCreateRelationshipMutation } from '@/features/relationships/relationshipsSlice'
+import {
+  useCreateRelationshipMutation,
+  useDeleteRelationshipMutation,
+} from '@/features/relationships/relationshipsSlice'
 import { useGetUsersQuery } from '@/features/user/userSlice'
 import { ExtendedRelationshipsSchema } from '@/schema/relationship.validate'
-import { Loader2, X } from 'lucide-react'
+import { Loader2, Trash2, X } from 'lucide-react'
 import { useDebounceCallback } from 'usehooks-ts'
 import { z } from 'zod'
 import { ApartmentUserRole } from '@/enums'
@@ -33,6 +36,7 @@ const ApartmentDetailAddPeople = ({
   apartmentId,
 }: IApartmentDetailAddPeopleProps) => {
   const [addPeople, { isLoading: isCreatePeople }] = useCreateRelationshipMutation()
+  const [deleteRelationship] = useDeleteRelationshipMutation()
   const [search, setSearch] = useState<string>('')
   const [selectedUsers, setSelectedUsers] = useState<{ userId: number; role: ApartmentUserRole }[]>(
     [],
@@ -42,20 +46,26 @@ const ApartmentDetailAddPeople = ({
     data: users,
     isLoading,
     isFetching,
-  } = useGetUsersQuery({ page: 1, pageSize: 60, fullName: search })
+  } = useGetUsersQuery({ page: 1, pageSize: 60, id: parseInt(search) })
 
   // Check if a user is already in relationships
   const isUserInRelationships = (userId: number) => {
     return relationships.some((relationship) => relationship.userId === userId)
   }
 
-  //Check if it already have a user with role OWNER
+  // Get relationship ID for a user
+  const getRelationshipId = (userId: number) => {
+    return relationships.find((relationship) => relationship.userId === userId)?.id
+  }
+
   const isOwnerInRelationships = () => {
     return relationships.some((relationship) => relationship.role === 'OWNER')
   }
 
   // Handle checkbox change
   const handleCheckboxChange = (userId: number, checked: boolean) => {
+    if (isUserInRelationships(userId)) return // Prevent toggling existing relationships
+
     setSelectedUsers((prev) => {
       if (checked) {
         return [...prev, { userId, role: 'USER' }]
@@ -63,6 +73,26 @@ const ApartmentDetailAddPeople = ({
         return prev.filter((user) => user.userId !== userId)
       }
     })
+  }
+
+  // Handle delete relationship
+  const handleDeleteRelationship = async (userId: number) => {
+    const relationshipId = getRelationshipId(userId)
+    if (!relationshipId) return
+
+    try {
+      await deleteRelationship({ id: relationshipId, apartmentId: apartmentId })
+        .unwrap()
+        .then(() => {
+          toast.success('Relationship deleted successfully')
+        })
+        .catch(() => {
+          toast.error('Failed to delete relationship')
+        })
+    } catch (error) {
+      console.error('Failed to delete relationship:', error)
+      toast.error('Failed to delete relationship')
+    }
   }
 
   // Handle role change
@@ -79,15 +109,17 @@ const ApartmentDetailAddPeople = ({
 
   // Get selected user's role
   const getUserRole = (userId: number) => {
+    const existingRelationship = relationships.find((rel) => rel.userId === userId)
+    if (existingRelationship) return existingRelationship.role
     return selectedUsers.find((user) => user.userId === userId)?.role || 'USER'
   }
 
   // Handle adding selected people
   const handleActionAddPeople = async () => {
-		if(isOwnerInRelationships()) {
-			toast.error('This apartment already have an owner')
-			return;
-		}
+    if (selectedUsers.some((user) => user.role === 'OWNER') && isOwnerInRelationships()) {
+      toast.error('This apartment already has an owner.')
+      return
+    }
     try {
       if (selectedUsers.length === 0) return
 
@@ -100,7 +132,8 @@ const ApartmentDetailAddPeople = ({
       )
 
       await Promise.all(promises)
-      setAddPeople(false)
+      toast.success('Add people to apartment successfully')
+      // setAddPeople(false)
     } catch (error) {
       console.error('Failed to add people:', error)
     }
@@ -136,29 +169,45 @@ const ApartmentDetailAddPeople = ({
                     key={user.id || index}
                     className="flex items-center justify-between gap-2 pr-4">
                     <Label className="flex items-center gap-2">
-                      <Checkbox
-                        checked={isUserInRelationships(user.id) || isUserSelected(user.id)}
-                        onCheckedChange={(checked) =>
-                          handleCheckboxChange(user.id, checked as boolean)
-                        }
-                      />
-                      <span>{user.fullName}</span>
+                      <div className="flex items-center gap-2">
+                        <Checkbox
+                          checked={isUserInRelationships(user.id) || isUserSelected(user.id)}
+                          disabled={isUserInRelationships(user.id)}
+                          onCheckedChange={(checked) =>
+                            handleCheckboxChange(user.id, checked as boolean)
+                          }
+                        />
+                        {isUserInRelationships(user.id) && (
+                          <Button
+                            onClick={() => handleDeleteRelationship(user.id)}
+                            type="button"
+                            size={'icon'}
+                            variant={'ghost'}>
+                            <Trash2
+                              size={16}
+                              className="text-red-500 cursor-pointer hover:text-red-600"
+                            />
+                          </Button>
+                        )}
+                      </div>
+                      <span>
+                        {user.id} - {user.fullName}
+                      </span>
                     </Label>
-                    {isUserSelected(user.id) && (
-                      <Select
-                        value={getUserRole(user.id)}
-                        onValueChange={(value) =>
-                          handleRoleChange(user.id, value as ApartmentUserRole)
-                        }>
-                        <SelectTrigger className="w-32">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value={'USER'}>User</SelectItem>
-                          <SelectItem value={'OWNER'}>Owner</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    )}
+                    <Select
+                      value={getUserRole(user.id)}
+                      disabled={isUserInRelationships(user.id)}
+                      onValueChange={(value) =>
+                        handleRoleChange(user.id, value as ApartmentUserRole)
+                      }>
+                      <SelectTrigger className="w-32">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="USER">User</SelectItem>
+                        <SelectItem value="OWNER">Owner</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 ))}
             </div>
