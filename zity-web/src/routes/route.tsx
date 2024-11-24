@@ -33,6 +33,8 @@ import NotFound from '@pages/404'
 import MomoPaymentSuccess from '@/pages/notify-payment/MomoPaymentSuccess'
 import ProtectedLayout from '@/components/layouts/ProtectedLayout'
 import { ROUTES } from '@/configs/endpoint'
+import AdminLayout from '@/components/layouts/AdminLayout'
+import UserLayout from '@/components/layouts/UserLayout'
 
 const userRoutes: RouteObject[] = [
   { index: true, element: <Home /> },
@@ -66,12 +68,12 @@ const route = createBrowserRouter([
         element: <DefaultLayout />,
         children: [
           {
-            element: <ProtectedLayout userType="RESIDENT" />,
+            element: <UserLayout />,
             children: userRoutes,
           },
           {
             path: ROUTES.ADMIN.HOME,
-            element: <ProtectedLayout userType="ADMIN" />,
+            element: <AdminLayout />,
             children: adminRoutes,
           },
         ],

@@ -38,7 +38,7 @@ export const apartmentSlice = apiSlice.injectEndpoints({
             ]
           : [{ type: 'Apartments', id: 'LIST' }],
     }),
-    getApartment: builder.query<ApartmentFormSchema, { id: string; includes?: string }>({
+    getApartment: builder.query<ApartmentFormSchema, { id?: string; includes?: string }>({
       query: (params) => {
         let url = `apartments/${params.id}`
         if (params.includes) {

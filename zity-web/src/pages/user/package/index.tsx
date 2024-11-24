@@ -16,7 +16,7 @@ const Index = () => {
   const { width = 0 } = useWindowSize()
   const { data: packages } = useGetPackagesQuery({
     page: 1,
-    UserId: user?.id,
+    userId: user?.id,
     includes: ['user'],
   })
 

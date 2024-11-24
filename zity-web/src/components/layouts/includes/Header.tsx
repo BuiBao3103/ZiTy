@@ -2,11 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import DefaultAvatar from '@/assets/default-avatar.jpeg'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import {
   Cog,
   Flag,
@@ -149,33 +145,37 @@ const Header = () => {
   ]
 
   const filteredSidebars = useMemo(() => {
-    if (!user?.userType) return []
+    if (!user?.userType || !user?.relationships) return []
 
     return userSideBars.filter((sidebar) => {
-      // If the user is a RESIDENT and has an OWNER role in relationships
-      if (
-        user.userType === 'RESIDENT' &&
-        user?.relationships?.[0]?.role === 'OWNER'
-      ) {
+      const { userType, relationships } = user
+
+      // Helper function to check if any relationship role matches the condition
+      const hasRole = (role: ApartmentUserRole) =>
+        relationships?.some((relationship) => relationship.role === role) ?? false
+
+      // If the user is a RESIDENT and has an OWNER role in any relationship
+      if (userType === 'RESIDENT' && hasRole('OWNER')) {
         return (
           sidebar.role === 'RESIDENT' ||
           (Array.isArray(sidebar.role) && sidebar.role.includes('RESIDENT'))
         )
       }
-      // If the user is a RESIDENT but not an OWNER, only return the 'Bill' element
-      if (
-        user.userType === 'RESIDENT' &&
-        user?.relationships?.[0]?.role !== 'OWNER'
-      ) {
+
+      // If the user is a RESIDENT but doesn't have an OWNER role, only return the 'Bill' element
+      if (userType === 'RESIDENT' && !hasRole('OWNER')) {
         return sidebar.label === 'Bills'
       }
+
       // Otherwise, filter normally based on role matching
       if (Array.isArray(sidebar.role)) {
-        return sidebar.role.includes(user.userType)
+        return sidebar.role.includes(userType)
       }
-      return sidebar.role === user.userType
+
+      // Default check for non-array roles
+      return sidebar.role === userType
     })
-  }, [user?.userType, user?.relationships?.[0]?.role])
+  }, [user?.userType, user?.relationships])
 
   const handleLogout = () => {
     cookies.remove('accessToken')
@@ -192,9 +192,7 @@ const Header = () => {
       return location.pathname === ROUTES.HOME
     }
     return (
-      location.pathname.startsWith(route) &&
-      route !== ROUTES.ADMIN.HOME &&
-      route !== ROUTES.HOME
+      location.pathname.startsWith(route) && route !== ROUTES.ADMIN.HOME && route !== ROUTES.HOME
     )
   }
 
@@ -204,13 +202,10 @@ const Header = () => {
         panelRightOpen ? 'md:w-[60px]' : 'md:w-[300px]'
       } transition-all duration-300 w-full h-20 md:h-screen sticky top-0 z-40 flex md:flex-row flex-col bg-white`}>
       <div className="w-full h-full flex md:flex-col flex-row md:items-stretch items-center md:justify-start justify-between md:p-0 p-4">
-        <div
-          className={`md:w-full h-full md:h-[150px] p-1 md:p-3 md:order-none order-2 relative`}>
+        <div className={`md:w-full h-full md:h-[150px] p-1 md:p-3 md:order-none order-2 relative`}>
           <img
             src={panelRightOpen && width > 768 ? LogoMobile : Logo}
-            onClick={() =>
-              navigate(`${user?.userType === 'ADMIN' ? '/admin' : '/'}`)
-            }
+            onClick={() => navigate(`${user?.userType === 'ADMIN' ? '/admin' : '/'}`)}
             loading="lazy"
             alt="Logo website"
             className={`size-full object-contain aspect-square cursor-pointer ${
@@ -234,9 +229,7 @@ const Header = () => {
             </Button>
           )}
         </div>
-        {width <= 768 && (
-          <MobileMenu sidebar={filteredSidebars} handleLogout={handleLogout} />
-        )}
+        {width <= 768 && <MobileMenu sidebar={filteredSidebars} handleLogout={handleLogout} />}
         {width > 768 && <Separator />}
         <div
           className={`sidebar w-full h-full hidden md:flex flex-col overflow-y-auto ${
@@ -249,9 +242,9 @@ const Header = () => {
               key={index}
               variant={'ghost'}
               size={`${panelRightOpen ? 'icon' : 'lg'}`}
-              className={`${
-                !panelRightOpen ? 'gap-2 justify-start px-2' : 'justify-center'
-              } ${isActiveRoute(sideBar.to) ? 'bg-primary' : ''}`}>
+              className={`${!panelRightOpen ? 'gap-2 justify-start px-2' : 'justify-center'} ${
+                isActiveRoute(sideBar.to) ? 'bg-primary' : ''
+              }`}>
               {panelRightOpen ? (
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -283,18 +276,14 @@ const Header = () => {
             <AvatarImage src={user?.avatar ?? DefaultAvatar} />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
-          <div
-            className={`w-full ${panelRightOpen ? 'hidden' : 'flex'} flex-col`}>
+          <div className={`w-full ${panelRightOpen ? 'hidden' : 'flex'} flex-col`}>
             <span className="text-sm font-bold">{user?.fullName}</span>
             <span className="text-xs">{user?.userType}</span>
           </div>
           <div className={`flex justify-end`}>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button
-                  onClick={() => handleLogout()}
-                  size={'icon'}
-                  variant={'ghost'}>
+                <Button onClick={() => handleLogout()} size={'icon'} variant={'ghost'}>
                   <LogOut />
                 </Button>
               </TooltipTrigger>
@@ -303,11 +292,7 @@ const Header = () => {
           </div>
         </div>
       </div>
-      {width > 768 ? (
-        <Separator orientation="vertical" />
-      ) : (
-        <Separator orientation="horizontal" />
-      )}
+      {width > 768 ? <Separator orientation="vertical" /> : <Separator orientation="horizontal" />}
     </header>
   )
 }

@@ -1,6 +1,6 @@
 import FunctionBox, {
   FunctionBoxProps,
-} from '@/pages/user/home/components/FunctionBox'
+} from '@/pages/user/home/components/function-box-item'
 import RecentReports from './components/recent-reports'
 import { useAppSelector } from '@/store'
 import {
