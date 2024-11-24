@@ -23,6 +23,7 @@ public class ApartmentMapping : Profile
             .ForMember(dest => dest.Description, opt => opt.Condition((src, dest) => src.Description != null))
             .ForMember(dest => dest.FloorNumber, opt => opt.Condition((src, dest) => src.FloorNumber != null))
             .ForMember(dest => dest.ApartmentNumber, opt => opt.Condition((src, dest) => src.ApartmentNumber != null))
-            .ForMember(dest => dest.Status, opt => opt.Condition((src, dest) => src.Status != null));
+            .ForMember(dest => dest.Status, opt => opt.Condition((src, dest) => src.Status != null))
+            .ForMember(dest => dest.CurrentWaterNumber, opt => opt.Condition((src, dest) => src.CurrentWaterNumber != null));
     }
 }
