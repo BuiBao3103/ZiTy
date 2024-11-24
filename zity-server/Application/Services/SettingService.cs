@@ -7,7 +7,6 @@ using Domain.Entities;
 using Domain.Enums;
 using Domain.Exceptions;
 using Domain.Core.Specifications;
-using Microsoft.Extensions.FileSystemGlobbing.Internal.PathSegments;
 
 namespace Application.Services;
 public class SettingService(IUnitOfWork unitOfWork, IMapper mapper) : ISettingService
@@ -118,11 +117,11 @@ public class SettingService(IUnitOfWork unitOfWork, IMapper mapper) : ISettingSe
             var currentMonthlyBill = await _unitOfWork.Repository<Bill>().FirstOrDefaultAsync(billSpec);
             if (currentMonthlyBill == null)
             {
-                List<BillDetail> billDetails = new List<BillDetail>();
+                var billDetails = new List<BillDetail>();
                 var totalServicePrice = 0.0f;
                 foreach (var service in services)
                 {
-                    BillDetail billDetail = new BillDetail()
+                    var billDetail = new BillDetail()
                     {
                         ServiceId = service.Id,
                         Price = service.Price,
@@ -134,7 +133,7 @@ public class SettingService(IUnitOfWork unitOfWork, IMapper mapper) : ISettingSe
                 var totalRoomPrice = (setting.RoomPricePerM2 * relationship.Apartment.Area) * (100 + setting.RoomVat) / 100;
 
 
-                Bill newBill = new Bill
+                var newBill = new Bill()
                 {
                     RelationshipId = relationship.Id,
                     Monthly = setting.CurrentMonthly,

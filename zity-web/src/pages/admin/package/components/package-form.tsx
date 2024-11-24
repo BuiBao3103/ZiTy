@@ -289,7 +289,7 @@ const PackageForm = ({ packagee, setOpen }: PackageFormProps) => {
           </div>
         </div>
         <div className="w-full flex justify-between items-center">
-          {packagee && <PackageSendSMS packageId={packagee.id} />}
+          {packagee && <PackageSendSMS packageId={packagee.userId} />}
           <div className="w-full flex justify-end gap-4">
             <Button type="button" size={'lg'} variant={'ghost'} onClick={() => setOpen(undefined)}>
               Cancel

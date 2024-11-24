@@ -19,7 +19,7 @@ export const PackageSchema = z.object({
   image: z.union([z.string(), FileSchema]),
   description: z.string(),
   isReceive: z.boolean().default(false),
-  userId: z.coerce.number().nullable(),
+  userId: z.coerce.number(),
 })
 export interface IPackage extends z.infer<typeof PackageSchema>, BaseEntity {
   user?: User

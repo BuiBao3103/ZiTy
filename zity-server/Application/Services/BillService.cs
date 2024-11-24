@@ -135,13 +135,11 @@ public class BillService(IUnitOfWork unitOfWork, IMapper mapper, IVNPayService v
 
                 bill.NewWater = waterReading.NewWaterIndex;
                 bill.WaterReadingDate = waterReading.ReadingDate;
-                if (bill.OldWater == null)
-                {
-                    int numberWater = waterReading.NewWaterIndex - bill.OldWater ?? throw new BusinessRuleException("Old water index is null of bill " + bill.Id);
-                    var waterPrice = setting.RoomPricePerM2 * numberWater * (100 + setting.WaterVat + setting.EnvProtectionTax) / 100;
-                    bill.TotalPrice += waterPrice;
-                    _unitOfWork.Repository<Bill>().Update(bill);
-                }
+
+                int numberWater = waterReading.NewWaterIndex - bill.OldWater ?? throw new BusinessRuleException("Old water index is null of bill " + bill.Id);
+                var waterPrice = setting.RoomPricePerM2 * numberWater * (100 + setting.WaterVat + setting.EnvProtectionTax) / 100;
+                bill.TotalPrice += waterPrice;
+                _unitOfWork.Repository<Bill>().Update(bill);
 
             }
         }
