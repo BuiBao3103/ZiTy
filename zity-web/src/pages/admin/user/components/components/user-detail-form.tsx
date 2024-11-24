@@ -280,6 +280,8 @@ const UserDetailForm = ({ user, setShowDetail }: UserDetailFormProps) => {
                     <Input
                       placeholder="Enter email..."
                       type="email"
+											className='read-only:bg-gray-100 cursor-not-allowed'
+											readOnly
                       {...field}
                     />
                   </FormControl>
@@ -307,7 +309,7 @@ const UserDetailForm = ({ user, setShowDetail }: UserDetailFormProps) => {
                 <FormItem className="w-full">
                   <FormLabel>Username</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter username..." {...field} />
+                    <Input placeholder="Enter username..." className='read-only:bg-gray-100 cursor-not-allowed' {...field} readOnly />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

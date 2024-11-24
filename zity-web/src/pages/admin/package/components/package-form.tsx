@@ -167,7 +167,7 @@ const PackageForm = ({ packagee, setOpen }: PackageFormProps) => {
                 <FormItem className="w-full">
                   <FormLabel>Status</FormLabel>
                   <Select
-                    disabled={String(field.value) === 'true' ? true : false}
+                    disabled={String(field.value) === 'true' || !packagee ? true : false}
                     onValueChange={(value) => {
                       // Convert string value to boolean
                       field.onChange(value === 'true')

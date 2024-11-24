@@ -27,6 +27,22 @@ const SurveyItem = ({ survey }: SurveyItemProps) => {
       })
   }
 
+  const handleShowStatistics = (startDate: Date) => {
+    if (new Date(startDate) > new Date()) {
+      toast.error('Survey is not started yet')
+      return
+    }
+    setShowStatistics(true)
+  }
+
+  const handleEditSurvey = (startDate: Date) => {
+    if (new Date(startDate) < new Date()) {
+      toast.error('Survey is started, you cannot edit it')
+      return
+    }
+    navigate(`/admin/surveys/${survey.id}`)
+  }
+
   return (
     <>
       <div className="w-full h-fit p-4 rounded-md border flex flex-col gap-4">
@@ -80,7 +96,7 @@ const SurveyItem = ({ survey }: SurveyItemProps) => {
         </div>
         <div className="w-full flex gap-4">
           <Button
-            onClick={() => setShowStatistics(true)}
+            onClick={() => handleShowStatistics(survey.startDate)}
             type="button"
             className="gap-2"
             variant={'info'}>
@@ -88,7 +104,7 @@ const SurveyItem = ({ survey }: SurveyItemProps) => {
             Statistics
           </Button>
           <Button
-            onClick={() => navigate(`/admin/surveys/${survey.id}`)}
+            onClick={() => handleEditSurvey(survey.startDate)}
             type="button"
             variant={'warning'}>
             Edit
