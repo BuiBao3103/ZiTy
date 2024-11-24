@@ -15,11 +15,11 @@ const FileSchema = z.custom<File>((value) => {
 }, 'Invalid file')
 
 export const PackageSchema = z.object({
-  id: z.number().int().positive(),
+  id: z.number().int().positive().optional(),
   image: z.union([z.string(), FileSchema]),
   description: z.string(),
   isReceive: z.boolean().default(false),
-  userId: z.number().nullable(),
+  userId: z.coerce.number().nullable(),
 })
 export interface IPackage extends z.infer<typeof PackageSchema>, BaseEntity {
   user?: User

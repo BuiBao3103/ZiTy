@@ -1,6 +1,6 @@
 import { GenderSchema, UserRoleSchema } from '@/enums'
 import { z } from 'zod'
-import { IRelationships } from './relationship.validate'
+import { RelationshipsTypeSchema } from './relationship.validate'
 
 // Zod schema for the User interface
 export const UserSchema = z.object({
@@ -9,10 +9,7 @@ export const UserSchema = z.object({
     .string()
     .min(3, 'Username must be at least 3 characters long')
     .max(20, 'Username must be at most 20 characters long')
-    .regex(
-      /^[a-zA-Z0-9_]+$/,
-      'Username can only contain letters, numbers, and underscores',
-    ),
+    .regex(/^[a-zA-Z0-9_]+$/, 'Username can only contain letters, numbers, and underscores'),
   avatar: z
     .string()
     .url()
@@ -40,10 +37,7 @@ export const UserSchema = z.object({
   userType: UserRoleSchema,
   dateOfBirth: z.coerce
     .date()
-    .refine(
-      (date) => date <= new Date(),
-      'Date of birth cannot be in the future',
-    )
+    .refine((date) => date <= new Date(), 'Date of birth cannot be in the future')
     .refine((date) => {
       const age = new Date().getFullYear() - date.getFullYear()
       return age <= 100 // Check if age is 100 years or less
@@ -72,11 +66,8 @@ export interface UserLogin extends z.infer<typeof UserLoginSchema> {}
 
 // Example Zod schema for UserPartial (Partial<User>)
 
-export interface User
-  extends UserFormSchema,
-    BaseEntity,
-    z.infer<typeof AddtionalSchema> {
-  relationships?: IRelationships[]
+export interface User extends UserFormSchema, BaseEntity, z.infer<typeof AddtionalSchema> {
+  relationships?: RelationshipsTypeSchema[]
 }
 
 export const FirstLoginSchema = z

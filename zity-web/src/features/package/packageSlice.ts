@@ -67,14 +67,22 @@ const packageApiSlice = apiSlice.injectEndpoints({
             ]
           : [{ type: 'Packages', id: 'LIST' }],
     }),
-    getPackage: builder.query<IPackage, number | undefined>({
-      query: (id) => `items/${id}`,
-      providesTags: (result, error, id) => [{ type: 'Packages', id }],
+    getPackage: builder.query<IPackage, { id?: number; includes?: string[] }>({
+      query: (params) => {
+        let url = `items/${params.id}`
+        if (params.includes) {
+          url += `?includes=${params.includes.join(',')}`
+        }
+        return {
+          url: url,
+        }
+      },
+      providesTags: (result, error, { id }) => [{ type: 'Packages', id }],
     }),
     updatePackage: builder.mutation<
       IPackage,
       {
-        id: number
+        id?: number
         body: Partial<IPackage> & Pick<IPackage, 'description' | 'isReceive'>
       }
     >({
@@ -85,7 +93,7 @@ const packageApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: (result, error, { id }) => [{ type: 'Packages', id }],
     }),
-    updateImagePackage: builder.mutation<void, { id: number; image: FormData }>({
+    updateImagePackage: builder.mutation<void, { id?: number; image: FormData }>({
       query: ({ id, image }) => ({
         url: `items/${id}/image`,
         method: 'POST',
@@ -94,7 +102,10 @@ const packageApiSlice = apiSlice.injectEndpoints({
           'Content-Type': undefined,
         },
       }),
-      invalidatesTags: (result, error, { id }) => [{ type: 'Packages', id }],
+      invalidatesTags: (result, error, { id }) => [
+        { type: 'Packages', id },
+        { type: 'Packages', id: 'LIST' },
+      ],
     }),
     createPackage: builder.mutation<
       IPackage,
@@ -105,11 +116,10 @@ const packageApiSlice = apiSlice.injectEndpoints({
         method: 'POST',
         body: data,
       }),
-      invalidatesTags: [{ type: 'Packages', id: 'LIST' }],
     }),
-    deletePackage: builder.mutation<void, string>({
-      query: (id) => ({
-        url: `items/${id}`,
+    deletePackage: builder.mutation<void, { id?: number }>({
+      query: (data) => ({
+        url: `items/${data.id}`,
         method: 'DELETE',
       }),
       invalidatesTags: [{ type: 'Packages', id: 'LIST' }],

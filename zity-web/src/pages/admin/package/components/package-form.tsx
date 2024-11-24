@@ -28,7 +28,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import PackageReceivedPackage from './components/package-received-package'
+import PackageSendSMS from './components/package-send-sms'
+import { Label } from '@/components/ui/label'
+import { useGetUsersQuery } from '@/features/user/userSlice'
 
 interface PackageFormProps {
   packagee?: IPackage
@@ -42,7 +44,7 @@ const PackageForm = ({ packagee, setOpen }: PackageFormProps) => {
   const [createPackage, { isLoading }] = useCreatePackageMutation()
   const [updatePackage, { isLoading: isUpdating }] = useUpdatePackageMutation()
   const [updateImagePackage, { isLoading: isUpdatingImage }] = useUpdateImagePackageMutation()
-
+  const { data: users } = useGetUsersQuery({ page: 1, pageSize: 60 })
   const form = useForm<z.infer<typeof PackageSchema>>({
     mode: 'onSubmit',
     defaultValues: packagee || {
@@ -58,7 +60,9 @@ const PackageForm = ({ packagee, setOpen }: PackageFormProps) => {
       const newData = {
         description: data.description,
         isReceive: data.isReceive,
+        userId: data.userId,
       }
+      console.log(data.image)
       if (packagee) {
         // Update existing package
         const updatePromises = []
@@ -77,9 +81,18 @@ const PackageForm = ({ packagee, setOpen }: PackageFormProps) => {
         toast.success('Package updated successfully')
         setOpen(undefined)
       } else {
-        await createPackage(data).unwrap()
-        toast.success('Package created successfully')
-        setOpen(undefined)
+        const newPackage = await createPackage(data).unwrap()
+        const formData = new FormData()
+        formData.append('file', data.image)
+        await updateImagePackage({ id: newPackage.id, image: formData })
+          .unwrap()
+          .then(() => {
+            toast.success('Package created successfully')
+            setOpen(undefined)
+          })
+          .catch(() => {
+            toast.error('Failed to update image')
+          })
       }
     } catch (error) {
       console.error(error)
@@ -175,6 +188,50 @@ const PackageForm = ({ packagee, setOpen }: PackageFormProps) => {
                 </FormItem>
               )}
             />
+            {packagee ? (
+              <div className="flex flex-col space-y-3">
+                <Label>Receiver</Label>
+                <Input
+                  value={packagee.user?.fullName || 'N/A'}
+                  readOnly
+                  className="read-only:bg-gray-50 cursor-not-allowed"
+                />
+              </div>
+            ) : (
+              <FormField
+                control={form.control}
+                name="userId"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Choose receiver</FormLabel>
+                    <Select
+                      disabled={packagee !== undefined}
+                      onValueChange={field.onChange}
+                      value={String(field.value)}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select user" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {users?.contents && users.contents.length > 0 ? (
+                          users.contents.map((user) => (
+                            <SelectItem key={user.id} value={String(user.id)}>
+                              {user.fullName}
+                            </SelectItem>
+                          ))
+                        ) : (
+                          <SelectItem value="none" disabled>
+                            No users found
+                          </SelectItem>
+                        )}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
           </div>
           <div className="w-full h-full">
             <FormField
@@ -232,7 +289,7 @@ const PackageForm = ({ packagee, setOpen }: PackageFormProps) => {
           </div>
         </div>
         <div className="w-full flex justify-between items-center">
-          {packagee && <PackageReceivedPackage packageId={packagee.id} />}
+          {packagee && <PackageSendSMS packageId={packagee.id} />}
           <div className="w-full flex justify-end gap-4">
             <Button type="button" size={'lg'} variant={'ghost'} onClick={() => setOpen(undefined)}>
               Cancel

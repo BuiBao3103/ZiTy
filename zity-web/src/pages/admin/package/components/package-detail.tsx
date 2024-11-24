@@ -18,9 +18,12 @@ const PackageDetail = ({ id, mode, setShowDetail }: PackageDetailProps) => {
     data: packagee,
     isLoading,
     isFetching,
-  } = useGetPackageQuery(id, {
-    skip: mode === 'create' || !id,
-  })
+  } = useGetPackageQuery(
+    { id: id, includes: ['user'] },
+    {
+      skip: mode === 'create' || !id,
+    },
+  )
 
   const dialogTitle =
     mode === 'edit' ? (

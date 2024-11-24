@@ -3,7 +3,7 @@ import { useNotifyReceivedPackageMutation } from '@/features/user/userSlice'
 import { toast } from 'sonner'
 
 interface PackageReceivedPackageProps {
-  packageId: number
+  packageId?: number
 }
 
 const PackageReceivedPackage = ({ packageId }: PackageReceivedPackageProps) => {
