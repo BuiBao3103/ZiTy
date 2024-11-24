@@ -33,10 +33,11 @@ const Index = () => {
   useEffect(() => {
     if (user) {
       const housesList = user.relationships?.map((item) => item.apartmentId) as string[]
-      setHouses(housesList)
-      // Set initial selected house to the first house in the list
-      if (housesList.length > 0 && !selectedHouse) {
-        setSelectedHouse(housesList[0])
+      const housesSet = new Set(housesList)
+      setHouses([...housesSet])
+
+      if (housesSet.size > 0 && !selectedHouse) {
+        setSelectedHouse([...housesSet][0])
       }
     }
   }, [user])

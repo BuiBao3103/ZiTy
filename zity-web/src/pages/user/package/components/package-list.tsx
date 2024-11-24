@@ -23,24 +23,16 @@ const PackageList = ({ packages }: PackageListProps) => {
                 ? 'bg-zinc-100 border-primary'
                 : 'bg-white'
             }`}>
-            <div className="w-full flex justify-between items-center p-4">
+            <div className="w-full flex justify-between p-4">
               <div className="w-full flex flex-col">
                 <h1 className="text-lg font-medium">
                   #<span className="text-primary">{packagee.id}</span>
                 </h1>
                 <div className="w-full grid grid-cols-[100px_auto] text-sm">
-                  <span className="text-muted-foreground">Owner:</span>
-                  <span className="">{packagee.user?.fullName}</span>
-                </div>
-                <div className="w-full grid grid-cols-[100px_auto] text-sm">
                   <span className="text-muted-foreground">Date:</span>
                   <span className="">
                     {formatDateWithSlash(new Date(packagee.createdAt))}
                   </span>
-                </div>
-                <div className="w-full grid grid-cols-[100px_auto] text-sm">
-                  <span className="text-muted-foreground">To:</span>
-                  <span className="">{packagee.user?.fullName}</span>
                 </div>
                 <div className="w-full grid grid-cols-[100px_auto] text-sm">
                   <span className="text-muted-foreground">Description:</span>

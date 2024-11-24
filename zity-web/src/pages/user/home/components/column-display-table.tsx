@@ -37,15 +37,15 @@ const ColumnDisplayTable = ({ apartmentData }: ColumnDisplayTableProps) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {apartmentData?.relationships?.map((user, index) => (
+            {apartmentData?.relationships?.map((relationship, index) => (
               <TableRow key={index}>
                 <TableCell>{index + 1}</TableCell>
-                <TableCell>{user.user?.fullName}</TableCell>
-                <TableCell>{user.user?.userType}</TableCell>
-                <TableCell>{user.user?.phone}</TableCell>
+                <TableCell>{relationship.user?.fullName}</TableCell>
+                <TableCell>{relationship.role}</TableCell>
+                <TableCell>{relationship.user?.phone}</TableCell>
                 <TableCell>
-                  <Badge variant={`${user.user?.gender === 'FEMALE' ? 'info' : 'warning'}`}>
-                    {user.user?.gender}
+                  <Badge variant={`${relationship.user?.gender === 'FEMALE' ? 'info' : 'warning'}`}>
+                    {relationship.user?.gender}
                   </Badge>
                 </TableCell>
               </TableRow>

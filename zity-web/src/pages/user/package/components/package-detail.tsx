@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 
 const PackageDetail = () => {
   const params = useParams()
-  const { data: packagee } = useGetPackageQuery(parseInt(params.id ?? '0'), {
+  const { data: packagee } = useGetPackageQuery({id: parseInt(params.id ?? '0')}, {
     skip: !params.id,
   })
 
