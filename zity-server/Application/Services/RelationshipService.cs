@@ -46,7 +46,15 @@ public class RelationshipService(IUnitOfWork unitOfWork, IMapper mapper) : IRela
 
     public async Task<RelationshipDTO> CreateAsync(RelationshipCreateDTO createDTO)
     {
-        var relationship = await _unitOfWork.Repository<Relationship>().AddAsync(_mapper.Map<Relationship>(createDTO));
+        var newRelationship = _mapper.Map<Relationship>(createDTO);
+        if (newRelationship.Role == "OWNER")
+        {
+            var existingOwner = await _unitOfWork.Repository<Relationship>().FirstOrDefaultAsync(
+                new BaseSpecification<Relationship>(a => a.DeletedAt == null && a.ApartmentId == newRelationship.ApartmentId && a.Role == "OWNER"));
+            if (existingOwner != null)
+                throw new BusinessRuleException("There is already an owner in this apartment");
+        }
+        var relationship = await _unitOfWork.Repository<Relationship>().AddAsync(newRelationship);
         await _unitOfWork.SaveChangesAsync();
         return _mapper.Map<RelationshipDTO>(relationship);
     }
