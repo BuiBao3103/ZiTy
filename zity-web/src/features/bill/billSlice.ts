@@ -30,7 +30,7 @@ export const billSlice = apiSlice.injectEndpoints({
           url += `&status=eq:${params.status}`
         }
         if (params.id) {
-          url += `&id=eq:${params.id}`
+          url += `&id=like:${params.id}`
         }
         if (params.includes && params.includes.length > 0) {
           url += `&includes=${params.includes.join(',')}`

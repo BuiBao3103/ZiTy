@@ -100,17 +100,41 @@ public static class FilterCriteriaExtensions
                             var methodInfo = typeof(string).GetMethod("Contains", new[] { typeof(string) });
                             condition = Expression.Call(propertyExpression, methodInfo, Expression.Constant(value));
                         }
+                        else if (IsNumericType(propertyType))
+                        {
+                            // Convert property to string for numeric contains check
+                            var toStringMethod = propertyType.GetMethod("ToString", Type.EmptyTypes);
+                            var propertyString = Expression.Call(propertyExpression, toStringMethod);
+                            var containsMethod = typeof(string).GetMethod("Contains", new[] { typeof(string) });
+                            condition = Expression.Call(propertyString, containsMethod, Expression.Constant(value));
+                        }
                         break;
 
                     case "in":
                         var values = value.Split(',')
-                            .Select(v => ConvertToNullableType(v.Trim(), propertyType))
+                            .Select(v => v.Trim())
                             .ToList();
-                        var listType = typeof(List<>).MakeGenericType(propertyType);
-                        var containsMethod = typeof(Enumerable).GetMethods()
-                            .First(m => m.Name == "Contains" && m.GetParameters().Length == 2)
-                            .MakeGenericMethod(propertyType);
-                        condition = Expression.Call(null, containsMethod, Expression.Constant(values), propertyExpression);
+
+                        if (IsNumericType(propertyType))
+                        {
+                            var convertedValues = values
+                                .Select(v => ConvertToNullableType(v, propertyType))
+                                .ToList();
+
+                            var listType = typeof(List<>).MakeGenericType(propertyType);
+                            var containsMethod = typeof(Enumerable).GetMethods()
+                                .First(m => m.Name == "Contains" && m.GetParameters().Length == 2)
+                                .MakeGenericMethod(propertyType);
+                            condition = Expression.Call(null, containsMethod, Expression.Constant(convertedValues), propertyExpression);
+                        }
+                        else
+                        {
+                            var listType = typeof(List<>).MakeGenericType(propertyType);
+                            var containsMethod = typeof(Enumerable).GetMethods()
+                                .First(m => m.Name == "Contains" && m.GetParameters().Length == 2)
+                                .MakeGenericMethod(propertyType);
+                            condition = Expression.Call(null, containsMethod, Expression.Constant(values), propertyExpression);
+                        }
                         break;
                 }
 
@@ -172,5 +196,32 @@ public static class FilterCriteriaExtensions
 
         var underlyingType = Nullable.GetUnderlyingType(targetType) ?? targetType;
         return Convert.ChangeType(value, underlyingType);
+    }
+
+    private static bool IsNumericType(Type type)
+    {
+        // Handle nullable numeric types
+        if (Nullable.GetUnderlyingType(type) != null)
+        {
+            type = Nullable.GetUnderlyingType(type);
+        }
+
+        switch (Type.GetTypeCode(type))
+        {
+            case TypeCode.Byte:
+            case TypeCode.SByte:
+            case TypeCode.UInt16:
+            case TypeCode.UInt32:
+            case TypeCode.UInt64:
+            case TypeCode.Int16:
+            case TypeCode.Int32:
+            case TypeCode.Int64:
+            case TypeCode.Decimal:
+            case TypeCode.Double:
+            case TypeCode.Single:
+                return true;
+            default:
+                return false;
+        }
     }
 }

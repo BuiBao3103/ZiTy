@@ -24,8 +24,13 @@ public class AuthService(IUnitOfWork unitOfWork, AppSettings appSettings) : IAut
         if (user == null || !VerifyPassword(user, loginDto.Password))
             return null;
 
+
+
+
         var accessToken = GenerateJwtToken(user, false);
         var refreshToken = GenerateJwtToken(user, true);
+
+
 
         return new TokenDto
         {

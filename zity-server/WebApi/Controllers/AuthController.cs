@@ -22,17 +22,10 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
     {
-        try
-        {
-            var result = await _authService.AuthenticateAsync(loginDto);
-            if (result == null)
-                return Unauthorized(new { message = "Invalid username or password." });
-            return Ok(result);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { message = "An error occurred while processing your request.", error = ex.Message });
-        }
+        var result = await _authService.AuthenticateAsync(loginDto);
+        if (result == null)
+            return Unauthorized(new { message = "Invalid username or password." });
+        return Ok(result);
     }
 
     [HttpPost("refresh-token")]
@@ -49,10 +42,6 @@ public class AuthController : ControllerBase
         catch (SecurityTokenException ex)
         {
             return Unauthorized(new { message = ex.Message });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { message = "An error occurred while processing your request.", error = ex.Message });
         }
     }
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
