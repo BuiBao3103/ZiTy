@@ -20,7 +20,7 @@ export type ReportFormSchema = z.infer<typeof ReportSchema>
 
 export type ReportType = z.infer<typeof ReportSchema> & {
   relationship?: z.infer<typeof ExtendedRelationshipsSchema>[]
-  createdAt?: Date | null | string
+  createdAt?: Date  | string
   updatedAt?: Date | null | string
   deleteAt?: Date | null | string
 }

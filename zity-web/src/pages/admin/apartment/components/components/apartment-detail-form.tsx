@@ -116,6 +116,25 @@ const ApartmentFormDetail = ({ apartment }: IApartmentFormDetailProps) => {
             />
             <FormField
               control={form.control}
+              name="currentWaterNumber"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Current Water Number</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="number"
+                      className="read-only:bg-zinc-100"
+                      readOnly
+                      onChange={(event) => field.onChange(+event.target.value)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="description"
               render={({ field }) => (
                 <FormItem>

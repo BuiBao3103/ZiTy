@@ -10,13 +10,16 @@ export const reportsSlice = apiSlice.injectEndpoints({
         pageSize?: number
         includes?: string[]
         sort?: string[]
-        relationshipId?: number
+        Relationship_UserId?: number
       } & Partial<ReportType>
     >({
       query: (params = { page: 1 }) => {
         let url = `reports?page=${params.page}`
         if (params.pageSize && params.pageSize > 0) {
           url += `&pageSize=${params.pageSize}`
+        }
+        if(params.Relationship_UserId){
+          url += `&Relationship_UserId=eq:${params.Relationship_UserId}`
         }
         if (params.sort && params.sort.length > 0) {
           url += `&sort=${params.sort.join(',')}`

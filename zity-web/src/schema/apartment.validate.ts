@@ -10,6 +10,7 @@ export const ApartmentSchema = z.object({
   floorNumber: z.number().positive(),
   apartmentNumber: z.number().positive(),
   status: ApartmentStatusSchema,
+  currentWaterNumber: z.number().positive(),
 })
 
 type ApartmentType = z.infer<typeof ApartmentSchema> & {
