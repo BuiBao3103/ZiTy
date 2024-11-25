@@ -10,28 +10,22 @@ interface BillItemProps {
 
 const BillItem = ({ bill, setShowDetail }: BillItemProps) => {
   return (
-    <TableRow
-      onClick={() => setShowDetail(bill.id)}
-      className="font-medium cursor-pointer">
+    <TableRow onClick={() => setShowDetail(bill.id)} className="font-medium cursor-pointer">
       <TableCell className="py-3">{bill.id}</TableCell>
       <TableCell className="">
-        <Badge variant={"info"}>{bill.relationship?.apartmentId}</Badge>
+        <Badge variant={'info'}>{bill.relationship?.apartmentId}</Badge>
       </TableCell>
+      <TableCell>{bill.monthly}</TableCell>
       <TableCell>{bill.totalPrice.toLocaleString()}</TableCell>
       <TableCell>{bill.oldWater}</TableCell>
       <TableCell>{bill.newWater}</TableCell>
       <TableCell>
-        {bill.waterReadingDate &&
-          new Date(bill.waterReadingDate).toLocaleDateString()}
+        {bill.waterReadingDate && new Date(bill.waterReadingDate).toLocaleDateString()}
       </TableCell>
       <TableCell className="uppercase">
         <Badge
           variant={`${
-            bill.status == 'UNPAID'
-              ? 'warning'
-              : bill.status == 'OVERDUE'
-              ? 'error'
-              : 'info'
+            bill.status == 'UNPAID' ? 'warning' : bill.status == 'OVERDUE' ? 'error' : 'info'
           }`}>
           {bill.status}
         </Badge>

@@ -1,10 +1,7 @@
 import BreadCrumb from '@/components/breadcrumb'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import {
-  createNewSurvey,
-  useGetSurverysQuery,
-} from '@/features/survey/surveySlice'
+import { createNewSurvey, useGetSurverysQuery } from '@/features/survey/surveySlice'
 import { RootState, useAppDispath } from '@/store'
 import { Filter, Search } from 'lucide-react'
 import { useSelector } from 'react-redux'
@@ -23,15 +20,9 @@ const Index = () => {
   const [pageSize, setPageSize] = useState<number>(10)
   const params = useParams()
   const dispatch = useAppDispath()
-  const isCreateNewSurvey = useSelector(
-    (state: RootState) => state.surveyReducer.isCreateNewSurvey,
-  )
+  const isCreateNewSurvey = useSelector((state: RootState) => state.surveyReducer.isCreateNewSurvey)
   const [currentPage, setCurrentPage] = useState<number>(1)
-  const {
-    data: surveys,
-    isLoading,
-    isFetching,
-  } = useGetSurverysQuery({ page: currentPage })
+  const { data: surveys, isLoading, isFetching } = useGetSurverysQuery({ page: currentPage })
 
   return (
     <div
@@ -68,9 +59,7 @@ const Index = () => {
                   </Button>
                 </div>
                 <Button
-                  onClick={() =>
-                    dispatch(createNewSurvey({ isCreateNewSurvey: true }))
-                  }
+                  onClick={() => dispatch(createNewSurvey({ isCreateNewSurvey: true }))}
                   className={`sm:w-fit w-full`}
                   size={'lg'}
                   variant={'default'}>
@@ -89,6 +78,7 @@ const Index = () => {
                   className="w-full"
                   pageSize={pageSize}
                   onPageSizeChange={setPageSize}
+                  setCurrentPage={setCurrentPage}
                 />
                 <div className="w-full">
                   <PaginationCustom

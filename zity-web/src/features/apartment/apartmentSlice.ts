@@ -89,6 +89,7 @@ export const apartmentSlice = apiSlice.injectEndpoints({
 export const {
   useGetApartmentsQuery,
   useGetApartmentQuery,
+	useCreateApartmentMutation,
   useUpdateApartmentMutation,
   useDeleteApartmentMutation,
   useLazyGetApartmentQuery,

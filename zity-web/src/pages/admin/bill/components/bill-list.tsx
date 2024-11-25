@@ -1,10 +1,4 @@
-import {
-  Table,
-  TableBody,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
+import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { IBill } from '@/schema/bill.validate'
 import BillItem from './bill-item'
 import BillForm from './bill-form'
@@ -23,13 +17,18 @@ const BillList = ({ bills, isFetching, isLoading }: BillListProps) => {
   return (
     <>
       <Table className="relative">
-        <TableHeader className='bg-white sticky top-0'>
+        <TableHeader className="bg-white sticky top-0">
           <TableRow>
-            <TableHead className='w-[5%]'>ID</TableHead>
+            <TableHead className="w-[5%]">ID</TableHead>
             <TableHead>Apartment</TableHead>
             <TableHead>Total</TableHead>
-            <TableHead>Old Water(m<sup>3</sup>)</TableHead>
-            <TableHead>New Water(m<sup>3</sup>)</TableHead>
+            <TableHead>Monthly</TableHead>
+            <TableHead>
+              Old Water(m<sup>3</sup>)
+            </TableHead>
+            <TableHead>
+              New Water(m<sup>3</sup>)
+            </TableHead>
             <TableHead>Water Read Date</TableHead>
             <TableHead>Status</TableHead>
           </TableRow>
@@ -47,11 +46,7 @@ const BillList = ({ bills, isFetching, isLoading }: BillListProps) => {
               ))
             : bills &&
               bills.map((bill, index) => (
-                <BillItem
-                  bill={bill}
-                  key={index}
-                  setShowDetail={setShowDetail}
-                />
+                <BillItem bill={bill} key={index} setShowDetail={setShowDetail} />
               ))}
         </TableBody>
       </Table>

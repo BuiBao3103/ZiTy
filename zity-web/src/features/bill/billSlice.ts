@@ -26,6 +26,9 @@ export const billSlice = apiSlice.injectEndpoints({
         if (params.relationshipId) {
           url += `&relationshipId=eq:${params.relationshipId}`
         }
+        if (params.status) {
+          url += `&status=eq:${params.status}`
+        }
         if (params.id) {
           url += `&id=eq:${params.id}`
         }

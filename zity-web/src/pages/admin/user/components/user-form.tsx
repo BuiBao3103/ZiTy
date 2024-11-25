@@ -297,7 +297,10 @@ const UserForm = () => {
                               <FormControl>
                                 <Checkbox
                                   {...field}
-                                  checked={field.value == (role as UserRole)}
+                                  checked={field.value === (role as UserRole)}
+																	onCheckedChange={() => {
+																		field.onChange(role);
+																	}}
                                 />
                               </FormControl>
                               <FormLabel className="text-sm font-normal">

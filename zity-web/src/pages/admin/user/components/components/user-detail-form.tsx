@@ -358,6 +358,7 @@ const UserDetailForm = ({ user, setShowDetail }: UserDetailFormProps) => {
                             <FormControl>
                               <Checkbox
                                 checked={field.value === role}
+																disabled
                                 onCheckedChange={() => {
                                   field.onChange(role)
                                 }}

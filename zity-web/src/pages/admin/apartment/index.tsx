@@ -22,6 +22,7 @@ const Index = () => {
     isLoading,
     isFetching,
   } = useGetApartmentsQuery({ page: currentPage, pageSize: pageSize })
+
   return (
     <div className="w-full sm:h-screen flex flex-col bg-zinc-100 overflow-hidden">
       <BreadCrumb
@@ -62,6 +63,7 @@ const Index = () => {
                 <PageSizeSelector
                   className="w-full"
                   pageSize={pageSize}
+                  setCurrentPage={setCurrentPage}
                   onPageSizeChange={setPageSize}
                 />
                 <div className="w-full">

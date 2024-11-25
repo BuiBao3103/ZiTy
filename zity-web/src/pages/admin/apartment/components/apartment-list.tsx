@@ -1,9 +1,8 @@
-import { IApartment } from '@/schema/apartment.validate'
+import { ApartmentFormSchema } from '@/schema/apartment.validate'
 import { splitByKey } from '@/utils/Split'
-import { useEffect } from 'react'
 import ApartmentItem from './apartment-item'
 interface ApartmentListProps {
-  apartments?: IApartment[]
+  apartments?: ApartmentFormSchema[]
 }
 
 const ApartmentList = ({ apartments }: ApartmentListProps) => {

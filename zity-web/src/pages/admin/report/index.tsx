@@ -51,6 +51,7 @@ const Index = () => {
               className="w-full"
               pageSize={pageSize}
               onPageSizeChange={setPageSize}
+							setCurrentPage={setCurrentPage}
             />
             <div className="w-full">
               <PaginationCustom
