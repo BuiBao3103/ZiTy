@@ -1,12 +1,6 @@
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from '@/components/ui/form'
+import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -18,11 +12,15 @@ import {
   useUpdateTransitionPrepaymentMutation,
 } from '@/features/setting/settingSlice'
 import { SettingSchema } from '@/schema/setting.validate'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { useDebounceValue } from 'usehooks-ts'
 import { z } from 'zod'
+import ButtonOverdue from './components/button-overdue'
+import ButtonPrepayment from './components/button-prepayment'
+import ButtonPayment from './components/button-payment'
+import ButtonDelinquent from './components/button-delinquent'
 
 interface SettingFormProps {
   setting?: z.infer<typeof SettingSchema>
@@ -35,16 +33,7 @@ const SettingForm = ({ setting, isLoading, isFetching }: SettingFormProps) => {
     setting?.currentMonthly,
     700,
   )
-  const [patchSetting, { isLoading: isUpdateSetting }] =
-    usePatchSettingMutation()
-  const [updateStatusPrepayment, { isLoading: isUpdatePrepayment }] =
-    useUpdateTransitionPrepaymentMutation()
-  const [updateStatusPayment, { isLoading: isUpdatePayment }] =
-    useUpdateTransitionPaymentMutation()
-  const [updateStatusOverdue, { isLoading: isUpdateOverdue }] =
-    useUpdateTransitionOverdueMutation()
-  const [updateStatusDelinquent, { isLoading: isUpdateDelinquent }] =
-    useUpdateTransitionDelinquentMutation()
+  const [patchSetting, { isLoading: isUpdateSetting }] = usePatchSettingMutation()
 
   const form = useForm<z.infer<typeof SettingSchema>>()
 
@@ -61,9 +50,7 @@ const SettingForm = ({ setting, isLoading, isFetching }: SettingFormProps) => {
       })
   }
 
-  const onSubmitMonthly = async (
-    data: Pick<z.infer<typeof SettingSchema>, 'currentMonthly'>,
-  ) => {
+  const onSubmitMonthly = async (data: Pick<z.infer<typeof SettingSchema>, 'currentMonthly'>) => {
     await patchSetting(data)
       .unwrap()
       .then((payload) => {
@@ -79,71 +66,6 @@ const SettingForm = ({ setting, isLoading, isFetching }: SettingFormProps) => {
       form.reset(setting)
     }
   }, [setting])
-
-  const handlePrepaymentTransition = async () => {
-    try {
-      await updateStatusPrepayment()
-        .unwrap()
-        .then(() => {
-          toast.success('Updated to Prepayment status successfully')
-        })
-        .catch(() => {
-          toast.error('Failed to update status')
-        })
-    } catch (error) {
-      console.error('Failed to update to Prepayment status:', error)
-      toast.error('Failed to update status')
-    }
-  }
-
-  const handlePaymentTransition = async () => {
-    try {
-      await updateStatusPayment()
-        .unwrap()
-        .then(() => {
-          toast.success('Updated to Payment status successfully')
-        })
-        .catch((error:any) => {
-          console.error('Failed to update to Payment status:', error)
-          toast.error(error.data.detail)
-        })
-    } catch (error) {
-      console.error('Failed to update to Payment status:', error)
-      toast.error('Failed to update status')
-    }
-  }
-
-  const handleOverdueTransition = async () => {
-    try {
-      await updateStatusOverdue()
-        .unwrap()
-        .then(() => {
-          toast.success('Updated to Overdue status successfully')
-        })
-        .catch(() => {
-          toast.error('Failed to update status')
-        })
-    } catch (error) {
-      console.error('Failed to update to Overdue status:', error)
-      toast.error('Failed to update status')
-    }
-  }
-
-  const handleDelinquentTransition = async () => {
-    try {
-      await updateStatusDelinquent()
-        .unwrap()
-        .then(() => {
-          toast.success('Updated to Delinquent status successfully')
-        })
-        .catch(() => {
-          toast.error('Failed to update status')
-        })
-    } catch (error) {
-      console.error('Failed to update to Delinquent status:', error)
-      toast.error('Failed to update status')
-    }
-  }
 
   return (
     <Form {...form}>
@@ -167,9 +89,7 @@ const SettingForm = ({ setting, isLoading, isFetching }: SettingFormProps) => {
                 />
                 <Button
                   type="button"
-                  onClick={() =>
-                    onSubmitMonthly({ currentMonthly: debounceCurrentMonthly })
-                  }
+                  onClick={() => onSubmitMonthly({ currentMonthly: debounceCurrentMonthly })}
                   className="w-fit">
                   {isUpdateSetting ? 'Loading...' : 'Submit'}
                 </Button>
@@ -269,30 +189,10 @@ const SettingForm = ({ setting, isLoading, isFetching }: SettingFormProps) => {
             <div className="flex flex-col space-y-4 p-4 border border-zinc-300 rounded-md h-fit shadow-md">
               <Label>System Status</Label>
               <div className="flex gap-4">
-                <Button
-                  variant="info"
-                  onClick={handlePrepaymentTransition}
-                  disabled={isUpdatePrepayment}>
-                  {isUpdatePrepayment ? 'Updating...' : 'Prepayment'}
-                </Button>
-                <Button
-                  variant="success"
-                  onClick={handlePaymentTransition}
-                  disabled={isUpdatePayment}>
-                  {isUpdatePayment ? 'Updating...' : 'Payment'}
-                </Button>
-                <Button
-                  variant="warning"
-                  onClick={handleOverdueTransition}
-                  disabled={isUpdateOverdue}>
-                  {isUpdateOverdue ? 'Updating...' : 'Overdue'}
-                </Button>
-                <Button
-                  variant="destructive"
-                  onClick={handleDelinquentTransition}
-                  disabled={isUpdateDelinquent}>
-                  {isUpdateDelinquent ? 'Updating...' : 'Delinquent'}
-                </Button>
+                <ButtonPrepayment />
+                <ButtonPayment />
+                <ButtonOverdue />
+                <ButtonDelinquent />
               </div>
               <div className="flex gap-4">
                 <p className="font-medium">Current System Status:</p>
