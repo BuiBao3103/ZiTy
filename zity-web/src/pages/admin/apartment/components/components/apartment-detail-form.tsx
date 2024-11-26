@@ -176,10 +176,7 @@ const ApartmentFormDetail = ({ apartment }: IApartmentFormDetailProps) => {
             />
           </div>
           <div className="size-full">
-            <ApartmentDetailTable
-              relationships={apartment?.relationships}
-              apartmentId={apartment?.id}
-            />
+            <ApartmentDetailTable apartmentId={apartment?.id} />
           </div>
         </div>
         <div className="w-full flex justify-between items-center">

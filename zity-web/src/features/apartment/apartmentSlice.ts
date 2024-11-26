@@ -8,17 +8,16 @@ export const apartmentSlice = apiSlice.injectEndpoints({
       {
         page?: number
         pageSize?: number
-        id?: number
         includes?: string[]
-      }
+      } & Partial<ApartmentFormSchema>
     >({
-      query: (params = {}) => {
+      query: (params) => {
         let url = `apartments?page=${params.page}`
         if (params.pageSize) {
           url += `&PageSize=${params.pageSize}`
         }
         if (params.id) {
-          url += `$id=eq:${params.id}`
+          url += `&id=like:${params.id}`
         }
         if (params.includes && params.includes?.length > 0) {
           url += `&includes=${params.includes.join(',')}`
@@ -89,7 +88,7 @@ export const apartmentSlice = apiSlice.injectEndpoints({
 export const {
   useGetApartmentsQuery,
   useGetApartmentQuery,
-	useCreateApartmentMutation,
+  useCreateApartmentMutation,
   useUpdateApartmentMutation,
   useDeleteApartmentMutation,
   useLazyGetApartmentQuery,

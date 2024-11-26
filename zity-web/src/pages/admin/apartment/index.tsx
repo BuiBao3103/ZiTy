@@ -1,4 +1,4 @@
-import { useDocumentTitle } from 'usehooks-ts'
+import { useDebounceCallback, useDocumentTitle } from 'usehooks-ts'
 import ApartmentList from './components/apartment-list'
 import ApartmentForm from './components/apartment-form'
 import { useParams } from 'react-router-dom'
@@ -15,13 +15,15 @@ import PaginationInfo from '@/components/table/page-info'
 const Index = () => {
   useDocumentTitle('Apartment')
   const params = useParams()
-  const [pageSize, setPageSize] = useState<number>(10)
+  const [pageSize, setPageSize] = useState<number>(12)
   const [currentPage, setCurrentPage] = useState<number>(1)
+  const [search, setSearch] = useState<string>('')
+  const debounce = useDebounceCallback(setSearch, 500)
   const {
     data: apartments,
     isLoading,
     isFetching,
-  } = useGetApartmentsQuery({ page: currentPage, pageSize: pageSize })
+  } = useGetApartmentsQuery({ page: currentPage, pageSize: pageSize, id: search })
 
   return (
     <div className="w-full sm:h-screen flex flex-col bg-zinc-100 overflow-hidden">
@@ -44,6 +46,7 @@ const Index = () => {
                   <Input
                     placeholder="Search something"
                     className="border-none shadow-none focus-visible:ring-0"
+                    onChange={(e) => debounce(e.target.value)}
                   />
                 </div>
                 <ApartmentForm textTrigger="New Apartment" />
@@ -63,6 +66,7 @@ const Index = () => {
                 <PageSizeSelector
                   className="w-full"
                   pageSize={pageSize}
+                  options={[12, 24, 36]}
                   setCurrentPage={setCurrentPage}
                   onPageSizeChange={setPageSize}
                 />

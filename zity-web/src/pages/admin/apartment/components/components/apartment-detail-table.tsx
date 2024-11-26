@@ -6,23 +6,27 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { ExtendedRelationshipsSchema } from '@/schema/relationship.validate'
 import { Plus } from 'lucide-react'
 import { useState } from 'react'
-import { z } from 'zod'
 import ApartmentDetailAddPeople from './apartment-detail-add-people'
+import { useGetRelationshipsQuery } from '@/features/relationships/relationshipsSlice'
 
 interface IApartmentUserTableProps {
-  relationships?: z.infer<typeof ExtendedRelationshipsSchema>[]
   apartmentId?: string
 }
 
-const ApartmentUserTable = ({ relationships, apartmentId }: IApartmentUserTableProps) => {
+const ApartmentUserTable = ({ apartmentId }: IApartmentUserTableProps) => {
+  const { data: relationships } = useGetRelationshipsQuery({
+    page: 1,
+    pageSize: 30,
+    apartmentId: apartmentId,
+    includes: ['user'],
+  })
   const [addPeople, setAddPeople] = useState<boolean>(false)
   const handleAddPeople = () => {
     setAddPeople(true)
   }
-
+	
   return (
     <>
       <Table className="w-full border">
@@ -37,7 +41,7 @@ const ApartmentUserTable = ({ relationships, apartmentId }: IApartmentUserTableP
         </TableHeader>
         <TableBody>
           {relationships &&
-            [...relationships]
+            [...relationships.contents]
               .sort((a, b) => (a.role === 'OWNER' ? -1 : b.role === 'OWNER' ? 1 : 0)) // Ensure "OWNER" comes first
               .map((relationship, index) => (
                 <TableRow key={index}>
@@ -65,7 +69,7 @@ const ApartmentUserTable = ({ relationships, apartmentId }: IApartmentUserTableP
       </Table>
       {addPeople && (
         <ApartmentDetailAddPeople
-          relationships={relationships}
+          relationships={relationships?.contents}
           setAddPeople={setAddPeople}
           apartmentId={apartmentId}
         />

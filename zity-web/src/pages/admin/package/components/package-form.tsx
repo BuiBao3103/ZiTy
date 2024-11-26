@@ -30,7 +30,9 @@ import {
 } from '@/components/ui/select'
 import PackageSendSMS from './components/package-send-sms'
 import { Label } from '@/components/ui/label'
-import { useGetUsersQuery } from '@/features/user/userSlice'
+import { useGetApartmentsQuery } from '@/features/apartment/apartmentSlice'
+import { RelationshipsTypeSchema } from '@/schema/relationship.validate'
+import { useLazyGetRelationshipsQuery } from '@/features/relationships/relationshipsSlice'
 
 interface PackageFormProps {
   packagee?: IPackage
@@ -44,7 +46,14 @@ const PackageForm = ({ packagee, setOpen }: PackageFormProps) => {
   const [createPackage, { isLoading }] = useCreatePackageMutation()
   const [updatePackage, { isLoading: isUpdating }] = useUpdatePackageMutation()
   const [updateImagePackage, { isLoading: isUpdatingImage }] = useUpdateImagePackageMutation()
-  const { data: users } = useGetUsersQuery({ page: 1, pageSize: 60 })
+  const {
+    data: apartments,
+    isLoading: isLoadingApartment,
+    isFetching: isFetchingApartment,
+  } = useGetApartmentsQuery({ page: 1, pageSize: 60 })
+  const [getRelationships] = useLazyGetRelationshipsQuery()
+  const [apartmentSelected, setApartmentSelected] = useState<string | undefined>(undefined)
+  const [relationships, setRelationships] = useState<RelationshipsTypeSchema[]>([])
   const form = useForm<z.infer<typeof PackageSchema>>({
     mode: 'onSubmit',
     defaultValues: packagee || {
@@ -130,11 +139,29 @@ const PackageForm = ({ packagee, setOpen }: PackageFormProps) => {
     setSelectedImage(null)
   }
 
+  const handleGetRelationships = async (apartmentId: string) => {
+    await getRelationships({ page: 1, apartmentId: apartmentId, includes: ['user'] })
+      .unwrap()
+      .then((payload) => {
+        const uniqueUsers = Array.from(
+          new Map(payload.contents.map((user) => [user.userId, user])).values(),
+        )
+        setRelationships(uniqueUsers)
+      })
+      .catch(() => {})
+  }
+
   useEffect(() => {
     if (packagee) {
       form.reset(packagee)
     }
   }, [])
+
+  useEffect(() => {
+    if (apartmentSelected) {
+      handleGetRelationships(apartmentSelected)
+    }
+  }, [apartmentSelected])
 
   return (
     <Form {...form}>
@@ -198,39 +225,68 @@ const PackageForm = ({ packagee, setOpen }: PackageFormProps) => {
                 />
               </div>
             ) : (
-              <FormField
-                control={form.control}
-                name="userId"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>Choose receiver</FormLabel>
+              <>
+                <div className="flex flex-col space-y-2">
+                  <Label>Choose Apartment</Label>
+                  {isLoadingApartment || isFetchingApartment ? (
+                    <div className="w-full h-9 rounded-md animate-pulse bg-gray-100"></div>
+                  ) : (
                     <Select
-                      disabled={packagee !== undefined}
-                      onValueChange={field.onChange}
-                      value={String(field.value)}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select user" />
-                        </SelectTrigger>
-                      </FormControl>
+                      value={apartmentSelected}
+                      onValueChange={(e) => setApartmentSelected(e)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select apartment" />
+                      </SelectTrigger>
                       <SelectContent>
-                        {users?.contents && users.contents.length > 0 ? (
-                          users.contents.map((user) => (
-                            <SelectItem key={user.id} value={String(user.id)}>
-                              {user.fullName}
+                        {apartments?.contents && apartments.contents.length > 0 ? (
+                          apartments.contents.map((apartment, index) => (
+                            <SelectItem key={index} value={String(apartment.id)}>
+                              {apartment.id}
                             </SelectItem>
                           ))
                         ) : (
                           <SelectItem value="none" disabled>
-                            No users found
+                            No apartments found
                           </SelectItem>
                         )}
                       </SelectContent>
                     </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                  )}
+                </div>
+                <FormField
+                  control={form.control}
+                  name="userId"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormLabel>Choose receiver</FormLabel>
+                      <Select
+                        disabled={packagee !== undefined}
+                        onValueChange={field.onChange}
+                        value={String(field.value)}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select user" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {relationships && relationships.length > 0 ? (
+                            relationships.map((relationship, index) => (
+                              <SelectItem key={index} value={String(relationship.user?.id)}>
+                                {relationship.user?.fullName}
+                              </SelectItem>
+                            ))
+                          ) : (
+                            <SelectItem value="none" disabled>
+                              No users found
+                            </SelectItem>
+                          )}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </>
             )}
           </div>
           <div className="w-full h-full">

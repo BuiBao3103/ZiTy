@@ -17,6 +17,9 @@ export const relationshipsSlice = apiSlice.injectEndpoints({
         if (params.pageSize && params.pageSize > 0) {
           url += `&pageSize=${params.pageSize}`
         }
+        if (params.apartmentId) {
+          url += `&apartmentId=eq:${params.apartmentId}`
+        }
         if (params.sort && params.sort.length > 0) {
           url += `&sort=${params.sort.join(',')}`
         }
@@ -55,10 +58,7 @@ export const relationshipsSlice = apiSlice.injectEndpoints({
         body: data,
       }),
       invalidatesTags(result, error, arg, meta) {
-        return [
-          { type: 'Relationships', id: 'LIST' },
-          { type: 'Apartments', id: arg.apartmentId },
-        ]
+        return [{ type: 'Relationships', id: 'LIST' }]
       },
     }),
     updateRelationship: builder.mutation<
@@ -77,10 +77,7 @@ export const relationshipsSlice = apiSlice.injectEndpoints({
         url: `relationships/${data.id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: (result, error, { id, apartmentId }) => [
-        { type: 'Relationships', id },
-        // { type: 'Apartments', id: apartmentId },
-      ],
+      invalidatesTags: (result, error, { id, apartmentId }) => [{ type: 'Relationships', id }],
     }),
   }),
 })
