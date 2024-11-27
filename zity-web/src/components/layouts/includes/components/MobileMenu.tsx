@@ -8,7 +8,6 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { AlignLeft, LogOut } from 'lucide-react'
-import { SideBarProps } from '../Header'
 import { Link, useNavigate } from 'react-router-dom'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
@@ -18,6 +17,8 @@ import {
 } from '@/components/ui/tooltip'
 import Logo from '@/assets/logo.svg'
 import { useAppSelector } from '@/store'
+import { SideBarProps } from '@/constant/sidebar'
+import DefaultaAvatar from '@/assets/default-avatar.jpeg'
 
 interface MobileMenuProps {
   sidebar: SideBarProps[]
@@ -26,8 +27,6 @@ interface MobileMenuProps {
 
 export default function MobileMenu({ sidebar, handleLogout }: MobileMenuProps) {
   const user = useAppSelector((state) => state.userReducer.user)
-  const navigate = useNavigate()
-
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -74,7 +73,7 @@ export default function MobileMenu({ sidebar, handleLogout }: MobileMenuProps) {
           </div>
           <div className="w-full mt-5 flex items-center gap-2">
             <Avatar>
-              <AvatarImage src={user?.avatar} />
+              <AvatarImage src={user?.avatar ?? DefaultaAvatar} />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
             <div className="w-full flex flex-col">

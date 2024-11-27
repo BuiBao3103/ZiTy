@@ -18,6 +18,7 @@ import BillAdmin from '@admin/bill'
 import SurveyAdmin from '@admin/survey'
 import ReportAdmin from '@admin/report'
 import SettingAdmin from '@admin/setting'
+import StatisticsAdmin from '@admin/statistics'
 import ChatAdmin from '@admin/chat'
 
 // User Pages
@@ -31,7 +32,6 @@ import Chat from '@user/chat'
 // Error and Payment pages
 import NotFound from '@pages/404'
 import MomoPaymentSuccess from '@/pages/notify-payment/MomoPaymentSuccess'
-import ProtectedLayout from '@/components/layouts/ProtectedLayout'
 import { ROUTES } from '@/configs/endpoint'
 import AdminLayout from '@/components/layouts/AdminLayout'
 import UserLayout from '@/components/layouts/UserLayout'
@@ -55,6 +55,7 @@ const adminRoutes: RouteObject[] = [
   { path: ROUTES.ADMIN.SURVEYS + '/:id?', element: <SurveyAdmin /> },
   { path: ROUTES.ADMIN.REPORTS + '/:id?', element: <ReportAdmin /> },
   { path: ROUTES.ADMIN.SETTINGS + '/:id?', element: <SettingAdmin /> },
+  { path: ROUTES.ADMIN.STATISTICS, element: <StatisticsAdmin /> },
   { path: ROUTES.ADMIN.CHAT + '/:id?', element: <ChatAdmin /> },
 ]
 

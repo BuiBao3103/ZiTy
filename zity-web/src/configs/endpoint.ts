@@ -17,6 +17,7 @@ export const ROUTES = {
     SURVEYS: '/admin/surveys',
     REPORTS: '/admin/reports',
     SETTINGS: '/admin/settings',
+		STATISTICS: '/admin/statistics',
     CHAT: '/admin/chat',
   },
   NOTFOUND: '/404',

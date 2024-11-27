@@ -7,6 +7,7 @@ using Domain.Core.Specifications;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.Exceptions;
+using System.Diagnostics;
 
 namespace Application.Services;
 public class SettingService(IUnitOfWork unitOfWork, IMapper mapper) : ISettingService
@@ -111,12 +112,12 @@ public class SettingService(IUnitOfWork unitOfWork, IMapper mapper) : ISettingSe
         var services = await _unitOfWork.Repository<Service>().ListAsync(serviceSpec);
 
        
-
+        
         foreach (var relationship in relationships)
         {
             var billSpec = new BaseSpecification<Bill>(b => b.RelationshipId == relationship.Id && b.Monthly == setting.CurrentMonthly);
             var currentMonthlyBill = await _unitOfWork.Repository<Bill>().FirstOrDefaultAsync(billSpec);
-
+            Console.WriteLine(currentMonthlyBill == null);
             if (currentMonthlyBill == null)
             {
 

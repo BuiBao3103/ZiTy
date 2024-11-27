@@ -21,7 +21,7 @@ const settingApiSlice = apiSlice.injectEndpoints({
         method: 'POST',
       }),
       invalidatesTags(result, error, arg, meta) {
-        return [{ type: 'Settings' }]
+        return [{ type: 'Settings' }, { type: 'Bills' }]
       },
     }),
     updateTransitionPayment: builder.mutation<ISetting, void>({
@@ -30,7 +30,7 @@ const settingApiSlice = apiSlice.injectEndpoints({
         method: 'POST',
       }),
       invalidatesTags(result, error, arg, meta) {
-        return [{ type: 'Settings' }]
+        return [{ type: 'Settings' }, { type: 'Bills' }]
       },
     }),
     updateTransitionOverdue: builder.mutation<ISetting, void>({
@@ -39,7 +39,7 @@ const settingApiSlice = apiSlice.injectEndpoints({
         method: 'POST',
       }),
       invalidatesTags(result, error, arg, meta) {
-        return [{ type: 'Settings' }]
+        return [{ type: 'Settings' }, { type: 'Bills' }]
       },
     }),
     updateTransitionDelinquent: builder.mutation<ISetting, void>({
@@ -48,7 +48,7 @@ const settingApiSlice = apiSlice.injectEndpoints({
         method: 'POST',
       }),
       invalidatesTags(result, error, arg, meta) {
-        return [{ type: 'Settings' }]
+        return [{ type: 'Settings' }, { type: 'Apartments',id: "LIST" }]
       },
     }),
   }),

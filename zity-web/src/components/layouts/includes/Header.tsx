@@ -4,37 +4,22 @@ import { Separator } from '@/components/ui/separator'
 import DefaultAvatar from '@/assets/default-avatar.jpeg'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import {
-  Cog,
-  Flag,
-  HandPlatter,
-  House,
   LogOut,
-  MessageCircleQuestion,
-  NotebookText,
-  Package,
   PanelRightClose,
   PanelRightOpen,
-  Receipt,
-  TableCellsMerge,
-  UsersRound,
 } from 'lucide-react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useWindowSize } from 'usehooks-ts'
 import MobileMenu from './components/MobileMenu'
 import Logo from '@/assets/logo.svg'
 import LogoMobile from '@/assets/logoMobile.svg'
-import { ApartmentUserRole, UserRole } from '@/enums'
+import { ApartmentUserRole } from '@/enums'
 import { useMemo, useState } from 'react'
 import { useAppDispath, useAppSelector } from '@/store'
 import { ROUTES } from '@/configs/endpoint'
 import Cookies from 'universal-cookie'
 import { userLoggedOut } from '@/features/auth/authSlice'
-export interface SideBarProps {
-  label: string
-  icon: React.ReactNode
-  to: string
-  role?: (UserRole | ApartmentUserRole)[]
-}
+import { sideBarLists } from '@/constant/sidebar'
 
 const Header = () => {
   const { width = 0 } = useWindowSize()
@@ -44,105 +29,6 @@ const Header = () => {
   const user = useAppSelector((state) => state.userReducer.user)
   const dispatch = useAppDispath()
   const [panelRightOpen, setPanelRightOpen] = useState<boolean>(false)
-
-  const userSideBars: SideBarProps[] = [
-    {
-      label: 'Home',
-      icon: <House />,
-      to: ROUTES.HOME,
-      role: ['OWNER', 'USER'],
-    },
-    {
-      label: 'Packages',
-      icon: <Package />,
-      to: ROUTES.PACKAGES,
-      role: ['USER'],
-    },
-    {
-      label: 'Surveys',
-      icon: <NotebookText />,
-      to: ROUTES.SURVEYS,
-      role: ['USER'],
-    },
-    {
-      label: 'Reports',
-      icon: <Flag />,
-      to: ROUTES.REPORTS,
-      role: ['USER'],
-    },
-    {
-      label: 'Bills',
-      icon: <Receipt />,
-      to: ROUTES.BILLS,
-      role: ['OWNER'],
-    },
-    {
-      label: 'Home',
-      icon: <House />,
-      to: ROUTES.ADMIN.HOME,
-      role: ['ADMIN'],
-    },
-    {
-      label: 'Apartments Management',
-      icon: <TableCellsMerge />,
-      to: ROUTES.ADMIN.APARTMENTS,
-      role: ['ADMIN'],
-    },
-    {
-      label: 'Users Management',
-      icon: <UsersRound />,
-      to: ROUTES.ADMIN.USERS,
-      role: ['ADMIN'],
-    },
-    {
-      label: 'Services Management',
-      icon: <HandPlatter />,
-      to: ROUTES.ADMIN.SERVICES,
-      role: ['ADMIN'],
-    },
-    {
-      label: 'Packages Management',
-      icon: <Package />,
-      to: ROUTES.ADMIN.PACKAGES,
-      role: ['ADMIN'],
-    },
-    {
-      label: 'Bills Management',
-      icon: <Receipt />,
-      to: ROUTES.ADMIN.BILLS,
-      role: ['ADMIN'],
-    },
-    {
-      label: 'Surveys Management',
-      icon: <NotebookText />,
-      to: ROUTES.ADMIN.SURVEYS,
-      role: ['ADMIN'],
-    },
-    {
-      label: 'Reports Management',
-      icon: <Flag />,
-      to: ROUTES.ADMIN.REPORTS,
-      role: ['ADMIN'],
-    },
-    {
-      label: 'Ask For Support',
-      icon: <MessageCircleQuestion />,
-      to: ROUTES.CHAT,
-      role: ['USER'],
-    },
-    {
-      label: 'Setting Admin',
-      icon: <Cog />,
-      to: ROUTES.ADMIN.SETTINGS,
-      role: ['ADMIN'],
-    },
-    {
-      label: 'Chat',
-      icon: <MessageCircleQuestion />,
-      to: ROUTES.ADMIN.CHAT,
-      role: ['ADMIN'],
-    },
-  ]
 
   const filteredSidebars = useMemo(() => {
     if (!user?.userType || !user?.relationships) return []
@@ -160,17 +46,17 @@ const Header = () => {
 
       if (!isOwner && isUser) {
         // Case 1: User has USER role but not OWNER
-        return userSideBars.filter(
+        return sideBarLists.filter(
           (sidebar) => Array.isArray(sidebar.role) && sidebar.role.includes('USER'),
         )
       } else if (isOwner && !isUser) {
         // Case 2: User has OWNER role but not USER
-        return userSideBars.filter(
+        return sideBarLists.filter(
           (sidebar) => Array.isArray(sidebar.role) && sidebar.role.includes('OWNER'),
         )
       } else if (isOwner && isUser) {
         // Case 3: User has both OWNER and USER roles
-        return userSideBars.filter(
+        return sideBarLists.filter(
           (sidebar) =>
             Array.isArray(sidebar.role) &&
             (sidebar.role.includes('OWNER') || sidebar.role.includes('USER')),
@@ -179,7 +65,7 @@ const Header = () => {
     }
 
     // For other user types, filter normally
-    return userSideBars.filter((sidebar) => {
+    return sideBarLists.filter((sidebar) => {
       if (Array.isArray(sidebar.role)) {
         return sidebar.role.includes(userType)
       }
