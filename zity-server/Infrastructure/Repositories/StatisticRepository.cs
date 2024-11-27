@@ -49,6 +49,22 @@ namespace Infrastructure.Repositories
                     }).ToList()
                 })
                 .ToListAsync();
+        } 
+
+      
+
+        public async Task<List<MonthlyRevenueStatistics>> GetStatisticsRevenue(string startMonth, string endMonth)
+        {
+            return await _dbContext.Bills
+              .Where(b => b.Monthly.CompareTo(startMonth) >= 0 && b.Monthly.CompareTo(endMonth) <= 0)
+              .GroupBy(b => b.Monthly)
+              .Select(g => new MonthlyRevenueStatistics
+              {
+                  Month = g.Key,
+                  TotalRevenue = g.Sum(b => (decimal)b.TotalPrice)
+              })
+              .OrderBy(mr => mr.Month)
+              .ToListAsync();
         }
     }
 }

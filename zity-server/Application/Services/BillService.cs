@@ -10,7 +10,9 @@ using Domain.Core.Repositories;
 using Domain.Core.Specifications;
 using Domain.Entities;
 using Domain.Exceptions;
-
+using System.Globalization;
+using Application.Core.Exceptions;
+using System.Diagnostics;
 namespace Application.Services;
 
 public class BillService(IUnitOfWork unitOfWork, IMapper mapper, IVNPayService vnpayService, IMomoService momoService) : IBillService
@@ -150,5 +152,50 @@ public class BillService(IUnitOfWork unitOfWork, IMapper mapper, IVNPayService v
         await _unitOfWork.SaveChangesAsync();
         return bills.Select(_mapper.Map<BillDTO>).ToList();
     }
+
+    public async Task<List<MonthlyRevenueStatisticsDTO>> GetStatisticsRevenue(string startDate, string endDate)
+    {
+        Console.WriteLine("Starting GetStatisticsRevenue");
+
+        // Dictionary to store validation errors
+        IDictionary<string, string[]> errors = new Dictionary<string, string[]>();
+
+        // Parse the dates once and check validity
+        DateTime parsedStartDate, parsedEndDate;
+        bool isStartDateValid = DateTime.TryParseExact(startDate, "yyyy-MM", CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedStartDate);
+        bool isEndDateValid = DateTime.TryParseExact(endDate, "yyyy-MM", CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedEndDate);
+
+        // Validate start date
+        if (!isStartDateValid)
+        {
+            errors.Add("startDate", new string[] { "Invalid start date" });
+        }
+
+        // Validate end date
+        if (!isEndDateValid)
+        {
+            errors.Add("endDate", new string[] { "Invalid end date" });
+        }
+
+        // Validate start date < end date
+        if (isStartDateValid && isEndDateValid && parsedStartDate > parsedEndDate)
+        {
+            errors.Add("startDate", new string[] { "Start date must be less than or equal to the end date" });
+        }
+
+        // If there are any validation errors, throw an exception
+        if (errors.Count > 0)
+        {
+            Debug.WriteLine("Validation errors: " + errors.Count);
+            throw new ValidationException(errors);
+        }
+
+        // Fetch data from the repository
+        var monthlyStatisticsRevenue = await _unitOfWork.StatisticRepository.GetStatisticsRevenue(startDate, endDate);
+
+        // Map the result to DTO and return
+        return _mapper.Map<List<MonthlyRevenueStatisticsDTO>>(monthlyStatisticsRevenue);
+    }
+
 }
 

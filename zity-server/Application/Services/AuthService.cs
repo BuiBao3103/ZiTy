@@ -24,7 +24,24 @@ public class AuthService(IUnitOfWork unitOfWork, AppSettings appSettings) : IAut
         if (user == null || !VerifyPassword(user, loginDto.Password))
             return null;
 
+        //CHECK IF OWNER HAS A BILL IS OVERDUE
+        if (user.UserType == "OWNER")
+        {
+            var specBill = new BaseSpecification<Bill>(b => b.Relationship.UserId == user.Id && b.Status == "OVERDUE");
+            var bill = await _unitOfWork.Repository<Bill>().FirstOrDefaultAsync(specBill);
+            if (bill != null)
+                throw new BusinessRuleException("You have an overdue bill. Please pay before login.");
+        }
 
+        var specRelationship = new BaseSpecification<Relationship>(r => r.UserId == user.Id);
+        specRelationship.AddInclude(r => r.Apartment);
+        var relationships = await _unitOfWork.Repository<Relationship>().ListAsync(specRelationship);
+
+        foreach (var relationship in relationships)
+        {
+            if (relationship.Apartment.Status == "DISCRUPTION")
+                throw new BusinessRuleException("Your apartment is in discruption. Please contact the admin for more information.");
+        }
 
 
         var accessToken = GenerateJwtToken(user, false);

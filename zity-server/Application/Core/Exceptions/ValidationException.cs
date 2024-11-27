@@ -1,12 +1,25 @@
-﻿namespace Application.Core.Exceptions;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
-public class ValidationException : Exception
+namespace Application.Core.Exceptions
 {
-    public IDictionary<string, string[]> Errors { get; }
-
-    public ValidationException(IDictionary<string, string[]> errors)
-        : base("One or more validation errors occurred")
+    public class ValidationException : Exception
     {
-        Errors = errors;
+        public IDictionary<string, string[]> Errors { get; }
+
+        public ValidationException(IDictionary<string, string[]> errors)
+            : base("One or more validation errors occurred")
+        {
+            Errors = errors ?? throw new ArgumentNullException(nameof(errors));
+        }
+
+        public ValidationException(string propertyName, string errorMessage)
+            : this(new Dictionary<string, string[]>
+            {
+                { propertyName, new[] { errorMessage } }
+            })
+        {
+        }
     }
 }

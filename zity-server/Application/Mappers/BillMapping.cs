@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Domain.Entities;
 using Application.DTOs.Bills;
+using Domain.Core.Models;
 
 namespace Application.Mappers;
 
@@ -27,6 +28,8 @@ public class BillMapping : Profile
             .ForMember(dest => dest.WaterReadingDate, opt => opt.Condition((src, dest) => src.WaterReadingDate != null))
             .ForMember(dest => dest.Status, opt => opt.Condition((src, dest) => src.Status != null))
             .ForMember(dest => dest.RelationshipId, opt => opt.Condition((src, dest) => src.RelationshipId != null));
+
+        CreateMap<MonthlyRevenueStatistics, MonthlyRevenueStatisticsDTO>();
     }
 }
 
