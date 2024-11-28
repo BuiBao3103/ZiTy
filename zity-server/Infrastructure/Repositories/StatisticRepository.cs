@@ -56,7 +56,7 @@ namespace Infrastructure.Repositories
         public async Task<List<MonthlyRevenueStatistics>> GetStatisticsRevenue(string startMonth, string endMonth)
         {
             return await _dbContext.Bills
-              .Where(b => b.Monthly.CompareTo(startMonth) >= 0 && b.Monthly.CompareTo(endMonth) <= 0)
+              .Where(b => b.Monthly.CompareTo(startMonth) >= 0 && b.Monthly.CompareTo(endMonth) <= 0 && b.Status == "PAID")
               .GroupBy(b => b.Monthly)
               .Select(g => new MonthlyRevenueStatistics
               {

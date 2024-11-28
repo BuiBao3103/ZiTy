@@ -113,6 +113,7 @@ public class SurveyService(IUnitOfWork unitOfWork, IMapper mapper) : ISurveyServ
         foreach (var questionStatistic in QuestionStatistics)
         {
             int maxCount = questionStatistic.Answers.Max(a => a.Count);
+            if (maxCount == 0) continue;
             questionStatistic.Answers.ForEach(a => a.IsMostSelected = a.Count == maxCount);
         }
         var statisticSurvey = new StatisticSurveyDTO
