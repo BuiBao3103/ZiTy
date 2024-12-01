@@ -88,9 +88,9 @@ public class SurveyService(IUnitOfWork unitOfWork, IMapper mapper) : ISurveyServ
             UserAnswer newUserAnswer = _mapper.Map<UserAnswer>(userAnswer);
             await _unitOfWork.Repository<UserAnswer>().AddAsync(newUserAnswer);
         }
-        foreach (var orderAnswer in surveySubmitDTO.UserAnswers)
+        foreach (var otherAnswer in surveySubmitDTO.OtherAnswers)
         {
-            OtherAnswer newOtherAnswer = _mapper.Map<OtherAnswer>(orderAnswer);
+            OtherAnswer newOtherAnswer = _mapper.Map<OtherAnswer>(otherAnswer);
             await _unitOfWork.Repository<OtherAnswer>().AddAsync(newOtherAnswer);
         }
         await _unitOfWork.SaveChangesAsync();
