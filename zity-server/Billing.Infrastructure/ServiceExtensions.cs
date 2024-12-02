@@ -13,15 +13,12 @@ public static class ServiceExtensions
 {
     public static void ConfigureInfrastructure(this IServiceCollection services)
     {
-
-
-
-
         services.AddScoped(typeof(IBaseRepositoryAsync<>), typeof(BaseRepositoryAsync<>));
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         services.AddScoped<IVNPayService, VNPayService>();
         services.AddScoped<IMomoService, MomoService>();
+        services.AddScoped<IStatisticRepository,StatisticRepository>();
         //services.AddScoped<ILoggerService, LoggerService>();
     }
 
