@@ -10,6 +10,7 @@ using Billing.Application.DTOs.Momo;
 using Billing.Application.DTOs.Bills;
 using Billing.Application.DTOs;
 using Billing.Application.Interfaces;
+using Billing.Application.Core.Constants;
 
 namespace Billing.Application.Services;
 
@@ -117,30 +118,37 @@ public class BillService(IUnitOfWork unitOfWork, IMapper mapper, IVNPayService v
 
     public async Task<List<BillDTO>> UpdateWaterReadingAsync(BillUpdateWaterReadingDto waterReadingDto)
     {
-        Dictionary<string, string[]> errors = new();
-        List<Bill> bills = new();
-        foreach (var waterReading in waterReadingDto.WaterReadings)
-        {
+        List<Bill> bills = [];
+        //foreach (var waterReading in waterReadingDto.WaterReadings)
+        //{
+        //    Setting setting = await _unitOfWork.Repository<Setting>().GetByIdAsync(SettingConstants.SettingId);
 
-            var bill = await _unitOfWork.Repository<Bill>().GetByIdAsync(waterReading.BillId);
-            if (bill == null)
-            {
-                errors.Add($"Id-{waterReading.NewWaterIndex}-{waterReading.ReadingDate}", new string[] { "Bill not found" });
-            }
-            else
-            {
+        //    var billSpec = new BaseSpecification<Bill>(b => b.Id == waterReading.BillId);
+        //    billSpec.AddInclude(b => b.Relationship.Apartment);
 
-                bills.Add(bill);
-                bill.NewWater = waterReading.NewWaterIndex;
-                bill.WaterReadingDate = waterReading.ReadingDate;
-                _unitOfWork.Repository<Bill>().Update(bill);
-            }
-        }
-        if (errors.Count > 0)
-        {
-            throw new ValidationException(errors);
-        }
-        await _unitOfWork.SaveChangesAsync();
+        //    var bill = await _unitOfWork.Repository<Bill>().FirstOrDefaultAsync(billSpec);
+        //    if (bill == null)
+        //    {
+        //        throw new EntityNotFoundException(nameof(Bill), waterReading.BillId);
+        //    }
+        //    else
+        //    {
+        //        bills.Add(bill);
+
+        //        bill.NewWater = waterReading.NewWaterIndex;
+        //        bill.WaterReadingDate = waterReading.ReadingDate;
+
+        //        int numberWater = (int)waterReading.NewWaterIndex! - (int)bill.OldWater!;
+        //        var waterPrice = setting.WaterPricePerM3 * numberWater * (100 + setting.WaterVat + setting.EnvProtectionTax) / 100;
+        //        bill.TotalPrice += waterPrice;
+        //        _unitOfWork.Repository<Bill>().Update(bill);
+
+        //        bill.Relationship.Apartment.CurrentWaterNumber = (int)waterReading.NewWaterIndex!;
+        //        _unitOfWork.Repository<Apartment>().Update(bill.Relationship.Apartment);
+
+        //    }
+        //}
+        //await _unitOfWork.SaveChangesAsync();
         return bills.Select(_mapper.Map<BillDTO>).ToList();
     }
 }
