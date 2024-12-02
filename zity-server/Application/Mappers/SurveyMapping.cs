@@ -46,7 +46,7 @@ public class SurveyMapping : Profile
                 .ForMember(dest => dest.OtherAnswers, opt =>
                     opt.MapFrom(src => src.OtherAnswers));
 
-        CreateMap<AnswerStatistics, AnswerDetailDto>()
+        CreateMap<QuestionStatistics, AnswerDetailDto>()
             .ForMember(dest => dest.IsMostSelected, opt => opt.MapFrom(src => false));
 
         CreateMap<OtherAnswerStatistics, OtherAnswerDetailDto>();
