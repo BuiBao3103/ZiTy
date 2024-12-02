@@ -6,6 +6,7 @@ using Billing.Domain.Core.Repositories;
 using Billing.Domain.Entities;
 using Billing.Domain.Enums;
 using Billing.Domain.Exceptions;
+using Billing.Domain.Core.Specifications;
 
 namespace Billing.Application.Services;
 public class SettingService(IUnitOfWork unitOfWork, IMapper mapper) : ISettingService
@@ -31,49 +32,128 @@ public class SettingService(IUnitOfWork unitOfWork, IMapper mapper) : ISettingSe
 
     public async Task<SettingDTO> TransitionToDelinquent()
     {
-        var existingSetting = await _unitOfWork.Repository<Setting>().GetByIdAsync(SettingConstants.SettingId)
-            ?? throw new EntityNotFoundException(nameof(Service), SettingConstants.SettingId);
+        var setting = await _unitOfWork.Repository<Setting>().GetByIdAsync(SettingConstants.SettingId)
+             ?? throw new EntityNotFoundException(nameof(Service), SettingConstants.SettingId);
 
-        existingSetting.SystemStatus = SystemStatusEnum.DELINQUENT;
+        //var relationshipSpec = new BaseSpecification<Relationship>(r => r.DeletedAt == null && r.Role == "OWNER" && r.Bills.Any(b => b.Status == "OVERDUE"));
+        //relationshipSpec.AddInclude(r => r.Apartment);
+        //var relationships = await _unitOfWork.Repository<Relationship>().ListAsync(relationshipSpec);
 
-        _unitOfWork.Repository<Setting>().Update(existingSetting);
+        //var distinctRelationships = relationships
+        //    .GroupBy(r => r.Apartment.Id)
+        //    .Select(g => g.First())
+        //    .ToList();
+
+        //foreach (var relationship in distinctRelationships)
+        //{
+        //    relationship.Apartment.Status = "DISRUPTION";
+        //    _unitOfWork.Repository<Apartment>().Update(relationship.Apartment);
+        //}
+
+        setting.SystemStatus = SystemStatusEnum.DELINQUENT;
+
+        _unitOfWork.Repository<Setting>().Update(setting);
         await _unitOfWork.SaveChangesAsync();
-        return _mapper.Map<SettingDTO>(existingSetting);
+        return _mapper.Map<SettingDTO>(setting);
     }
 
     public async Task<SettingDTO> TransitionToOverdue()
     {
-        var existingSetting = await _unitOfWork.Repository<Setting>().GetByIdAsync(SettingConstants.SettingId)
+        var setting = await _unitOfWork.Repository<Setting>().GetByIdAsync(SettingConstants.SettingId)
              ?? throw new EntityNotFoundException(nameof(Service), SettingConstants.SettingId);
 
-        existingSetting.SystemStatus = SystemStatusEnum.OVERDUE;
+        var billSpec = new BaseSpecification<Bill>(b => b.DeletedAt == null && b.Monthly == setting.CurrentMonthly && b.Status == "UNPAID");
+        var bills = await _unitOfWork.Repository<Bill>().ListAsync(billSpec);
 
-        _unitOfWork.Repository<Setting>().Update(existingSetting);
+        foreach (var bill in bills)
+        {
+            bill.Status = "OVERDUE";
+            _unitOfWork.Repository<Bill>().Update(bill);
+        }
+        setting.SystemStatus = SystemStatusEnum.OVERDUE;
+
+
+        _unitOfWork.Repository<Setting>().Update(setting);
         await _unitOfWork.SaveChangesAsync();
-        return _mapper.Map<SettingDTO>(existingSetting);
+        return _mapper.Map<SettingDTO>(setting);
     }
 
     public async Task<SettingDTO> TransitionToPayment()
     {
-        var existingSetting = await _unitOfWork.Repository<Setting>().GetByIdAsync(SettingConstants.SettingId)
-            ?? throw new EntityNotFoundException(nameof(Service), SettingConstants.SettingId);
+        var setting = await _unitOfWork.Repository<Setting>().GetByIdAsync(SettingConstants.SettingId)
+           ?? throw new EntityNotFoundException(nameof(Service), SettingConstants.SettingId);
 
-        existingSetting.SystemStatus = SystemStatusEnum.PAYMENT;
+        var billSpec = new BaseSpecification<Bill>(b => b.DeletedAt == null && b.Monthly == setting.CurrentMonthly && b.NewWater == null);
+        var bills = await _unitOfWork.Repository<Bill>().ListAsync(billSpec);
 
-        _unitOfWork.Repository<Setting>().Update(existingSetting);
+        if (bills.Count != 0)
+        {
+            throw new BusinessRuleException("There are still bills that have not been calculated water price");
+        }
+
+        setting.SystemStatus = SystemStatusEnum.PAYMENT;
+
+        _unitOfWork.Repository<Setting>().Update(setting);
         await _unitOfWork.SaveChangesAsync();
-        return _mapper.Map<SettingDTO>(existingSetting);
+        return _mapper.Map<SettingDTO>(setting);
     }
 
     public async Task<SettingDTO> TransitionToPrepayment()
     {
-        var existingSetting = await _unitOfWork.Repository<Setting>().GetByIdAsync(SettingConstants.SettingId)
-           ?? throw new EntityNotFoundException(nameof(Service), SettingConstants.SettingId);
-        _unitOfWork.Repository<Setting>().Update(existingSetting);
+        var setting = await _unitOfWork.Repository<Setting>().GetByIdAsync(SettingConstants.SettingId)
+            ?? throw new EntityNotFoundException(nameof(Service), SettingConstants.SettingId);
 
-        existingSetting.SystemStatus = SystemStatusEnum.PREPAYMENT;
+        //var relationshipSpec = new BaseSpecification<Relationship>(r => r.DeletedAt == null && r.Role == "OWNER" && r.User.IsStaying == true);
+        //relationshipSpec.AddInclude(r => r.Apartment);
+        //var relationships = await _unitOfWork.Repository<Relationship>().ListAsync(relationshipSpec);
+
+        var serviceSpec = new BaseSpecification<Service>(s => s.DeletedAt == null);
+        var services = await _unitOfWork.Repository<Service>().ListAsync(serviceSpec);
+
+
+
+        //foreach (var relationship in relationships)
+        //{
+        //    var billSpec = new BaseSpecification<Bill>(b => b.RelationshipId == relationship.Id && b.Monthly == setting.CurrentMonthly);
+        //    var currentMonthlyBill = await _unitOfWork.Repository<Bill>().FirstOrDefaultAsync(billSpec);
+        //    Console.WriteLine(currentMonthlyBill == null);
+        //    if (currentMonthlyBill == null)
+        //    {
+
+        //        //init list billdetails and cal total price
+        //        var billDetails = new List<BillDetail>();
+        //        var totalServicePrice = 0.0f;
+        //        foreach (var service in services)
+        //        {
+        //            var billDetail = new BillDetail()
+        //            {
+        //                ServiceId = service.Id,
+        //                Price = service.Price,
+        //            };
+        //            billDetails.Add(billDetail);
+        //            totalServicePrice += service.Price;
+        //        }
+        //        var totalRoomPrice = (setting.RoomPricePerM2 * relationship.Apartment.Area) * (100 + setting.RoomVat) / 100;
+        //        var newBill = new Bill()
+        //        {
+        //            RelationshipId = relationship.Id,
+        //            OldWater = relationship.Apartment.CurrentWaterNumber,
+        //            Monthly = setting.CurrentMonthly,
+        //            CreatedAt = DateTime.Now,
+        //            Status = "UNPAID",
+        //            TotalPrice = totalServicePrice + totalRoomPrice,
+        //            BillDetails = billDetails
+        //        };
+        //        await _unitOfWork.Repository<Bill>().AddAsync(newBill);
+        //    }
+        //}
+
+
+        _unitOfWork.Repository<Setting>().Update(setting);
+
+        setting.SystemStatus = SystemStatusEnum.PREPAYMENT;
 
         await _unitOfWork.SaveChangesAsync();
-        return _mapper.Map<SettingDTO>(existingSetting);
+        return _mapper.Map<SettingDTO>(setting);
     }
 }
