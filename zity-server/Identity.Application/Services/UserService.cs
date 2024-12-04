@@ -103,8 +103,8 @@ public class UserService(IUnitOfWork unitOfWork, IMediaService mediaService, IEm
         var user = await _unitOfWork.Repository<User>().GetByIdAsync(userId)
                  ?? throw new EntityNotFoundException(nameof(User), userId);
         string phoneNumber = user.Phone;
-        string message = "You have received a package!";
-        //string message = "Cam on quy khach da su dung dich vu cua chung toi. Chuc quy khach mot ngay tot lanh!";
+        //string message = "You have received a package!";
+        string message = "Cam on quy khach da su dung dich vu cua chung toi. Chuc quy khach mot ngay tot lanh!";
         await _smsService.SendSMSAsync(phoneNumber, message);
     }
 

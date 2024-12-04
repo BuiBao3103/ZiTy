@@ -71,10 +71,25 @@ public class ItemService(IUnitOfWork unitOfWork, IMapper mapper, IMediaService m
     public async Task<ItemDTO> GetByIdAsync(int id, string? includes = null)
     {
         var spec = new BaseSpecification<Item>(a => a.DeletedAt == null && a.Id == id);
-        includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);
+        var includesList = includes?.Split(',').Select(include =>
+            char.ToUpper(include[0]) + include.Substring(1)).ToList() ?? new List<string>();
+
+        foreach (string include in includesList)
+        {
+            if (include.StartsWith("User")) continue;
+            spec.AddInclude(include);
+        }
         var item = await _unitOfWork.Repository<Item>().FirstOrDefaultAsync(spec)
             ?? throw new EntityNotFoundException(nameof(Item), id);
-        return _mapper.Map<ItemDTO>(item);
+
+        var itemDTO = _mapper.Map<ItemDTO>(item);
+        if (includesList.Contains("User"))
+        {
+            var relationshipsResponse = await _httpClient.GetStringAsync($"http://localhost:8080/api/users/{item.UserId}");
+            var user = JsonConvert.DeserializeObject<UserDTO>(relationshipsResponse);
+            itemDTO.User = user;
+        }
+        return itemDTO;
     }
 
     public async Task<ItemDTO> CreateAsync(ItemCreateDTO createDTO)
