@@ -16,6 +16,7 @@ using System.Globalization;
 using System.Net.Http;
 using Billing.Application.DTOs.ApartmentService;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace Billing.Application.Services;
 
@@ -88,9 +89,9 @@ public class BillService(IUnitOfWork unitOfWork, IMapper mapper, IVNPayService v
 
         var billDTO = _mapper.Map<BillDTO>(bill);
 
-        if (includesList.Contains("User"))
+        if (includesList.Contains("Relationship"))
         {
-            var relationshipsResponse = await _httpClient.GetStringAsync($"http://localhost:8080/api/users/{bill.RelationshipId}");
+            var relationshipsResponse = await _httpClient.GetStringAsync($"http://localhost:8080/api/relationships/{bill.RelationshipId}");
             var relationship = JsonConvert.DeserializeObject<RelationshipDTO>(relationshipsResponse);
             billDTO.Relationship = relationship;
         }
@@ -165,36 +166,58 @@ public class BillService(IUnitOfWork unitOfWork, IMapper mapper, IVNPayService v
     public async Task<List<BillDTO>> UpdateWaterReadingAsync(BillUpdateWaterReadingDto waterReadingDto)
     {
         List<Bill> bills = [];
-        //foreach (var waterReading in waterReadingDto.WaterReadings)
-        //{
-        //    Setting setting = await _unitOfWork.Repository<Setting>().GetByIdAsync(SettingConstants.SettingId);
+        List<Task> updateApartmentTasks = new List<Task>();
+        foreach (var waterReading in waterReadingDto.WaterReadings)
+        {
+            Setting setting = await _unitOfWork.Repository<Setting>().GetByIdAsync(SettingConstants.SettingId);
 
-        //    var billSpec = new BaseSpecification<Bill>(b => b.Id == waterReading.BillId);
-        //    billSpec.AddInclude(b => b.Relationship.Apartment);
+            var billSpec = new BaseSpecification<Bill>(b => b.Id == waterReading.BillId);
 
-        //    var bill = await _unitOfWork.Repository<Bill>().FirstOrDefaultAsync(billSpec);
-        //    if (bill == null)
-        //    {
-        //        throw new EntityNotFoundException(nameof(Bill), waterReading.BillId);
-        //    }
-        //    else
-        //    {
-        //        bills.Add(bill);
+            var bill = await _unitOfWork.Repository<Bill>().FirstOrDefaultAsync(billSpec);
+            if (bill == null)
+            {
+                throw new EntityNotFoundException(nameof(Bill), waterReading.BillId);
+            }
+            else
+            {
+                bills.Add(bill);
 
-        //        bill.NewWater = waterReading.NewWaterIndex;
-        //        bill.WaterReadingDate = waterReading.ReadingDate;
+                bill.NewWater = waterReading.NewWaterIndex;
+                bill.WaterReadingDate = waterReading.ReadingDate;
 
-        //        int numberWater = (int)waterReading.NewWaterIndex! - (int)bill.OldWater!;
-        //        var waterPrice = setting.WaterPricePerM3 * numberWater * (100 + setting.WaterVat + setting.EnvProtectionTax) / 100;
-        //        bill.TotalPrice += waterPrice;
-        //        _unitOfWork.Repository<Bill>().Update(bill);
+                int numberWater = (int)waterReading.NewWaterIndex! - (int)bill.OldWater!;
+                var waterPrice = setting.WaterPricePerM3 * numberWater * (100 + setting.WaterVat + setting.EnvProtectionTax) / 100;
+                bill.TotalPrice += waterPrice;
+                _unitOfWork.Repository<Bill>().Update(bill);
 
-        //        bill.Relationship.Apartment.CurrentWaterNumber = (int)waterReading.NewWaterIndex!;
-        //        _unitOfWork.Repository<Apartment>().Update(bill.Relationship.Apartment);
+                updateApartmentTasks.Add(Task.Run(async () =>
+                {
+                    try
+                    {
+                        // Fetch relationship details
+                        var relationshipsResponse = await _httpClient.GetStringAsync($"http://localhost:8080/api/relationships/{bill.RelationshipId}");
+                        var relationship = JsonConvert.DeserializeObject<RelationshipDTO>(relationshipsResponse);
 
-        //    }
-        //}
-        //await _unitOfWork.SaveChangesAsync();
+                        // Prepare and send update
+                        var content = new StringContent(
+                            JsonConvert.SerializeObject(new { CurrentWaterNumber = waterReading.NewWaterIndex }),
+                            Encoding.UTF8,
+                            "application/json");
+
+                        var response = await _httpClient.PatchAsync($"http://localhost:8080/api/apartments/{relationship.ApartmentId}", content);
+                        response.EnsureSuccessStatusCode();
+                    }
+                    catch (Exception ex)
+                    {
+                        // Use Console.WriteLine or replace with appropriate logging
+                        Console.WriteLine($"Failed to update apartment water index for relationship {bill.RelationshipId}: {ex.Message}");
+                        throw;
+                    }
+                }));
+            }
+        }
+        await _unitOfWork.SaveChangesAsync();
+        await Task.WhenAll(updateApartmentTasks);
         return bills.Select(_mapper.Map<BillDTO>).ToList();
     }
     public async Task<List<MonthlyRevenueStatisticsDTO>> GetStatisticsRevenue(string startDate, string endDate)
