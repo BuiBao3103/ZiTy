@@ -30,9 +30,8 @@ public class ReportService(IUnitOfWork unitOfWork, IMapper mapper, HttpClient ht
 
         foreach (string include in includes)
         {
-            string temp = include[0].ToString().ToUpper()[0] + include[1..];
-            if (temp.StartsWith("RejectionReason"))
-                spec.AddInclude(temp);
+            if (include.StartsWith("Relationship")) continue;
+            spec.AddInclude(include);
         }
 
         // Áp dụng sắp xếp

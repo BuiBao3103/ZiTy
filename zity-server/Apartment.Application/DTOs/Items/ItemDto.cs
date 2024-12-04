@@ -1,4 +1,4 @@
-
+using Apartment.Application.DTOs.IdentityService;
 namespace Apartment.Application.DTOs.Items;
 
 public class ItemDTO
@@ -16,6 +16,8 @@ public class ItemDTO
     public DateTime? UpdatedAt { get; set; }
 
     public int? UserId { get; set; }
+
+    public UserDTO User { get; set; } = null!;
 
 }
 

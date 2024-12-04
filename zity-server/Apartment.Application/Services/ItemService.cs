@@ -10,21 +10,34 @@ using Apartment.Domain.Entities;
 using Apartment.Domain.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Apartment.Application.Core.Constants;
+using System.Net.Http;
+using Newtonsoft.Json;
+using Apartment.Application.DTOs.IdentityService;
 
 namespace Apartment.Application.Services;
 
-public class ItemService(IUnitOfWork unitOfWork, IMapper mapper, IMediaService mediaService) : IItemService
+public class ItemService(IUnitOfWork unitOfWork, IMapper mapper, IMediaService mediaService, HttpClient httpClient) : IItemService
 {
     private readonly IMapper _mapper = mapper;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IMediaService _mediaService = mediaService;
+
+    private readonly HttpClient _httpClient = httpClient;
+
 
     public async Task<PaginatedResult<ItemDTO>> GetAllAsync(ItemQueryDTO query)
     {
         var filterExpression = query.BuildFilterCriteria<Item>(a => a.DeletedAt == null);
         var spec = new BaseSpecification<Item>(filterExpression);
         var totalCount = await _unitOfWork.Repository<Item>().CountAsync(spec);
-        query.Includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);
+        var includes = query.Includes?.Split(',').Select(include =>
+            char.ToUpper(include[0]) + include.Substring(1)).ToList() ?? new List<string>();
+
+        foreach (string include in includes)
+        {
+            if (include.StartsWith("User")) continue;
+            spec.AddInclude(include);
+        }
         if (!string.IsNullOrEmpty(query.Sort))
             if (query.Sort.StartsWith("-"))
                 spec.ApplyOrderByDescending(query.Sort[1..]);
@@ -32,11 +45,27 @@ public class ItemService(IUnitOfWork unitOfWork, IMapper mapper, IMediaService m
                 spec.ApplyOrderBy(query.Sort);
         spec.ApplyPaging(query.PageSize * (query.Page - 1), query.PageSize);
         var data = await _unitOfWork.Repository<Item>().ListAsync(spec);
-        return new PaginatedResult<ItemDTO>(
-            data.Select(_mapper.Map<ItemDTO>).ToList(),
-            totalCount,
-            query.Page,
-            query.PageSize);
+
+        var paginatedData = new PaginatedResult<ItemDTO>(
+          data.Select(_mapper.Map<ItemDTO>).ToList(),
+          totalCount,
+          query.Page,
+          query.PageSize);
+
+
+        // Nếu cần thông tin Relationship, tải song song thông qua HTTP client
+        if (includes.Contains("User"))
+        {
+            var relationshipTasks = paginatedData.Contents.Select(async (item, index) =>
+            {
+                var relationshipsResponse = await _httpClient.GetStringAsync($"http://localhost:8080/api/users/{item.UserId}");
+                var user = JsonConvert.DeserializeObject<UserDTO>(relationshipsResponse);
+                paginatedData.Contents[index].User = user;
+            });
+
+            await Task.WhenAll(relationshipTasks); // Đợi tất cả các tác vụ HTTP hoàn thành
+        }
+        return paginatedData;
     }
 
     public async Task<ItemDTO> GetByIdAsync(int id, string? includes = null)
