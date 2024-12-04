@@ -7,12 +7,18 @@ using Billing.Domain.Entities;
 using Billing.Domain.Enums;
 using Billing.Domain.Exceptions;
 using Billing.Domain.Core.Specifications;
+using System.Net.Http;
+using Newtonsoft.Json;
+using Billing.Application.DTOs.ApartmentService;
+using System.Text;
 
 namespace Billing.Application.Services;
-public class SettingService(IUnitOfWork unitOfWork, IMapper mapper) : ISettingService
+public class SettingService(IUnitOfWork unitOfWork, IMapper mapper, HttpClient httpClient) : ISettingService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IMapper _mapper = mapper;
+    private readonly HttpClient _httpClient = httpClient;
+
     public async Task<SettingDTO> GetSetting()
     {
         var setting = await _unitOfWork.Repository<Setting>().GetByIdAsync(SettingConstants.SettingId)
@@ -35,25 +41,44 @@ public class SettingService(IUnitOfWork unitOfWork, IMapper mapper) : ISettingSe
         var setting = await _unitOfWork.Repository<Setting>().GetByIdAsync(SettingConstants.SettingId)
              ?? throw new EntityNotFoundException(nameof(Service), SettingConstants.SettingId);
 
-        //var relationshipSpec = new BaseSpecification<Relationship>(r => r.DeletedAt == null && r.Role == "OWNER" && r.Bills.Any(b => b.Status == "OVERDUE"));
-        //relationshipSpec.AddInclude(r => r.Apartment);
-        //var relationships = await _unitOfWork.Repository<Relationship>().ListAsync(relationshipSpec);
+        var billSpec = new BaseSpecification<Bill>(b => b.DeletedAt == null && b.Status == "OVERDUE" && b.Monthly == setting.CurrentMonthly);
+        var bills = await _unitOfWork.Repository<Bill>().ListAsync(billSpec);
+        List<Task> updateApartmentTasks = new List<Task>();
 
-        //var distinctRelationships = relationships
-        //    .GroupBy(r => r.Apartment.Id)
-        //    .Select(g => g.First())
-        //    .ToList();
+        foreach (var bill in bills)
+        {
+            updateApartmentTasks.Add(Task.Run(async () =>
+            {
+                try
+                {
+                    // Fetch relationship details
+                    var relationshipsResponse = await _httpClient.GetStringAsync($"http://localhost:8080/api/relationships/{bill.RelationshipId}");
+                    var relationship = JsonConvert.DeserializeObject<RelationshipDTO>(relationshipsResponse);
 
-        //foreach (var relationship in distinctRelationships)
-        //{
-        //    relationship.Apartment.Status = "DISRUPTION";
-        //    _unitOfWork.Repository<Apartment>().Update(relationship.Apartment);
-        //}
+                    // Prepare and send update
+                    var content = new StringContent(
+                        JsonConvert.SerializeObject(new { Status = "DISRUPTION" }),
+                        Encoding.UTF8,
+                        "application/json");
+
+                    var response = await _httpClient.PatchAsync($"http://localhost:8080/api/apartments/{relationship.ApartmentId}", content);
+                    response.EnsureSuccessStatusCode();
+                }
+                catch (Exception ex)
+                {
+                    // Use Console.WriteLine or replace with appropriate logging
+                    Console.WriteLine($"Failed to update apartment water index for relationship {bill.RelationshipId}: {ex.Message}");
+                    throw;
+                }
+            }));
+        }
+
 
         setting.SystemStatus = SystemStatusEnum.DELINQUENT;
 
         _unitOfWork.Repository<Setting>().Update(setting);
         await _unitOfWork.SaveChangesAsync();
+        await Task.WhenAll(updateApartmentTasks);
         return _mapper.Map<SettingDTO>(setting);
     }
 
