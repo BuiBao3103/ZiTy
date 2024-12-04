@@ -13,10 +13,13 @@ using Billing.Application.Interfaces;
 using Billing.Application.Core.Constants;
 using System.Diagnostics;
 using System.Globalization;
+using System.Net.Http;
+using Billing.Application.DTOs.ApartmentService;
+using Newtonsoft.Json;
 
 namespace Billing.Application.Services;
 
-public class BillService(IUnitOfWork unitOfWork, IMapper mapper, IVNPayService vnpayService, IMomoService momoService) : IBillService
+public class BillService(IUnitOfWork unitOfWork, IMapper mapper, IVNPayService vnpayService, IMomoService momoService, HttpClient httpClient) : IBillService
 {
     private readonly IMapper _mapper = mapper;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
@@ -24,12 +27,22 @@ public class BillService(IUnitOfWork unitOfWork, IMapper mapper, IVNPayService v
     private readonly IVNPayService _vnpayService = vnpayService;
     private readonly IMomoService _momoService = momoService;
 
+    private readonly HttpClient _httpClient = httpClient;
+
+
     public async Task<PaginatedResult<BillDTO>> GetAllAsync(BillQueryDTO query)
     {
         var filterExpression = query.BuildFilterCriteria<Bill>(a => a.DeletedAt == null);
         var spec = new BaseSpecification<Bill>(filterExpression);
         var totalCount = await _unitOfWork.Repository<Bill>().CountAsync(spec);
-        query.Includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);
+        var includes = query.Includes?.Split(',').Select(include =>
+             char.ToUpper(include[0]) + include.Substring(1)).ToList() ?? new List<string>();
+
+        foreach (string include in includes)
+        {
+            if (include.StartsWith("Relationship")) continue;
+            spec.AddInclude(include);
+        }
         if (!string.IsNullOrEmpty(query.Sort))
             if (query.Sort.StartsWith("-"))
                 spec.ApplyOrderByDescending(query.Sort[1..]);
@@ -37,11 +50,26 @@ public class BillService(IUnitOfWork unitOfWork, IMapper mapper, IVNPayService v
                 spec.ApplyOrderBy(query.Sort);
         spec.ApplyPaging(query.PageSize * (query.Page - 1), query.PageSize);
         var data = await _unitOfWork.Repository<Bill>().ListAsync(spec);
-        return new PaginatedResult<BillDTO>(
-            data.Select(_mapper.Map<BillDTO>).ToList(),
-            totalCount,
-            query.Page,
-            query.PageSize);
+
+        var paginatedData = new PaginatedResult<BillDTO>(
+          data.Select(_mapper.Map<BillDTO>).ToList(),
+          totalCount,
+          query.Page,
+          query.PageSize);
+
+        // Nếu cần thông tin Relationship, tải song song thông qua HTTP client
+        if (includes.Contains("Relationship"))
+        {
+            var relationshipTasks = paginatedData.Contents.Select(async (report, index) =>
+            {
+                var relationshipsResponse = await _httpClient.GetStringAsync($"http://localhost:8080/api/relationships/{report.RelationshipId}");
+                var relationship = JsonConvert.DeserializeObject<RelationshipDTO>(relationshipsResponse);
+                paginatedData.Contents[index].Relationship = relationship;
+            });
+
+            await Task.WhenAll(relationshipTasks); // Đợi tất cả các tác vụ HTTP hoàn thành
+        }
+        return paginatedData;
     }
 
     public async Task<BillDTO> GetByIdAsync(int id, string? includes = null)

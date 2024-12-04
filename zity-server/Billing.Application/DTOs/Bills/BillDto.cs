@@ -1,4 +1,5 @@
-﻿using Billing.Application.DTOs.BillDetails;
+﻿using Billing.Application.DTOs.ApartmentService;
+using Billing.Application.DTOs.BillDetails;
 
 namespace Billing.Application.DTOs.Bills;
 
@@ -24,6 +25,8 @@ public class BillDTO
 
     public int RelationshipId { get; set; }
     public ICollection<BillDetailDTO> BillDetails { get; set; } = [];
+
+    public RelationshipDTO Relationship { get; set; } = null!;
 
 }
 
