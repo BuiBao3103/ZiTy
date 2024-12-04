@@ -10,12 +10,14 @@ using Identity.Application.DTOs.Users;
 using Identity.Application.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Identity.Application.Core.Constants;
+using Newtonsoft.Json;
+using Identity.Application.DTOs.ApartmentService;
 
 
 
 namespace Identity.Application.Services;
 
-public class UserService(IUnitOfWork unitOfWork, IMediaService mediaService, IEmailService emailService, ISmsService smsService, IMapper mapper) : IUserService
+public class UserService(IUnitOfWork unitOfWork, IMediaService mediaService, IEmailService emailService, ISmsService smsService, IMapper mapper, HttpClient httpClient) : IUserService
 {
     private readonly IMapper _mapper = mapper;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
@@ -24,6 +26,7 @@ public class UserService(IUnitOfWork unitOfWork, IMediaService mediaService, IEm
     private readonly IEmailService _emailService = emailService;
     private readonly ISmsService _smsService = smsService;
 
+    private readonly HttpClient _httpClient = httpClient;
     public async Task<PaginatedResult<UserDTO>> GetAllAsync(UserQueryDTO query)
     {
         var filterExpression = query.BuildFilterCriteria<User>(a => a.DeletedAt == null);
@@ -107,10 +110,20 @@ public class UserService(IUnitOfWork unitOfWork, IMediaService mediaService, IEm
 
     public async Task<UserDTO> GetMeAsync(int userId)
     {
+        // Lấy thông tin người dùng
         var spec = new BaseSpecification<User>(a => a.DeletedAt == null && a.Id == userId);
         var user = await _unitOfWork.Repository<User>().FirstOrDefaultAsync(spec)
-               ?? throw new EntityNotFoundException(nameof(User), userId);
-        return _mapper.Map<UserDTO>(user);
+                  ?? throw new EntityNotFoundException(nameof(User), userId);
+
+        // Gọi đến ApartmentService để lấy danh sách relationships
+        var relationshipsResponse = await _httpClient.GetStringAsync($"http://localhost:5005/api/relationships?UserId=eq:{userId}");
+        var relationships = JsonConvert.DeserializeObject<RelationshipResponse>(relationshipsResponse);
+
+        // Map UserDTO và gắn relationships vào user
+        var userDTO = _mapper.Map<UserDTO>(user);
+        userDTO.Relationships = relationships.Contents;
+
+        return userDTO;
     }
 
     public async Task UpdateCurrentPassword(int userId, UpdatePasswordDTO updatePasswordDTO)
