@@ -75,10 +75,26 @@ public class BillService(IUnitOfWork unitOfWork, IMapper mapper, IVNPayService v
     public async Task<BillDTO> GetByIdAsync(int id, string? includes = null)
     {
         var spec = new BaseSpecification<Bill>(a => a.DeletedAt == null && a.Id == id);
-        includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);
+        var includesList = includes?.Split(',').Select(include =>
+            char.ToUpper(include[0]) + include.Substring(1)).ToList() ?? new List<string>();
+
+        foreach (string include in includesList)
+        {
+            if (include.StartsWith("Relationship")) continue;
+            spec.AddInclude(include);
+        }
         var bill = await _unitOfWork.Repository<Bill>().FirstOrDefaultAsync(spec)
             ?? throw new EntityNotFoundException(nameof(Bill), id);
-        return _mapper.Map<BillDTO>(bill);
+
+        var billDTO = _mapper.Map<BillDTO>(bill);
+
+        if (includesList.Contains("User"))
+        {
+            var relationshipsResponse = await _httpClient.GetStringAsync($"http://localhost:8080/api/users/{bill.RelationshipId}");
+            var relationship = JsonConvert.DeserializeObject<RelationshipDTO>(relationshipsResponse);
+            billDTO.Relationship = relationship;
+        }
+        return billDTO;
     }
     public async Task<BillDTO> CreateAsync(BillCreateDTO createDTO)
     {
