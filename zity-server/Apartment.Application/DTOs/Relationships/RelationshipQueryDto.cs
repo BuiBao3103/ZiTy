@@ -10,5 +10,8 @@ public class RelationshipQueryDTO : BaseQueryDTO
     public string? UserId { get; set; }
     [RegularExpression(@"^(eq):[\w\s,]*$", ErrorMessage = "Invalid filter format")]
     public string? ApartmentId { get; set; }
+
+    [RegularExpression(@"^(eq):[\w\s,]*$", ErrorMessage = "Invalid filter format")]
+    public string? Role { get; set; }
 }
 

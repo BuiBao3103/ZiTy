@@ -128,50 +128,48 @@ public class SettingService(IUnitOfWork unitOfWork, IMapper mapper, HttpClient h
         var setting = await _unitOfWork.Repository<Setting>().GetByIdAsync(SettingConstants.SettingId)
             ?? throw new EntityNotFoundException(nameof(Service), SettingConstants.SettingId);
 
-        //var relationshipSpec = new BaseSpecification<Relationship>(r => r.DeletedAt == null && r.Role == "OWNER" && r.User.IsStaying == true);
-        //relationshipSpec.AddInclude(r => r.Apartment);
-        //var relationships = await _unitOfWork.Repository<Relationship>().ListAsync(relationshipSpec);
+        var relationshipsResponse = await _httpClient.GetStringAsync($"http://localhost:8080/api/relationships?PageSize=100&Role=eq:OWNER&Includes=apartment");
+        var relationships = JsonConvert.DeserializeObject<RelationshipResponse>(relationshipsResponse);
 
+        Console.WriteLine(relationships.Contents.Count);
         var serviceSpec = new BaseSpecification<Service>(s => s.DeletedAt == null);
         var services = await _unitOfWork.Repository<Service>().ListAsync(serviceSpec);
 
 
 
-        //foreach (var relationship in relationships)
-        //{
-        //    var billSpec = new BaseSpecification<Bill>(b => b.RelationshipId == relationship.Id && b.Monthly == setting.CurrentMonthly);
-        //    var currentMonthlyBill = await _unitOfWork.Repository<Bill>().FirstOrDefaultAsync(billSpec);
-        //    Console.WriteLine(currentMonthlyBill == null);
-        //    if (currentMonthlyBill == null)
-        //    {
+        foreach (var relationship in relationships.Contents)
+        {
+            var billSpec = new BaseSpecification<Bill>(b => b.RelationshipId == relationship.Id && b.Monthly == setting.CurrentMonthly);
+            var currentMonthlyBill = await _unitOfWork.Repository<Bill>().FirstOrDefaultAsync(billSpec);
+            if (currentMonthlyBill == null)
+            {
 
-        //        //init list billdetails and cal total price
-        //        var billDetails = new List<BillDetail>();
-        //        var totalServicePrice = 0.0f;
-        //        foreach (var service in services)
-        //        {
-        //            var billDetail = new BillDetail()
-        //            {
-        //                ServiceId = service.Id,
-        //                Price = service.Price,
-        //            };
-        //            billDetails.Add(billDetail);
-        //            totalServicePrice += service.Price;
-        //        }
-        //        var totalRoomPrice = (setting.RoomPricePerM2 * relationship.Apartment.Area) * (100 + setting.RoomVat) / 100;
-        //        var newBill = new Bill()
-        //        {
-        //            RelationshipId = relationship.Id,
-        //            OldWater = relationship.Apartment.CurrentWaterNumber,
-        //            Monthly = setting.CurrentMonthly,
-        //            CreatedAt = DateTime.Now,
-        //            Status = "UNPAID",
-        //            TotalPrice = totalServicePrice + totalRoomPrice,
-        //            BillDetails = billDetails
-        //        };
-        //        await _unitOfWork.Repository<Bill>().AddAsync(newBill);
-        //    }
-        //}
+                var billDetails = new List<BillDetail>();
+                var totalServicePrice = 0.0f;
+                foreach (var service in services)
+                {
+                    var billDetail = new BillDetail()
+                    {
+                        ServiceId = service.Id,
+                        Price = service.Price,
+                    };
+                    billDetails.Add(billDetail);
+                    totalServicePrice += service.Price;
+                }
+                var totalRoomPrice = (setting.RoomPricePerM2 * relationship.Apartment.Area) * (100 + setting.RoomVat) / 100;
+                var newBill = new Bill()
+                {
+                    RelationshipId = relationship.Id,
+                    OldWater = relationship.Apartment.CurrentWaterNumber,
+                    Monthly = setting.CurrentMonthly,
+                    CreatedAt = DateTime.Now,
+                    Status = "UNPAID",
+                    TotalPrice = totalServicePrice + totalRoomPrice,
+                    BillDetails = billDetails
+                };
+                await _unitOfWork.Repository<Bill>().AddAsync(newBill);
+            }
+        }
 
 
         _unitOfWork.Repository<Setting>().Update(setting);
