@@ -116,7 +116,7 @@ public class UserService(IUnitOfWork unitOfWork, IMediaService mediaService, IEm
                   ?? throw new EntityNotFoundException(nameof(User), userId);
 
         // Gọi đến ApartmentService để lấy danh sách relationships
-        var relationshipsResponse = await _httpClient.GetStringAsync($"http://localhost:5005/api/relationships?UserId=eq:{userId}");
+        var relationshipsResponse = await _httpClient.GetStringAsync($"http://localhost:8080/api/relationships?PageSize=100&UserId=eq:{userId}");
         var relationships = JsonConvert.DeserializeObject<RelationshipResponse>(relationshipsResponse);
 
         // Map UserDTO và gắn relationships vào user

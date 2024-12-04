@@ -10,7 +10,7 @@ builder.Services.AddOcelot(builder.Configuration);
 builder.Services.AddCors();
 var corsPolicy = "AllowAll";
 builder.Services.AddCors(options =>
-{
+{   
     options.AddPolicy(corsPolicy, builder =>
     {
         builder.AllowAnyOrigin()

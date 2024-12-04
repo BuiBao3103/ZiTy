@@ -1,3 +1,4 @@
+using Report.Application.DTOs.ApartmentService;
 using Report.Application.DTOs.RejectionReasons;
 
 namespace Report.Application.DTOs.Reports;
@@ -19,5 +20,7 @@ public class ReportDTO
     public int? RelationshipId { get; set; }
 
     public RejectionReasonDTO? RejectionReason { get; set; }
+
+    public RelationshipDTO? Relationship { get; set; }
 
 }
