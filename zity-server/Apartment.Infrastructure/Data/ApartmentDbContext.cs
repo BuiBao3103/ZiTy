@@ -69,6 +69,8 @@ public partial class ApartmentDbContext : DbContext
                 .HasDefaultValueSql("'EMPTY'")
                 .HasColumnType("enum('IN_USE','EMPTY','DISRUPTION')")
                 .HasColumnName("status");
+            entity.Property(e => e.CurrentWaterNumber)
+                .HasColumnName("current_water_number");
             entity.Property(e => e.UpdatedAt)
                 .HasColumnType("datetime")
                 .HasColumnName("updated_at");

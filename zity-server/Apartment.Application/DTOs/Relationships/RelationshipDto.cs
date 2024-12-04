@@ -1,4 +1,5 @@
 ﻿using Apartment.Application.DTOs.Apartments;
+using Apartment.Application.DTOs.IdentityService;
 
 namespace Apartment.Application.DTOs.Relationships;
 
@@ -17,5 +18,7 @@ public class RelationshipDTO
     public string ApartmentId { get; set; } = null!;
 
     public ApartmentDTO? Apartment { get; set; } = null;
+
+    public UserDTO? User { get; set; } = null;
 }
 

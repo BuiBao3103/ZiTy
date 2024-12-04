@@ -6,4 +6,5 @@ public class ApartmentPatchDTO
     public int? FloorNumber { get; set; }
     public int? ApartmentNumber { get; set; }
     public string? Status { get; set; }
+    public int? CurrentWaterNumber { get; set; }
 }
