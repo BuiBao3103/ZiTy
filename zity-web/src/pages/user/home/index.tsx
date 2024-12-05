@@ -44,15 +44,16 @@ const Index = () => {
   useEffect(() => {
     const handleGetApartment = async () => {
       if (user) {
-        await getApartment({
-          id: selectedHouse,
-          includes: 'relationships.User',
-        })
-          .unwrap()
-          .then((payload) => {
-            setApartmentData(payload)
+        if (selectedHouse) {
+          await getApartment({
+            id: selectedHouse,
           })
-          .catch(() => {})
+            .unwrap()
+            .then((payload) => {
+              setApartmentData(payload)
+            })
+            .catch(() => {})
+        }
       }
     }
     handleGetApartment()
@@ -108,11 +109,7 @@ const Index = () => {
             )}
           </div>
           <div className="w-full grid grid-cols-1 min-[600px]:grid-cols-2 md:grid-cols-4 gap-4 col-span-1 md:col-span-2 lg:col-span-4">
-						{
-							!user?.relationships?.some((item) => item.role === 'OWNER') && (
-								<FunctionBoxList />
-							)
-						}
+            {!user?.relationships?.some((item) => item.role === 'OWNER') && <FunctionBoxList />}
           </div>
         </div>
       </div>
