@@ -21,7 +21,7 @@ const ColumnDisplayTable = ({ apartmentData }: ColumnDisplayTableProps) => {
     isLoading,
     isFetching,
   } = useGetRelationshipsQuery(
-    { apartmentId: apartmentData?.id },
+    { apartmentId: apartmentData?.id, page: 1, pageSize: 10 },
     {
       skip: !apartmentData?.id,
     },
