@@ -108,7 +108,11 @@ const Index = () => {
             )}
           </div>
           <div className="w-full grid grid-cols-1 min-[600px]:grid-cols-2 md:grid-cols-4 gap-4 col-span-1 md:col-span-2 lg:col-span-4">
-            <FunctionBoxList />
+						{
+							!user?.relationships?.some((item) => item.role === 'OWNER') && (
+								<FunctionBoxList />
+							)
+						}
           </div>
         </div>
       </div>

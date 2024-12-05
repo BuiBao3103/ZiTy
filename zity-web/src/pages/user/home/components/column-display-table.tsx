@@ -9,12 +9,24 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { ApartmentFormSchema } from '@/schema/apartment.validate'
+import { useGetRelationshipsQuery } from '@/features/relationships/relationshipsSlice'
 
 interface ColumnDisplayTableProps {
   apartmentData?: ApartmentFormSchema
 }
 
 const ColumnDisplayTable = ({ apartmentData }: ColumnDisplayTableProps) => {
+  const {
+    data: relationships,
+    isLoading,
+    isFetching,
+  } = useGetRelationshipsQuery(
+    { apartmentId: apartmentData?.id },
+    {
+      skip: !apartmentData?.id,
+    },
+  )
+
   return (
     <div className="size-full flex flex-col space-y-2">
       <p className="flex items-center gap-2 text-lg font-medium uppercase">
@@ -36,15 +48,24 @@ const ColumnDisplayTable = ({ apartmentData }: ColumnDisplayTableProps) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {apartmentData?.relationships?.map((relationship, index) => (
-              <TableRow key={index}>
-                <TableCell>{index + 1}</TableCell>
-                <TableCell>{relationship.user?.fullName}</TableCell>
-                <TableCell>{relationship.role}</TableCell>
-                <TableCell>{relationship.user?.phone}</TableCell>
-                <TableCell>{relationship.user?.gender}</TableCell>
+            {isLoading || isFetching ? (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center">
+                  Loading...
+                </TableCell>
               </TableRow>
-            ))}
+            ) : (
+              relationships &&
+              relationships?.contents?.map((relationship, index) => (
+                <TableRow key={index}>
+                  <TableCell>{index + 1}</TableCell>
+                  <TableCell>{relationship.user?.fullName}</TableCell>
+                  <TableCell>{relationship.role}</TableCell>
+                  <TableCell>{relationship.user?.phone}</TableCell>
+                  <TableCell>{relationship.user?.gender}</TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </div>
