@@ -1,9 +1,5 @@
-﻿using Apartment.Domain.Core.Models;
-
-namespace Apartment.Domain.Entities;
-
-
-public partial class Apartment : BaseEntity
+﻿namespace Billing.Application.DTOs.ApartmentService;
+public class ApartmentDTO
 {
     public string Id { get; set; } = null!;
 
@@ -22,8 +18,5 @@ public partial class Apartment : BaseEntity
     public DateTime CreatedAt { get; set; }
 
     public DateTime? UpdatedAt { get; set; }
-
-    public DateTime? DeletedAt { get; set; }
-
-    public virtual ICollection<Relationship> Relationships { get; set; } = new List<Relationship>();
+    public ICollection<RelationshipDTO> Relationships { get; set; } = [];
 }

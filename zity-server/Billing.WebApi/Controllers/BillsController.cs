@@ -75,4 +75,9 @@ public class BillController(IBillService billService) : ControllerBase
     {
         return Ok(await _billService.UpdateWaterReadingAsync(waterReadingDto));
     }
+    [HttpGet("statistics-revenue")]
+    public async Task<IActionResult> GetStatisticsRevenue([FromQuery] string startDate, string endDate)
+    {
+        return Ok(await _billService.GetStatisticsRevenue(startDate, endDate));
+    }
 }

@@ -1,14 +1,14 @@
-﻿using Application.DTOs.Surveys;
-using Domain.Core.Models;
-using Domain.Core.Repositories;
-using Infrastructure.Data;
+﻿using Survey.Application.DTOs.Surveys;
+using Survey.Domain.Core.Models;
+using Survey.Domain.Core.Repositories;
+using Survey.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Repositories
+namespace Survey.Infrastructure.Repositories
 {
-    public class StatisticRepository(ApplicationDbContext dbContext) : IStatisticRepository
+    public class StatisticRepository(SurveyDbContext dbContext) : IStatisticRepository
     {
-        private readonly ApplicationDbContext _dbContext = dbContext;
+        private readonly SurveyDbContext _dbContext = dbContext;
         public async Task<int> GetTotalParticipantsSurveyAsync(int surveyId)
         {
             // Get users who selected predefined answers
@@ -50,21 +50,5 @@ namespace Infrastructure.Repositories
                 })
                 .ToListAsync();
         } 
-
-      
-
-        public async Task<List<MonthlyRevenueStatistics>> GetStatisticsRevenue(string startMonth, string endMonth)
-        {
-            return await _dbContext.Bills
-              .Where(b => b.Monthly.CompareTo(startMonth) >= 0 && b.Monthly.CompareTo(endMonth) <= 0 && b.Status == "PAID")
-              .GroupBy(b => b.Monthly)
-              .Select(g => new MonthlyRevenueStatistics
-              {
-                  Month = g.Key,
-                  TotalRevenue = g.Sum(b => (decimal)b.TotalPrice)
-              })
-              .OrderBy(mr => mr.Month)
-              .ToListAsync();
-        }
     }
 }

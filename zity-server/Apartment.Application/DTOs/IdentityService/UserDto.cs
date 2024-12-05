@@ -1,5 +1,4 @@
-﻿using Identity.Application.DTOs.ApartmentService;
-namespace Identity.Application.DTOs.Users;
+﻿namespace Apartment.Application.DTOs.IdentityService;
 
 public class UserDTO
 {
@@ -17,6 +16,4 @@ public class UserDTO
     public bool? IsStaying { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
-
-    public List<RelationshipDTO> Relationships { get; set; } = [];
 }

@@ -7,20 +7,31 @@ using Apartment.Domain.Core.Repositories;
 using Apartment.Domain.Core.Specifications;
 using Apartment.Domain.Entities;
 using Apartment.Domain.Exceptions;
+using System.Net.Http;
+using Newtonsoft.Json;
+using Apartment.Application.DTOs.IdentityService;
 
 namespace Apartment.Application.Services;
 
-public class RelationshipService(IUnitOfWork unitOfWork, IMapper mapper) : IRelationshipService
+public class RelationshipService(IUnitOfWork unitOfWork, IMapper mapper, HttpClient httpClient) : IRelationshipService
 {
     private readonly IMapper _mapper = mapper;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly HttpClient _httpClient = httpClient;
 
     public async Task<PaginatedResult<RelationshipDTO>> GetAllAsync(RelationshipQueryDTO query)
     {
         var filterExpression = query.BuildFilterCriteria<Relationship>(a => a.DeletedAt == null);
         var spec = new BaseSpecification<Relationship>(filterExpression);
         var totalCount = await _unitOfWork.Repository<Relationship>().CountAsync(spec);
-        query.Includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);
+        var includes = query.Includes?.Split(',').Select(include =>
+            char.ToUpper(include[0]) + include.Substring(1)).ToList() ?? new List<string>();
+
+        foreach (string include in includes)
+        {
+            if (include.StartsWith("User")) continue;
+            spec.AddInclude(include);
+        }
         if (!string.IsNullOrEmpty(query.Sort))
             if (query.Sort.StartsWith("-"))
                 spec.ApplyOrderByDescending(query.Sort[1..]);
@@ -28,11 +39,24 @@ public class RelationshipService(IUnitOfWork unitOfWork, IMapper mapper) : IRela
                 spec.ApplyOrderBy(query.Sort);
         spec.ApplyPaging(query.PageSize * (query.Page - 1), query.PageSize);
         var data = await _unitOfWork.Repository<Relationship>().ListAsync(spec);
-        return new PaginatedResult<RelationshipDTO>(
-            data.Select(_mapper.Map<RelationshipDTO>).ToList(),
-            totalCount,
-            query.Page,
-            query.PageSize);
+
+        var paginatedData = new PaginatedResult<RelationshipDTO>(
+        data.Select(_mapper.Map<RelationshipDTO>).ToList(),
+        totalCount,
+        query.Page,
+        query.PageSize);
+        if (includes.Contains("User"))
+        {
+            var relationshipTasks = paginatedData.Contents.Select(async (item, index) =>
+            {
+                var relationshipsResponse = await _httpClient.GetStringAsync($"http://localhost:8080/api/users/{item.UserId}");
+                var user = JsonConvert.DeserializeObject<UserDTO>(relationshipsResponse);
+                paginatedData.Contents[index].User = user;
+            });
+
+            await Task.WhenAll(relationshipTasks); // Đợi tất cả các tác vụ HTTP hoàn thành
+        }
+        return paginatedData;
     }
 
     public async Task<RelationshipDTO> GetByIdAsync(int id, string? includes = null)

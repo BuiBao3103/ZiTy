@@ -13,6 +13,8 @@ public static class ServiceExtensions
     {
         services.AddScoped(typeof(IBaseRepositoryAsync<>), typeof(BaseRepositoryAsync<>));
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+        services.AddScoped<IStatisticRepository, StatisticRepository>();
         //services.AddScoped<ILoggerService, LoggerService>();
     }
 

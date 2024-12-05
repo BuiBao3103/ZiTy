@@ -105,6 +105,7 @@ builder.Services.AddCors(options =>
 
 
 builder.Services.AddAuthorization();
+builder.Services.AddHttpClient();
 var app = builder.Build();
 app.UseCors(corsPolicy);
 // Configure the HTTP request pipeline.

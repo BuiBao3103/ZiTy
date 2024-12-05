@@ -88,9 +88,9 @@ public class SurveyService(IUnitOfWork unitOfWork, IMapper mapper) : ISurveyServ
             UserAnswer newUserAnswer = _mapper.Map<UserAnswer>(userAnswer);
             await _unitOfWork.Repository<UserAnswer>().AddAsync(newUserAnswer);
         }
-        foreach (var orderAnswer in surveySubmitDTO.UserAnswers)
+        foreach (var otherAnswer in surveySubmitDTO.OtherAnswers)
         {
-            OtherAnswer newOtherAnswer = _mapper.Map<OtherAnswer>(orderAnswer);
+            OtherAnswer newOtherAnswer = _mapper.Map<OtherAnswer>(otherAnswer);
             await _unitOfWork.Repository<OtherAnswer>().AddAsync(newOtherAnswer);
         }
         await _unitOfWork.SaveChangesAsync();
@@ -102,5 +102,27 @@ public class SurveyService(IUnitOfWork unitOfWork, IMapper mapper) : ISurveyServ
         await _unitOfWork.Repository<Survey.Domain.Entities.Survey>().AddAsync(newSurvey);
         await _unitOfWork.SaveChangesAsync();
         return _mapper.Map<SurveyDTO>(newSurvey);
+    }
+
+    public async Task<StatisticSurveyDTO> StatisticSurveyAsync(int id)
+    {
+        var survey = await _unitOfWork.Repository<Survey.Domain.Entities.Survey>().GetByIdAsync(id)
+            ?? throw new EntityNotFoundException(nameof(Survey.Domain.Entities.Survey), id);
+
+        var QuestionStatistics = _mapper.Map<List<QuestionStatisticsDto>>(await _unitOfWork.StatisticRepository.GetAnswerStatisticsAsync(id));
+        foreach (var questionStatistic in QuestionStatistics)
+        {
+            int maxCount = questionStatistic.Answers.Max(a => a.Count);
+            if (maxCount == 0) continue;
+            questionStatistic.Answers.ForEach(a => a.IsMostSelected = a.Count == maxCount);
+        }
+        var statisticSurvey = new StatisticSurveyDTO
+        {
+            Survey = _mapper.Map<SurveyDTO>(survey),
+            TotalParticipants = await _unitOfWork.StatisticRepository.GetTotalParticipantsSurveyAsync(id),
+            QuestionStatistics = QuestionStatistics
+
+        };
+        return statisticSurvey;
     }
 }

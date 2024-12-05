@@ -10,10 +10,17 @@ using Billing.Application.DTOs.Momo;
 using Billing.Application.DTOs.Bills;
 using Billing.Application.DTOs;
 using Billing.Application.Interfaces;
+using Billing.Application.Core.Constants;
+using System.Diagnostics;
+using System.Globalization;
+using System.Net.Http;
+using Billing.Application.DTOs.ApartmentService;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace Billing.Application.Services;
 
-public class BillService(IUnitOfWork unitOfWork, IMapper mapper, IVNPayService vnpayService, IMomoService momoService) : IBillService
+public class BillService(IUnitOfWork unitOfWork, IMapper mapper, IVNPayService vnpayService, IMomoService momoService, HttpClient httpClient) : IBillService
 {
     private readonly IMapper _mapper = mapper;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
@@ -21,12 +28,22 @@ public class BillService(IUnitOfWork unitOfWork, IMapper mapper, IVNPayService v
     private readonly IVNPayService _vnpayService = vnpayService;
     private readonly IMomoService _momoService = momoService;
 
+    private readonly HttpClient _httpClient = httpClient;
+
+
     public async Task<PaginatedResult<BillDTO>> GetAllAsync(BillQueryDTO query)
     {
         var filterExpression = query.BuildFilterCriteria<Bill>(a => a.DeletedAt == null);
         var spec = new BaseSpecification<Bill>(filterExpression);
         var totalCount = await _unitOfWork.Repository<Bill>().CountAsync(spec);
-        query.Includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);
+        var includes = query.Includes?.Split(',').Select(include =>
+             char.ToUpper(include[0]) + include.Substring(1)).ToList() ?? new List<string>();
+
+        foreach (string include in includes)
+        {
+            if (include.StartsWith("Relationship")) continue;
+            spec.AddInclude(include);
+        }
         if (!string.IsNullOrEmpty(query.Sort))
             if (query.Sort.StartsWith("-"))
                 spec.ApplyOrderByDescending(query.Sort[1..]);
@@ -34,20 +51,51 @@ public class BillService(IUnitOfWork unitOfWork, IMapper mapper, IVNPayService v
                 spec.ApplyOrderBy(query.Sort);
         spec.ApplyPaging(query.PageSize * (query.Page - 1), query.PageSize);
         var data = await _unitOfWork.Repository<Bill>().ListAsync(spec);
-        return new PaginatedResult<BillDTO>(
-            data.Select(_mapper.Map<BillDTO>).ToList(),
-            totalCount,
-            query.Page,
-            query.PageSize);
+
+        var paginatedData = new PaginatedResult<BillDTO>(
+          data.Select(_mapper.Map<BillDTO>).ToList(),
+          totalCount,
+          query.Page,
+          query.PageSize);
+
+        // Nếu cần thông tin Relationship, tải song song thông qua HTTP client
+        if (includes.Contains("Relationship"))
+        {
+            var relationshipTasks = paginatedData.Contents.Select(async (report, index) =>
+            {
+                var relationshipsResponse = await _httpClient.GetStringAsync($"http://localhost:8080/api/relationships/{report.RelationshipId}");
+                var relationship = JsonConvert.DeserializeObject<RelationshipDTO>(relationshipsResponse);
+                paginatedData.Contents[index].Relationship = relationship;
+            });
+
+            await Task.WhenAll(relationshipTasks); // Đợi tất cả các tác vụ HTTP hoàn thành
+        }
+        return paginatedData;
     }
 
     public async Task<BillDTO> GetByIdAsync(int id, string? includes = null)
     {
         var spec = new BaseSpecification<Bill>(a => a.DeletedAt == null && a.Id == id);
-        includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);
+        var includesList = includes?.Split(',').Select(include =>
+            char.ToUpper(include[0]) + include.Substring(1)).ToList() ?? new List<string>();
+
+        foreach (string include in includesList)
+        {
+            if (include.StartsWith("Relationship")) continue;
+            spec.AddInclude(include);
+        }
         var bill = await _unitOfWork.Repository<Bill>().FirstOrDefaultAsync(spec)
             ?? throw new EntityNotFoundException(nameof(Bill), id);
-        return _mapper.Map<BillDTO>(bill);
+
+        var billDTO = _mapper.Map<BillDTO>(bill);
+
+        if (includesList.Contains("Relationship"))
+        {
+            var relationshipsResponse = await _httpClient.GetStringAsync($"http://localhost:8080/api/relationships/{bill.RelationshipId}");
+            var relationship = JsonConvert.DeserializeObject<RelationshipDTO>(relationshipsResponse);
+            billDTO.Relationship = relationship;
+        }
+        return billDTO;
     }
     public async Task<BillDTO> CreateAsync(BillCreateDTO createDTO)
     {
@@ -117,31 +165,103 @@ public class BillService(IUnitOfWork unitOfWork, IMapper mapper, IVNPayService v
 
     public async Task<List<BillDTO>> UpdateWaterReadingAsync(BillUpdateWaterReadingDto waterReadingDto)
     {
-        Dictionary<string, string[]> errors = new();
-        List<Bill> bills = new();
+        List<Bill> bills = [];
+        List<Task> updateApartmentTasks = new List<Task>();
         foreach (var waterReading in waterReadingDto.WaterReadings)
         {
+            Setting setting = await _unitOfWork.Repository<Setting>().GetByIdAsync(SettingConstants.SettingId);
 
-            var bill = await _unitOfWork.Repository<Bill>().GetByIdAsync(waterReading.BillId);
+            var billSpec = new BaseSpecification<Bill>(b => b.Id == waterReading.BillId);
+
+            var bill = await _unitOfWork.Repository<Bill>().FirstOrDefaultAsync(billSpec);
             if (bill == null)
             {
-                errors.Add($"Id-{waterReading.NewWaterIndex}-{waterReading.ReadingDate}", new string[] { "Bill not found" });
+                throw new EntityNotFoundException(nameof(Bill), waterReading.BillId);
             }
             else
             {
-
                 bills.Add(bill);
+
                 bill.NewWater = waterReading.NewWaterIndex;
                 bill.WaterReadingDate = waterReading.ReadingDate;
+
+                int numberWater = (int)waterReading.NewWaterIndex! - (int)bill.OldWater!;
+                var waterPrice = setting.WaterPricePerM3 * numberWater * (100 + setting.WaterVat + setting.EnvProtectionTax) / 100;
+                bill.TotalPrice += waterPrice;
                 _unitOfWork.Repository<Bill>().Update(bill);
+
+                updateApartmentTasks.Add(Task.Run(async () =>
+                {
+                    try
+                    {
+                        // Fetch relationship details
+                        var relationshipsResponse = await _httpClient.GetStringAsync($"http://localhost:8080/api/relationships/{bill.RelationshipId}");
+                        var relationship = JsonConvert.DeserializeObject<RelationshipDTO>(relationshipsResponse);
+
+                        // Prepare and send update
+                        var content = new StringContent(
+                            JsonConvert.SerializeObject(new { CurrentWaterNumber = waterReading.NewWaterIndex }),
+                            Encoding.UTF8,
+                            "application/json");
+
+                        var response = await _httpClient.PatchAsync($"http://localhost:8080/api/apartments/{relationship.ApartmentId}", content);
+                        response.EnsureSuccessStatusCode();
+                    }
+                    catch (Exception ex)
+                    {
+                        // Use Console.WriteLine or replace with appropriate logging
+                        Console.WriteLine($"Failed to update apartment water index for relationship {bill.RelationshipId}: {ex.Message}");
+                        throw;
+                    }
+                }));
             }
         }
+        await _unitOfWork.SaveChangesAsync();
+        await Task.WhenAll(updateApartmentTasks);
+        return bills.Select(_mapper.Map<BillDTO>).ToList();
+    }
+    public async Task<List<MonthlyRevenueStatisticsDTO>> GetStatisticsRevenue(string startDate, string endDate)
+    {
+        Console.WriteLine("Starting GetStatisticsRevenue");
+
+        // Dictionary to store validation errors
+        IDictionary<string, string[]> errors = new Dictionary<string, string[]>();
+
+        // Parse the dates once and check validity
+        DateTime parsedStartDate, parsedEndDate;
+        bool isStartDateValid = DateTime.TryParseExact(startDate, "yyyy-MM", CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedStartDate);
+        bool isEndDateValid = DateTime.TryParseExact(endDate, "yyyy-MM", CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedEndDate);
+
+        // Validate start date
+        if (!isStartDateValid)
+        {
+            errors.Add("startDate", new string[] { "Invalid start date" });
+        }
+
+        // Validate end date
+        if (!isEndDateValid)
+        {
+            errors.Add("endDate", new string[] { "Invalid end date" });
+        }
+
+        // Validate start date < end date
+        if (isStartDateValid && isEndDateValid && parsedStartDate > parsedEndDate)
+        {
+            errors.Add("startDate", new string[] { "Start date must be less than or equal to the end date" });
+        }
+
+        // If there are any validation errors, throw an exception
         if (errors.Count > 0)
         {
+            Debug.WriteLine("Validation errors: " + errors.Count);
             throw new ValidationException(errors);
         }
-        await _unitOfWork.SaveChangesAsync();
-        return bills.Select(_mapper.Map<BillDTO>).ToList();
+
+        // Fetch data from the repository
+        var monthlyStatisticsRevenue = await _unitOfWork.StatisticRepository.GetStatisticsRevenue(startDate, endDate);
+
+        // Map the result to DTO and return
+        return _mapper.Map<List<MonthlyRevenueStatisticsDTO>>(monthlyStatisticsRevenue);
     }
 }
 

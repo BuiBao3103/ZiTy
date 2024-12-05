@@ -9,13 +9,15 @@ using Identity.Application.DTOs;
 using Identity.Application.DTOs.Users;
 using Identity.Application.Interfaces;
 using Microsoft.AspNetCore.Http;
-using Application.Core.Constants;
+using Identity.Application.Core.Constants;
+using Newtonsoft.Json;
+using Identity.Application.DTOs.ApartmentService;
 
 
 
 namespace Identity.Application.Services;
 
-public class UserService(IUnitOfWork unitOfWork, IMediaService mediaService, IEmailService emailService, ISmsService smsService, IMapper mapper) : IUserService
+public class UserService(IUnitOfWork unitOfWork, IMediaService mediaService, IEmailService emailService, ISmsService smsService, IMapper mapper, HttpClient httpClient) : IUserService
 {
     private readonly IMapper _mapper = mapper;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
@@ -24,6 +26,7 @@ public class UserService(IUnitOfWork unitOfWork, IMediaService mediaService, IEm
     private readonly IEmailService _emailService = emailService;
     private readonly ISmsService _smsService = smsService;
 
+    private readonly HttpClient _httpClient = httpClient;
     public async Task<PaginatedResult<UserDTO>> GetAllAsync(UserQueryDTO query)
     {
         var filterExpression = query.BuildFilterCriteria<User>(a => a.DeletedAt == null);
@@ -61,10 +64,22 @@ public class UserService(IUnitOfWork unitOfWork, IMediaService mediaService, IEm
         var password = PasswordGenerator.GeneratePassword(12);
         user.Password = BCrypt.Net.BCrypt.HashPassword(password);
         user.Avatar = CloudinaryConstants.DEFAULT_AVATAR;
-        var createdUser = await _unitOfWork.Repository<User>().AddAsync(user);
-        await _emailService.SendAccountCreationEmail(createdUser, password);
 
+        // Check if a user already exists with the given username or NationId
+        var spec = new BaseSpecification<User>(a => a.DeletedAt == null && (a.Username == user.Username || a.NationId == user.NationId));
+        var existedUser = await _unitOfWork.Repository<User>().FirstOrDefaultAsync(spec);
+        if (existedUser != null)
+        {
+            throw new BusinessRuleException("Username or NationalId already exists");
+        }
+
+        // Try to send the email first
+        await _emailService.SendAccountCreationEmail(user, password);
+
+        // If email is successfully sent, create the user
+        var createdUser = await _unitOfWork.Repository<User>().AddAsync(user);
         await _unitOfWork.SaveChangesAsync();
+
         return _mapper.Map<UserDTO>(createdUser);
     }
 
@@ -88,17 +103,27 @@ public class UserService(IUnitOfWork unitOfWork, IMediaService mediaService, IEm
         var user = await _unitOfWork.Repository<User>().GetByIdAsync(userId)
                  ?? throw new EntityNotFoundException(nameof(User), userId);
         string phoneNumber = user.Phone;
-        string message = "You have received a package!";
-        //string message = "Cam on quy khach da su dung dich vu cua chung toi. Chuc quy khach mot ngay tot lanh!";
+        //string message = "You have received a package!";
+        string message = "Cam on quy khach da su dung dich vu cua chung toi. Chuc quy khach mot ngay tot lanh!";
         await _smsService.SendSMSAsync(phoneNumber, message);
     }
 
     public async Task<UserDTO> GetMeAsync(int userId)
     {
+        // Lấy thông tin người dùng
         var spec = new BaseSpecification<User>(a => a.DeletedAt == null && a.Id == userId);
         var user = await _unitOfWork.Repository<User>().FirstOrDefaultAsync(spec)
-               ?? throw new EntityNotFoundException(nameof(User), userId);
-        return _mapper.Map<UserDTO>(user);
+                  ?? throw new EntityNotFoundException(nameof(User), userId);
+
+        // Gọi đến ApartmentService để lấy danh sách relationships
+        var relationshipsResponse = await _httpClient.GetStringAsync($"http://localhost:8080/api/relationships?PageSize=100&UserId=eq:{userId}");
+        var relationships = JsonConvert.DeserializeObject<RelationshipResponse>(relationshipsResponse);
+
+        // Map UserDTO và gắn relationships vào user
+        var userDTO = _mapper.Map<UserDTO>(user);
+        userDTO.Relationships = relationships.Contents;
+
+        return userDTO;
     }
 
     public async Task UpdateCurrentPassword(int userId, UpdatePasswordDTO updatePasswordDTO)

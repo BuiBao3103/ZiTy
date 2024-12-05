@@ -88,9 +88,9 @@ public class SurveyService(IUnitOfWork unitOfWork, IMapper mapper) : ISurveyServ
             UserAnswer newUserAnswer = _mapper.Map<UserAnswer>(userAnswer);
             await _unitOfWork.Repository<UserAnswer>().AddAsync(newUserAnswer);
         }
-        foreach (var othderAnswer in surveySubmitDTO.OtherAnswers)
+        foreach (var otherAnswer in surveySubmitDTO.OtherAnswers)
         {
-            OtherAnswer newOtherAnswer = _mapper.Map<OtherAnswer>(othderAnswer);
+            OtherAnswer newOtherAnswer = _mapper.Map<OtherAnswer>(otherAnswer);
             await _unitOfWork.Repository<OtherAnswer>().AddAsync(newOtherAnswer);
         }
         await _unitOfWork.SaveChangesAsync();
@@ -113,6 +113,7 @@ public class SurveyService(IUnitOfWork unitOfWork, IMapper mapper) : ISurveyServ
         foreach (var questionStatistic in QuestionStatistics)
         {
             int maxCount = questionStatistic.Answers.Max(a => a.Count);
+            if (maxCount == 0) continue;
             questionStatistic.Answers.ForEach(a => a.IsMostSelected = a.Count == maxCount);
         }
         var statisticSurvey = new StatisticSurveyDTO

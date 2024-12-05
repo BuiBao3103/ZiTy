@@ -12,7 +12,8 @@ interface IApartmentDetailProps {
 const ApartmentDetail = ({ id }: IApartmentDetailProps) => {
   const navigate = useNavigate()
   const { data, isLoading, isFetching } = useGetApartmentQuery(
-    { id: id, includes: 'relationships.User' },
+    // { id: id, includes: 'relationships.User' },
+    { id: id},
     {
       skip: !id,
     },

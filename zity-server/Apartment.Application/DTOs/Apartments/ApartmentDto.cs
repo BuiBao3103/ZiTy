@@ -14,6 +14,7 @@ public class ApartmentDTO
     public int ApartmentNumber { get; set; }
 
     public string Status { get; set; } = null!;
+    public int CurrentWaterNumber { get; set; }
 
     public DateTime CreatedAt { get; set; }
 

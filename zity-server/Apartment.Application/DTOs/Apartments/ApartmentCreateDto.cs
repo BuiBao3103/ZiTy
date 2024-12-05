@@ -16,5 +16,7 @@ public class ApartmentCreateDTO
     public int? ApartmentNumber { get; set; }
     [Required]
     public string Status { get; set; } = null!;
+    [Required]
+    public int? CurrentWaterNumber { get; set; }
 }
 
