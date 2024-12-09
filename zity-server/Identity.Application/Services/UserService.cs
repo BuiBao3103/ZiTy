@@ -66,7 +66,7 @@ public class UserService(IUnitOfWork unitOfWork, IMediaService mediaService, IEm
         user.Avatar = CloudinaryConstants.DEFAULT_AVATAR;
 
         // Check if a user already exists with the given username or NationId
-        var spec = new BaseSpecification<User>(a => a.DeletedAt == null && (a.Username == user.Username || a.NationId == user.NationId));
+        var spec = new BaseSpecification<User>(u => u.DeletedAt == null && (u.Username == user.Username || u.NationId == user.NationId));
         var existedUser = await _unitOfWork.Repository<User>().FirstOrDefaultAsync(spec);
         if (existedUser != null)
         {

@@ -61,9 +61,9 @@ public class BillService(IUnitOfWork unitOfWork, IMapper mapper, IVNPayService v
         // Nếu cần thông tin Relationship, tải song song thông qua HTTP client
         if (includes.Contains("Relationship"))
         {
-            var relationshipTasks = paginatedData.Contents.Select(async (report, index) =>
+            var relationshipTasks = paginatedData.Contents.Select(async (bill, index) =>
             {
-                var relationshipsResponse = await _httpClient.GetStringAsync($"http://localhost:8080/api/relationships/{report.RelationshipId}");
+                var relationshipsResponse = await _httpClient.GetStringAsync($"http://localhost:8080/api/relationships/{bill.RelationshipId}");
                 var relationship = JsonConvert.DeserializeObject<RelationshipDTO>(relationshipsResponse);
                 paginatedData.Contents[index].Relationship = relationship;
             });

@@ -20,7 +20,7 @@ public class EmailService(AppSettings appSettings) : IEmailService
         message.Subject = "Account Creation Notification";
 
         var bodyBuilder = new BodyBuilder();
-        string bodyHtml = await LoadTemplateAsync("../Application/Core/Resources/EmailTemplates/AccountCreation.html");
+        string bodyHtml = await LoadTemplateAsync("./../Identity.Application/Core/Resources/EmailTemplates/AccountCreation.html");
 
         bodyHtml = bodyHtml.Replace("{{FullName}}", user.FullName)
                           .Replace("{{Username}}", user.Username)
