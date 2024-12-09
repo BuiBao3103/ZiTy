@@ -25,7 +25,7 @@ public class RelationshipService(IUnitOfWork unitOfWork, IMapper mapper, HttpCli
         var spec = new BaseSpecification<Relationship>(filterExpression);
         var totalCount = await _unitOfWork.Repository<Relationship>().CountAsync(spec);
         var includes = query.Includes?.Split(',').Select(include =>
-            char.ToUpper(include[0]) + include.Substring(1)).ToList() ?? new List<string>();
+            char.ToUpper(include[0]) + include.Substring(1)).ToList() ?? [];
 
         foreach (string include in includes)
         {
@@ -41,15 +41,15 @@ public class RelationshipService(IUnitOfWork unitOfWork, IMapper mapper, HttpCli
         var data = await _unitOfWork.Repository<Relationship>().ListAsync(spec);
 
         var paginatedData = new PaginatedResult<RelationshipDTO>(
-        data.Select(_mapper.Map<RelationshipDTO>).ToList(),
-        totalCount,
-        query.Page,
-        query.PageSize);
+            data.Select(_mapper.Map<RelationshipDTO>).ToList(),
+            totalCount,
+            query.Page,
+            query.PageSize);
         if (includes.Contains("User"))
         {
-            var relationshipTasks = paginatedData.Contents.Select(async (item, index) =>
+            var relationshipTasks = paginatedData.Contents.Select(async (relationship, index) =>
             {
-                var relationshipsResponse = await _httpClient.GetStringAsync($"http://localhost:8080/api/users/{item.UserId}");
+                var relationshipsResponse = await _httpClient.GetStringAsync($"http://localhost:8080/api/users/{relationship.UserId}");
                 var user = JsonConvert.DeserializeObject<UserDTO>(relationshipsResponse);
                 paginatedData.Contents[index].User = user;
             });
@@ -70,7 +70,18 @@ public class RelationshipService(IUnitOfWork unitOfWork, IMapper mapper, HttpCli
 
     public async Task<RelationshipDTO> CreateAsync(RelationshipCreateDTO createDTO)
     {
-        var relationship = await _unitOfWork.Repository<Relationship>().AddAsync(_mapper.Map<Relationship>(createDTO));
+
+        var newRelationship = _mapper.Map<Relationship>(createDTO);
+        if(newRelationship.Role == "OWNER")
+        {
+            var relationshipSpec = new BaseSpecification<Relationship>(r=> r.Role == "OWNER" && r.ApartmentId == newRelationship.ApartmentId);
+            var existingOwner = await _unitOfWork.Repository<Relationship>().FirstOrDefaultAsync(relationshipSpec);
+            if (existingOwner != null)
+            {
+                throw new BusinessRuleException("There is already an owner in this apartment");
+            }
+        }
+        var relationship = await _unitOfWork.Repository<Relationship>().AddAsync(newRelationship);
         await _unitOfWork.SaveChangesAsync();
         return _mapper.Map<RelationshipDTO>(relationship);
     }

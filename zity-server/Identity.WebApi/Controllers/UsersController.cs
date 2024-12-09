@@ -28,6 +28,8 @@ public class UsersController(IUserService userService, IEmailService emailServic
     }
 
     [HttpPost]
+    [Authorize(policy: "Admin")]
+
     public async Task<IActionResult> Create([FromBody] UserCreateDTO userCreateDTO)
     {
         var user = await _userService.CreateAsync(userCreateDTO);

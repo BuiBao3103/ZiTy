@@ -124,8 +124,13 @@ builder.Services.AddCors(options =>
     });
 });
 
-
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("Admin", policy =>
+        policy.RequireRole("ADMIN"))
+    .AddPolicy("Resident", policy =>
+        policy.RequireRole("RESIDENT"))
+    .AddPolicy("AdminOrResident", policy =>
+        policy.RequireRole("ADMIN", "RESIDENT"));
 
 builder.Services.AddAuthentication(options =>
 {
@@ -160,9 +165,12 @@ builder.Services.AddAuthentication(options =>
             Encoding.UTF8.GetBytes(appSettings.JWTSettings.RefreshTokenKey)),
         ClockSkew = TimeSpan.Zero
     };
+
 });
 
-builder.Services.AddAuthorization();
+
+
+
 builder.Services.AddHttpClient();
 var app = builder.Build();
 app.UseCors(corsPolicy);

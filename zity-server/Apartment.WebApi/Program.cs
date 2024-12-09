@@ -94,6 +94,9 @@ builder.Services.AddCors(options =>
 });
 
 
+
+
+
 builder.Services.AddAuthorization();
 builder.Services.AddHttpClient();
 var app = builder.Build();

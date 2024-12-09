@@ -1,5 +1,6 @@
 ﻿using Apartment.Application.DTOs.Relationships;
 using Apartment.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Apartment.WebApi.Controllers;
@@ -21,6 +22,9 @@ public class RelationshipsController(IRelationshipService relationshipService) :
     {
         return Ok(await _relationshipService.GetByIdAsync(id, includes));
     }
+
+    //Authorize role only for cladmin
+
 
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] RelationshipCreateDTO relationshipCreateDTO)

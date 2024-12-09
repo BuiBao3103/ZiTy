@@ -9,7 +9,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-
 namespace Identity.Application.Services;
 
 public class AuthService(IUnitOfWork unitOfWork, AppSettings appSettings) : IAuthService
@@ -21,11 +20,11 @@ public class AuthService(IUnitOfWork unitOfWork, AppSettings appSettings) : IAut
     {
         var spec = new BaseSpecification<User>(u => u.Username == loginDto.Username);
         var user = await _unitOfWork.Repository<User>().FirstOrDefaultAsync(spec);
-        if (user == null || !VerifyPassword(user, loginDto.Password))
+        if (user == null || !BCrypt.Net.BCrypt.Verify(loginDto.Password, user.Password))
             return null;
-
-        var accessToken = GenerateJwtToken(user, false);
-        var refreshToken = GenerateJwtToken(user, true);
+        var isRefreshToken = true;
+        var accessToken = GenerateJwtToken(user, !isRefreshToken);
+        var refreshToken = GenerateJwtToken(user, isRefreshToken);
 
         return new TokenDto
         {
@@ -123,10 +122,6 @@ public class AuthService(IUnitOfWork unitOfWork, AppSettings appSettings) : IAut
         }
     }
 
-    private static bool VerifyPassword(User user, string password)
-    {
-        return BCrypt.Net.BCrypt.Verify(password, user.Password);
-    }
 
     public async Task UpdatePasswordFirstLoginAsync(int userId, UpdatePasswordFirstLoginDTO updatePasswordFirstLogin)
     {

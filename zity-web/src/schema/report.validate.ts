@@ -19,12 +19,12 @@ export const ReportSchema = z.object({
 export type ReportFormSchema = z.infer<typeof ReportSchema>
 
 export type ReportType = z.infer<typeof ReportSchema> & {
-  relationship?: z.infer<typeof ExtendedRelationshipsSchema>[]
+  relationship?: z.infer<typeof ExtendedRelationshipsSchema>
   createdAt?: Date  | string
   updatedAt?: Date | null | string
   deleteAt?: Date | null | string
 }
 
 export const ExtendedReportSchema: z.ZodType<ReportType> = ReportSchema.extend({
-  relationships: z.lazy(() => ExtendedRelationshipsSchema.array()).optional(),
+  relationships: z.lazy(() => ExtendedRelationshipsSchema).optional(),
 }).merge(BaseEntitySchema)
