@@ -84,7 +84,9 @@ public class ReportService(IUnitOfWork unitOfWork, IMapper mapper, HttpClient ht
 
     public async Task<ReportDTO> CreateAsync(ReportCreateDTO createDTO)
     {
-        var report = await _unitOfWork.Repository<Report.Domain.Entities.Report>().AddAsync(_mapper.Map<Report.Domain.Entities.Report>(createDTO));
+
+        var reportEntity = _mapper.Map<Report.Domain.Entities.Report>(createDTO);
+        var report = await _unitOfWork.Repository<Report.Domain.Entities.Report>().AddAsync(reportEntity);
         await _unitOfWork.SaveChangesAsync();
         return _mapper.Map<ReportDTO>(report);
     }

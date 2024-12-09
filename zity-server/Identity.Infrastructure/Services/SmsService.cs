@@ -6,13 +6,12 @@ using Newtonsoft.Json.Linq;
 
 namespace Identity.Infrastructure.Services;
 
-public class SmsService(AppSettings appSettings) : ISmsService
+public class SmsService(AppSettings appSettings, HttpClient httpClient) : ISmsService
 {
     private readonly AppSettings _appSettings = appSettings;
-
+    private readonly HttpClient _httpClient = httpClient;
     public async Task SendSMSAsync(string phoneNumber, string message)
     {
-        using var client = new HttpClient();
         var url = "https://rest.esms.vn/MainService.svc/json/SendMultipleMessage_V4_post_json/";
         var smsRequest = new
         {
@@ -27,7 +26,7 @@ public class SmsService(AppSettings appSettings) : ISmsService
 
         var content = new StringContent(JsonConvert.SerializeObject(smsRequest), Encoding.UTF8, "application/json");
 
-        HttpResponseMessage response = await client.PostAsync(url, content);
+        HttpResponseMessage response = await _httpClient.PostAsync(url, content);
 
         if (!response.IsSuccessStatusCode)
         {
