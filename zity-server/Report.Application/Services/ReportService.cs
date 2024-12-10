@@ -111,4 +111,11 @@ public class ReportService(IUnitOfWork unitOfWork, IMapper mapper, HttpClient ht
         return _mapper.Map<ReportDTO>(existingReport);
     }
 
+    public async Task DeleteAsync(int id)
+    {
+        var existingReport = await _unitOfWork.Repository<Report.Domain.Entities.Report>().GetByIdAsync(id)
+            ?? throw new EntityNotFoundException(nameof(Report), id);
+        _unitOfWork.Repository<Report.Domain.Entities.Report>().Delete(existingReport);
+        await _unitOfWork.SaveChangesAsync();
+    }
 }
