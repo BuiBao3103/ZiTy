@@ -101,5 +101,14 @@ public class ReportService(IUnitOfWork unitOfWork, IMapper mapper, HttpClient ht
         return _mapper.Map<ReportDTO>(existingReport);
     }
 
-    
+    public async Task<ReportDTO> PatchAsync(int id, ReportPatchDTO patchDTO)
+    {
+        var existingReport = await _unitOfWork.Repository<Report.Domain.Entities.Report>().GetByIdAsync(id)
+            ?? throw new EntityNotFoundException(nameof(Report), id);
+        _mapper.Map(patchDTO, existingReport);
+        _unitOfWork.Repository<Report.Domain.Entities.Report>().Update(existingReport);
+        await _unitOfWork.SaveChangesAsync();
+        return _mapper.Map<ReportDTO>(existingReport);
+    }
+
 }
