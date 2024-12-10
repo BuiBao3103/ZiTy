@@ -33,5 +33,14 @@ public class RejectionReasonService(IUnitOfWork unitOfWork, IMapper mapper) : IR
             query.Page,
             query.PageSize);
     }
+
+    public async Task<RejectionReasonDTO> GetByIdAsync(int id, string? includes = null)
+    {
+        var spec = new BaseSpecification<RejectionReason>(a => a.DeletedAt == null && a.Id == id);
+        includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);
+        var rejectionReason = await _unitOfWork.Repository<RejectionReason>().FirstOrDefaultAsync(spec)
+            ?? throw new EntityNotFoundException(nameof(RejectionReason), id);
+        return _mapper.Map<RejectionReasonDTO>(rejectionReason);
+    }
 }
 
