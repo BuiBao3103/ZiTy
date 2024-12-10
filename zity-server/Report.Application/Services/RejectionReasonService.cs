@@ -42,5 +42,12 @@ public class RejectionReasonService(IUnitOfWork unitOfWork, IMapper mapper) : IR
             ?? throw new EntityNotFoundException(nameof(RejectionReason), id);
         return _mapper.Map<RejectionReasonDTO>(rejectionReason);
     }
+
+    public async Task<RejectionReasonDTO> CreateAsync(RejectionReasonCreateDTO createDTO)
+    {
+        var rejectionReason = await _unitOfWork.Repository<RejectionReason>().AddAsync(_mapper.Map<RejectionReason>(createDTO));
+        await _unitOfWork.SaveChangesAsync();
+        return _mapper.Map<RejectionReasonDTO>(rejectionReason);
+    }
 }
 
