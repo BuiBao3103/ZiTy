@@ -67,5 +67,12 @@ public class RejectionReasonService(IUnitOfWork unitOfWork, IMapper mapper) : IR
         await _unitOfWork.SaveChangesAsync();
         return _mapper.Map<RejectionReasonDTO>(existingRejectionReason);
     }
+    public async Task DeleteAsync(int id)
+    {
+        var existingRejectionReason = await _unitOfWork.Repository<RejectionReason>().GetByIdAsync(id)
+            ?? throw new EntityNotFoundException(nameof(RejectionReason), id);
+        _unitOfWork.Repository<RejectionReason>().Delete(existingRejectionReason);
+        await _unitOfWork.SaveChangesAsync();
+    }
 }
 
