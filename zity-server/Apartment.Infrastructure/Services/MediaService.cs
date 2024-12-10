@@ -32,7 +32,7 @@ public class MediaService : IMediaService
 
             if (deletionResult.Result != "ok")
             {
-                //throw new AppError("Failed to delete the old image.", StatusCodes.Status500InternalServerError, "DELETE_IMAGE_FAILED");
+                throw new Exception("DELETE_IMAGE_FAILED");
             }
         }
     }
@@ -50,7 +50,7 @@ public class MediaService : IMediaService
 
         if (uploadResult.Error != null)
         {
-            //throw new AppError(uploadResult.Error.Message, StatusCodes.Status500InternalServerError, "UPLOAD_IMAGE_FAILED");
+            throw new Exception("UPLOAD_IMAGE_FAILED");
         }
 
         return uploadResult.SecureUrl.ToString();

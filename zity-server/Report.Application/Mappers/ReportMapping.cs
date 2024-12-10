@@ -7,7 +7,7 @@ public class ReportMapping : Profile
 {
     public ReportMapping()
     {
-        IMappingExpression<Report.Domain.Entities.Report, ReportDTO> mappingExpression = CreateMap<Report.Domain.Entities.Report, ReportDTO>()
+       CreateMap<Report.Domain.Entities.Report, ReportDTO>()
             .ForMember(dest => dest.RejectionReason, opt => opt.MapFrom(src => src.RejectionReason));
 
         CreateMap<ReportCreateDTO, Report.Domain.Entities.Report>()

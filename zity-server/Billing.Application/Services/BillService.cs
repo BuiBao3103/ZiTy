@@ -17,6 +17,7 @@ using System.Net.Http;
 using Billing.Application.DTOs.ApartmentService;
 using Newtonsoft.Json;
 using System.Text;
+using System.Linq.Expressions;
 
 namespace Billing.Application.Services;
 
@@ -33,7 +34,24 @@ public class BillService(IUnitOfWork unitOfWork, IMapper mapper, IVNPayService v
 
     public async Task<PaginatedResult<BillDTO>> GetAllAsync(BillQueryDTO query)
     {
-        var filterExpression = query.BuildFilterCriteria<Bill>(a => a.DeletedAt == null);
+        List<int> relationshipsId = [];
+        if (!string.IsNullOrEmpty(query.Relationship_UserId))
+        {
+            var userId = query.Relationship_UserId.Split(':')[1];
+            var relationshipsResponse = await _httpClient.GetStringAsync($"http://localhost:8080/api/relationships?PageSize=100&UserId=eq:{userId}");
+            var relationships = JsonConvert.DeserializeObject<RelationshipResponse>(relationshipsResponse);
+            relationshipsId = relationships.Contents.Select(r => r.Id).ToList();
+        }
+
+        Expression<Func<Bill, bool>> filterExpression;
+        if (relationshipsId.Count > 0)
+        {
+            filterExpression = query.BuildFilterCriteria<Bill>(a => a.DeletedAt == null && relationshipsId.Contains(a.RelationshipId));
+        }
+        else
+        {
+            filterExpression = query.BuildFilterCriteria<Bill>(a => a.DeletedAt == null);
+        }
         var spec = new BaseSpecification<Bill>(filterExpression);
         var totalCount = await _unitOfWork.Repository<Bill>().CountAsync(spec);
         var includes = query.Includes?.Split(',').Select(include =>
