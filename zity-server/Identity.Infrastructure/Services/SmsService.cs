@@ -30,8 +30,8 @@ public class SmsService(AppSettings appSettings, HttpClient httpClient) : ISmsSe
 
         if (!response.IsSuccessStatusCode)
         {
-            //var responseBody = await response.Content.ReadAsStringAsync();
-            //throw new AppError(message: "Failed to send SMS (HTTP error): " + responseBody, statusCode: StatusCodes.Status500InternalServerError, errorCode: "SEND_SMS_FAILED");
+            var responseBody = await response.Content.ReadAsStringAsync();
+            throw new Exception(message: "Failed to send SMS (HTTP error): " + responseBody);
         }
 
         var responseBodyString = await response.Content.ReadAsStringAsync();

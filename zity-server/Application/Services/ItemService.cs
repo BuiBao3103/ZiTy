@@ -41,7 +41,7 @@ public class ItemService(IUnitOfWork unitOfWork, IMapper mapper, IMediaService m
 
     public async Task<ItemDTO> GetByIdAsync(int id, string? includes = null)
     {
-        var spec = new BaseSpecification<Item>(a => a.DeletedAt == null && a.Id == id);
+        var spec = new BaseSpecification<Item>(i => i.DeletedAt == null && i.Id == id);
         includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);
         var item = await _unitOfWork.Repository<Item>().FirstOrDefaultAsync(spec)
             ?? throw new EntityNotFoundException(nameof(Item), id);
