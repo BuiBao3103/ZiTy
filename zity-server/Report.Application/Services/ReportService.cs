@@ -73,5 +73,14 @@ public class ReportService(IUnitOfWork unitOfWork, IMapper mapper, HttpClient ht
     }
 
 
+    public async Task<ReportDTO> GetByIdAsync(int id, string? includes = null)
+    {
+        var spec = new BaseSpecification<Report.Domain.Entities.Report>(a => a.DeletedAt == null && a.Id == id);
+        includes?.Split(',').Select(i => char.ToUpper(i[0]) + i[1..]).ToList().ForEach(spec.AddInclude);
+        var report = await _unitOfWork.Repository<Report.Domain.Entities.Report>().FirstOrDefaultAsync(spec)
+            ?? throw new EntityNotFoundException(nameof(Report), id);
+        return _mapper.Map<ReportDTO>(report);
+    }
+
     
 }
