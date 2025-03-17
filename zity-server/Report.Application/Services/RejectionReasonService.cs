@@ -10,7 +10,7 @@ using Report.Domain.Exceptions;
 
 namespace Report.Application.Services;
 
-public class RejectionReasonService(IUnitOfWork unitOfWork, IMapper mapper) : IRejectionReasonService
+public class RejectionReasonService(IUnitOfWork unitOfWork, IMapper mapper)
 {
     private readonly IMapper _mapper = mapper;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
